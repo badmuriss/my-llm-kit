@@ -141,6 +141,21 @@ link_claude_md() {
 }
 run_step "symlink CLAUDE.md" link_claude_md
 
+# 6. plugin last30days (pulso da comunidade na skill pesquisa), sem duplicar
+install_last30days() {
+  if claude plugin list 2>/dev/null | grep -q "last30days"; then
+    echo "  plugin last30days já instalado, pulando"
+    return 0
+  fi
+  if [ "$DRY" -eq 1 ]; then
+    echo "  [dry-run] claude plugin marketplace add mvanhorn/last30days-skill + install"
+    return 0
+  fi
+  claude plugin marketplace add mvanhorn/last30days-skill >/dev/null 2>&1
+  claude plugin install last30days@last30days-skill
+}
+run_step "plugin last30days" install_last30days
+
 echo
 echo "dependências pesadas (mineru, docling) não são instaladas por este script."
 echo "são opt-in: pip3 install --user mineru docling"

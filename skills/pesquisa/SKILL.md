@@ -27,6 +27,8 @@ Aplique em toda pesquisa, sem exceção e sem esperar o usuário pedir.
 
 **Tecnologia ou produto**: quando o tema for tecnologia em vez de ciência, a fonte primária é o repositório, a documentação oficial e o changelog do projeto. Contagem de stars, número de versão e preço devem ser lidos na página do próprio projeto, nunca em artigo de terceiro que cita o projeto.
 
+**Pulso da comunidade (últimos 30 dias)**: quando a pergunta envolver sentimento atual, recepção de lançamento, reputação de pessoa ou empresa, ou "o que estão dizendo agora", rode o plugin `/last30days` (Reddit, Hacker News, X, Polymarket, GitHub, arXiv, Techmeme, pontuado por engajamento real). Duas ressalvas: engajamento mede relevância, não verdade, então afirmação factual achada ali ainda precisa de fonte primária; e todo dado que sair no relatório segue as quatro regras (URL + data ao lado). Reddit, HN, Polymarket, GitHub e arXiv funcionam sem chave; X, YouTube e TikTok são opt-in com chave própria.
+
 ## Estação 2: ingestão legível
 
 Antes de ler qualquer documento, converta. Delegue para a skill `ingestao`, que roteia cada tipo de arquivo para o conversor certo.

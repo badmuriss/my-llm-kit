@@ -9,6 +9,7 @@ Setup pessoal de Claude Code do Murilo: sistema de escrita, sistema de pesquisa 
 | skills/pesquisa | Ciclo de pesquisa com fonte primária, divergência reportada e saída auditável | Adaptado de [research-stack](https://github.com/nett0eth/research-stack) (Netto, MIT) |
 | skills/ingestao | Roteia PDF/Word/Excel/repo para o conversor certo antes de qualquer análise | Adaptado de [research-stack](https://github.com/nett0eth/research-stack) (Netto, MIT) |
 | unslop | Sistema de escrita (humanizer), v2 | Próprio: [github.com/badmuriss/unslop](https://github.com/badmuriss/unslop) |
+| plugin last30days | Pulso da comunidade nos últimos 30 dias (Reddit, HN, X, Polymarket, GitHub, arXiv), pontuado por engajamento; entra como estação da skill pesquisa | [last30days-skill](https://github.com/mvanhorn/last30days-skill) (mvanhorn, MIT), instalado via marketplace |
 | CLAUDE.md | Configuração global do Claude Code, versionada | Próprio |
 | setup.sh | Instala dependências, registra MCP, clona o unslop e symlinka tudo para `~/.claude/` | Próprio, adaptado do setup do research-stack |
 
