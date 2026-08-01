@@ -16,16 +16,7 @@ Everything `setup.sh` installs, in one table.
 |---|---|---|
 | pesquisa | Research cycle: primary sources first, disagreements reported, weak samples flagged, auditable output | Adapted from [research-stack](https://github.com/nett0eth/research-stack) (Netto, MIT) |
 | ingestao | Routes PDF/Word/Excel/repos to the right converter before any analysis | Adapted from [research-stack](https://github.com/nett0eth/research-stack) (Netto, MIT) |
-| software-engineering | Core engineering principles applied to all code | Own |
-| typescript | TypeScript/JavaScript standards | Own |
-| react | React/Next.js best practices | Own |
-| coding-guidelines | Type-safety, readability and maintainability standards | Own |
-| reviewing-code | Code review workflow against the standards above | Own |
-| review-changes | Lighter review pass for diffs | Own |
 | writing | Technical writing standards based on Zinsser | Own |
-| planning | Project planning and architecture decision workflow | Own |
-| prd | Product requirements document generator | Own |
-| ralph | Converts PRDs to the Ralph autonomous agent JSON format | Own |
 | grill-me | Relentless interview about a plan until shared understanding | Own |
 | grill-with-docs | Same grilling, but updates CONTEXT.md and ADRs as decisions land | Own |
 | ux-audit | Walks a live web app as a real user, with hard gates (console errors 0, a11y, perf budget) | Own |
@@ -56,10 +47,7 @@ Skills that need credentials still install without them; they just stay dormant 
 
 | Plugin | What it does | Marketplace repo |
 |---|---|---|
-| caveman | Ultra-compressed communication mode, cuts token usage | [JuliusBrussee/caveman](https://github.com/JuliusBrussee/caveman) |
-| ponytail | Forces the laziest solution that works: YAGNI, stdlib first, shortest diff | [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail) |
 | claude-code-harness | Plan/work/review/release loop with team orchestration | [Chachamaru127/claude-code-harness](https://github.com/Chachamaru127/claude-code-harness) |
-| codex | Delegates coding tasks and second opinions to the Codex CLI | [openai/codex-plugin-cc](https://github.com/openai/codex-plugin-cc) |
 | chrome-devtools-mcp | Browser debugging, automation, performance traces via Chrome DevTools | [anthropics/claude-plugins-official](https://github.com/anthropics/claude-plugins-official) |
 | frontend-design | Aesthetic direction for new UI, avoids templated defaults | [anthropics/claude-plugins-official](https://github.com/anthropics/claude-plugins-official) |
 | cloudflare | Workers, Pages, KV, D1, R2, Durable Objects, wrangler skills | [cloudflare/skills](https://github.com/cloudflare/skills) |

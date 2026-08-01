@@ -9,11 +9,7 @@ Focus on these principles in all code:
 - automated tests
 - readability/maintainability
 
-All detailed coding guidelines are in the skills:
-- Use `software-engineering` skill for core principles
-- Use `typescript` skill for TypeScript/JavaScript standards
-- Use `react` skill for React/Next.js best practices
-- Use `reviewing-code` skill for code reviews
+Detailed guidelines live in the skills:
 - Use `writing` skill for documentation and commit messages
 - Use `scrapingdog` skill for scraping, Google Search/SERP, Google Maps, Google Trends, Google News, Amazon, LinkedIn, Instagram, market research, and lead enrichment when `SCRAPINGDOG_API_KEY` is available
 

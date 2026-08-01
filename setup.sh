@@ -204,10 +204,7 @@ run_step "symlink CLAUDE.md" link_claude_md
 
 # 6. plugins: add each marketplace and install the plugin, skipping what is already there
 PLUGINS=(
-  "JuliusBrussee/caveman|caveman@caveman"
-  "DietrichGebert/ponytail|ponytail@ponytail"
   "Chachamaru127/claude-code-harness|claude-code-harness@claude-code-harness-marketplace"
-  "openai/codex-plugin-cc|codex@openai-codex"
   "anthropics/claude-plugins-official|chrome-devtools-mcp@claude-plugins-official"
   "anthropics/claude-plugins-official|frontend-design@claude-plugins-official"
   "cloudflare/skills|cloudflare@cloudflare"
