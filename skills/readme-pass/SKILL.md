@@ -19,7 +19,24 @@ not this one.
 
 Insert this, in this order, before the current content:
 
-1. Centered banner:
+0. Existing brand wins. Before generating anything, search the repo for
+   official brand assets (`find . -iname "*logo*" -o -iname "*brand*"`,
+   check `assets/`, `public/`, design PDFs). If a real logo exists, use it
+   instead of a generated banner, with GitHub's dark/light switching:
+
+   ```html
+   <p align="center">
+     <picture>
+       <source media="(prefers-color-scheme: dark)" srcset="assets/logo-white.png">
+       <img src="assets/logo-black.png" width="140" alt="...">
+     </picture>
+   </p>
+   <h1 align="center">Project Name</h1>
+   ```
+
+   Match badge accent colors to the brand's palette. Only generate a
+   banner when the repo has no identity of its own.
+1. Centered banner (only when step 0 found no brand assets):
    `<p align="center"><img src="docs/banner.png" width="720" alt="..."></p>`
 2. Centered bold tagline, one line, concrete value, no hype. Reuse the
    repo's own first sentence when it fits.
