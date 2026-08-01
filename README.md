@@ -14,8 +14,8 @@ Everything `setup.sh` installs, in one table.
 
 | Skill | What it does | Origin / credit |
 |---|---|---|
-| pesquisa | Research cycle: primary sources first, disagreements reported, weak samples flagged, auditable output | Adapted from [research-stack](https://github.com/nett0eth/research-stack) (Netto, MIT) |
-| ingestao | Routes PDF/Word/Excel/repos to the right converter before any analysis | Adapted from [research-stack](https://github.com/nett0eth/research-stack) (Netto, MIT) |
+| research | Research cycle: primary sources first, disagreements reported, weak samples flagged, auditable output | Adapted from [research-stack](https://github.com/nett0eth/research-stack) (Netto, MIT) |
+| ingest | Routes PDF/Word/Excel/repos to the right converter before any analysis | Adapted from [research-stack](https://github.com/nett0eth/research-stack) (Netto, MIT) |
 | writing | Technical writing standards based on Zinsser | Own |
 | grill-me | Relentless interview about a plan until shared understanding | Own |
 | grill-with-docs | Same grilling, but updates CONTEXT.md and ADRs as decisions land | Own |
@@ -51,7 +51,7 @@ Skills that need credentials still install without them; they just stay dormant 
 | chrome-devtools-mcp | Browser debugging, automation, performance traces via Chrome DevTools | [anthropics/claude-plugins-official](https://github.com/anthropics/claude-plugins-official) |
 | frontend-design | Aesthetic direction for new UI, avoids templated defaults | [anthropics/claude-plugins-official](https://github.com/anthropics/claude-plugins-official) |
 | cloudflare | Workers, Pages, KV, D1, R2, Durable Objects, wrangler skills | [cloudflare/skills](https://github.com/cloudflare/skills) |
-| last30days | Community pulse over the last 30 days (Reddit, HN, X, GitHub, arXiv), plugs into pesquisa | [mvanhorn/last30days-skill](https://github.com/mvanhorn/last30days-skill) (MIT) |
+| last30days | Community pulse over the last 30 days (Reddit, HN, X, GitHub, arXiv), plugs into the research skill | [mvanhorn/last30days-skill](https://github.com/mvanhorn/last30days-skill) (MIT) |
 
 ### MCP servers
 
@@ -80,18 +80,18 @@ unslop lives in its own repo, [badmuriss/unslop](https://github.com/badmuriss/un
 
 v2 has four modes: write, edit, detect and score. A dedicated Brazilian Portuguese layer catches the tells the English list misses (the em dash splice, "no cenário atual", "é importante ressaltar", call-center gerund). A rubric grades every draft from 0 to 50 with a cut line at 35: below that, the text goes back for a rewrite before it ships. A self-eval runs at the end of each generation to catch relapses before the user sees them.
 
-## Research: pesquisa + ingestao
+## Research: research + ingest
 
 Two skills adapted from [research-stack](https://github.com/nett0eth/research-stack) by Netto (@nett0eth), MIT license.
 
-`pesquisa` enforces four non-negotiable rules on every investigation:
+`research` enforces four non-negotiable rules on every investigation:
 
 1. Primary sources first: official docs and the project repository before papers, papers before third-party analysis. Aggregator blogs are leads, never the final stop.
 2. When sources disagree, both versions are reported with their dates, never resolved silently.
 3. A pattern seen in fewer than 5 cases is flagged as a weak sample, never stated as a conclusion.
 4. Every number, monetary value and superlative ships with a URL and access date next to it.
 
-`ingestao` routes each file (PDF, Word, Excel, code repository) to the right converter before anything gets read, because a two-column PDF read raw produces scrambled conclusions.
+`ingest` routes each file (PDF, Word, Excel, code repository) to the right converter before anything gets read, because a two-column PDF read raw produces scrambled conclusions.
 
 ## Install
 

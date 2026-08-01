@@ -21,10 +21,10 @@ Every piece of prose meant for readers (post, newsletter, script, caption, blog,
 - A rewrite never introduces a fact, name, number or date that was not in the original.
 
 ## Research
-Never answer a number, statistic or superlative from memory with a confident face. Before publishing any data point, use the `pesquisa` skill. These rules apply even outside the skill:
+Never answer a number, statistic or superlative from memory with a confident face. Before publishing any data point, use the `research` skill. These rules apply even outside the skill:
 1. Primary sources first: official documentation and the repository before papers, papers before third-party analysis. Aggregator blogs are leads, never the final stop.
 2. Disagreement between sources is reported with each one's date, never silently resolved.
 3. A pattern seen in fewer than 5 cases goes in as a weak sample, never as a conclusion.
 4. Every number, value and superlative ships with a URL and access date next to it.
 
-Received documents (PDF, spreadsheet, deck, epub) go through the `ingestao` skill before any analysis. A two-column PDF read without conversion produces scrambled conclusions.
+Received documents (PDF, spreadsheet, deck, epub) go through the `ingest` skill before any analysis. A two-column PDF read without conversion produces scrambled conclusions.

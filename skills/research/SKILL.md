@@ -1,9 +1,9 @@
 ---
-name: pesquisa
+name: research
 description: Runs research with verifiable grounding, from primary-source discovery to an auditable markdown finding. Use when the user asks to research a topic, gather evidence, fact-check a claim, compare sources, or write a report with citations, including phrasings like "research this", "where does this number come from", "is this true?", "find the papers", or in Portuguese "pesquisa isso", "de onde vem esse número", "levanta os papers". Also use before publishing any number, monetary value or superlative.
 ---
 
-# Pesquisa (research)
+# Research
 
 Run the research in stations, in order. Do not skip ingestion or memory.
 
@@ -31,7 +31,7 @@ Apply to every research task, without exception and without waiting for the user
 
 ## Station 2: readable ingestion
 
-Before reading any document, convert it. Delegate to the `ingestao` skill, which routes each file type to the right converter.
+Before reading any document, convert it. Delegate to the `ingest` skill, which routes each file type to the right converter.
 
 Never analyze a two-column PDF without converting first. Scrambled reading order produces scrambled conclusions.
 
@@ -49,7 +49,7 @@ Cross-check the converted sources. Record each claim with its source in the file
 
 ## Station 5: memory
 
-Save the finding as markdown in the current project's `pesquisa/` folder, or wherever the user asks. Standard structure:
+Save the finding as markdown in the current project's `research/` folder, or wherever the user asks. Standard structure:
 
 - question and criterion, fixed before the investigation
 - findings, each with source and date
