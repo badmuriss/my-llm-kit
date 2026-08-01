@@ -1,4 +1,28 @@
-# my-llm-kit
+<p align="center"><img src="docs/banner.png" width="720" alt="my-llm-kit wordmark on a dark graphite background with the tagline: a personal, versioned Claude Code setup"></p>
+
+<p align="center"><b>One clone and one script turn a fresh machine into the exact same Claude Code environment.</b></p>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="MIT license"></a>
+  <a href="https://github.com/badmuriss/my-llm-kit/stargazers"><img src="https://img.shields.io/github/stars/badmuriss/my-llm-kit?style=flat-square" alt="GitHub stars"></a>
+  <a href="https://github.com/badmuriss/my-llm-kit/commits/main"><img src="https://img.shields.io/github/last-commit/badmuriss/my-llm-kit?style=flat-square" alt="last commit"></a>
+</p>
+
+<p align="center">
+  <a href="#the-full-stack">The full stack</a> ·
+  <a href="#install">Install</a> ·
+  <a href="#what-setupsh-does">What setup.sh does</a> ·
+  <a href="#credits">Credits</a>
+</p>
+
+## Install
+
+```bash
+git clone https://github.com/badmuriss/my-llm-kit
+cd my-llm-kit
+./setup.sh --dry-run   # preview what will change before running for real
+./setup.sh
+```
 
 A personal, versioned Claude Code setup: writing system, research system, coding standards, audit skills, plugins, a global CLAUDE.md, and one idempotent script that wires it all into `~/.claude/`.
 
@@ -92,15 +116,6 @@ Two skills adapted from [research-stack](https://github.com/nett0eth/research-st
 4. Every number, monetary value and superlative ships with a URL and access date next to it.
 
 `ingest` routes each file (PDF, Word, Excel, code repository) to the right converter before anything gets read, because a two-column PDF read raw produces scrambled conclusions.
-
-## Install
-
-```bash
-git clone https://github.com/badmuriss/my-llm-kit
-cd my-llm-kit
-./setup.sh --dry-run   # preview what will change before running for real
-./setup.sh
-```
 
 ## What setup.sh does
 
