@@ -18,7 +18,7 @@ Common params:
 
 Notes:
 
-- Prospecta converts returned HTML to plain text before field extraction.
+- Convert returned HTML to plain text before field extraction.
 - Avoid using generic scrape for Google, Maps, Trends, News, Amazon, and LinkedIn when a dedicated endpoint exists.
 
 ## Google Search
@@ -42,7 +42,7 @@ Expected useful fields:
 
 - `organic_results[]` with `title`, `link`, `snippet`/`description`.
 
-Prospecta pattern:
+Proven parameter pattern:
 
 - `country=br`
 - `domain=google.com.br`
@@ -143,7 +143,7 @@ Notes:
 
 ## Instagram
 
-Prospecta has a wrapper for `GET /instagram` with `profile=<username>`, mapping username, full name, bio, followers, following, post count, verification, external URL, and profile picture.
+A thin wrapper over `GET /instagram` with `profile=<username>` can map username, full name, bio, followers, following, post count, verification, external URL, and profile picture.
 
 Before relying on this in a new project, verify the current official docs or run a tiny smoke test, because the public docs have changed over time. For generic social page text extraction, `/scrape?dynamic=true` remains the fallback.
 

@@ -10,7 +10,7 @@ Use ScrapingDog as the default paid scraping provider when the task asks for dat
 ## First Checks
 
 1. Check `SCRAPINGDOG_API_KEY` in the environment. Do not hardcode the key in source files, markdown, logs, or examples.
-2. If working inside Prospecta, inspect/reuse `src/lib/scrapingdog-client.ts` before writing a new client.
+2. If the project already has a ScrapingDog client module, inspect and reuse it before writing a new one.
 3. Prefer a dedicated structured endpoint over generic `/scrape`; it returns parsed JSON and usually costs fewer credits for the same result.
 4. Use `URLSearchParams` or an HTTP client params object. Do not concatenate query strings by hand.
 5. Set request timeout to about 60 seconds. ScrapingDog can retry internally up to that window.
@@ -41,16 +41,16 @@ Use this decision order:
 5. Need news monitoring or brand mentions in news: `/google_news`.
 6. Need Amazon product/offers/reviews: Amazon dedicated endpoints.
 7. Need LinkedIn company/profile/jobs: `/profile` or `/jobs`.
-8. Need Instagram profile enrichment: use the official Instagram endpoint if verified in current docs; otherwise follow the Prospecta pattern only after testing behind a feature flag.
+8. Need Instagram profile enrichment: use the official Instagram endpoint if verified in current docs; otherwise wrap it yourself and test behind a feature flag first.
 
 ## Cost And Reliability Rules
 
 - `410` means ScrapingDog timed out after its internal retry window; it is safe to retry and should not be treated as charged work.
 - `429` means concurrency/rate pressure; back off with jitter and reduce in-flight requests.
 - Successful `200` responses are charged. Docs also note `404` may count as a completed request, so avoid blind URL floods.
-- Keep concurrency below the active plan limit. Prospecta used Lite as 5 concurrent and Standard as materially higher; verify the active plan before batch jobs.
+- Keep concurrency below the active plan limit (Lite allows 5 concurrent; higher tiers allow more); verify the active plan before batch jobs.
 - For Amazon reviews, use low/single concurrency because the endpoint is less consistent.
-- For lead enrichment, cap calls per lead. Prospecta's pattern is one SERP plus up to two scrape calls, with Firecrawl/Alterlab only as fallback.
+- For lead enrichment, cap calls per lead. A proven budget: one SERP plus up to two scrape calls, with Firecrawl only as fallback.
 
 ## TypeScript Pattern
 
