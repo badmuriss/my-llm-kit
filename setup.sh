@@ -72,44 +72,105 @@ register_mcp() {
 }
 run_step "register MCP paper-search" register_mcp
 
-# 4. symlink the repo's skills
+# 4. symlink every skill vendored in this repo
 link_skills() {
   if [ "$DRY" -eq 1 ]; then
-    echo "  [dry-run] symlink skills/pesquisa and skills/ingestao into ~/.claude/skills/"
+    echo "  [dry-run] symlink every directory under skills/ into ~/.claude/skills/"
     return 0
   fi
   mkdir -p "$HOME/.claude/skills"
-  for skill in pesquisa ingestao; do
-    ln -sfn "$REPO_DIR/skills/$skill" "$HOME/.claude/skills/$skill"
+  local dir name target backup
+  for dir in "$REPO_DIR/skills/"*/; do
+    name="$(basename "$dir")"
+    target="$HOME/.claude/skills/$name"
+    if [ -e "$target" ] && [ ! -L "$target" ]; then
+      backup="$target.bak-$(date +%Y%m%d)"
+      mv "$target" "$backup"
+      echo "  backup saved at $backup"
+    fi
+    ln -sfn "${dir%/}" "$target"
   done
 }
-run_step "symlink skills pesquisa+ingestao" link_skills
+run_step "symlink vendored skills" link_skills
 
-# 4b. writing system (unslop): clone if missing, symlink to ~/.claude/skills/unslop
-setup_unslop() {
-  local unslop_repo="$HOME/Documents/unslop"
-  local target="$HOME/.claude/skills/unslop"
+# 4b. own skill repos: clone if missing, symlink into ~/.claude/skills/
+OWN_REPOS=(
+  "unslop|https://github.com/badmuriss/unslop"
+  "incredibly-pretty-websites|https://github.com/badmuriss/incredibly-pretty-websites"
+  "site-audit|https://github.com/badmuriss/site-audit"
+)
+setup_own_repos() {
+  local entry name url repo target backup
+  for entry in "${OWN_REPOS[@]}"; do
+    name="${entry%%|*}"
+    url="${entry#*|}"
+    repo="$HOME/Documents/$name"
+    target="$HOME/.claude/skills/$name"
 
-  if [ "$DRY" -eq 1 ]; then
-    [ -d "$unslop_repo" ] || echo "  [dry-run] git clone https://github.com/badmuriss/unslop $unslop_repo"
-    echo "  [dry-run] symlink $target -> $unslop_repo (with backup if needed)"
+    if [ "$DRY" -eq 1 ]; then
+      [ -d "$repo" ] || echo "  [dry-run] git clone $url $repo"
+      echo "  [dry-run] symlink $target -> $repo (with backup if needed)"
+      continue
+    fi
+
+    if [ ! -d "$repo" ]; then
+      git clone "$url" "$repo" || return 1
+    fi
+
+    mkdir -p "$HOME/.claude/skills"
+    if [ -e "$target" ] && [ ! -L "$target" ]; then
+      backup="$target.bak-$(date +%Y%m%d)"
+      cp -r "$target" "$backup"
+      echo "  backup saved at $backup"
+    fi
+
+    ln -sfn "$repo" "$target"
+  done
+}
+run_step "own skill repos" setup_own_repos
+
+# 4c. community skills: clone straight into ~/.claude/skills/, skip anything already there
+COMMUNITY_SKILLS=(
+  "humanizer|https://github.com/blader/humanizer"
+  "notebooklm|https://github.com/PleasePrompto/notebooklm-skill"
+  "llm-council|https://github.com/tenfoldmarc/llm-council-skill"
+  "x-article-publisher|https://github.com/wshuyi/x-article-publisher-skill"
+  "resume-tailoring|https://github.com/varunr89/resume-tailoring-skill"
+)
+install_community_skills() {
+  mkdir -p "$HOME/.claude/skills"
+  local entry name url target
+  for entry in "${COMMUNITY_SKILLS[@]}"; do
+    name="${entry%%|*}"
+    url="${entry#*|}"
+    target="$HOME/.claude/skills/$name"
+    if [ -e "$target" ]; then
+      echo "  $name already present, skipping"
+      continue
+    fi
+    if [ "$DRY" -eq 1 ]; then
+      echo "  [dry-run] git clone $url $target"
+      continue
+    fi
+    git clone "$url" "$target" || return 1
+  done
+}
+run_step "community skills" install_community_skills
+
+# 4d. firecrawl CLI + its skills (needs `firecrawl login` afterwards to actually work)
+install_firecrawl() {
+  if [ -e "$HOME/.claude/skills/firecrawl" ]; then
+    echo "  firecrawl skills already present, skipping"
     return 0
   fi
-
-  if [ ! -d "$unslop_repo" ]; then
-    git clone https://github.com/badmuriss/unslop "$unslop_repo" || return 1
+  if [ "$DRY" -eq 1 ]; then
+    echo "  [dry-run] npm install -g firecrawl-cli && firecrawl setup skills"
+    return 0
   fi
-
-  mkdir -p "$HOME/.claude/skills"
-  if [ -e "$target" ] && [ ! -L "$target" ]; then
-    local backup="$target.bak-$(date +%Y%m%d)"
-    cp -r "$target" "$backup"
-    echo "  backup saved at $backup"
-  fi
-
-  ln -sfn "$unslop_repo" "$target"
+  command -v firecrawl >/dev/null 2>&1 || npm install -g firecrawl-cli || return 1
+  firecrawl setup skills
 }
-run_step "writing system (unslop)" setup_unslop
+run_step "firecrawl CLI + skills" install_firecrawl
 
 # 5. symlink CLAUDE.md, with backup if a regular file already exists
 link_claude_md() {
@@ -141,20 +202,36 @@ link_claude_md() {
 }
 run_step "symlink CLAUDE.md" link_claude_md
 
-# 6. last30days plugin (community pulse for the pesquisa skill), without duplicating
-install_last30days() {
-  if claude plugin list 2>/dev/null | grep -q "last30days"; then
-    echo "  last30days plugin already installed, skipping"
-    return 0
-  fi
-  if [ "$DRY" -eq 1 ]; then
-    echo "  [dry-run] claude plugin marketplace add mvanhorn/last30days-skill + install"
-    return 0
-  fi
-  claude plugin marketplace add mvanhorn/last30days-skill >/dev/null 2>&1
-  claude plugin install last30days@last30days-skill
+# 6. plugins: add each marketplace and install the plugin, skipping what is already there
+PLUGINS=(
+  "JuliusBrussee/caveman|caveman@caveman"
+  "DietrichGebert/ponytail|ponytail@ponytail"
+  "Chachamaru127/claude-code-harness|claude-code-harness@claude-code-harness-marketplace"
+  "openai/codex-plugin-cc|codex@openai-codex"
+  "anthropics/claude-plugins-official|chrome-devtools-mcp@claude-plugins-official"
+  "anthropics/claude-plugins-official|frontend-design@claude-plugins-official"
+  "cloudflare/skills|cloudflare@cloudflare"
+  "mvanhorn/last30days-skill|last30days@last30days-skill"
+)
+install_plugins() {
+  local installed entry market plugin
+  installed="$(claude plugin list 2>/dev/null)"
+  for entry in "${PLUGINS[@]}"; do
+    market="${entry%%|*}"
+    plugin="${entry#*|}"
+    if echo "$installed" | grep -q "$plugin"; then
+      echo "  $plugin already installed, skipping"
+      continue
+    fi
+    if [ "$DRY" -eq 1 ]; then
+      echo "  [dry-run] claude plugin marketplace add $market && claude plugin install $plugin"
+      continue
+    fi
+    claude plugin marketplace add "$market" >/dev/null 2>&1
+    claude plugin install "$plugin"
+  done
 }
-run_step "last30days plugin" install_last30days
+run_step "plugins" install_plugins
 
 echo
 echo "heavy dependencies (mineru, docling) are not installed by this script."
