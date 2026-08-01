@@ -17,18 +17,18 @@ All detailed coding guidelines are in the skills:
 - Use `writing` skill for documentation and commit messages
 - Use `scrapingdog` skill for scraping, Google Search/SERP, Google Maps, Google Trends, Google News, Amazon, LinkedIn, Instagram, market research, and lead enrichment when `SCRAPINGDOG_API_KEY` is available
 
-## Escrita (prosa para humanos)
-Todo texto em prosa destinado a leitores (post, newsletter, roteiro, caption, blog, e-mail, documento) passa pelo sistema da skill `unslop`:
-- Gerar do zero: modo `escrever`. Revisar texto pronto: modo `editar`. Auditar sem alterar: modo `detectar`. Dar nota: modo `avaliar`.
-- Texto em português carrega a camada pt-br da skill obrigatoriamente. A lista de tells em inglês não cobre o slop brasileiro.
-- Regras da casa, em qualquer registro: nunca travessão (—/–), use vírgula, ponto ou dois pontos; "para" por extenso, nunca "pra"/"pro"/"pros"; sem hashtags em captions; frase-efeito vazia é banida, cada afirmação carrega substância concreta (dado, exemplo, mecanismo).
-- Uma reescrita nunca introduz fato, nome, número ou data que não estava no original.
+## Writing (prose for humans)
+Every piece of prose meant for readers (post, newsletter, script, caption, blog, e-mail, document) goes through the `unslop` skill's system:
+- Generate from scratch: WRITE mode (`escrever`). Revise an existing draft: EDIT (`editar`). Audit without changing: DETECT (`detectar`). Grade: SCORE (`avaliar`).
+- Portuguese text must load the skill's pt-br layer. The English tell list does not cover Brazilian slop.
+- House rules, in any register: never an em dash (—/–), use comma, period or colon; in Portuguese always "para" spelled out, never "pra"/"pro"/"pros"; no hashtags in captions; empty punchlines are banned, every claim carries concrete substance (a number, an example, a mechanism).
+- A rewrite never introduces a fact, name, number or date that was not in the original.
 
-## Pesquisa
-Nunca responder número, estatística ou superlativo de memória com cara de certeza. Antes de publicar qualquer dado, usar a skill `pesquisa`. Estas regras valem mesmo fora da skill:
-1. Fonte primária na frente: documentação oficial e repositório antes de paper, paper antes de análise de terceiro. Blog agregador é pista, nunca destino final.
-2. Divergência entre fontes é reportada com a data de cada uma, nunca resolvida em silêncio.
-3. Padrão visto em menos de 5 casos entra como amostra fraca, jamais como conclusão.
-4. Todo número, valor e superlativo sai com URL e data de acesso ao lado.
+## Research
+Never answer a number, statistic or superlative from memory with a confident face. Before publishing any data point, use the `pesquisa` skill. These rules apply even outside the skill:
+1. Primary sources first: official documentation and the repository before papers, papers before third-party analysis. Aggregator blogs are leads, never the final stop.
+2. Disagreement between sources is reported with each one's date, never silently resolved.
+3. A pattern seen in fewer than 5 cases goes in as a weak sample, never as a conclusion.
+4. Every number, value and superlative ships with a URL and access date next to it.
 
-Documento recebido (PDF, planilha, deck, epub) passa pela skill `ingestao` antes de qualquer análise. PDF de duas colunas lido sem conversão gera conclusão embaralhada.
+Received documents (PDF, spreadsheet, deck, epub) go through the `ingestao` skill before any analysis. A two-column PDF read without conversion produces scrambled conclusions.

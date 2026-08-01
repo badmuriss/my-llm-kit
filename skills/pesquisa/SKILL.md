@@ -1,81 +1,81 @@
 ---
 name: pesquisa
-description: Conduz pesquisa com embasamento verificável, do levantamento de fonte primária até o achado auditável em markdown. Use quando o usuário pedir para pesquisar um tema, levantar evidência, checar um dado, comparar fontes, escrever relatório com citação, ou disser variações como "pesquisa isso", "de onde vem esse número", "isso é verdade?", "levanta os papers", "monta um relatório". Também use antes de publicar qualquer número, valor monetário ou superlativo.
+description: Runs research with verifiable grounding, from primary-source discovery to an auditable markdown finding. Use when the user asks to research a topic, gather evidence, fact-check a claim, compare sources, or write a report with citations, including phrasings like "research this", "where does this number come from", "is this true?", "find the papers", or in Portuguese "pesquisa isso", "de onde vem esse número", "levanta os papers". Also use before publishing any number, monetary value or superlative.
 ---
 
-# Pesquisa
+# Pesquisa (research)
 
-Conduza a pesquisa em estações, na ordem. Não pule a ingestão nem a memória.
+Run the research in stations, in order. Do not skip ingestion or memory.
 
-## As quatro regras inegociáveis
+## The four non-negotiable rules
 
-Aplique em toda pesquisa, sem exceção e sem esperar o usuário pedir.
+Apply to every research task, without exception and without waiting for the user to ask.
 
-1. **Fonte primária na frente.** Ordem de confiança: documentação oficial e repositório do projeto, depois publicação primária ou paper, depois análise de terceiro, e por último blog agregador, que serve apenas como pista para confirmar em outro lugar. Nunca encerre em blog agregador.
-2. **Divergência é reportada, nunca resolvida em silêncio.** Quando duas fontes discordam, apresente as duas com a data de cada uma e diga qual é a primária. Escolher a mais conveniente sem avisar é falha grave.
-3. **Amostra fraca é marcada.** Padrão observado em menos de cinco casos entra como "amostra fraca", jamais como conclusão.
-4. **Saída auditável.** Todo número, valor monetário ou superlativo carrega a URL e a data de acesso ao lado. Sem isso, o dado não sai do rascunho.
+1. **Primary sources first.** Trust order: official documentation and the project repository, then the primary publication or paper, then third-party analysis, and last the aggregator blog, which only serves as a lead to confirm elsewhere. Never stop at an aggregator blog.
+2. **Disagreement is reported, never silently resolved.** When two sources disagree, present both with the date of each and say which one is primary. Picking the convenient one without saying so is a serious failure.
+3. **Weak samples are flagged.** A pattern observed in fewer than five cases goes in as "weak sample", never as a conclusion.
+4. **Auditable output.** Every number, monetary value or superlative carries the URL and access date next to it. Without that, the data point does not leave the draft.
 
-## Estação 1: fontes
+## Station 1: sources
 
-**Papers e literatura científica**: use o MCP `paper-search` para localizar material em arXiv, PubMed, Semantic Scholar, Crossref, OpenAlex e Unpaywall. Peça sempre o DOI junto do título, porque o DOI sobrevive a link quebrado.
+**Papers and scientific literature**: use the `paper-search` MCP to find material on arXiv, PubMed, Semantic Scholar, Crossref, OpenAlex and Unpaywall. Always ask for the DOI along with the title, because the DOI survives a broken link.
 
-**Web geral**: siga a ordem de fallback do stack.
-1. ScrapingDog (skill `scrapingdog`) é o scraper e SERP default quando `SCRAPINGDOG_API_KEY` existe no ambiente.
-2. Firecrawl (skills `firecrawl-search` e `firecrawl-scrape`) é o fallback quando ScrapingDog não estiver disponível ou falhar.
-3. WebSearch nativo só entra por último, quando os dois anteriores não resolverem.
+**General web**: follow the stack's fallback order.
+1. ScrapingDog (the `scrapingdog` skill) is the default scraper and SERP when `SCRAPINGDOG_API_KEY` exists in the environment.
+2. Firecrawl (the `firecrawl-search` and `firecrawl-scrape` skills) is the fallback when ScrapingDog is unavailable or fails.
+3. Native WebSearch comes last, only when the two above do not solve it.
 
-**Tecnologia ou produto**: quando o tema for tecnologia em vez de ciência, a fonte primária é o repositório, a documentação oficial e o changelog do projeto. Contagem de stars, número de versão e preço devem ser lidos na página do próprio projeto, nunca em artigo de terceiro que cita o projeto.
+**Technology or product**: when the topic is technology rather than science, the primary source is the project's repository, official documentation and changelog. Star counts, version numbers and prices must be read on the project's own page, never in a third-party article that cites the project.
 
-**Pulso da comunidade (últimos 30 dias)**: quando a pergunta envolver sentimento atual, recepção de lançamento, reputação de pessoa ou empresa, ou "o que estão dizendo agora", rode o plugin `/last30days` (Reddit, Hacker News, X, Polymarket, GitHub, arXiv, Techmeme, pontuado por engajamento real). Duas ressalvas: engajamento mede relevância, não verdade, então afirmação factual achada ali ainda precisa de fonte primária; e todo dado que sair no relatório segue as quatro regras (URL + data ao lado). Reddit, HN, Polymarket, GitHub e arXiv funcionam sem chave; X, YouTube e TikTok são opt-in com chave própria.
+**Community pulse (last 30 days)**: when the question involves current sentiment, launch reception, the reputation of a person or company, or "what are people saying right now", run the `/last30days` plugin (Reddit, Hacker News, X, Polymarket, GitHub, arXiv, Techmeme, scored by real engagement). Two caveats: engagement measures relevance, not truth, so a factual claim found there still needs a primary source; and every data point that makes it into the report follows the four rules (URL + date next to it). Reddit, HN, Polymarket, GitHub and arXiv work without keys; X, YouTube and TikTok are opt-in with your own keys.
 
-## Estação 2: ingestão legível
+## Station 2: readable ingestion
 
-Antes de ler qualquer documento, converta. Delegue para a skill `ingestao`, que roteia cada tipo de arquivo para o conversor certo.
+Before reading any document, convert it. Delegate to the `ingestao` skill, which routes each file type to the right converter.
 
-Nunca analise um PDF de duas colunas sem converter antes. Ordem de leitura embaralhada gera conclusão embaralhada.
+Never analyze a two-column PDF without converting first. Scrambled reading order produces scrambled conclusions.
 
-## Estação 3: protocolo
+## Station 3: protocol
 
-Antes de investigar, escreva no arquivo de saída:
+Before investigating, write in the output file:
 
-- a pergunta exata, em uma frase
-- o critério que decide a resposta, fixado agora e não depois
-- o que falsificaria a hipótese
+- the exact question, in one sentence
+- the criterion that decides the answer, fixed now and not later
+- what would falsify the hypothesis
 
-## Estação 4: investigação
+## Station 4: investigation
 
-Cruze as fontes convertidas. Registre no arquivo cada afirmação com a fonte correspondente enquanto pesquisa, não no final. Reconstruir a origem depois é onde o rastro se perde.
+Cross-check the converted sources. Record each claim with its source in the file while researching, not at the end. Reconstructing origins afterwards is where the trail gets lost.
 
-## Estação 5: memória
+## Station 5: memory
 
-Salve o achado em markdown na pasta `pesquisa/` do projeto atual, ou onde o usuário pedir. Estrutura padrão:
+Save the finding as markdown in the current project's `pesquisa/` folder, or wherever the user asks. Standard structure:
 
-- pergunta e critério, fixados antes da investigação
-- achados, cada um com fonte e data
-- divergências encontradas, com as duas versões
-- o que ficou em aberto
-- fontes consultadas, com URL e data de acesso
+- question and criterion, fixed before the investigation
+- findings, each with source and date
+- disagreements found, with both versions
+- what remains open
+- sources consulted, with URL and access date
 
-Insight durável sobre o negócio, que vale reaproveitar em pesquisas futuras, vai para o sistema de memória do Claude, não para o arquivo de pesquisa. O agente já sabe quando e como gravar lá.
+Durable insight about the business, worth reusing in future research, goes into Claude's memory system, not into the research file. The agent already knows when and how to record it there.
 
-## Estação 6: prova de fogo
+## Station 6: trial by fire
 
-Ao terminar, liste explicitamente para o usuário:
+When done, list explicitly for the user:
 
-- quais afirmações vieram de fonte primária
-- quais ficaram apoiadas apenas em fonte secundária
-- quais números merecem reconfirmação por serem voláteis, como contagem de stars, preço e cargo
+- which claims came from primary sources
+- which ones rest only on secondary sources
+- which numbers deserve reconfirmation because they are volatile, such as star counts, prices and job titles
 
-Para decisão de alto risco, sugira subir o mesmo conjunto de fontes no Gemini Notebook via a skill `notebooklm` como segunda leitura.
+For high-stakes decisions, suggest loading the same set of sources into a Gemini notebook via the `notebooklm` skill as a second read.
 
-## Anti-padrões
+## Anti-patterns
 
-- responder de memória sem abrir fonte, mesmo quando a resposta parece óbvia
-- citar número redondo sem data
-- apresentar consenso quando as fontes divergem
-- deixar o achado morrer no chat sem virar arquivo
+- answering from memory without opening a source, even when the answer seems obvious
+- citing a round number without a date
+- presenting consensus when the sources diverge
+- letting the finding die in the chat without becoming a file
 
 ---
 
-Adaptado de [research-stack](https://github.com/nett0eth/research-stack) (Netto, @nett0eth), licença MIT.
+Adapted from [research-stack](https://github.com/nett0eth/research-stack) (Netto, @nett0eth), MIT license.

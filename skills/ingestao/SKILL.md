@@ -1,37 +1,37 @@
 ---
 name: ingestao
-description: Converte documento em markdown estruturado antes de qualquer análise, roteando cada tipo de arquivo para o conversor certo. Use quando o usuário subir ou apontar para PDF, Word, Excel, PowerPoint, EPUB, imagem, áudio ou repositório de código, e quando um PDF científico precisar preservar fórmula, tabela e ordem de leitura. Também use antes de resumir, analisar ou citar qualquer documento.
+description: Converts documents into structured markdown before any analysis, routing each file type to the right converter. Use when the user uploads or points to a PDF, Word, Excel, PowerPoint, EPUB, image, audio file or code repository, when a scientific PDF needs formulas, tables and reading order preserved, or with Portuguese phrasings like "converte esse PDF", "lê essa planilha", "ingere esse documento". Also use before summarizing, analyzing or quoting any document.
 ---
 
-# Ingestão
+# Ingestao (ingestion)
 
-Converta antes de ler. Material que entra destruído produz conclusão destruída, e o modelo não avisa quando isso acontece.
+Convert before reading. Material that comes in destroyed produces destroyed conclusions, and the model does not warn you when that happens.
 
-## Roteamento por tipo
+## Routing by type
 
-| Situação | Ferramenta | Comando |
+| Situation | Tool | Command |
 |---|---|---|
-| documento comum: pdf simples, word, excel, powerpoint, epub, imagem, áudio | markitdown | `markitdown entrada.pdf > saida.md` |
-| pdf científico, duas colunas, escaneado, com fórmula ou tabela complexa e o markitdown embaralhou | MinerU (opcional, instale só quando precisar) | ver README do projeto |
-| repositório de código inteiro | repomix | `npx repomix` |
+| common document: simple PDF, Word, Excel, PowerPoint, EPUB, image, audio | markitdown | `markitdown input.pdf > output.md` |
+| scientific PDF, two columns, scanned, with formulas or complex tables that markitdown scrambled | MinerU (optional, install only when needed) | see the project's README |
+| entire code repository | repomix | `npx repomix` |
 
-Regra de decisão em duas linhas: comece pelo markitdown, que resolve a maioria e já está instalado. Se a saída vier com ordem de leitura embaralhada, fórmula perdida ou tabela virada em linha corrida, o problema é layout e a resposta é MinerU, que é dependência pesada e não vem instalada por padrão.
+Two-line decision rule: start with markitdown, which handles most cases and is already installed. If the output comes back with scrambled reading order, lost formulas or tables flattened into running text, the problem is layout and the answer is MinerU, a heavy dependency that is not installed by default.
 
-## Procedimento
+## Procedure
 
-1. Identifique o tipo e escolha a ferramenta pela tabela
-2. Converta para uma pasta `./fontes-md` mantendo o nome original do arquivo
-3. Abra a saída e verifique quatro coisas antes de seguir: os headings sobreviveram, as tabelas continuam tabelas, a ordem de leitura faz sentido, e as notas de rodapé não invadiram o corpo
-4. Se qualquer uma falhar, troque de conversor antes de analisar
+1. Identify the type and pick the tool from the table
+2. Convert into a `./fontes-md` folder, keeping the original file name
+3. Open the output and check four things before moving on: the headings survived, the tables are still tables, the reading order makes sense, and the footnotes did not invade the body
+4. If any of these fail, switch converters before analyzing
 
-## Verificação obrigatória
+## Mandatory verification
 
-Nunca declare a ingestão concluída sem abrir o markdown gerado. Conversão silenciosamente errada é a causa mais comum de análise errada, e é invisível se você confiar no processo sem olhar.
+Never declare ingestion done without opening the generated markdown. A silently wrong conversion is the most common cause of wrong analysis, and it is invisible if you trust the process without looking.
 
-Se a conversão falhou e trocar de conversor não resolveu, reporte o problema ao usuário em vez de analisar o texto quebrado.
+If the conversion failed and switching converters did not fix it, report the problem to the user instead of analyzing broken text.
 
-Ao relatar para o usuário, diga qual conversor foi usado e o que foi verificado.
+When reporting to the user, say which converter was used and what was verified.
 
 ---
 
-Adaptado de [research-stack](https://github.com/nett0eth/research-stack) (Netto, @nett0eth), licença MIT.
+Adapted from [research-stack](https://github.com/nett0eth/research-stack) (Netto, @nett0eth), MIT license.
