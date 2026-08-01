@@ -45,6 +45,7 @@ Everything `setup.sh` installs, in one table.
 | grill-with-docs | Same grilling, but updates CONTEXT.md and ADRs as decisions land | Own |
 | ux-audit | Walks a live web app as a real user, with hard gates (console errors 0, a11y, perf budget) | Own |
 | scrapingdog | ScrapingDog as default paid scraper: SERP, Maps, Trends, News, Amazon, LinkedIn, Instagram | Own; needs `SCRAPINGDOG_API_KEY` in the environment |
+| readme-pass | Top-starred presentation pass for a repo README: banner, badges, anchor nav, install up top, prose untouched | Own |
 
 ### Own skill repos (cloned to `~/Documents/`, symlinked)
 
