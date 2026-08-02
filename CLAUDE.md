@@ -9,6 +9,16 @@ Focus on these principles in all code:
 - automated tests
 - readability/maintainability
 
+## Scope discipline
+Default assumption: a project has no external users, no live data and no paying client. Under that assumption:
+- Do not preserve backward compatibility. Delete the obsolete path instead of adding a compat layer, a fallback or a migration.
+- Choose the simplest implementation that fully meets the current requirement. No speculative abstraction, configuration or indirection.
+- Grow in layers. Smallest version that works end to end first, each new capability on top of something that already works. Never trade a working product for unfinished complexity.
+- Lean on dependencies already in the project before writing your own or adding a package. Check the library's docs and types before assuming a capability is missing.
+- Architectural decisions are long-term. No stopgap that only works for now and is meant to be replaced later.
+
+When the project is live (real users, paying client, production data) or the ask implies it, say so in one line and ask whether backward compatibility is required before removing anything. The rest of the rules still hold.
+
 Detailed guidelines live in the skills:
 - Use `writing` skill for documentation and commit messages
 - Use `scrapingdog` skill for scraping, Google Search/SERP, Google Maps, Google Trends, Google News, Amazon, LinkedIn, Instagram, market research, and lead enrichment when `SCRAPINGDOG_API_KEY` is available
