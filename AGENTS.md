@@ -1,5 +1,10 @@
+Shared instructions for any coding agent (Claude Code, Codex, OpenCode, Gemini CLI, Copilot CLI) running on this machine.
+
+## Skills
+Reusable skills live in `~/.agents/skills/`, the cross-agent convention. Each is a directory holding a `SKILL.md` (YAML frontmatter: `name`, `description`) plus optional reference files. When a task matches a skill's description, read that `SKILL.md` and follow it.
+
 ## Git workflow
-- Do not include "Claude Code" in commit messages
+- Never name the agent in a commit message (no "Claude Code", no "Codex", no co-author trailer)
 - Use conventional commits (be brief and descriptive)
 
 ## Important concepts
