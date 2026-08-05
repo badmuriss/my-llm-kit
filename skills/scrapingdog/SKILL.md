@@ -1,58 +1,109 @@
 ---
 name: scrapingdog
-description: Use this whenever a task needs web scraping, SERP/search results, Google Maps business data, Google Trends, Google News/news monitoring, Amazon product/review data, LinkedIn/company/profile/job data, Instagram profile data, or a cheaper fallback to Firecrawl/Serper/Google Places. Prefer ScrapingDog when SCRAPINGDOG_API_KEY is available, especially for prospecting, market research, lead enrichment, competitor monitoring, ecommerce scraping, and structured search extraction.
+description: Default paid provider for anything that needs live public web data. Use for web scraping and rotating proxies (including as the proxy behind Playwright/Puppeteer), Google Search/AI Mode/AI Overview/autocomplete, Google Trends and trending now, Google News, Google Maps places/reviews/photos/posts, Google Shopping, Google Images/Videos/Shorts/Lens, Google Flights and Hotels, Google Jobs, Google Finance, Google Scholar, Google Patents, Google Ads Transparency, ChatGPT answers, Bing/DuckDuckGo/Baidu, YouTube search/transcripts/video/channel/comments, TikTok profile/post/ads, X (Twitter) profile/post, Instagram, LinkedIn person/company/post/jobs, Indeed, Yelp, Zillow, Amazon/Walmart/eBay/Flipkart/Myntra/Apple product data, and screenshots. Prefer it over Firecrawl/Serper/Google Places whenever SCRAPINGDOG_API_KEY exists. Trigger it for flight prices, hotel prices, video transcripts, trend research, SERP checks, competitor ads, review mining, prospecting, lead enrichment and price monitoring, not only for generic "scrape this page".
 ---
 
 # ScrapingDog
 
-Use ScrapingDog as the default paid scraping provider when the task asks for data extraction from public webpages, Google, Google Maps, Google Trends, Google News, Amazon, LinkedIn, Instagram, or similar structured targets.
+81 endpoints under one key. The failure mode is not knowing they exist and falling back to `/scrape` or a web search, which costs more and returns worse data. Route by intent first, generic scrape last.
 
 ## First Checks
 
-1. Check `SCRAPINGDOG_API_KEY` in the environment. Do not hardcode the key in source files, markdown, logs, or examples.
-2. If the project already has a ScrapingDog client module, inspect and reuse it before writing a new one.
-3. Prefer a dedicated structured endpoint over generic `/scrape`; it returns parsed JSON and usually costs fewer credits for the same result.
-4. Use `URLSearchParams` or an HTTP client params object. Do not concatenate query strings by hand.
-5. Set request timeout to about 60 seconds. ScrapingDog can retry internally up to that window.
+1. `SCRAPINGDOG_API_KEY` must be in the environment. Never hardcode it in source, markdown, logs or examples.
+2. Pick the dedicated endpoint from the routing table below. Generic `/scrape` is the last resort, not the default.
+3. If the project already has a ScrapingDog client or helper module, reuse it instead of writing new HTTP code.
+4. Build the query with `URLSearchParams` or a params object, never string concatenation.
+5. Timeout around 60s (120s for `/chatgpt` and `/google/ai_mode`).
+6. Before a batch job, hit `/account` for remaining credits and active concurrency.
 
-## Retrieval
+## Routing Table
 
-Your stored knowledge can drift. Before changing production integrations or citing exact parameters/prices, verify the official docs:
+Credits per successful request, taken from the official docs. `?` means the doc page does not state it; check `/account` before a batch.
 
-- Main docs: `https://docs.scrapingdog.com/`
-- Web scraping: `https://docs.scrapingdog.com/web-scraping-api`
-- Google Search: `https://docs.scrapingdog.com/google-search-scraper-api`
-- Google Maps: `https://docs.scrapingdog.com/google-maps-api`
-- Google Trends: `https://docs.scrapingdog.com/google-trends-api`
-- Google News: `https://docs.scrapingdog.com/google-news-scraper-apis`
-- LinkedIn/company/profile: `https://docs.scrapingdog.com/linkedin-scraper-api/company-profile-scraper`
-- Amazon: `https://docs.scrapingdog.com/amazon-scraper-api/amazon-offers-api`
+| Intent | Endpoint | Cred |
+|---|---|---|
+| Generic page, JS rendered | `/scrape` (default `dynamic=true`) | 5 |
+| Generic page, static HTML | `/scrape?dynamic=false` | 1 |
+| Page behind Cloudflare | `/scrape?stealth_mode=true` | 10 |
+| Proxy for Playwright/Puppeteer/any HTTP client | `proxy.scrapingdog.com:8081` | see doc |
+| Page screenshot | `/screenshot` | 5 |
+| Google organic SERP, dorks, rank check | `/google` | 5 |
+| Is my brand cited by Google AI | `/google/ai_overview` | 5 |
+| Google AI Mode answer + cited sources | `/google/ai_mode` | 10 |
+| Is my brand cited by ChatGPT | `/chatgpt` | 30 |
+| Long-tail keyword ideas | `/google_autocomplete` | ? |
+| Search demand, seasonality, comparison | `/google_trends` | 5 |
+| What is hot right now | `/google_trends/trending_now` | ? |
+| Trend term suggestions | `/google_trends/autocomplete` | ? |
+| News monitoring, brand mentions | `/google_news`, `/google_news/v2` | 5 |
+| Local businesses, phone, site, rating | `/google_maps` | ? |
+| Place details by place_id | `/google_maps/places` | ? |
+| Review mining, voice of customer | `/google_maps/reviews` | ? |
+| Place photos / posts | `/google_maps/photos`, `/google_maps/posts` | ? |
+| Local pack results | `/google_local` | 5 |
+| Yelp businesses | `/yelp/search` | 4 |
+| Product prices across stores | `/google_shopping` | 10 |
+| One product, variants and sellers | `/google_immersive_product` | ? |
+| **Flight prices, routes, airlines** | `/google_flights` | 5 |
+| **Hotel prices and availability** | `/google_hotels` | 5 |
+| Stock, ticker, market data | `/google_finance` | ? |
+| Job market, salaries, hiring signal | `/google_jobs` | 5 |
+| Indeed listings | `/indeed` | 1 |
+| Real estate listings | `/zillow` | 2 |
+| Image search / visual reference | `/google_images` | 10 |
+| Video results / Shorts | `/google_videos`, `/google_shorts` | 5 / ? |
+| Reverse image, find similar product | `/google_lens` | 5 |
+| Competitor ad creatives on Google | `/google/ads_transparency` | 5 |
+| Academic papers, citations | `/google_scholar` (+ `/profiles`, `/author`, `/cite`) | 5 |
+| Patents | `/google_patents`, `/google_patents/details` | 5 |
+| Bing / DuckDuckGo / Baidu SERP | `/bing/search`, `/duckduckgo/search`, `/baidu/search` | 5 |
+| Several engines at once | `/search` | 20 |
+| **YouTube transcript of a video** | `/youtube/transcripts` | 1 |
+| YouTube search / video / channel / comments | `/youtube/search`, `/youtube/video`, `/youtube/channel`, `/youtube/comments` | 5 |
+| TikTok profile / post / ad library | `/tiktok/profile`, `/tiktok/post`, `/tiktok/ads` | 5 |
+| X profile / post | `/x/profile`, `/x/post` | 5 |
+| Instagram profile | `/instagram` | ? |
+| Facebook | `/facebook` | ? |
+| LinkedIn company | `/profile?type=company` | 10 |
+| LinkedIn person | `/profile?type=person` | 50-100 |
+| LinkedIn post | `/profile/post` | 5 |
+| LinkedIn jobs | `/jobs` | 5 |
+| Amazon product / search | `/amazon/product`, `/amazon/search` | 1 |
+| Amazon offers / reviews / autocomplete | `/amazon/offers`, `/amazon/reviews`, `/amazon/autocomplete` | ? / 5 / 5 |
+| Walmart, eBay, Flipkart, Myntra, Apple | see `references/commerce-travel.md` | 5 |
+| Credits and concurrency left | `/account` | ? |
 
-If you need an implementation cheat sheet, read `references/endpoints.md`.
+Two entries deserve a second look before you fire them: `/profile?type=person` at up to 100 credits, and `/chatgpt` at 30. Everything else is cheap enough to use freely.
 
-## Endpoint Selection
+Instagram and Facebook doc pages are stubs that only publish the endpoint, no parameters. Smoke test them before wiring into production.
 
-Use this decision order:
+Amazon Reviews is flagged in the docs as temporarily unavailable because Amazon moved reviews behind a login wall.
 
-1. Need normal webpage HTML/text: `/scrape`.
-2. Need Google organic results, dorks, or URLs for enrichment: `/google`.
-3. Need local businesses, phones, websites, ratings, coordinates, reviews/photos/posts links: `/google_maps`.
-4. Need search demand, seasonality, trend comparison, or what is rising now: `/google_trends`, `/google_trends/autocomplete`, or `/google_trends/trending_now`.
-5. Need news monitoring or brand mentions in news: `/google_news`.
-6. Need Amazon product/offers/reviews: Amazon dedicated endpoints.
-7. Need LinkedIn company/profile/jobs: `/profile` or `/jobs`.
-8. Need Instagram profile enrichment: use the official Instagram endpoint if verified in current docs; otherwise wrap it yourself and test behind a feature flag first.
+## Reference Files
+
+Read only the family you need:
+
+- `references/core-tools.md` — `/scrape` full parameter and cost matrix, screenshot, rotating proxies, `/account`, universal search, webhook
+- `references/google-serp.md` — Search, AI Mode, AI Overview, autocomplete, Ads Transparency, ChatGPT, Trends, News, Bing/DDG/Baidu
+- `references/local-maps.md` — Maps family, Local, Yelp, Zillow
+- `references/social-video.md` — YouTube, TikTok, X, Instagram, Facebook, Google Images/Videos/Shorts/Lens
+- `references/commerce-travel.md` — Shopping, Flights, Hotels, Finance, Amazon, Walmart, eBay, Flipkart, Myntra, Apple
+- `references/b2b-research.md` — LinkedIn, jobs, Scholar, Patents
+
+Those files were extracted from `https://www.scrapingdog.com/documentation/` on 2026-08-05. Docs move: verify against the live page before changing a production integration or quoting an exact price.
 
 ## Cost And Reliability Rules
 
-- `410` means ScrapingDog timed out after its internal retry window; it is safe to retry and should not be treated as charged work.
-- `429` means concurrency/rate pressure; back off with jitter and reduce in-flight requests.
-- Successful `200` responses are charged. Docs also note `404` may count as a completed request, so avoid blind URL floods.
-- Keep concurrency below the active plan limit (Lite allows 5 concurrent; higher tiers allow more); verify the active plan before batch jobs.
-- For Amazon reviews, use low/single concurrency because the endpoint is less consistent.
-- For lead enrichment, cap calls per lead. A proven budget: one SERP plus up to two scrape calls, with Firecrawl only as fallback.
+- `/scrape` renders JavaScript by default. Always send `dynamic` explicitly; `dynamic=false` is 1 credit instead of 5.
+- `410` is ScrapingDog timing out after its internal retry window. Retryable, treat as unbilled.
+- `429` is concurrency pressure. Back off with jitter and cut in-flight requests.
+- Failed requests are not charged, per the pricing page. Successful `200` responses are, so avoid blind URL floods.
+- Concurrency is per plan: Lite 5, Standard 50, Pro 100. Verify the active plan before batch jobs.
+- Amazon reviews and any high-cost endpoint: single concurrency, cache aggressively.
+- Cap calls per lead in enrichment. One SERP plus at most two scrapes, Firecrawl only as fallback.
+- `session_number` reuses the same IP across requests, free, expires 60s after last use.
 
-## TypeScript Pattern
+## HTTP Pattern
 
 ```ts
 const baseUrl = "https://api.scrapingdog.com";
@@ -79,4 +130,12 @@ async function scrapingdogGetJson<T>(
 }
 ```
 
+## Proxy Mode
 
+When a task needs a real browser (Playwright, Puppeteer, Selenium) instead of the REST API, route the browser through the rotating proxy. Same backend, same key.
+
+```
+http://scrapingdog:<API_KEY>@proxy.scrapingdog.com:8081
+```
+
+The docs require disabling SSL verification and using `http://` for the target URL. In Playwright: `browser.launch({ proxy: { server: "http://proxy.scrapingdog.com:8081", username: "scrapingdog", password: key } })` with `ignoreHTTPSErrors: true` on the context.
