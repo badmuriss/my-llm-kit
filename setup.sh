@@ -230,6 +230,16 @@ install_firecrawl() {
 }
 run_step "firecrawl CLI + skills" install_firecrawl
 
+# 4e. the ingest skill shells out to `npx -y @firecrawl/anydoc`, no binary to install here,
+# just a preflight check so a missing npx is a warning instead of a silent failure later.
+check_anydoc_npx() {
+  if ! command -v npx >/dev/null 2>&1; then
+    echo "  warning: npx not found, the ingest skill needs npx for document conversion"
+  fi
+  return 0
+}
+run_step "ingest skill preflight (anydoc)" check_anydoc_npx
+
 # 5. AGENTS.md: one file, read by every host through its own expected filename
 link_agents_md() {
   local src="$REPO_DIR/AGENTS.md"
@@ -302,6 +312,41 @@ install_plugins() {
   done
 }
 run_step "plugins (Claude Code)" install_plugins
+
+# 7. dcg blocks destructive shell commands before execution. packs beyond the defaults are
+# opt-in via ~/.config/dcg/config.toml.
+install_dcg() {
+  local dcg_bin="$HOME/.local/bin/dcg"
+
+  if [ "$DRY" -eq 1 ]; then
+    if [ -e "$dcg_bin" ]; then
+      echo "  [dry-run] dcg already installed at $dcg_bin, skipping download"
+    else
+      echo "  [dry-run] curl -fsSL https://raw.githubusercontent.com/Dicklesworthstone/destructive_command_guard/main/install.sh | bash -s -- --no-configure --verify --no-gum"
+    fi
+    if command -v claude >/dev/null 2>&1; then
+      echo "  [dry-run] $dcg_bin install"
+      echo "  [dry-run] $dcg_bin doctor"
+    else
+      echo "  claude not installed, skipping hook wiring"
+    fi
+    return 0
+  fi
+
+  if [ -e "$dcg_bin" ]; then
+    echo "  dcg already installed, skipping download"
+  else
+    curl -fsSL "https://raw.githubusercontent.com/Dicklesworthstone/destructive_command_guard/main/install.sh" | bash -s -- --no-configure --verify --no-gum || return 1
+  fi
+
+  if command -v claude >/dev/null 2>&1; then
+    "$dcg_bin" install
+    "$dcg_bin" doctor || echo "  warning: dcg doctor reported issues"
+  else
+    echo "  claude not installed, skipping hook wiring"
+  fi
+}
+run_step "dcg (destructive command guard)" install_dcg
 
 echo
 echo "heavy dependencies (mineru, docling) are not installed by this script."

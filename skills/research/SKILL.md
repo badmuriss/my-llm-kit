@@ -16,6 +16,14 @@ Apply to every research task, without exception and without waiting for the user
 3. **Weak samples are flagged.** A pattern observed in fewer than five cases goes in as "weak sample", never as a conclusion.
 4. **Auditable output.** Every number, monetary value or superlative carries the URL and access date next to it. Without that, the data point does not leave the draft.
 
+## Delegation
+
+Stations 1 and 2, source discovery and ingestion, are collection work. Run them in a fast, cheap subagent. Stations 3 to 6, the protocol, the cross-checking, the disagreements and the trial by fire, are judgement and stay with the orchestrator.
+
+The collecting subagent returns a list of sources with URL, access date and the local path of each converted file. It does not return conclusions, and it does not return paraphrased claims.
+
+Rule 4 (auditable output) survives delegation only if the orchestrator opens the file. Every number, monetary value and superlative that enters the finding is read from the source by whoever writes the finding. A claim that exists only inside a subagent's report has no source, whatever the report says about having checked it.
+
 ## Station 1: sources
 
 **Papers and scientific literature**: use the `paper-search` MCP to find material on arXiv, PubMed, Semantic Scholar, Crossref, OpenAlex and Unpaywall. Always ask for the DOI along with the title, because the DOI survives a broken link.
@@ -34,6 +42,8 @@ Apply to every research task, without exception and without waiting for the user
 Before reading any document, convert it. Delegate to the `ingest` skill, which routes each file type to the right converter.
 
 Never analyze a two-column PDF without converting first. Scrambled reading order produces scrambled conclusions.
+
+The ingest skill runs delegated. What comes back is file paths plus verification status, never the document's content.
 
 ## Station 3: protocol
 
