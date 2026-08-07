@@ -83,12 +83,12 @@ Amazon Reviews is flagged in the docs as temporarily unavailable because Amazon 
 
 Read only the family you need:
 
-- `references/core-tools.md` — `/scrape` full parameter and cost matrix, screenshot, rotating proxies, `/account`, universal search, webhook
-- `references/google-serp.md` — Search, AI Mode, AI Overview, autocomplete, Ads Transparency, ChatGPT, Trends, News, Bing/DDG/Baidu
-- `references/local-maps.md` — Maps family, Local, Yelp, Zillow
-- `references/social-video.md` — YouTube, TikTok, X, Instagram, Facebook, Google Images/Videos/Shorts/Lens
-- `references/commerce-travel.md` — Shopping, Flights, Hotels, Finance, Amazon, Walmart, eBay, Flipkart, Myntra, Apple
-- `references/b2b-research.md` — LinkedIn, jobs, Scholar, Patents
+- `references/core-tools.md`: `/scrape` full parameter and cost matrix, screenshot, rotating proxies, `/account`, universal search, webhook
+- `references/google-serp.md`: Search, AI Mode, AI Overview, autocomplete, Ads Transparency, ChatGPT, Trends, News, Bing/DDG/Baidu
+- `references/local-maps.md`: Maps family, Local, Yelp, Zillow
+- `references/social-video.md`: YouTube, TikTok, X, Instagram, Facebook, Google Images/Videos/Shorts/Lens
+- `references/commerce-travel.md`: Shopping, Flights, Hotels, Finance, Amazon, Walmart, eBay, Flipkart, Myntra, Apple
+- `references/b2b-research.md`: LinkedIn, jobs, Scholar, Patents
 
 Those files were extracted from `https://www.scrapingdog.com/documentation/` on 2026-08-05. Docs move: verify against the live page before changing a production integration or quoting an exact price.
 
