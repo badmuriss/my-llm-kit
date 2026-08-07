@@ -393,10 +393,11 @@ install_plugins() {
 }
 run_step "plugins (Claude Code + Codex)" install_plugins
 
-# 7. dcg blocks destructive shell commands before execution. packs beyond the defaults are
-# opt-in via ~/.config/dcg/config.toml.
+# 7. dcg blocks destructive shell commands before execution. The calibrated config and
+# allowlist live in dcg/ in this repo, with the reason for every entry written down.
 install_dcg() {
   local dcg_bin="$HOME/.local/bin/dcg"
+  local dcg_conf="$HOME/.config/dcg"
 
   if [ "$DRY" -eq 1 ]; then
     if [ -e "$dcg_bin" ]; then
@@ -404,6 +405,7 @@ install_dcg() {
     else
       echo "  [dry-run] curl -fsSL https://raw.githubusercontent.com/Dicklesworthstone/destructive_command_guard/main/install.sh | bash -s -- --no-configure --verify --no-gum"
     fi
+    echo "  [dry-run] copy dcg/config.toml and dcg/allowlist.toml into $dcg_conf (backing up anything already there)"
     echo "  [dry-run] $dcg_bin install    # wires hooks into every supported host it finds"
     echo "  [dry-run] $dcg_bin doctor"
     return 0
@@ -415,6 +417,19 @@ install_dcg() {
     curl -fsSL "https://raw.githubusercontent.com/Dicklesworthstone/destructive_command_guard/main/install.sh" | bash -s -- --no-configure --verify --no-gum || return 1
   fi
 
+  # copy rather than symlink: this is a security config, and a symlink into a git
+  # checkout means a `git pull` silently changes what the guard enforces.
+  mkdir -p "$dcg_conf"
+  local f
+  for f in config.toml allowlist.toml; do
+    [ -f "$REPO_DIR/dcg/$f" ] || continue
+    if [ -f "$dcg_conf/$f" ] && ! cmp -s "$REPO_DIR/dcg/$f" "$dcg_conf/$f"; then
+      cp "$dcg_conf/$f" "$dcg_conf/$f.bak-$(date +%Y%m%d)"
+      echo "  backup saved at $dcg_conf/$f.bak-$(date +%Y%m%d)"
+    fi
+    cp "$REPO_DIR/dcg/$f" "$dcg_conf/$f"
+  done
+
   # `dcg install` detects the hosts itself. As of dcg 0.9.4 it wires Claude Code, Codex CLI,
   # Gemini CLI, GitHub Copilot CLI and Cursor, emitting protocol-specific JSON per host, so
   # gating this on `claude` would have left every other host unguarded.
@@ -422,6 +437,37 @@ install_dcg() {
   "$dcg_bin" doctor || echo "  warning: dcg doctor reported issues"
 }
 run_step "dcg (destructive command guard)" install_dcg
+
+# 7b. prove the calibration still holds. A security config that quietly stops protecting
+# something is worse than none, so every expected verdict is asserted, not assumed.
+verify_dcg() {
+  local dcg_bin="$HOME/.local/bin/dcg"
+  local cases="$REPO_DIR/dcg/regression.txt"
+  [ -x "$dcg_bin" ] || { echo "  dcg not installed, nothing to verify"; return 0; }
+  [ -f "$cases" ] || { echo "  $cases missing, skipping"; return 0; }
+  if [ "$DRY" -eq 1 ]; then
+    echo "  [dry-run] assert $(grep -cv '^\s*\(#\|$\)' "$cases") expected verdicts from dcg/regression.txt"
+    return 0
+  fi
+
+  local want cmd got pass=0 fail=0
+  while IFS='|' read -r want cmd; do
+    case "$want" in ''|'#'*) continue ;; esac
+    [ -n "$cmd" ] || continue
+    got="$("$dcg_bin" explain "$cmd" 2>&1 | grep -iE '^Decision' | sed 's/Decision: *//' | tr -d ' ')"
+    got="${got:-ALLOW}"
+    if [ "$got" = "$want" ]; then
+      pass=$((pass + 1))
+    else
+      fail=$((fail + 1))
+      echo "  MISMATCH expected=$want got=$got :: $cmd"
+    fi
+  done < "$cases"
+
+  echo "  $pass expected verdict(s) confirmed, $fail mismatch(es)"
+  [ "$fail" -eq 0 ]
+}
+run_step "dcg calibration regression" verify_dcg
 
 echo
 echo "heavy dependencies (mineru, docling) are not installed by this script."

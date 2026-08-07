@@ -112,6 +112,27 @@ Gemini CLI, Copilot CLI and OpenCode have no plugin marketplace. They still get 
 | cloudflare | Workers, Pages, KV, D1, R2, Durable Objects, wrangler skills | [cloudflare/skills](https://github.com/cloudflare/skills) |
 | last30days | Community pulse over the last 30 days (Reddit, HN, X, GitHub, arXiv), plugs into the research skill | [mvanhorn/last30days-skill](https://github.com/mvanhorn/last30days-skill) (MIT) |
 
+### Destructive-command guard (dcg)
+
+[dcg](https://github.com/Dicklesworthstone/destructive_command_guard) sits in front of every shell command the agent runs and blocks the destructive ones. It wires its own hooks into Claude Code, Codex CLI, Gemini CLI, Copilot CLI and Cursor, so this is the one piece of the kit that is genuinely host-agnostic without any help from `setup.sh`.
+
+What the kit adds is the calibration, in `dcg/`, with the reason for every entry written into the file:
+
+| File | What it holds |
+|---|---|
+| `config.toml` | Enabled packs, hook timeout, and two `[overrides] block` rules that **tighten** the defaults |
+| `allowlist.toml` | The two rules that are switched off, each with its cost stated |
+| `regression.txt` | 25 commands and the verdict each must produce |
+
+Two directions, because calibration is not the same as loosening:
+
+- **Tightened.** `git checkout -- <file>` was denied but `git checkout .` was not, and the second discards the entire working tree instead of one file. Same gap on `git restore .`. Both are blocked now.
+- **Loosened, narrowly.** `core.git:checkout-ref-discard` (restoring a file from a ref fires even when the path does not exist in the working tree) and a wrangler catch-all that denied every `npx -y <pkg>`, unrelated packages included. The other eight git protections and the concrete d1/r2/kv rules stay on.
+
+What was deliberately **not** loosened: the redirect guard that blocks `> ~/.bashrc`. It over-triggers on creating a new file under `$HOME` and on heredocs whose text merely contains a `>`, which is annoying, but `| tee <file>` and the agent's file-write tool both work and are safer. Friction with a working alternative is not a reason to disable a rule.
+
+`setup.sh` asserts all 25 verdicts after installing the config, so a calibration that quietly stops protecting something fails the install instead of passing in silence.
+
 ### MCP servers
 
 `setup.sh` registers only `paper-search` (scientific literature on arXiv, PubMed, Semantic Scholar, Crossref, OpenAlex, Unpaywall), on each host that is present. Other generic public MCPs worth adding by hand: `playwright` (browser automation) and `shadcn` (component registry). Paid or account-bound MCPs are not part of this kit; see below.
@@ -165,7 +186,8 @@ Two skills adapted from [research-stack](https://github.com/nett0eth/research-st
 8. Installs `AGENTS.md` at `~/.agents/AGENTS.md` and points each host's expected filename at it, with backups.
 9. Fans every skill in the canonical root out to each host that needs its own copy, whatever put the skill there: this repo, a community clone, the Firecrawl CLI, or a plain `npx skills add --global`. This is the step that makes adding a host later a no-op, so installing Codex on a machine that already ran the script is one rerun away from parity. Real directories a host already owns are reported and left alone.
 10. Adds each plugin marketplace and installs the plugins on every host that has one (Claude Code, Codex), skipping what is already installed.
-11. Installs [dcg](https://github.com/Dicklesworthstone/destructive_command_guard) and lets it wire its own hooks. dcg 0.9.4 covers Claude Code, Codex CLI, Gemini CLI, Copilot CLI and Cursor, emitting the right protocol per host.
+11. Installs [dcg](https://github.com/Dicklesworthstone/destructive_command_guard), copies the calibrated `dcg/config.toml` and `dcg/allowlist.toml` into `~/.config/dcg/` (backing up anything different that was already there), and lets dcg wire its own hooks. dcg 0.9.4 covers Claude Code, Codex CLI, Gemini CLI, Copilot CLI and Cursor, emitting the right protocol per host.
+12. Asserts the 25 expected verdicts in `dcg/regression.txt`, so a broken calibration fails the install.
 
 Heavy converters (MinerU, docling) are opt-in and not installed by the script. The whole thing is idempotent: a second run changes nothing.
 

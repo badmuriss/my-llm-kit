@@ -1,0 +1,48 @@
+# dcg configuration, calibrated 2026-08-07.
+#
+# The default install blocks a handful of things that are not actually dangerous in
+# an agent workflow, and lets one genuinely dangerous thing through. This file fixes
+# both directions. Every entry below is justified, because a security config nobody
+# can explain gets copied and then loosened further by the next person.
+#
+# Rule of thumb used here: never allowlist a rule to remove friction when a safer
+# path already exists. `| tee <file>` and the agent's own file-write tool both work
+# where a `>` redirect is blocked, so the redirect rule stays fully enabled.
+
+[general]
+log_file = "~/.local/share/dcg/blocked.log"
+self_heal_hook = true
+# The 1000ms default is exceeded under load (parallel subagents plus npx), and an
+# exceeded budget is indeterminate, so it degrades into a question to the human
+# instead of a decision. 5s covers the realistic worst case. A real deny is still
+# instant; this only moves the timeout.
+hook_timeout_ms = 5000
+
+# NOTE: `[policy.rules]`, which is supposed to downgrade a single rule from deny to
+# ask or warn, was tested on 0.9.4 and has NO effect: the hook still returns deny
+# with the override in place. Do not leave a policy block here. Dead config implies
+# a posture that does not exist, which is worse than no config. The two levers that
+# do work are the allowlist (allowlist.toml) and `[overrides]` below.
+
+[overrides]
+# Tightening, not loosening. `git checkout -- <file>` is denied by core.git, but the
+# `.` pathspec slipped through, and that form discards the ENTIRE working tree in one
+# command, which is strictly worse than the single-file case the pack already blocks.
+# Same gap on `git restore .`, since `git restore <file>` is denied too.
+block = [
+  { pattern = "^git\\s+checkout\\s+(--\\s+)?\\.\\s*$", reason = "git checkout . discards the whole working tree; use git stash" },
+  { pattern = "^git\\s+restore\\s+(--\\s+)?\\.\\s*$", reason = "git restore . discards the whole working tree; use git stash" },
+]
+
+[packs]
+# core and system.disk are implicit. The packs below cover real exposure: Postgres
+# and Supabase in production, D1 and wrangler, Docker, local SQLite.
+enabled = [
+  "core",
+  "system.disk",
+  "database.postgresql",
+  "database.supabase",
+  "database.sqlite",
+  "cdn.cloudflare_workers",
+  "containers.docker",
+]
