@@ -54,7 +54,12 @@ link_skill() {
 
   mkdir -p "$SKILLS_ROOT"
   if [ -e "$canonical" ] && [ ! -L "$canonical" ]; then
-    local backup="$canonical.bak-$(date +%Y%m%d)"
+    # the backup must land OUTSIDE the skill root. every host indexes every directory in
+    # there, so a `foo.bak-20260807` sitting next to `foo` shows up as a second, stale
+    # copy of the same skill in the picker.
+    local backup_root="$HOME/.agents/skills-backup"
+    local backup="$backup_root/$name-$(date +%Y%m%d)"
+    mkdir -p "$backup_root"
     mv "$canonical" "$backup"
     echo "  backup saved at $backup"
   fi
@@ -239,6 +244,46 @@ check_anydoc_npx() {
   return 0
 }
 run_step "ingest skill preflight (anydoc)" check_anydoc_npx
+
+# 4f. every host dir gets a link for every skill in the canonical root, whatever put it there:
+# this repo, a community clone, the firecrawl CLI, or a plain `npx skills add --global`.
+# the installers above only link on FIRST install, so a host added later (the whole point of a
+# portable kit: you install Codex on a machine that already ran this script) would never see
+# the skills already sitting on disk. This step is what makes adding a host a no-op.
+fan_out_all_skills() {
+  if [ ${#HOST_SKILL_DIRS[@]} -eq 0 ]; then
+    echo "  no host needs its own copy, the canonical root covers them"
+    return 0
+  fi
+  local dir name host target linked=0 skipped=0
+  for dir in "$SKILLS_ROOT"/*/; do
+    [ -d "$dir" ] || continue          # skips broken symlinks too, -d follows the link
+    name="$(basename "$dir")"
+    for host in "${HOST_SKILL_DIRS[@]}"; do
+      # host dir already IS the canonical root (unified via a directory symlink): nothing to do
+      if [ -e "$host" ] && [ "$(readlink -f "$host")" = "$(readlink -f "$SKILLS_ROOT")" ]; then
+        continue
+      fi
+      target="$host/$name"
+      if [ -e "$target" ] && [ ! -L "$target" ]; then
+        skipped=$((skipped + 1))       # a real directory the user owns, never clobber it
+        continue
+      fi
+      if [ -L "$target" ] && [ "$(readlink -f "$target")" = "$(readlink -f "$dir")" ]; then
+        continue                       # already points where it should
+      fi
+      if [ "$DRY" -eq 1 ]; then
+        echo "  [dry-run] link $name into $host"
+      else
+        mkdir -p "$host"
+        ln -sfn "${dir%/}" "$target"
+      fi
+      linked=$((linked + 1))
+    done
+  done
+  echo "  $linked link(s) to create/update, $skipped real directory(ies) left alone"
+}
+run_step "fan out every skill to each host" fan_out_all_skills
 
 # 5. AGENTS.md: one file, read by every host through its own expected filename
 link_agents_md() {

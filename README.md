@@ -163,8 +163,9 @@ Two skills adapted from [research-stack](https://github.com/nett0eth/research-st
 6. Clones the community skills into the skill root, skipping anything already there.
 7. Installs the Firecrawl CLI and its skill suite if missing.
 8. Installs `AGENTS.md` at `~/.agents/AGENTS.md` and points each host's expected filename at it, with backups.
-9. Adds each plugin marketplace and installs the plugins on every host that has one (Claude Code, Codex), skipping what is already installed.
-10. Installs [dcg](https://github.com/Dicklesworthstone/destructive_command_guard) and lets it wire its own hooks. dcg 0.9.4 covers Claude Code, Codex CLI, Gemini CLI, Copilot CLI and Cursor, emitting the right protocol per host.
+9. Fans every skill in the canonical root out to each host that needs its own copy, whatever put the skill there: this repo, a community clone, the Firecrawl CLI, or a plain `npx skills add --global`. This is the step that makes adding a host later a no-op, so installing Codex on a machine that already ran the script is one rerun away from parity. Real directories a host already owns are reported and left alone.
+10. Adds each plugin marketplace and installs the plugins on every host that has one (Claude Code, Codex), skipping what is already installed.
+11. Installs [dcg](https://github.com/Dicklesworthstone/destructive_command_guard) and lets it wire its own hooks. dcg 0.9.4 covers Claude Code, Codex CLI, Gemini CLI, Copilot CLI and Cursor, emitting the right protocol per host.
 
 Heavy converters (MinerU, docling) are opt-in and not installed by the script. The whole thing is idempotent: a second run changes nothing.
 
