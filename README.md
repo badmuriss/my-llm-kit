@@ -35,15 +35,17 @@ Agent config rots quietly. Skills drift out of sync between machines, the global
 
 Skills install into **`~/.agents/skills/`**, the cross-agent convention. Several hosts read it natively; the ones that only look in their own directory get a per-skill symlink pointing back at the same files. One copy on disk, every agent sees it.
 
-| Host | Reads `~/.agents/skills` natively | What `setup.sh` does |
-|---|---|---|
-| Codex CLI | project scope only | symlinks each skill into `~/.codex/skills/` |
-| Claude Code | no | symlinks each skill into `~/.claude/skills/` |
-| Gemini CLI | yes | nothing needed |
-| GitHub Copilot CLI | yes | nothing needed |
-| OpenCode | yes | nothing needed |
+| Host | Reads `~/.agents/skills` natively | Skills | Plugins | MCP | dcg hooks |
+|---|---|---|---|---|---|
+| Claude Code | no | symlinked into `~/.claude/skills/` | yes | yes | yes |
+| Codex CLI | project scope only | symlinked into `~/.codex/skills/` | yes | yes | yes |
+| Gemini CLI | yes | nothing needed | no marketplace | by hand | yes |
+| GitHub Copilot CLI | yes | nothing needed | no marketplace | by hand | yes |
+| OpenCode | yes | nothing needed | no marketplace | prints the JSON | not supported by dcg |
 
 The script only touches a host directory when that host is actually installed, and it never overwrites a real directory that is already sitting there: it reports it and moves on.
+
+Nothing in this kit is Claude Code only. Every skill describes the action it wants (navigate, click, screenshot, search the web) and leaves the tool name to the host, so the same file works wherever it lands.
 
 The same logic covers the instructions file. `AGENTS.md` lives once at `~/.agents/AGENTS.md`, and `~/.claude/CLAUDE.md` plus `~/.codex/AGENTS.md` become symlinks to it. Edit one file, every agent picks it up.
 
@@ -70,7 +72,6 @@ Everything `setup.sh` installs, in one table.
 | writing | Technical writing standards based on Zinsser | Own |
 | grill-me | Relentless interview about a plan until shared understanding | Own |
 | grill-with-docs | Same grilling, but updates CONTEXT.md and ADRs as decisions land | Own |
-| ux-audit | Walks a live web app as a real user, with hard gates (console errors 0, a11y, perf budget) | Own |
 | scrapingdog | ScrapingDog as default paid scraper: SERP, Maps, Trends, News, Amazon, LinkedIn, Instagram | Own; needs `SCRAPINGDOG_API_KEY` in the environment |
 | readme-pass | Top-starred presentation pass for a repo README: banner, badges, anchor nav, install up top, prose untouched | Own |
 
@@ -95,9 +96,13 @@ Those last two are built to hand off to each other: one decides every pixel, the
 
 Skills that need credentials still install without them; they just stay dormant until the key or login exists.
 
-### Plugins (Claude Code only)
+### Plugins (Claude Code and Codex)
 
-Plugins have no equivalent on the other hosts, so this step is skipped entirely when `claude` is not installed.
+Both hosts read a git plugin marketplace, and Codex accepts the `.claude-plugin/marketplace.json` layout, so the same five entries install on either one. Only the subcommand differs: `claude plugin install` against `codex plugin add`. `setup.sh` runs whichever hosts it finds and installs the same list on each.
+
+Verified on codex-cli 0.146.0: all four marketplace repos below resolve through `codex plugin marketplace add`, and `codex plugin add last30days@last30days-skill` installs.
+
+Gemini CLI, Copilot CLI and OpenCode have no plugin marketplace. They still get every skill through `~/.agents/skills/`, so what they lose is the slash commands and hooks a plugin bundles, not the knowledge.
 
 | Plugin | What it does | Marketplace repo |
 |---|---|---|
@@ -158,7 +163,8 @@ Two skills adapted from [research-stack](https://github.com/nett0eth/research-st
 6. Clones the community skills into the skill root, skipping anything already there.
 7. Installs the Firecrawl CLI and its skill suite if missing.
 8. Installs `AGENTS.md` at `~/.agents/AGENTS.md` and points each host's expected filename at it, with backups.
-9. Adds each plugin marketplace and installs the plugins, skipping what is already installed. Claude Code only.
+9. Adds each plugin marketplace and installs the plugins on every host that has one (Claude Code, Codex), skipping what is already installed.
+10. Installs [dcg](https://github.com/Dicklesworthstone/destructive_command_guard) and lets it wire its own hooks. dcg 0.9.4 covers Claude Code, Codex CLI, Gemini CLI, Copilot CLI and Cursor, emitting the right protocol per host.
 
 Heavy converters (MinerU, docling) are opt-in and not installed by the script. The whole thing is idempotent: a second run changes nothing.
 

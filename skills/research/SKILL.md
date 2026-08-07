@@ -31,7 +31,7 @@ Rule 4 (auditable output) survives delegation only if the orchestrator opens the
 **General web**: follow the stack's fallback order.
 1. ScrapingDog (the `scrapingdog` skill) is the default scraper and SERP when `SCRAPINGDOG_API_KEY` exists in the environment.
 2. Firecrawl (the `firecrawl-search` and `firecrawl-scrape` skills) is the fallback when ScrapingDog is unavailable or fails.
-3. Native WebSearch comes last, only when the two above do not solve it.
+3. Whatever web search the host gives you natively comes last, only when the two above do not solve it.
 
 **Technology or product**: when the topic is technology rather than science, the primary source is the project's repository, official documentation and changelog. Star counts, version numbers and prices must be read on the project's own page, never in a third-party article that cites the project.
 
@@ -67,7 +67,7 @@ Save the finding as markdown in the current project's `research/` folder, or whe
 - what remains open
 - sources consulted, with URL and access date
 
-Durable insight about the business, worth reusing in future research, goes into Claude's memory system, not into the research file. The agent already knows when and how to record it there.
+Durable insight about the business, worth reusing in future research, goes into whatever persistent memory the host offers, not into the research file. The agent already knows when and how to record it there. On a host without a memory system, skip this and keep the insight in the finding.
 
 ## Station 6: trial by fire
 

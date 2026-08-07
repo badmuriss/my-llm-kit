@@ -281,7 +281,11 @@ link_agents_md() {
 }
 run_step "AGENTS.md" link_agents_md
 
-# 6. plugins: Claude Code only, no equivalent on the other hosts. skipped when claude is absent.
+# 6. plugins. Claude Code and Codex both read a git marketplace and both accept the
+# `.claude-plugin/marketplace.json` layout, so the same five entries install on either host.
+# Verified on codex-cli 0.146.0: `codex plugin marketplace add` resolves all four repos below
+# and `codex plugin add <plugin>@<market>` installs them. Only the subcommand names differ
+# (`claude plugin install` vs `codex plugin add`), so this branches on the verb, not the list.
 PLUGINS=(
   "Chachamaru127/claude-code-harness|claude-code-harness@claude-code-harness-marketplace"
   "anthropics/claude-plugins-official|chrome-devtools-mcp@claude-plugins-official"
@@ -289,29 +293,60 @@ PLUGINS=(
   "cloudflare/skills|cloudflare@cloudflare"
   "mvanhorn/last30days-skill|last30days@last30days-skill"
 )
-install_plugins() {
-  if ! command -v claude >/dev/null 2>&1; then
-    echo "  claude not installed, skipping plugins (Claude Code only)"
-    return 0
-  fi
+
+# is "$plugin" already installed on "$host", given that host's `plugin list` output?
+# the two hosts print different things and the difference is a trap:
+#   claude lists ONLY installed plugins, so any match means installed.
+#   codex lists EVERY known plugin with a STATUS column where "not installed" is a valid value,
+#   and that string contains the word "installed", so match the comma in "installed, enabled".
+plugin_installed() {
+  local host="$1" plugin="$2" listing="$3"
+  case "$host" in
+    claude) echo "$listing" | grep -qF "$plugin" ;;
+    codex)  echo "$listing" | grep -F "$plugin" | grep -q 'installed,' ;;
+    *)      return 1 ;;
+  esac
+}
+
+# install every plugin on one host. $1 host binary, $2 the install subcommand for that host.
+install_plugins_for() {
+  local host="$1" verb="$2"
   local installed entry market plugin
-  installed="$(claude plugin list 2>/dev/null)"
+  installed="$("$host" plugin list 2>/dev/null)"
   for entry in "${PLUGINS[@]}"; do
     market="${entry%%|*}"
     plugin="${entry#*|}"
-    if echo "$installed" | grep -qF "$plugin"; then
-      echo "  $plugin already installed, skipping"
+    if plugin_installed "$host" "$plugin" "$installed"; then
+      echo "  $host: $plugin already installed, skipping"
       continue
     fi
     if [ "$DRY" -eq 1 ]; then
-      echo "  [dry-run] claude plugin marketplace add $market && claude plugin install $plugin"
+      echo "  [dry-run] $host plugin marketplace add $market && $host plugin $verb $plugin"
       continue
     fi
-    claude plugin marketplace add "$market" >/dev/null 2>&1
-    claude plugin install "$plugin"
+    "$host" plugin marketplace add "$market" >/dev/null 2>&1
+    "$host" plugin "$verb" "$plugin"
   done
 }
-run_step "plugins (Claude Code)" install_plugins
+
+install_plugins() {
+  local any=0
+  if command -v claude >/dev/null 2>&1; then
+    install_plugins_for claude install
+    any=1
+  fi
+  if command -v codex >/dev/null 2>&1; then
+    install_plugins_for codex add
+    any=1
+  fi
+  if [ "$any" -eq 0 ]; then
+    echo "  neither claude nor codex installed, skipping plugins"
+    echo "  (Gemini CLI, Copilot CLI and OpenCode have no plugin marketplace; the skills"
+    echo "   in ~/.agents/skills already cover them)"
+  fi
+  return 0
+}
+run_step "plugins (Claude Code + Codex)" install_plugins
 
 # 7. dcg blocks destructive shell commands before execution. packs beyond the defaults are
 # opt-in via ~/.config/dcg/config.toml.
@@ -324,12 +359,8 @@ install_dcg() {
     else
       echo "  [dry-run] curl -fsSL https://raw.githubusercontent.com/Dicklesworthstone/destructive_command_guard/main/install.sh | bash -s -- --no-configure --verify --no-gum"
     fi
-    if command -v claude >/dev/null 2>&1; then
-      echo "  [dry-run] $dcg_bin install"
-      echo "  [dry-run] $dcg_bin doctor"
-    else
-      echo "  claude not installed, skipping hook wiring"
-    fi
+    echo "  [dry-run] $dcg_bin install    # wires hooks into every supported host it finds"
+    echo "  [dry-run] $dcg_bin doctor"
     return 0
   fi
 
@@ -339,12 +370,11 @@ install_dcg() {
     curl -fsSL "https://raw.githubusercontent.com/Dicklesworthstone/destructive_command_guard/main/install.sh" | bash -s -- --no-configure --verify --no-gum || return 1
   fi
 
-  if command -v claude >/dev/null 2>&1; then
-    "$dcg_bin" install
-    "$dcg_bin" doctor || echo "  warning: dcg doctor reported issues"
-  else
-    echo "  claude not installed, skipping hook wiring"
-  fi
+  # `dcg install` detects the hosts itself. As of dcg 0.9.4 it wires Claude Code, Codex CLI,
+  # Gemini CLI, GitHub Copilot CLI and Cursor, emitting protocol-specific JSON per host, so
+  # gating this on `claude` would have left every other host unguarded.
+  "$dcg_bin" install
+  "$dcg_bin" doctor || echo "  warning: dcg doctor reported issues"
 }
 run_step "dcg (destructive command guard)" install_dcg
 
