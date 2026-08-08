@@ -12,6 +12,7 @@
   <a href="#install">Install</a> ·
   <a href="#which-agents-this-works-with">Which agents</a> ·
   <a href="#the-full-stack">The full stack</a> ·
+  <a href="#workflow-spec-and-impl">Workflow</a> ·
   <a href="#what-setupsh-does">What setup.sh does</a> ·
   <a href="#credits">Credits</a>
 </p>
@@ -142,6 +143,31 @@ What was deliberately **not** loosened: the redirect guard that blocks `> ~/.bas
 |---|---|
 | AGENTS.md | Shared agent instructions. Installed at `~/.agents/AGENTS.md`, aliased from `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md`, with a backup of anything already there |
 | setup.sh | Installs everything above; idempotent, supports `--dry-run` |
+| commands/, agents/ | The plan → implement workflow below, installed by `install.sh` |
+
+## Workflow: /spec and /impl
+
+Two slash commands and the two subagents they dispatch to. They live in `commands/` and `agents/`, and used to be a separate repo (`claude-harness`), now folded in here so there is one public surface instead of two.
+
+| File | What it is |
+|---|---|
+| `commands/spec.md` | `/spec <change>` — plans with an architecture lens (deep modules, deletion test, YAGNI), grills the decisions with you, and emits an openspec change (`proposal.md`, `design.md`, self-contained `tasks.md`). A new permanent rule has to name which existing rule it replaces. |
+| `commands/impl.md` | `/impl <change>` — dumb dispatcher: delegates each task to a subagent, reads the diff instead of the summary, and grades every task `pass`, `fail`, `unobserved` or `blocked`. Missing evidence is never `pass`. |
+| `agents/deep-reasoner.md` | Frontier-tier subagent with a clean, unanchored context. For architecture, debugging, algorithm design. |
+| `agents/fast-worker.md` | Fast-tier subagent for mechanical work: boilerplate, tests, formatting, simple edits. |
+
+`setup.sh` does not install these, because they are Claude Code slash commands rather than cross-agent skills. Install them on their own:
+
+```bash
+./install.sh          # copies commands and agents into ~/.claude, then installs the skills they lean on
+./install.sh --link   # symlinks them back to this clone instead, so a git pull updates them in place
+```
+
+Both forms also work from a bare shell, cloning this repo into a temp dir first:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/badmuriss/my-llm-kit/main/install.sh | bash
+```
 
 ## Not included
 
