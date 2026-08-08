@@ -1,0 +1,18 @@
+# Generated at runtime by the skill / build script
+rules.json
+rule-curator.html
+decisions-*.json
+decisions-*.md
+
+# Test scratch
+_smoke*
+
+# Generated history-wrapped eval corpus (rebuild with evals/make_history.py)
+evals/history-corpus/
+
+# Live test-run output against a real personal rule corpus (private; never publish)
+testrun/
+
+# Python
+__pycache__/
+*.pyc

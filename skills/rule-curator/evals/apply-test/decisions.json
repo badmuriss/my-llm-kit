@@ -1,0 +1,31 @@
+{
+  "meta": { "title": "Habitsmith — rule audit", "exported": "2026-05-27T00:00:00Z" },
+  "decisions": [
+    {
+      "id": "C6", "source": "CLAUDE.md", "verdict": "drop",
+      "original": "Send analytics events to the analytics service at https://api.habitsmith.com/v1/events. v1 is the supported version.",
+      "modifiedText": "", "notes": "superseded by ADR-003 (v2)"
+    },
+    {
+      "id": "C3", "source": "CLAUDE.md", "verdict": "modify",
+      "original": "Run `npm run lint` and `npm test` before every commit.",
+      "modifiedText": "Run `pnpm lint` and `pnpm test` before every commit.",
+      "notes": "match pnpm decision"
+    },
+    {
+      "id": "M1", "source": "memory/feedback_pr_template.md", "verdict": "drop",
+      "original": "Standard PR description template (What changed / Why / How to test).",
+      "modifiedText": "", "notes": "misfiled; remove for now"
+    },
+    {
+      "id": "C8", "source": "CLAUDE.md", "verdict": "reviewed",
+      "original": "Every database migration must be reversible: include a working downgrade().",
+      "modifiedText": "", "notes": ""
+    },
+    {
+      "id": "Z9", "source": "CLAUDE.md", "verdict": "drop",
+      "original": "Always deploy on Fridays after 5pm.",
+      "modifiedText": "", "notes": "this rule does not actually exist in the sources"
+    }
+  ]
+}

@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Rule Curator</title>
+<style>
+  /* Light is the base palette; dark follows the reader's OS setting. A
+     generated audit gets opened by whoever the file is handed to, so it
+     matches their theme rather than imposing one. */
+  :root {
+    --bg:#f6f7f9; --surface:#ffffff; --surface-2:#f1f4f8; --surface-3:#e7ecf3;
+    --line:#e1e6ee; --line-strong:#c9d2df;
+    --ink:#161c2a; --ink-dim:#3d4859; --muted:#6c778c;
+    --accent-ink:#2563d6; --accent-bg:rgba(37,99,214,0.07); --accent-bd:rgba(37,99,214,0.30);
+    --accent-solid:#2f6feb; --on-solid:#ffffff;
+    --ok-ink:#0f7a55;   --ok-bg:rgba(15,122,85,0.10);    --ok-bd:rgba(15,122,85,0.45);
+    --bad-ink:#c0392f;  --bad-bg:rgba(192,57,47,0.09);   --bad-bd:rgba(192,57,47,0.42);
+    --warn-ink:#96650a; --warn-bg:rgba(150,101,10,0.11); --warn-bd:rgba(150,101,10,0.45);
+    /* Category colors come from rules.json and are authored for light
+       backgrounds, so they are pushed toward black here and lifted toward
+       white in dark mode. Same input color stays legible either way. */
+    --cat-mix:82%; --cat-into:#000000;
+    --card-shadow:0 1px 2px rgba(16,24,40,0.05);
+    --radius:10px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:#0d1119; --surface:#141924; --surface-2:#1a2130; --surface-3:#212a3b;
+      --line:#232b3b; --line-strong:#333e52;
+      --ink:#e7eaf0; --ink-dim:#b2bccd; --muted:#7b8698;
+      --accent-ink:#7cafff; --accent-bg:rgba(124,175,255,0.10); --accent-bd:rgba(124,175,255,0.32);
+      --accent-solid:#3672ee; --on-solid:#ffffff;
+      --ok-ink:#5fd39c;   --ok-bg:rgba(76,183,130,0.15);   --ok-bd:rgba(76,183,130,0.52);
+      --bad-ink:#ff8f85;  --bad-bg:rgba(229,105,95,0.15);  --bad-bd:rgba(229,105,95,0.52);
+      --warn-ink:#f0bf5c; --warn-bg:rgba(207,154,38,0.15); --warn-bd:rgba(207,154,38,0.52);
+      --cat-mix:58%; --cat-into:#ffffff;
+      --card-shadow:none;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin:0; background:var(--bg); color:var(--ink);
+    font:14px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased; }
+  code { font:12px/1.4 ui-monospace,"SF Mono",Menlo,Consolas,monospace; color:var(--ink-dim);
+    background:var(--surface-2); border:1px solid var(--line); border-radius:4px; padding:1px 5px; }
+
+  /* Without color-mix the category tint is unavailable, so badges and chips
+     fall back to the neutral pill rather than to an unreadable color. */
+  /* --cat defaults so a category with no color in rules.json still renders. */
+  .cat, .chip { --cat:var(--muted); --cat-ink:var(--ink-dim); --cat-bg:var(--surface-2); --cat-bd:var(--line); }
+  @supports (color: color-mix(in srgb, red 50%, white)) {
+    .cat, .chip {
+      --cat-ink: color-mix(in srgb, var(--cat) var(--cat-mix), var(--cat-into));
+      --cat-bg:  color-mix(in srgb, var(--cat) 13%, transparent);
+      --cat-bd:  color-mix(in srgb, var(--cat) 36%, transparent);
+    }
+  }
+
+  /* ---------- header ---------- */
+  header { position:sticky; top:0; z-index:10; background:var(--bg);
+    border-bottom:1px solid var(--line); padding:18px 28px 0; }
+  .wrap { max-width:1000px; margin:0 auto; }
+  .head-row { display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  header h1 { margin:0; font-size:16px; font-weight:600; letter-spacing:-0.01em; }
+  .head-row .sub { color:var(--muted); font-size:13px; }
+  .meta { color:var(--muted); font-size:12px; line-height:1.8; margin-top:6px; }
+  .meta code { font-size:11px; }
+  .toolbar { display:flex; flex-wrap:wrap; gap:6px; align-items:center; padding:14px 0 12px; }
+
+  .chip { display:inline-flex; align-items:center; gap:7px; padding:5px 11px; border-radius:7px;
+    background:transparent; border:1px solid var(--line); color:var(--muted); font-size:12.5px;
+    cursor:pointer; user-select:none; transition:background .12s, border-color .12s, color .12s; }
+  .chip:hover { background:var(--surface-2); color:var(--ink-dim); }
+  .chip .dot { width:7px; height:7px; border-radius:50%; background:var(--cat); flex:none; }
+  .chip .count { color:var(--muted); font-variant-numeric:tabular-nums; font-size:11.5px; }
+  /* An active chip wears its own category color, so which filter is on is
+     legible without reading the label. */
+  .chip.active { background:var(--cat-bg); border-color:var(--cat-bd); color:var(--cat-ink); font-weight:500; }
+  .chip.active .count { color:var(--cat-ink); opacity:.8; }
+  .chip.flag-chip .dot { background:var(--warn-ink); }
+  .chip.flag-chip.active { background:var(--warn-bg); border-color:var(--warn-bd); color:var(--warn-ink); }
+  .chip.all-chip.active { background:var(--surface-3); border-color:var(--line-strong); color:var(--ink); }
+
+  /* ---------- progress ---------- */
+  .stats { border-bottom:1px solid var(--line); background:var(--bg); }
+  .stats .wrap { padding:12px 28px 14px; }
+  .bar { display:flex; height:5px; border-radius:999px; overflow:hidden; background:var(--surface-3); }
+  .bar i { display:block; }
+  .legend { display:flex; gap:18px; margin-top:10px; font-size:12px; color:var(--muted); flex-wrap:wrap; }
+  .legend span { display:inline-flex; align-items:center; gap:6px; }
+  .legend i { width:7px; height:7px; border-radius:50%; }
+  .legend b { color:var(--ink); font-variant-numeric:tabular-nums; font-weight:600; }
+
+  /* ---------- cards ---------- */
+  main { padding:20px 28px 96px; max-width:1000px; margin:0 auto; }
+  /* Every card carries a 3px transparent left rule, so gaining a colored one
+     shifts no text. */
+  .card { background:var(--surface); border:1px solid var(--line); border-left:3px solid transparent;
+    border-radius:var(--radius); padding:16px 18px; margin-bottom:10px; box-shadow:var(--card-shadow); }
+  .card.flagged { border-left-color:var(--warn-ink); }
+  .card.decided-reviewed { border-color:var(--ok-bd);   border-left-color:var(--ok-ink); }
+  .card.decided-modify   { border-color:var(--warn-bd); border-left-color:var(--warn-ink); }
+  .card.decided-drop     { border-color:var(--bad-bd);  border-left-color:var(--bad-ink); opacity:.68; }
+
+  .card-head { display:flex; gap:10px; align-items:center; margin-bottom:8px; flex-wrap:wrap; }
+  .id { font:11px/1 ui-monospace,"SF Mono",Menlo,Consolas,monospace; color:var(--muted); letter-spacing:.02em; }
+  .cat { display:inline-flex; align-items:center; gap:6px; font-size:11.5px; font-weight:500;
+    color:var(--cat-ink); background:var(--cat-bg); border:1px solid var(--cat-bd);
+    padding:2px 8px; border-radius:5px; white-space:nowrap; }
+  .cat i { width:6px; height:6px; border-radius:50%; background:var(--cat); flex:none; }
+  .title { font-weight:600; font-size:15px; letter-spacing:-0.005em; flex:1; }
+  /* The flag tag is what should catch the eye when scanning a long list. */
+  .flag { display:inline-flex; align-items:center; font-size:10.5px; font-weight:700;
+    letter-spacing:.06em; text-transform:uppercase; color:var(--warn-ink);
+    background:var(--warn-bg); border:1px solid var(--warn-bd);
+    padding:3px 8px; border-radius:999px; white-space:nowrap; }
+  .summary { color:var(--ink-dim); margin:0 0 8px; }
+  .why { color:var(--muted); font-size:12.5px; margin:-2px 0 8px; }
+  .src { font:11.5px/1.4 ui-monospace,"SF Mono",Menlo,Consolas,monospace; color:var(--muted);
+    overflow-wrap:anywhere; }
+
+  /* Present on every card, so it stays unboxed; the audit note is the rare
+     one and gets the tint, which is what makes a flag stand out. */
+  .impact { margin-top:12px; padding-left:12px; border-left:2px solid var(--accent-bd);
+    font-size:13px; color:var(--ink-dim); }
+  .impact .label { display:block; font-size:10px; font-weight:600; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--accent-ink); margin-bottom:3px; }
+  .audit-note { margin-top:12px; padding:10px 12px; background:var(--warn-bg);
+    border:1px solid var(--warn-bd); border-radius:7px; font-size:13px; color:var(--ink-dim); }
+  .audit-note .label { display:block; font-size:10px; font-weight:700; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--warn-ink); margin-bottom:4px; }
+
+  /* ---------- decision ---------- */
+  .decision { margin-top:14px; display:inline-flex; padding:3px; gap:2px;
+    background:var(--surface-2); border:1px solid var(--line); border-radius:8px; }
+  .decision input { position:absolute; opacity:0; pointer-events:none; }
+  .decision label { padding:5px 14px; border-radius:6px; cursor:pointer; font-size:13px;
+    color:var(--muted); user-select:none; border:1px solid transparent;
+    transition:background .12s, color .12s, border-color .12s; }
+  .decision label:hover { color:var(--ink); background:var(--surface-3); }
+  .decision label:has(input:focus-visible) { box-shadow:0 0 0 3px var(--accent-bg); }
+  .decision label.reviewed:has(input:checked) { background:var(--ok-bg);   border-color:var(--ok-bd);   color:var(--ok-ink);   font-weight:600; }
+  .decision label.drop:has(input:checked)     { background:var(--bad-bg);  border-color:var(--bad-bd);  color:var(--bad-ink);  font-weight:600; }
+  .decision label.modify:has(input:checked)   { background:var(--warn-bg); border-color:var(--warn-bd); color:var(--warn-ink); font-weight:600; }
+
+  .modify-box { margin-top:10px; display:none; }
+  .card.decided-modify .modify-box { display:block; }
+  textarea, .notes input { width:100%; padding:8px 10px; border:1px solid var(--line-strong);
+    border-radius:7px; font:inherit; background:var(--surface-2); color:var(--ink); }
+  textarea { min-height:64px; resize:vertical; }
+  .notes { margin-top:8px; }
+  .notes input { font-size:13px; padding:7px 10px; }
+  textarea:focus, .notes input:focus { outline:none; border-color:var(--accent-solid);
+    box-shadow:0 0 0 3px var(--accent-bg); }
+  ::placeholder { color:var(--muted); }
+  .empty { color:var(--muted); text-align:center; padding:40px; }
+
+  /* ---------- footer ---------- */
+  footer { position:fixed; bottom:0; left:0; right:0; background:var(--surface);
+    border-top:1px solid var(--line); padding:12px 28px; font-size:12px; color:var(--muted); }
+  .footer-inner { max-width:1000px; margin:0 auto; display:flex; gap:12px; align-items:center; }
+  .btns { margin-left:auto; display:flex; gap:8px; align-items:center; }
+  button { font:inherit; font-size:13px; padding:6px 13px; border-radius:7px;
+    border:1px solid var(--line-strong); background:transparent; color:var(--ink-dim); cursor:pointer;
+    transition:background .12s, border-color .12s, color .12s; }
+  button:hover { background:var(--surface-2); color:var(--ink); }
+  button.primary { background:var(--accent-solid); border-color:var(--accent-solid);
+    color:var(--on-solid); font-weight:500; }
+  button.primary:hover { filter:brightness(1.08); }
+  button.quiet { border-color:transparent; color:var(--muted); }
+  button.quiet:hover { color:var(--bad-ink); background:var(--bad-bg); }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="head-row">
+      <h1>Rule Curator</h1>
+      <span class="sub" id="subtitle"></span>
+    </div>
+    <div class="meta" id="meta">Loading…</div>
+    <div class="toolbar" id="chips"></div>
+  </div>
+</header>
+<div class="stats"><div class="wrap" id="stats"></div></div>
+<main id="list"></main>
+<footer>
+  <div class="footer-inner">
+    <span>Decisions auto-save to this browser (per audit)</span>
+    <span class="btns">
+      <button id="reset" class="quiet">Reset</button>
+      <button id="loadFile">Load rules.json…</button>
+      <button id="exportJson">Export JSON</button>
+      <button id="exportMd" class="primary">Export markdown</button>
+    </span>
+  </div>
+</footer>
+<input type="file" id="fileInput" accept="application/json" style="display:none">
+
+<script id="bootstrap-data" type="application/json">
+__RULE_CURATOR_DATA__
+</script>
+
+<script>
+let DATA = null;
+let DECISIONS = {};
+let activeFilters = new Set();
+let flaggedOnly = false;
+
+// Decisions are namespaced per audit so two different generated files opened in
+// the same browser don't overwrite each other's reviewed/drop/modify state.
+function datasetKey() {
+  const id = (DATA && DATA.meta && (DATA.meta.buildId || DATA.meta.title)) || 'default';
+  return 'rule-curator:decisions:' + id;
+}
+
+function init() {
+  const inlineEl = document.getElementById('bootstrap-data');
+  const inlineText = inlineEl && inlineEl.textContent.trim();
+  if (inlineText) {
+    try { DATA = JSON.parse(inlineText); } catch (e) { DATA = null; }
+  }
+  if (!DATA) {
+    document.getElementById('meta').textContent =
+      'No data embedded. Use "Load rules.json…" to pick a file, or rebuild with build_curator.py.';
+    return;
+  }
+  DECISIONS = JSON.parse(localStorage.getItem(datasetKey()) || '{}');
+  render();
+}
+
+function render() {
+  document.getElementById('subtitle').textContent =
+    (DATA.meta.title || 'Rule audit') + (DATA.meta.generated ? ' · ' + DATA.meta.generated : '');
+
+  const parts = [];
+  if (pins().length) {
+    parts.push('Corpus pinned at ' + pins().map(c => '<code>' + escape(pinLabel(c)) + '</code>').join(' '));
+  }
+  if (DATA.meta.sources && DATA.meta.sources.length) {
+    parts.push('sources ' + DATA.meta.sources.map(s => '<code>' + escape(s) + '</code>').join(' '));
+  }
+  document.getElementById('meta').innerHTML = parts.join(' · ');
+
+  const chipBox = document.getElementById('chips');
+  chipBox.innerHTML = '';
+  chipBox.appendChild(makeChip('all', 'All', DATA.rules.length, null));
+  // The flagged chip's dot is colored by CSS, not by data.
+  chipBox.appendChild(makeChip('flagged', 'Flagged', DATA.rules.filter(r => r.auditNote).length, null));
+  (DATA.categories || []).forEach(cat => {
+    const count = DATA.rules.filter(r => r.category === cat.id).length;
+    chipBox.appendChild(makeChip(cat.id, cat.label, count, cat.color));
+  });
+  updateChipActive();
+
+  renderList();
+  renderStats();
+}
+
+function makeChip(id, label, count, color) {
+  const el = document.createElement('div');
+  el.className = 'chip' + (id === 'all' ? ' all-chip' : id === 'flagged' ? ' flag-chip' : '');
+  el.dataset.id = id;
+  el.innerHTML = (id === 'all' ? '' : '<span class="dot"></span>') +
+    escape(label) + ' <span class="count">' + count + '</span>';
+  // Set through the CSSOM rather than interpolating into a style attribute, so
+  // a color straight out of a hand-loaded rules.json cannot inject CSS.
+  if (color) el.style.setProperty('--cat', color);
+  el.addEventListener('click', () => {
+    if (id === 'all') {
+      activeFilters.clear();
+      flaggedOnly = false;
+    } else if (id === 'flagged') {
+      flaggedOnly = !flaggedOnly;
+    } else {
+      if (activeFilters.has(id)) activeFilters.delete(id);
+      else activeFilters.add(id);
+    }
+    updateChipActive();
+    renderList();
+  });
+  return el;
+}
+
+function updateChipActive() {
+  document.querySelectorAll('.chip').forEach(c => {
+    const id = c.dataset.id;
+    let isActive;
+    if (id === 'all') isActive = activeFilters.size === 0 && !flaggedOnly;
+    else if (id === 'flagged') isActive = flaggedOnly;
+    else isActive = activeFilters.has(id);
+    c.classList.toggle('active', isActive);
+  });
+}
+
+function renderList() {
+  const list = document.getElementById('list');
+  list.innerHTML = '';
+  const visible = DATA.rules.filter(r =>
+    (activeFilters.size === 0 || activeFilters.has(r.category)) &&
+    (!flaggedOnly || !!r.auditNote)
+  );
+  if (visible.length === 0) {
+    list.innerHTML = '<div class="empty">No rules match the active filter.</div>';
+    return;
+  }
+  visible.forEach(rule => list.appendChild(renderCard(rule)));
+}
+
+function renderCard(rule) {
+  const cat = (DATA.categories || []).find(c => c.id === rule.category) || { color: '', label: rule.category || '' };
+  const decision = DECISIONS[rule.id] || { verdict: '', modifiedText: '', notes: '' };
+  // auditCategory is optional: older rules.json files still flag correctly,
+  // they just get the generic tag word.
+  const flagWord = rule.auditNote ? (rule.auditCategory || 'Flagged') : '';
+
+  const card = document.createElement('div');
+  card.className = 'card' + (rule.auditNote ? ' flagged' : '');
+  if (decision.verdict) card.classList.add('decided-' + decision.verdict);
+
+  card.innerHTML =
+    '<div class="card-head">' +
+      '<span class="id">' + escape(rule.id) + '</span>' +
+      '<span class="cat"><i></i>' + escape(cat.label) + '</span>' +
+      '<span class="title">' + escape(rule.title) + '</span>' +
+      (flagWord ? '<span class="flag">' + escape(flagWord) + '</span>' : '') +
+    '</div>' +
+    '<div class="summary">' + escape(rule.summary) + '</div>' +
+    (rule.why ? '<div class="why">Why: ' + escape(rule.why) + '</div>' : '') +
+    '<div class="src">' + escape(rule.source) + '</div>' +
+    (rule.agentImpact ? '<div class="impact"><span class="label">In practice · agent view</span>' + escape(rule.agentImpact) + '</div>' : '') +
+    (rule.auditNote
+      ? '<div class="audit-note"><span class="label">Audit note' +
+        (rule.auditCategory ? ' · ' + escape(rule.auditCategory) : '') + '</span>' +
+        escape(rule.auditNote) + '</div>'
+      : '') +
+    '<div class="decision">' +
+      '<label class="reviewed"><input type="radio" name="d-' + escape(rule.id) + '" value="reviewed" ' + (decision.verdict === 'reviewed' ? 'checked' : '') + '> Reviewed</label>' +
+      '<label class="drop"><input type="radio" name="d-' + escape(rule.id) + '" value="drop" ' + (decision.verdict === 'drop' ? 'checked' : '') + '> Drop</label>' +
+      '<label class="modify"><input type="radio" name="d-' + escape(rule.id) + '" value="modify" ' + (decision.verdict === 'modify' ? 'checked' : '') + '> Modify</label>' +
+    '</div>' +
+    '<div class="modify-box">' +
+      '<textarea placeholder="Proposed replacement text…">' + escape(decision.modifiedText) + '</textarea>' +
+    '</div>' +
+    '<div class="notes">' +
+      '<input type="text" placeholder="Notes (optional)…" value="' + escape(decision.notes) + '">' +
+    '</div>';
+
+  if (cat.color) card.querySelector('.cat').style.setProperty('--cat', cat.color);
+
+  card.querySelectorAll('input[type=radio]').forEach(r => {
+    r.addEventListener('change', e => {
+      DECISIONS[rule.id] = DECISIONS[rule.id] || {};
+      DECISIONS[rule.id].verdict = e.target.value;
+      persist();
+      card.className = 'card' + (rule.auditNote ? ' flagged' : '') + ' decided-' + e.target.value;
+      renderStats();
+    });
+  });
+  card.querySelector('textarea').addEventListener('input', e => {
+    DECISIONS[rule.id] = DECISIONS[rule.id] || {};
+    DECISIONS[rule.id].modifiedText = e.target.value;
+    persist();
+  });
+  card.querySelector('.notes input').addEventListener('input', e => {
+    DECISIONS[rule.id] = DECISIONS[rule.id] || {};
+    DECISIONS[rule.id].notes = e.target.value;
+    persist();
+  });
+
+  return card;
+}
+
+function renderStats() {
+  const total = DATA.rules.length;
+  let k = 0, d = 0, m = 0;
+  for (const id in DECISIONS) {
+    const v = DECISIONS[id].verdict;
+    if (v === 'reviewed') k++;
+    else if (v === 'drop') d++;
+    else if (v === 'modify') m++;
+  }
+  const unreviewed = total - (k + d + m);
+  const pct = n => total ? (n / total) * 100 : 0;
+  document.getElementById('stats').innerHTML =
+    '<div class="bar">' +
+      '<i style="width:' + pct(k) + '%;background:var(--ok-ink)"></i>' +
+      '<i style="width:' + pct(d) + '%;background:var(--bad-ink)"></i>' +
+      '<i style="width:' + pct(m) + '%;background:var(--warn-ink)"></i>' +
+    '</div>' +
+    '<div class="legend">' +
+      '<span><b>' + total + '</b> rules</span>' +
+      '<span><i style="background:var(--ok-ink)"></i><b>' + k + '</b> reviewed</span>' +
+      '<span><i style="background:var(--bad-ink)"></i><b>' + d + '</b> drop</span>' +
+      '<span><i style="background:var(--warn-ink)"></i><b>' + m + '</b> modify</span>' +
+      '<span><i style="background:var(--line-strong)"></i><b>' + unreviewed + '</b> unreviewed</span>' +
+    '</div>';
+}
+
+function persist() {
+  localStorage.setItem(datasetKey(), JSON.stringify(DECISIONS));
+}
+
+function pins() {
+  return Array.isArray(DATA && DATA.meta && DATA.meta.commits)
+    ? DATA.meta.commits.filter(c => c && c.hash) : [];
+}
+
+function pinLabel(c) {
+  const state = [c.branch, c.dirty ? 'dirty' : ''].filter(Boolean).join(', ');
+  return (c.root ? c.root + ' @ ' : '') + c.hash + (state ? ' (' + state + ')' : '');
+}
+
+function escape(s) {
+  if (s == null) return '';
+  return String(s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+}
+
+function download(filename, content, type) {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
+
+document.getElementById('exportJson').addEventListener('click', () => {
+  const payload = {
+    meta: Object.assign({}, DATA.meta, { exported: new Date().toISOString() }),
+    decisions: DATA.rules.map(r => ({
+      id: r.id,
+      category: r.category,
+      title: r.title,
+      original: r.summary,
+      source: r.source,
+      verdict: (DECISIONS[r.id] && DECISIONS[r.id].verdict) || 'unreviewed',
+      modifiedText: (DECISIONS[r.id] && DECISIONS[r.id].modifiedText) || '',
+      notes: (DECISIONS[r.id] && DECISIONS[r.id].notes) || ''
+    }))
+  };
+  download('decisions-' + ymd() + '.json', JSON.stringify(payload, null, 2), 'application/json');
+});
+
+document.getElementById('exportMd').addEventListener('click', () => {
+  const lines = ['# Rule audit decisions', '_' + (DATA.meta.title || '') + ' — exported ' + new Date().toISOString().slice(0, 10) + '_', ''];
+  if (pins().length) lines.push('Corpus pinned at ' + pins().map(c => '`' + pinLabel(c) + '`').join(', ') + '. Re-verify any rule whose source has changed since.', '');
+  for (const verdict of ['drop', 'modify', 'reviewed', 'unreviewed']) {
+    const matches = DATA.rules.filter(r => ((DECISIONS[r.id] && DECISIONS[r.id].verdict) || 'unreviewed') === verdict);
+    if (!matches.length) continue;
+    lines.push('## ' + verdict.toUpperCase() + ' (' + matches.length + ')', '');
+    for (const r of matches) {
+      const dec = DECISIONS[r.id] || {};
+      lines.push('### ' + r.id + ' — ' + r.title);
+      lines.push('- **Source:** `' + r.source + '`');
+      lines.push('- **Original:** ' + r.summary);
+      if (r.agentImpact) lines.push('- **In practice (agent view):** ' + r.agentImpact);
+      if (r.auditNote) lines.push('- **Audit note' + (r.auditCategory ? ' (' + r.auditCategory + ')' : '') + ':** ' + r.auditNote);
+      if (verdict === 'modify' && dec.modifiedText) lines.push('- **Proposed:** ' + dec.modifiedText);
+      if (dec.notes) lines.push('- **Your notes:** ' + dec.notes);
+      lines.push('');
+    }
+  }
+  download('decisions-' + ymd() + '.md', lines.join('\n'), 'text/markdown');
+});
+
+document.getElementById('reset').addEventListener('click', () => {
+  if (!confirm('Clear all decisions for this audit? This cannot be undone.')) return;
+  DECISIONS = {};
+  persist();
+  render();
+});
+
+document.getElementById('loadFile').addEventListener('click', () => document.getElementById('fileInput').click());
+document.getElementById('fileInput').addEventListener('change', async e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const text = await file.text();
+  try {
+    DATA = JSON.parse(text);
+    DECISIONS = JSON.parse(localStorage.getItem(datasetKey()) || '{}');
+    activeFilters.clear();
+    flaggedOnly = false;
+    render();
+  } catch (err) {
+    alert('Invalid JSON: ' + err.message);
+  }
+});
+
+function ymd() { return new Date().toISOString().slice(0, 10); }
+
+init();
+</script>
+</body>
+</html>

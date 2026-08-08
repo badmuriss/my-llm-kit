@@ -1,0 +1,7 @@
+- [PR description template](feedback_pr_template.md) — standard format for every PR description
+- [Prefer pnpm for package operations](feedback_prefer_pnpm.md) — use pnpm, not npm, for installs and scripts
+- [Streak math is timezone-sensitive](domain_streak_timezone.md) — compute streak rollover in the user's local tz, not UTC
+- [Search revamp v2 status](project_search_revamp.md) — search now via SearchService; legacy search_index table being decommissioned
+- [Review destructive migrations](feedback_destructive_migrations.md) — a second reviewer signs off before any data-losing migration runs on prod
+- [De-dup check-ins before counting](domain_checkin_dedup.md) — count distinct (user, habit, local_date), never raw check-in rows
+- [Read rate-limit budget from the header](feedback_rate_limit_budget.md) — use X-RateLimit-Remaining, don't hardcode the per-minute limit
