@@ -28,6 +28,13 @@ Detailed guidelines live in the skills:
 - Use `writing` skill for documentation and commit messages
 - Use `scrapingdog` skill for scraping, Google Search/SERP, Google Maps, Google Trends, Google News, Amazon, LinkedIn, Instagram, market research, and lead enrichment when `SCRAPINGDOG_API_KEY` is available
 
+## Testing
+
+- Test behavior, never implementation.
+- Name tests with a third-person verb, never "should".
+- Every bug fix ships with a test that fails without the fix.
+- Segment the test file by feature behavior with `describe` clauses.
+
 ## Writing (prose for humans)
 Every piece of prose meant for readers (post, newsletter, script, caption, blog, e-mail, document) goes through the `unslop` skill's system:
 - Generate from scratch: WRITE mode (`escrever`). Revise an existing draft: EDIT (`editar`). Audit without changing: DETECT (`detectar`). Grade: SCORE (`avaliar`).
