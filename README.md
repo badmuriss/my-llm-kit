@@ -98,7 +98,7 @@ Skills that need credentials still install without them; they just stay dormant 
 
 ### Plugins (Claude Code and Codex)
 
-Both hosts read a git plugin marketplace, and Codex accepts the `.claude-plugin/marketplace.json` layout, so the same five entries install on either one. Only the subcommand differs: `claude plugin install` against `codex plugin add`. `setup.sh` runs whichever hosts it finds and installs the same list on each.
+Both hosts read a git plugin marketplace, and Codex accepts the `.claude-plugin/marketplace.json` layout, so the same four entries install on either one. Only the subcommand differs: `claude plugin install` against `codex plugin add`. `setup.sh` runs whichever hosts it finds and installs the same list on each.
 
 Verified on codex-cli 0.146.0: all four marketplace repos below resolve through `codex plugin marketplace add`, and `codex plugin add last30days@last30days-skill` installs.
 
@@ -108,7 +108,6 @@ Gemini CLI, Copilot CLI and OpenCode have no plugin marketplace. They still get 
 |---|---|---|
 | claude-code-harness | Plan/work/review/release loop with team orchestration | [Chachamaru127/claude-code-harness](https://github.com/Chachamaru127/claude-code-harness) |
 | chrome-devtools-mcp | Browser debugging, automation, performance traces via Chrome DevTools | [anthropics/claude-plugins-official](https://github.com/anthropics/claude-plugins-official) |
-| frontend-design | Aesthetic direction for new UI, avoids templated defaults | [anthropics/claude-plugins-official](https://github.com/anthropics/claude-plugins-official) |
 | cloudflare | Workers, Pages, KV, D1, R2, Durable Objects, wrangler skills | [cloudflare/skills](https://github.com/cloudflare/skills) |
 | last30days | Community pulse over the last 30 days (Reddit, HN, X, GitHub, arXiv), plugs into the research skill | [mvanhorn/last30days-skill](https://github.com/mvanhorn/last30days-skill) (MIT) |
 

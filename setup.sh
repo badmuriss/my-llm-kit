@@ -327,14 +327,13 @@ link_agents_md() {
 run_step "AGENTS.md" link_agents_md
 
 # 6. plugins. Claude Code and Codex both read a git marketplace and both accept the
-# `.claude-plugin/marketplace.json` layout, so the same five entries install on either host.
+# `.claude-plugin/marketplace.json` layout, so the same four entries install on either host.
 # Verified on codex-cli 0.146.0: `codex plugin marketplace add` resolves all four repos below
 # and `codex plugin add <plugin>@<market>` installs them. Only the subcommand names differ
 # (`claude plugin install` vs `codex plugin add`), so this branches on the verb, not the list.
 PLUGINS=(
   "Chachamaru127/claude-code-harness|claude-code-harness@claude-code-harness-marketplace"
   "anthropics/claude-plugins-official|chrome-devtools-mcp@claude-plugins-official"
-  "anthropics/claude-plugins-official|frontend-design@claude-plugins-official"
   "cloudflare/skills|cloudflare@cloudflare"
   "mvanhorn/last30days-skill|last30days@last30days-skill"
 )
