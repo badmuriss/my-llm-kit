@@ -1,6 +1,6 @@
 ---
 name: ingest
-description: Converts documents into structured markdown before any analysis, routing each file type to the right converter. Use when the user uploads or points to a PDF, Word, Excel, PowerPoint, EPUB, image, audio file or code repository, when a scientific PDF needs formulas, tables and reading order preserved, or with Portuguese phrasings like "converte esse PDF", "lê essa planilha", "ingere esse documento". Also use before summarizing, analyzing or quoting any document.
+description: "Converts PDF, Office, EPUB, image, audio or repo into structured markdown before analysis. use_when: a document is uploaded or referenced, or before summarizing, quoting or analyzing one (\"converte esse PDF\", \"le essa planilha\"). do_not_use_when: the text is already markdown in the repo."
 ---
 
 # Ingestao (ingestion)

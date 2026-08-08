@@ -1,6 +1,6 @@
 ---
 name: writing
-description: Clear writing standards based on Zinsser's principles. Use for documentation, commit messages, PR descriptions, and technical communication.
+description: "Clear writing standards based on Zinsser. use_when: documentation, commit messages, PR descriptions, technical communication. do_not_use_when: prose for a human reader, use unslop."
 ---
 
 # Writing Standards

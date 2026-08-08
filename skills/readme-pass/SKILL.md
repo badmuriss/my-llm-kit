@@ -1,11 +1,6 @@
 ---
 name: readme-pass
-description: >
-  Give a public repo's README the presentation of a top-starred project
-  (centered banner, bold tagline, flat-square badges, anchor nav, install
-  block up top) while preserving every line of existing prose. Use when
-  asked to make a README pretty, run a "readme presentation pass", add a
-  banner or badges to a README, or make a repo look top-starred.
+description: "Give a public repo README top-starred presentation without dropping prose. use_when: make a README pretty, add banner or badges, run a readme presentation pass. do_not_use_when: rewriting the documentation content itself."
 ---
 
 # readme-pass

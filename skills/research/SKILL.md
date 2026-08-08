@@ -1,6 +1,6 @@
 ---
 name: research
-description: Runs research with verifiable grounding, from primary-source discovery to an auditable markdown finding. Use when the user asks to research a topic, gather evidence, fact-check a claim, compare sources, or write a report with citations, including phrasings like "research this", "where does this number come from", "is this true?", "find the papers", or in Portuguese "pesquisa isso", "de onde vem esse número", "levanta os papers". Also use before publishing any number, monetary value or superlative.
+description: "Research with verifiable grounding, primary sources to an auditable markdown finding. use_when: researching a topic, fact-checking, comparing sources, or before publishing any number, value or superlative (\"pesquisa isso\", \"de onde vem esse numero\"). do_not_use_when: the answer already lives in this repo."
 ---
 
 # Research
