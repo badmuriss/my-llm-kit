@@ -73,6 +73,8 @@ Everything `setup.sh` installs, in one table.
 | writing | Technical writing standards based on Zinsser | Own |
 | grill-me | Relentless interview about a plan until shared understanding | Own |
 | grill-with-docs | Same grilling, but updates CONTEXT.md and ADRs as decisions land | Own |
+| spec | Plans a change with an architecture lens and emits an OpenSpec package ready for implementation | Own |
+| impl | Executes an OpenSpec change through isolated subagents and evidence-based task grades | Own |
 | scrapingdog | ScrapingDog as default paid scraper: SERP, Maps, Trends, News, Amazon, LinkedIn, Instagram | Own; needs `SCRAPINGDOG_API_KEY` in the environment |
 | readme-pass | Top-starred presentation pass for a repo README: banner, badges, anchor nav, install up top, prose untouched | Own |
 
@@ -143,20 +145,23 @@ What was deliberately **not** loosened: the redirect guard that blocks `> ~/.bas
 |---|---|
 | AGENTS.md | Shared agent instructions. Installed at `~/.agents/AGENTS.md`, aliased from `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md`, with a backup of anything already there |
 | setup.sh | Installs everything above; idempotent, supports `--dry-run` |
-| commands/, agents/ | The plan → implement workflow below, installed by `install.sh` |
+| skills/spec, skills/impl | Cross-agent form of the plan to implementation workflow, installed by `setup.sh` |
+| commands/, agents/ | Claude Code slash-command wrappers for the same workflow, installed by `install.sh` |
 
 ## Workflow: /spec and /impl
 
-Two slash commands and the two subagents they dispatch to. They live in `commands/` and `agents/`, and used to be a separate repo (`claude-harness`), now folded in here so there is one public surface instead of two.
+The workflow ships in two forms. `skills/spec` and `skills/impl` work across agents and can be invoked as `$spec` and `$impl`. Claude Code keeps native `/spec` and `/impl` wrappers under `commands/`. Both forms emit and consume the same OpenSpec files.
 
 | File | What it is |
 |---|---|
+| `skills/spec/SKILL.md` | Cross-agent spec workflow for Codex, Gemini, Copilot, OpenCode and Claude Code. |
+| `skills/impl/SKILL.md` | Cross-agent implementation orchestrator with evidence grades and clean-context dispatch. |
 | `commands/spec.md` | `/spec <change>` — plans with an architecture lens (deep modules, deletion test, YAGNI), grills the decisions with you, and emits an openspec change (`proposal.md`, `design.md`, self-contained `tasks.md`). A new permanent rule has to name which existing rule it replaces. |
 | `commands/impl.md` | `/impl <change>` — dumb dispatcher: delegates each task to a subagent, reads the diff instead of the summary, and grades every task `pass`, `fail`, `unobserved` or `blocked`. Missing evidence is never `pass`. |
 | `agents/deep-reasoner.md` | Frontier-tier subagent with a clean, unanchored context. For architecture, debugging, algorithm design. |
 | `agents/fast-worker.md` | Fast-tier subagent for mechanical work: boilerplate, tests, formatting, simple edits. |
 
-`setup.sh` does not install these, because they are Claude Code slash commands rather than cross-agent skills. Install them on their own:
+`setup.sh` installs the cross-agent skills. Claude Code users who also want the native slash-command wrappers can install them on their own:
 
 ```bash
 ./install.sh          # copies commands and agents into ~/.claude, then installs the skills they lean on

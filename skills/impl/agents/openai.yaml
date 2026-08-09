@@ -1,0 +1,4 @@
+interface:
+  display_name: "Impl"
+  short_description: "Implementa uma mudança OpenSpec por tarefas"
+  default_prompt: "Use $impl para implementar uma mudança existente em openspec/changes/."

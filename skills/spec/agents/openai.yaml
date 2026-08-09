@@ -1,0 +1,4 @@
+interface:
+  display_name: "Spec"
+  short_description: "Planeja mudanças como OpenSpec executável"
+  default_prompt: "Use $spec para planejar esta mudança e gerar proposal.md, design.md e tasks.md."
