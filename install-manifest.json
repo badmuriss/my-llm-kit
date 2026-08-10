@@ -11,14 +11,13 @@
     {
       "name": "site-audit",
       "url": "https://github.com/badmuriss/site-audit"
-    }
-  ],
-  "community_skills": [
+    },
     {
-      "name": "llm-council",
-      "url": "https://github.com/tenfoldmarc/llm-council-skill"
+      "name": "spec-council",
+      "url": "https://github.com/badmuriss/spec-council"
     }
   ],
+  "community_skills": [],
   "plugins": [
     {
       "marketplace": "cloudflare/skills",

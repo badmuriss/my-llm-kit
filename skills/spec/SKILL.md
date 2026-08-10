@@ -1,13 +1,13 @@
 ---
 name: spec
-description: Plan a codebase change with an architecture lens, resolve blocking product decisions, and emit an OpenSpec change ready for implementation. Use when the user invokes "$spec" or "/spec", asks to spec or architect a change, or wants proposal.md, design.md, and tasks.md. The optional --council flag adds multi-perspective review. Do not implement code.
+description: Plan a codebase change with an architecture lens, use bounded council review to reduce owner questions and validate the draft, and emit an OpenSpec change ready for implementation. Use when the user invokes "$spec" or "/spec", asks to spec or architect a change, or wants proposal.md, design.md, and tasks.md. Use --no-council only when the user explicitly wants the lightest path. Do not implement code.
 ---
 
 # Spec
 
 Act as the architect. Produce an OpenSpec change, never implementation code.
 
-Treat text following `$spec` or `/spec` as the change request. Otherwise use the current user request. Remove the optional `--council` flag from the request before naming the change.
+Treat text following `$spec` or `/spec` as the change request. Otherwise use the current user request. Remove the optional `--no-council` flag from the request before naming the change.
 
 ## Workflow
 
@@ -23,37 +23,43 @@ Treat text following `$spec` or `/spec` as the change request. Otherwise use the
    - Apply YAGNI. Scope only what this change requires.
    - When two interfaces are close, sketch both, select one, and record the reason in `design.md`.
 
-3. Grill the plan.
+3. Emit the pre-grill draft under `openspec/changes/<slug>/`.
+   - Write `proposal.md` with why and what.
+   - Write `design.md` with the initial architecture, constraints, assumptions, alternatives, and open decisions.
+   - Do not write `tasks.md` until owner decisions are resolved.
+
+4. Filter owner questions with the council unless `--no-council` is present.
+   - Invoke `$spec-council --phase questions <slug>`.
+   - Read `council-questions.md`. Apply its safe assumptions and send only its owner decisions, plus any blocking question it demonstrably missed, to grilling.
+   - If the phase is missing or `unverified`, report that and continue with the normal grilling pass. Never claim the questions were council-filtered.
+
+5. Grill the plan.
    - Use the installed `$grill-me` skill.
-   - Resolve questions that change business behavior, design, or scope with the owner, one at a time.
+   - Resolve the filtered questions that change business behavior, design, or scope with the owner, one at a time.
    - Record accepted and rejected decisions in `design.md`; give each rejected alternative one line.
    - Stop with state `blocked` when an unanswered question changes design or scope.
    - Convert only execution-detail questions into declared assumptions, with the rejected alternative in one line.
 
-4. Pay for permanent rules.
+6. Pay for permanent rules.
    - When proposing a rule for `AGENTS.md`, `CLAUDE.md`, or memory, name the rule it replaces or justify why the corpus must grow.
    - Put a first occurrence in a candidates file. Promote it only after a second independent occurrence.
    - Check installed skills first. Do not duplicate a skill as a permanent rule.
 
-5. Emit a draft under `openspec/changes/<slug>/`.
-   - `proposal.md`: explain why the change exists and what it changes.
-   - `design.md`: capture architecture, decisions, assumptions, and rejected alternatives.
-   - `tasks.md`: create a checklist of self-contained tasks for a weak executor. Include exact paths, inline context, one exemplar file, and a machine-checkable done criterion.
+7. Complete the OpenSpec package.
+   - Update `proposal.md` and `design.md` with the resolved decisions.
+   - Write `tasks.md` as a checklist of self-contained tasks for a weak executor. Include exact paths, inline context, one exemplar file, and a machine-checkable done criterion.
    - When no validation command is known, write `Check: missing validation evidence` and state what must be observed. Never invent a command such as `npm test`.
    - Make every task understandable without access to the conversation.
 
-6. Run the council only when requested.
-   - When the invocation includes `--council`, use the installed `$llm-council` skill to pressure-test the draft's highest-cost decision. Give it `proposal.md`, `design.md`, and `tasks.md` as context.
-   - Ask the council to find contradictions, hidden assumptions, unnecessary scope, weak validation, and an executable first step. Do not use it as a generic prose rewriter.
-   - Respect the active resource guard. When it limits concurrency, run independent advisors in bounded batches without showing any advisor the earlier responses.
-   - Keep council artifacts under `openspec/changes/<slug>/council/`. If the skill is missing or the resource guard prevents the review, stop the council pass and report the blocker. Do not fall back silently.
-   - Record agreement, conflicts, accepted findings, and rejected findings in a concise `Council review` section in `design.md`. Revise the package only for accepted findings.
-   - Without `--council`, do not invoke the council and do not add a placeholder section.
+8. Validate with the council unless `--no-council` is present.
+   - Invoke `$spec-council --phase verdict <slug>`.
+   - Read `council-review.md`. Record its status and accepted decisions in a concise `Council review` section in `design.md`, then revise only for accepted findings.
+   - Stop with state `blocked` when the verdict is `block`. When it is missing or `unverified`, report that the package lacks council validation and continue with local validation.
 
-7. Compress and validate the change package.
+9. Compress and validate the change package.
    - Delete filler, duplicated decisions, and prose that restates a heading or another file.
    - Confirm all three files exist.
    - Confirm every task has scope, paths, acceptance criteria, and validation evidence or the explicit missing-evidence marker.
    - Confirm no task asks the executor to rediscover a decision already made.
 
-8. Tell the user to run `$impl <slug>` or `/impl <slug>` when ready.
+10. Tell the user to run `$impl <slug>` or `/impl <slug>` when ready.

@@ -1,4 +1,4 @@
 interface:
   display_name: "Spec"
   short_description: "Planeja e revisa mudanças como OpenSpec"
-  default_prompt: "Use $spec para planejar esta mudança; adicione --council se eu pedir uma revisão por múltiplas perspectivas."
+  default_prompt: "Use $spec para planejar esta mudança com council antes e depois do grilling."

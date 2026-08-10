@@ -157,7 +157,7 @@ class ResourceAdmissionBehavior(unittest.TestCase):
 
     def test_denies_an_agent_that_exceeds_the_global_limit(self) -> None:
         state = ResourceState(
-            active_agents=8,
+            active_agents=20,
             heavy_commands=1,
             stale_processes=0,
             available_memory_percent=50,

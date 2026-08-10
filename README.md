@@ -29,7 +29,7 @@ Install my-llm-kit from https://github.com/badmuriss/my-llm-kit.
 4. Preview with .\setup.ps1 -DryRun on Windows or ./setup.sh --dry-run on macOS/Linux.
 5. Fix safe prerequisites. Do not delete user-owned configuration.
 6. Run the matching installer, then run it again to verify idempotence.
-7. Confirm that spec, impl, grill-me, and llm-council are available to the installed agents.
+7. Confirm that spec, impl, grill-me, and spec-council are available to the installed agents.
 8. Report changes, skips, backups, failures, and anything left unverified.
 ```
 
@@ -69,7 +69,7 @@ project-local rules, gate candidates, and skills
 | Skill | Job | Output |
 |---|---|---|
 | `research` | Checks changing facts and compares sources before they shape the code. | An auditable finding under `research/`. |
-| `spec` | Reads the affected code and resolves product and architecture decisions. `grill-me` handles open branches. | `openspec/changes/<slug>/proposal.md`, `design.md`, and `tasks.md`. |
+| `spec` | Uses a short council before grilling, resolves owner decisions, then validates the final draft. | `proposal.md`, `design.md`, `tasks.md`, and two concise council reports. |
 | `impl` | Executes an approved spec, reviews each diff, verifies behavior, and grades task evidence. | Code, checks, evidence grades, incidents, and resumable state. |
 | `writing` | Keeps docs, commits, PR descriptions, and errors short and concrete. | A clear record of what changed, why, and how it was checked. |
 
@@ -85,15 +85,7 @@ Implement the approved plan:
 Use $impl <slug> to implement the OpenSpec change. Verify every task and report evidence grades and learned candidates.
 ```
 
-Claude Code also has `/spec` and `/impl` wrappers for the same workflow.
-
-For a costly or uncertain design, add `--council`:
-
-```text
-Use $spec --council to plan <change> and pressure-test the draft before finalizing it.
-```
-
-The flag invokes `llm-council` after the first draft. Normal specs stay fast and skip it.
+Claude Code also has `/spec` and `/impl` wrappers for the same workflow. Council review runs by default. Before grilling, `spec-council` reduces duplicate or unnecessary questions. After grilling, it checks architecture and executability. Each pass uses at most two reviewers and writes one short Markdown report. Use `$spec --no-council <change>` to skip both passes.
 
 ### What `impl` remembers
 
@@ -133,12 +125,12 @@ The loop stops when no verified, unchecked, in-scope task remains.
 | `unslop` | Writes, edits, detects, and scores prose, including Brazilian Portuguese. | [badmuriss/unslop](https://github.com/badmuriss/unslop) |
 | `incredibly-pretty-websites` | Research-driven frontend design system. | [badmuriss/incredibly-pretty-websites](https://github.com/badmuriss/incredibly-pretty-websites) |
 | `site-audit` | UX, SEO, AEO, GEO, and Core Web Vitals audit for a running site. | [badmuriss/site-audit](https://github.com/badmuriss/site-audit) |
+| `spec-council` | Bounded multi-perspective review for OpenSpec drafts. | [badmuriss/spec-council](https://github.com/badmuriss/spec-council) |
 
-### Community skills
+### Web fallback
 
 | Skill | Purpose | Source |
 |---|---|---|
-| `llm-council` | Optional multi-perspective review for `$spec --council` and other costly decisions. | [tenfoldmarc/llm-council-skill](https://github.com/tenfoldmarc/llm-council-skill) |
 | `firecrawl` suite | Search, scrape, crawl, and map through the Firecrawl CLI. | [firecrawl/cli](https://github.com/firecrawl/cli) |
 
 Credentials are optional during setup. A skill stays dormant until its key or login is available.
@@ -192,7 +184,7 @@ The installers:
 
 `dcg` blocks destructive shell commands before they run. This repo adds calibrated rules under `dcg/` and checks every case in `dcg/regression.txt` during setup.
 
-`agent-resource-guard` limits competing agent sessions and heavy commands on Linux. It also cleans up tagged child processes after their owner exits. Manual processes and persistent terminal shells are excluded.
+`agent-resource-guard` allows up to 20 active agent sessions by default and can still deny work earlier for memory or heavy-command pressure. It also cleans up tagged child processes after their owner exits. Manual processes and persistent terminal shells are excluded.
 
 ### Reduced Claude Code install
 

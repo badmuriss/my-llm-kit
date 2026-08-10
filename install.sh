@@ -72,26 +72,10 @@ done < <(
     --manifest "$INSTALL_MANIFEST"
 )
 
-while IFS='|' read -r skill_name skill_url; do
-  [ -n "$skill_name" ] || continue
-  canonical="$HOME/.agents/skills/$skill_name"
-  claude_target="$HOME/.claude/skills/$skill_name"
-  if [ ! -e "$canonical" ] && [ ! -L "$canonical" ]; then
-    git clone --depth 1 "$skill_url" "$canonical"
-  fi
-  if [ ! -e "$claude_target" ] || [ -L "$claude_target" ]; then
-    ln -sfn "$canonical" "$claude_target"
-  else
-    echo "$claude_target is a real directory, leaving it alone"
-  fi
-done < <(
-  python3 "$SRC/scripts/read_install_manifest.py" community_skills \
-    --manifest "$INSTALL_MANIFEST"
-)
-
 npx -y skills add badmuriss/incredibly-pretty-websites -g -y
 npx -y skills add badmuriss/unslop -g -y
 npx -y skills add mattpocock/skills --skill grill-with-docs -g -y
 npx -y skills add badmuriss/site-audit -g -y
+npx -y skills add badmuriss/spec-council -g -y
 npx -y skills add vercel-labs/agent-skills --skill vercel-react-best-practices -g -y
 echo "done — /spec and /impl available in Claude Code"

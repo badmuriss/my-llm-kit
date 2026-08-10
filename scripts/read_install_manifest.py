@@ -16,6 +16,7 @@ SECTIONS = {
     "plugins": ("marketplace", "plugin"),
     "reduced_install_skills": (),
 }
+EMPTY_SECTIONS = {"community_skills"}
 
 
 class ManifestError(ValueError):
@@ -34,7 +35,7 @@ def load_manifest(path: Path) -> dict[str, Any]:
 
 def section_rows(manifest: dict[str, Any], section: str) -> tuple[str, ...]:
     entries = manifest[section]
-    if not isinstance(entries, list) or not entries:
+    if not isinstance(entries, list) or (not entries and section not in EMPTY_SECTIONS):
         raise ManifestError(f"{section} must be a non-empty array")
     fields = SECTIONS[section]
     rows: list[str] = []

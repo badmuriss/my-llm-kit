@@ -19,6 +19,7 @@ The machine-wide `agent-resource-guard` keeps concurrent agent work below a safe
 
 - Before spawning subagents, run `agent-resource-guard check --intent agent --demand <count> --prune`. Exit code 75 means no capacity. Reduce the batch, work locally, or wait for an existing worker. Never bypass a denial by launching another terminal.
 - Before a build, typecheck, test suite, browser run, or development server, run `agent-resource-guard check --intent heavy --prune`. Do not start the command when capacity is denied.
+- The global default admits up to 20 active agent sessions. Memory and heavy-command limits can still deny work earlier.
 - Keep no more than two subagents active from one root agent. Global capacity may be lower.
 - Never run the same build or typecheck concurrently in one worktree. Reuse an active development server instead of starting another.
 - Stop every background command when its task ends. Cancellation must terminate the full child process tree.
