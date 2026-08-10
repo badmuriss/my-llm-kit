@@ -28,6 +28,7 @@ if [ ! -d "$SRC/commands" ]; then
   SRC="$(mktemp -d)"
   git clone --depth 1 https://github.com/badmuriss/my-llm-kit "$SRC"
 fi
+INSTALL_MANIFEST="$SRC/install-manifest.json"
 
 install_one() {
   # $1 = source file, $2 = destination file
@@ -63,8 +64,13 @@ install_vendored_skill() {
   fi
 }
 
-install_vendored_skill spec
-install_vendored_skill impl
+while IFS= read -r skill_name; do
+  [ -n "$skill_name" ] || continue
+  install_vendored_skill "$skill_name"
+done < <(
+  python3 "$SRC/scripts/read_install_manifest.py" reduced_install_skills \
+    --manifest "$INSTALL_MANIFEST"
+)
 
 npx -y skills add badmuriss/incredibly-pretty-websites -g -y
 npx -y skills add badmuriss/unslop -g -y

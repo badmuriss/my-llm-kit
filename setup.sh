@@ -6,6 +6,7 @@
 set -uo pipefail
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+INSTALL_MANIFEST="$REPO_DIR/install-manifest.json"
 DRY=0
 for a in "$@"; do
   case "$a" in
@@ -28,6 +29,10 @@ if command -v codex >/dev/null 2>&1 || [ -d "$HOME/.codex" ]; then
 fi
 
 RESULTS=()
+manifest_rows() {
+  python3 "$REPO_DIR/scripts/read_install_manifest.py" "$1" --manifest "$INSTALL_MANIFEST"
+}
+
 run_step() {
   local name="$1"; shift
   local start end secs rc
@@ -53,7 +58,7 @@ link_skill() {
   local host target
 
   mkdir -p "$SKILLS_ROOT"
-  if [ -e "$canonical" ] && [ ! -L "$canonical" ]; then
+  if [ "$canonical" != "$src" ] && [ -e "$canonical" ] && [ ! -L "$canonical" ]; then
     # the backup must land OUTSIDE the skill root. every host indexes every directory in
     # there, so a `foo.bak-20260807` sitting next to `foo` shows up as a second, stale
     # copy of the same skill in the picker.
@@ -63,7 +68,9 @@ link_skill() {
     mv "$canonical" "$backup"
     echo "  backup saved at $backup"
   fi
-  ln -sfn "$src" "$canonical"
+  if [ "$canonical" != "$src" ]; then
+    ln -sfn "$src" "$canonical"
+  fi
 
   for host in "${HOST_SKILL_DIRS[@]}"; do
     # host dir already IS the canonical root (unified via a directory symlink): nothing to do
@@ -97,6 +104,12 @@ check_bins() {
   for b in git python3 pip3 node npx; do
     if ! command -v "$b" >/dev/null 2>&1; then
       echo "  missing: $b"
+      missing=1
+    fi
+  done
+  for section in own_repositories community_skills plugins reduced_install_skills; do
+    if ! manifest_rows "$section" >/dev/null; then
+      echo "  invalid install manifest section: $section"
       missing=1
     fi
   done
@@ -169,16 +182,10 @@ link_vendored_skills() {
 run_step "vendored skills" link_vendored_skills
 
 # 4b. own skill repos: clone if missing, then link
-OWN_REPOS=(
-  "unslop|https://github.com/badmuriss/unslop"
-  "incredibly-pretty-websites|https://github.com/badmuriss/incredibly-pretty-websites"
-  "site-audit|https://github.com/badmuriss/site-audit"
-)
 setup_own_repos() {
-  local entry name url repo
-  for entry in "${OWN_REPOS[@]}"; do
-    name="${entry%%|*}"
-    url="${entry#*|}"
+  local name url repo
+  while IFS='|' read -r name url; do
+    [ -n "$name" ] || continue
     repo="$HOME/Documents/$name"
 
     if [ "$DRY" -eq 1 ]; then
@@ -189,23 +196,20 @@ setup_own_repos() {
 
     [ -d "$repo" ] || git clone "$url" "$repo" || return 1
     link_skill "$name" "$repo"
-  done
+  done < <(manifest_rows own_repositories)
 }
 run_step "own skill repos" setup_own_repos
 
 # 4c. community skills: clone into the canonical root, then fan out. skip what is already there.
-COMMUNITY_SKILLS=(
-  "humanizer|https://github.com/blader/humanizer"
-  "notebooklm|https://github.com/PleasePrompto/notebooklm-skill"
-  "llm-council|https://github.com/tenfoldmarc/llm-council-skill"
-)
 install_community_skills() {
-  local entry name url target
-  mkdir -p "$SKILLS_ROOT"
-  for entry in "${COMMUNITY_SKILLS[@]}"; do
-    name="${entry%%|*}"
-    url="${entry#*|}"
+  local name url target
+  [ "$DRY" -eq 1 ] || mkdir -p "$SKILLS_ROOT"
+  while IFS='|' read -r name url; do
+    [ -n "$name" ] || continue
     target="$SKILLS_ROOT/$name"
+    if [ -L "$target" ] && [ ! -e "$target" ]; then
+      [ "$DRY" -eq 1 ] || rm -f "$target"
+    fi
     if [ -e "$target" ]; then
       echo "  $name already present, skipping"
       continue
@@ -216,7 +220,7 @@ install_community_skills() {
     fi
     git clone "$url" "$target" || return 1
     link_skill "$name" "$target"
-  done
+  done < <(manifest_rows community_skills)
 }
 run_step "community skills" install_community_skills
 
@@ -331,12 +335,6 @@ run_step "AGENTS.md" link_agents_md
 # Verified on codex-cli 0.146.0: `codex plugin marketplace add` resolves all three repos below
 # and `codex plugin add <plugin>@<market>` installs them. Only the subcommand names differ
 # (`claude plugin install` vs `codex plugin add`), so this branches on the verb, not the list.
-PLUGINS=(
-  "Chachamaru127/claude-code-harness|claude-code-harness@claude-code-harness-marketplace"
-  "cloudflare/skills|cloudflare@cloudflare"
-  "mvanhorn/last30days-skill|last30days@last30days-skill"
-)
-
 # is "$plugin" already installed on "$host", given that host's `plugin list` output?
 # the two hosts print different things and the difference is a trap:
 #   claude lists ONLY installed plugins, so any match means installed.
@@ -354,11 +352,10 @@ plugin_installed() {
 # install every plugin on one host. $1 host binary, $2 the install subcommand for that host.
 install_plugins_for() {
   local host="$1" verb="$2"
-  local installed entry market plugin
+  local installed market plugin
   installed="$("$host" plugin list 2>/dev/null)"
-  for entry in "${PLUGINS[@]}"; do
-    market="${entry%%|*}"
-    plugin="${entry#*|}"
+  while IFS='|' read -r market plugin; do
+    [ -n "$market" ] || continue
     if plugin_installed "$host" "$plugin" "$installed"; then
       echo "  $host: $plugin already installed, skipping"
       continue
@@ -369,7 +366,7 @@ install_plugins_for() {
     fi
     "$host" plugin marketplace add "$market" >/dev/null 2>&1
     "$host" plugin "$verb" "$plugin"
-  done
+  done < <(manifest_rows plugins)
 }
 
 install_plugins() {

@@ -1,0 +1,49 @@
+{
+  "own_repositories": [
+    {
+      "name": "unslop",
+      "url": "https://github.com/badmuriss/unslop"
+    },
+    {
+      "name": "incredibly-pretty-websites",
+      "url": "https://github.com/badmuriss/incredibly-pretty-websites"
+    },
+    {
+      "name": "site-audit",
+      "url": "https://github.com/badmuriss/site-audit"
+    }
+  ],
+  "community_skills": [
+    {
+      "name": "humanizer",
+      "url": "https://github.com/blader/humanizer"
+    },
+    {
+      "name": "notebooklm",
+      "url": "https://github.com/PleasePrompto/notebooklm-skill"
+    },
+    {
+      "name": "llm-council",
+      "url": "https://github.com/tenfoldmarc/llm-council-skill"
+    }
+  ],
+  "plugins": [
+    {
+      "marketplace": "Chachamaru127/claude-code-harness",
+      "plugin": "claude-code-harness@claude-code-harness-marketplace"
+    },
+    {
+      "marketplace": "cloudflare/skills",
+      "plugin": "cloudflare@cloudflare"
+    },
+    {
+      "marketplace": "mvanhorn/last30days-skill",
+      "plugin": "last30days@last30days-skill"
+    }
+  ],
+  "reduced_install_skills": [
+    "spec",
+    "impl",
+    "grill-me"
+  ]
+}

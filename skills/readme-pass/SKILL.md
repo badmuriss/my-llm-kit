@@ -1,6 +1,6 @@
 ---
 name: readme-pass
-description: "Give a public repo README top-starred presentation without dropping prose. use_when: make a README pretty, add banner or badges, run a readme presentation pass. do_not_use_when: rewriting the documentation content itself."
+description: "Give a public repo README top-starred presentation with agent-first installation, without dropping prose. use_when: make a README pretty, add banner or badges, add a copyable agent install prompt, or run a readme presentation pass. do_not_use_when: rewriting the documentation content itself."
 ---
 
 # readme-pass
@@ -46,8 +46,21 @@ Insert this, in this order, before the current content:
    Check each anchor against GitHub slug rules: lowercase, spaces to
    dashes, dots and slashes dropped ("What setup.sh does" is
    `#what-setupsh-does`).
-5. The install block, moved up from wherever it lives. Never invent a
-   command that is not already in the README.
+5. The install section, moved up from wherever it lives. Put a copyable
+   agent-install prompt before manual commands whenever setup changes the
+   user's machine. Most users will ask an agent to install the project.
+   The prompt must tell the agent to:
+   - detect the operating system and choose the documented installer;
+   - read repository instructions before mutation;
+   - preserve local changes and user-owned configuration;
+   - run the documented dry-run or preview first;
+   - proceed only when the preview has no blocker;
+   - verify the installed capability, rerun to prove idempotence when the
+     installer claims it, and report backups, skips, and unverified steps.
+
+   Use only commands and operating systems the repository actually
+   supports. Never invent an installer. Keep the existing manual commands
+   below the prompt as a fallback for debugging and constrained environments.
 
 Then the existing content follows, with at most light heading
 reorganization so the anchors work. Drop the old H1: the banner carries

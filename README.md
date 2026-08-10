@@ -1,6 +1,6 @@
 <p align="center"><img src="docs/banner.png" width="720" alt="my-llm-kit wordmark in white with mint-green hyphens on a near-black background, with the tagline: a personal, versioned coding-agent setup"></p>
 
-<p align="center"><b>One clone and one script turn a fresh machine into the exact same coding-agent environment.</b></p>
+<p align="center"><b>One clone and one agent prompt turn a fresh machine into the same coding-agent environment.</b></p>
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="MIT license"></a>
@@ -13,11 +13,28 @@
   <a href="#which-agents-this-works-with">Which agents</a> ·
   <a href="#the-full-stack">The full stack</a> ·
   <a href="#workflow-spec-and-impl">Workflow</a> ·
-  <a href="#what-setupsh-does">What setup.sh does</a> ·
+  <a href="#what-the-installers-do">What the installers do</a> ·
   <a href="#credits">Credits</a>
 </p>
 
 ## Install
+
+Copy this prompt into your coding agent. It detects the operating system, previews the changes, installs the kit, and verifies the result:
+
+```text
+Install my-llm-kit from https://github.com/badmuriss/my-llm-kit.
+
+1. Detect whether this machine is native Windows, macOS, or Linux. Do not use WSL for a native Windows install.
+2. Clone the repository if it is absent. If it already exists, preserve local changes and update it only when the worktree is clean.
+3. Read AGENTS.md and the README before changing the machine.
+4. Run the matching preview: .\setup.ps1 -DryRun on Windows or ./setup.sh --dry-run on macOS/Linux.
+5. Inspect the preview for missing dependencies, real directories that would be preserved, and failed steps. Resolve safe prerequisites without deleting user-owned configuration.
+6. When the preview has no blocker, run the real installer for this operating system.
+7. Verify that ~/.agents/skills contains spec, impl, and grill-me; verify the detected agent hosts can see those skills; run the installer a second time to confirm idempotence.
+8. Report what changed, what was skipped, every backup path, and any step that remains unverified. Never report success for a skipped or failed check.
+```
+
+Manual fallback for Linux and macOS:
 
 ```bash
 git clone https://github.com/badmuriss/my-llm-kit
@@ -26,7 +43,17 @@ cd my-llm-kit
 ./setup.sh
 ```
 
-A personal, versioned setup for coding agents: writing, research, coding standards, audit skills, resource limits, shared instructions, and one idempotent installer.
+Manual fallback for native Windows PowerShell:
+
+```powershell
+git clone https://github.com/badmuriss/my-llm-kit
+Set-Location my-llm-kit
+Set-ExecutionPolicy -Scope Process Bypass
+.\setup.ps1 -DryRun
+.\setup.ps1
+```
+
+A personal, versioned setup for coding agents: writing, research, coding standards, audit skills, resource limits, shared instructions, and idempotent installers.
 
 ## Why this exists
 
@@ -34,12 +61,12 @@ Agent config rots quietly. Skills drift out of sync between machines, the global
 
 ## Which agents this works with
 
-Skills install into **`~/.agents/skills/`**, the cross-agent convention. Several hosts read it natively; the ones that only look in their own directory get a per-skill symlink pointing back at the same files. One copy on disk, every agent sees it.
+Skills install into **`~/.agents/skills/`**, the cross-agent convention. Several hosts read it natively; the ones that only look in their own directory get a per-skill link pointing back at the same files. Unix uses symlinks. Native Windows uses directory junctions, which do not require Developer Mode.
 
 | Host | Reads `~/.agents/skills` natively | Skills | Plugins | MCP | dcg hooks |
 |---|---|---|---|---|---|
-| Claude Code | no | symlinked into `~/.claude/skills/` | yes | yes | yes |
-| Codex CLI | project scope only | symlinked into `~/.codex/skills/` | yes | yes | yes |
+| Claude Code | no | linked into `~/.claude/skills/` | yes | yes | yes |
+| Codex CLI | project scope only | linked into `~/.codex/skills/` | yes | yes | yes |
 | Gemini CLI | yes | nothing needed | no marketplace | by hand | yes |
 | GitHub Copilot CLI | yes | nothing needed | no marketplace | by hand | yes |
 | OpenCode | yes | nothing needed | no marketplace | prints the JSON | not supported by dcg |
@@ -48,9 +75,9 @@ The script only touches a host directory when that host is actually installed, a
 
 Nothing in this kit is Claude Code only. Every skill describes the action it wants (navigate, click, screenshot, search the web) and leaves the tool name to the host, so the same file works wherever it lands.
 
-The same logic covers the instructions file. `AGENTS.md` lives once at `~/.agents/AGENTS.md`, and `~/.claude/CLAUDE.md` plus `~/.codex/AGENTS.md` become symlinks to it. Edit one file, every agent picks it up.
+The same logic covers the instructions file. On Unix, `AGENTS.md` lives once at `~/.agents/AGENTS.md`, and each host path becomes a symlink. Windows installs managed copies because file symlinks may require extra privileges. Rerun `setup.ps1` after editing the repository copy.
 
-**MCP servers are the exception, and there is no way around it.** Claude Code, Codex and OpenCode use three different config files in three different formats with no shared path between them, so `setup.sh` branches per host instead of pretending a single command exists. For OpenCode it prints the JSON block rather than editing your config.
+**MCP servers are the exception, and there is no way around it.** Claude Code, Codex and OpenCode use different config formats, so each setup script branches per host instead of pretending a shared command exists. For OpenCode it prints the JSON block rather than editing your config.
 
 ### Installing a single skill without the script
 
@@ -62,7 +89,7 @@ npx skills add badmuriss/site-audit --global --agent '*' -y
 
 ## The full stack
 
-Everything `setup.sh` installs, in one table.
+Everything the setup scripts install, in one table.
 
 ### Skills vendored in this repo (`skills/`, linked into `~/.agents/skills/`)
 
@@ -101,7 +128,7 @@ Skills that need credentials still install without them; they just stay dormant 
 
 ### Plugins (Claude Code and Codex)
 
-Both hosts read a git plugin marketplace, and Codex accepts the `.claude-plugin/marketplace.json` layout, so the same three entries install on either one. Only the subcommand differs: `claude plugin install` against `codex plugin add`. `setup.sh` runs whichever hosts it finds and installs the same list on each.
+Both hosts read a git plugin marketplace, and Codex accepts the `.claude-plugin/marketplace.json` layout, so the same entries install on either one. Only the subcommand differs: `claude plugin install` against `codex plugin add`. Each setup script runs whichever hosts it finds and reads the list from the shared manifest.
 
 Verified on codex-cli 0.146.0: all three marketplace repos below resolve through `codex plugin marketplace add`, and `codex plugin add last30days@last30days-skill` installs.
 
@@ -115,7 +142,7 @@ Gemini CLI, Copilot CLI and OpenCode have no plugin marketplace. They still get 
 
 ### Destructive-command guard (dcg)
 
-[dcg](https://github.com/Dicklesworthstone/destructive_command_guard) sits in front of every shell command the agent runs and blocks the destructive ones. It wires its own hooks into Claude Code, Codex CLI, Gemini CLI, Copilot CLI and Cursor, so this is the one piece of the kit that is genuinely host-agnostic without any help from `setup.sh`.
+[dcg](https://github.com/Dicklesworthstone/destructive_command_guard) sits in front of every shell command the agent runs and blocks the destructive ones. It wires its own hooks into Claude Code, Codex CLI, Gemini CLI, Copilot CLI and Cursor, so its protection remains host-agnostic after installation.
 
 What the kit adds is the calibration, in `dcg/`, with the reason for every entry written into the file:
 
@@ -132,11 +159,11 @@ Two directions, because calibration is not the same as loosening:
 
 What was deliberately **not** loosened: the redirect guard that blocks `> ~/.bashrc`. It over-triggers on creating a new file under `$HOME` and on heredocs whose text merely contains a `>`, which is annoying, but `| tee <file>` and the agent's file-write tool both work and are safer. Friction with a working alternative is not a reason to disable a rule.
 
-`setup.sh` asserts all 25 verdicts after installing the config, so a calibration that quietly stops protecting something fails the install instead of passing in silence.
+Both setup scripts assert every verdict in `dcg/regression.txt` after installing the config, so a calibration that quietly stops protecting something fails the install instead of passing in silence.
 
 ### Agent resource guard
 
-`agent-resource-guard` prevents independent agent terminals from multiplying builds and subagents until the desktop runs out of memory. The shared instructions require a capacity check before new workers, builds, tests, browsers, and development servers.
+On Linux, `agent-resource-guard` prevents independent agent terminals from multiplying builds and subagents until the desktop runs out of memory. The shared instructions require a capacity check before new workers, builds, tests, browsers, and development servers when the command exists. Native Windows skips this Linux cgroup and systemd component explicitly.
 
 The default machine-wide budget allows eight agent sessions and four heavy command trees. It also rejects new work when available memory falls below 20% or agent cgroups exceed 65% of physical memory. Each root agent may keep at most two subagents active.
 
@@ -153,15 +180,17 @@ agent-resource-guard prune --dry-run
 
 ### MCP servers
 
-`setup.sh` registers only `paper-search` (scientific literature on arXiv, PubMed, Semantic Scholar, Crossref, OpenAlex, Unpaywall), on each host that is present. Browser automation uses the Playwright CLI on demand instead of a long-lived browser MCP. The script does not uninstall browser tools that a user added or kept separately. `shadcn` remains a useful MCP to add by hand. Paid or account-bound MCPs are not part of this kit; see below.
+The setup scripts register only `paper-search` (scientific literature on arXiv, PubMed, Semantic Scholar, Crossref, OpenAlex, Unpaywall), on each host that is present. Browser automation uses the Playwright CLI on demand instead of a long-lived browser MCP. The installers do not remove browser tools that a user added separately. `shadcn` remains a useful MCP to add by hand. Paid or account-bound MCPs are not part of this kit; see below.
 
 ### Config
 
 | Component | What it does |
 |---|---|
 | AGENTS.md | Shared agent instructions. Installed at `~/.agents/AGENTS.md`, aliased from `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md`, with a backup of anything already there |
-| setup.sh | Installs everything above; idempotent, supports `--dry-run` |
-| skills/spec, skills/impl | Cross-agent form of the plan to implementation workflow, installed by `setup.sh` |
+| setup.sh | Installs the kit on Linux and macOS; idempotent, supports `--dry-run` |
+| setup.ps1 | Installs the kit on native Windows; idempotent, supports `-DryRun` |
+| install-manifest.json | Shared repositories, plugins, and reduced-workflow dependencies consumed by both installers |
+| skills/spec, skills/impl | Cross-agent form of the plan to implementation workflow, installed by both setup scripts |
 | commands/, agents/ | Claude Code slash-command wrappers for the same workflow, installed by `install.sh` |
 
 ## Workflow: /spec and /impl
@@ -196,7 +225,7 @@ The Python state and learning tools run on Windows, macOS, and Linux. A project 
 
 The loop has an explicit stop condition: if no unchecked, verified, in-scope task remains, it stops instead of inventing work.
 
-`setup.sh` installs the cross-agent skills. Claude Code users who also want the native slash-command wrappers can install them on their own:
+The setup script for each OS installs the cross-agent skills. Claude Code users who also want the native slash-command wrappers can install them on their own. The reduced installer now includes `grill-me`, because `/spec` invokes it directly:
 
 ```bash
 ./install.sh          # copies commands and agents into ~/.claude, then installs the skills they lean on
@@ -222,7 +251,7 @@ Left out on purpose, with the reason:
 
 ## Writing: unslop
 
-unslop lives in its own repo, [badmuriss/unslop](https://github.com/badmuriss/unslop). `setup.sh` clones it to `~/Documents/unslop` and links it into the skill root.
+unslop lives in its own repo, [badmuriss/unslop](https://github.com/badmuriss/unslop). The setup scripts clone it into the user's Documents directory and link it into the skill root.
 
 v2 has four modes: write, edit, detect and score. A dedicated Brazilian Portuguese layer catches the tells the English list misses (the em dash splice, "no cenário atual", "é importante ressaltar", call-center gerund). A rubric grades every draft from 0 to 50 with a cut line at 35: below that, the text goes back for a rewrite before it ships. A self-eval runs at the end of each generation to catch relapses before the user sees them.
 
@@ -239,23 +268,25 @@ Two skills adapted from [research-stack](https://github.com/nett0eth/research-st
 
 `ingest` routes each file (PDF, Word, Excel, code repository) to the right converter before anything gets read, because a two-column PDF read raw produces scrambled conclusions.
 
-## What setup.sh does
+## What the installers do
 
-1. Checks required binaries (git, python3, pip3, node, npx) and reports which agent hosts it found.
+`setup.sh` and `setup.ps1` consume the same `install-manifest.json`, so repository, plugin, and workflow dependency lists cannot drift by operating system.
+
+1. Checks required binaries and reports which agent hosts it found.
 2. Installs `markitdown[all]`, `paper-search-mcp` and `mcp<2.0.0` via pip (mcp 2.0.0 broke fastmcp, so the version is pinned).
 3. Registers the `paper-search` MCP on each host present, using that host's own command and config format.
-4. Links every skill under `skills/` into `~/.agents/skills/`, then fans out per-skill symlinks to the host dirs that need them, backing up anything real in the way.
+4. Links every skill under `skills/` into `~/.agents/skills/`, then fans it out to host directories with Unix symlinks or Windows junctions, backing up anything real in the canonical root.
 5. Clones the own skill repos (unslop, incredibly-pretty-websites, site-audit) to `~/Documents/` if missing and links them the same way.
 6. Clones the community skills into the skill root, skipping anything already there.
 7. Installs the Firecrawl CLI and its skill suite if missing.
-8. Installs `AGENTS.md` at `~/.agents/AGENTS.md` and points each host's expected filename at it, with backups.
+8. Installs `AGENTS.md` at `~/.agents/AGENTS.md` and updates each detected host's expected filename, with backups.
 9. Fans every skill in the canonical root out to each host that needs its own copy, whatever put the skill there: this repo, a community clone, the Firecrawl CLI, or a plain `npx skills add --global`. This is the step that makes adding a host later a no-op, so installing Codex on a machine that already ran the script is one rerun away from parity. Real directories a host already owns are reported and left alone.
 10. Adds each plugin marketplace and installs the plugins on every host that has one (Claude Code, Codex), skipping what is already installed.
-11. Installs `agent-resource-guard` and enables its stale-process timer when a systemd user manager is available.
-12. Installs [dcg](https://github.com/Dicklesworthstone/destructive_command_guard), copies the calibrated `dcg/config.toml` and `dcg/allowlist.toml` into `~/.config/dcg/` (backing up anything different that was already there), and lets dcg wire its own hooks. dcg 0.9.4 covers Claude Code, Codex CLI, Gemini CLI, Copilot CLI and Cursor, emitting the right protocol per host.
-13. Asserts the 25 expected verdicts in `dcg/regression.txt`, so a broken calibration fails the install.
+11. Installs `agent-resource-guard` and enables its timer on Linux when a systemd user manager is available. Native Windows records an explicit skip.
+12. Installs [dcg](https://github.com/Dicklesworthstone/destructive_command_guard), using its native PowerShell installer on Windows. It copies the calibrated config and allowlist into `~/.config/dcg/`, backs up different files, and wires detected hosts.
+13. Asserts every expected verdict in `dcg/regression.txt`, so a broken calibration fails the install.
 
-Heavy converters (MinerU, docling) are opt-in and not installed by the script. The whole thing is idempotent: a second run changes nothing.
+Heavy converters such as MinerU and docling are opt-in. Both installers are idempotent.
 
 ## Credits
 
