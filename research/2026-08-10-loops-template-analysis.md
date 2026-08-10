@@ -14,9 +14,15 @@ Falsifier: if the template adds only documentation scaffolding, duplicates curre
 
 Do not copy `loops-template` into `my-llm-kit`. Extract a small set of mechanisms into the existing `$impl` lifecycle.
 
-The strongest additions are crash-safe run state, structured incident records, verifiable evidence references, and promotion from repeated lessons to proposed mechanical gates. The existing `my-llm-kit` learning compiler is already stricter than the Loops active-rule compiler in important ways, but its independence check needs reinforcement.
+The strongest additions are crash-safe run state, structured incident records, verifiable evidence references, promotion from repeated lessons to proposed mechanical gates, and a reviewed path from recurring cross-task needs to valid skills. The existing `my-llm-kit` learning compiler is already stricter than the Loops active-rule compiler in important ways, but its independence check needs reinforcement.
 
 The creator's throughput claim is not verifiable from the public repository. Treat it as a private testimonial, not evidence for an architectural decision.
+
+## Follow-up after the repository documentation update
+
+Two later commits added the root architecture guide and the cross-platform plan. The guide makes skill creation part of the intended maintenance flow when a verified pattern is reusable across projects. The portability plan standardizes local configuration around an operating-system value and project path while keeping execution paths out of versioned files. Sources: [architecture guide commit](https://github.com/pedrogazil/loops/commit/0245965), [cross-platform plan commit](https://github.com/pedrogazil/loops/commit/3114e65), accessed 2026-08-10.
+
+This changes the selected implementation in two bounded ways. The learning compiler may now materialize a valid, project-local `SKILL.md` after the same evidenced need recurs across distinct OpenSpec changes. It still does not install or publish that skill. The state and learning scripts also accept `IMPL_OS` and `IMPL_PROJECT_DIR` from `.env`, validate the configured OS against the machine, and preserve `--repo` as an explicit override.
 
 ## What changed in Loops
 

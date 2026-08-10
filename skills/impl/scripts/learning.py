@@ -16,17 +16,21 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Iterable, Sequence
 
+from runtime_config import RuntimeConfigError, add_runtime_arguments, runtime_from_arguments
 
-SCHEMA_VERSION = 2
+
+SCHEMA_VERSION = 3
 PROMOTION_MIN_DISTINCT_CHANGES = 2
 LEARNING_ROOT = Path("openspec/impl-learning")
 RUNS_DIRECTORY = LEARNING_ROOT / "runs"
 ACTIVE_RULES_FILE = LEARNING_ROOT / "ACTIVE_RULES.md"
 GATE_CANDIDATES_FILE = LEARNING_ROOT / "GATE_CANDIDATES.md"
 QUALITY_SIGNALS_FILE = LEARNING_ROOT / "QUALITY_SIGNALS.md"
+SKILL_INDEX_FILE = LEARNING_ROOT / "SKILLS.md"
+SKILLS_DIRECTORY = LEARNING_ROOT / "skills"
 ALLOWED_OUTCOMES = {"pass", "partial", "blocked"}
 ALLOWED_GRADES = {"pass", "fail", "unobserved", "blocked"}
-ALLOWED_LEARNING_KINDS = {"rule", "gate_candidate"}
+ALLOWED_LEARNING_KINDS = {"rule", "gate_candidate", "skill"}
 ALLOWED_INCIDENT_KINDS = {
     "defect",
     "conflict",
@@ -37,6 +41,7 @@ ALLOWED_INCIDENT_KINDS = {
 }
 ALLOWED_INCIDENT_STATUSES = {"open", "verified", "rejected", "inconclusive"}
 KEY_PATTERN = re.compile(r"^[a-z0-9]+(?:[._-][a-z0-9]+)*$")
+SKILL_NAME_PATTERN = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 IDENTIFIER_PATTERN = re.compile(r"^[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*$")
 COMMIT_PATTERN = re.compile(r"^(?:[0-9a-fA-F]{40}|[0-9a-fA-F]{64})$")
 EXTERNAL_EVIDENCE_KINDS = {"file", "commit"}
@@ -76,6 +81,8 @@ class Learning:
     evidence: str
     evidence_refs: tuple[str, ...]
     supersedes: tuple[str, ...]
+    skill_name: str | None
+    skill_description: str | None
 
 
 @dataclass(frozen=True)
@@ -259,7 +266,7 @@ def parse_learning(value: Any, context: str) -> Learning:
             "evidence",
             "evidence_refs",
         },
-        optional={"supersedes"},
+        optional={"supersedes", "skill_name", "skill_description"},
     )
     key = require_key(learning.get("key"), f"{context}.key")
     supersedes = require_string_list(
@@ -276,6 +283,22 @@ def parse_learning(value: Any, context: str) -> Learning:
     )
     if kind == "gate_candidate" and supersedes:
         raise LearningError(f"{context}: gate candidates cannot supersede active rules")
+    if kind == "skill" and supersedes:
+        raise LearningError(f"{context}: skill learnings cannot supersede active rules")
+    skill_name = learning.get("skill_name")
+    skill_description = learning.get("skill_description")
+    if kind == "skill":
+        skill_name = require_string(skill_name, f"{context}.skill_name")
+        if not SKILL_NAME_PATTERN.fullmatch(skill_name):
+            raise LearningError(
+                f"{context}.skill_name must use lowercase letters, numbers, and hyphens"
+            )
+        skill_description = require_string(
+            skill_description,
+            f"{context}.skill_description",
+        )
+    elif skill_name is not None or skill_description is not None:
+        raise LearningError(f"{context}: skill fields require kind skill")
     scopes = require_string_list(
         learning.get("scopes"),
         f"{context}.scopes",
@@ -295,6 +318,8 @@ def parse_learning(value: Any, context: str) -> Learning:
             allow_empty=False,
         ),
         supersedes=supersedes,
+        skill_name=skill_name,
+        skill_description=skill_description,
     )
 
 
@@ -463,12 +488,14 @@ def normalize_rule(rule: str) -> str:
 
 def learning_signature(
     learning: Learning,
-) -> tuple[str, str, tuple[str, ...], tuple[str, ...]]:
+) -> tuple[str, str, tuple[str, ...], tuple[str, ...], str | None, str | None]:
     return (
         learning.kind,
         normalize_rule(learning.rule),
         learning.scopes,
         learning.supersedes,
+        learning.skill_name,
+        learning.skill_description,
     )
 
 
@@ -487,7 +514,7 @@ def collect_promoted_occurrences(
         signatures = {learning_signature(occurrence.learning) for occurrence in occurrences}
         if len(signatures) > 1:
             raise LearningError(
-                f"learning {key!r} has conflicting kind, rule text, scopes, or supersedes"
+                f"learning {key!r} has conflicting kind, content, scopes, or supersedes"
             )
         if (
             len({occurrence.change for occurrence in occurrences})
@@ -571,6 +598,78 @@ def render_gate_candidates(runs: Sequence[RunRecord]) -> str:
     )
 
 
+def promoted_skills(
+    runs: Sequence[RunRecord],
+) -> dict[str, tuple[LearningOccurrence, ...]]:
+    skills: dict[str, tuple[LearningOccurrence, ...]] = {}
+    for occurrences in collect_promoted_occurrences(runs).values():
+        learning = occurrences[0].learning
+        if learning.kind != "skill" or learning.skill_name is None:
+            continue
+        if learning.skill_name in skills:
+            raise LearningError(f"duplicate promoted skill name: {learning.skill_name}")
+        skills[learning.skill_name] = occurrences
+    return skills
+
+
+def render_skill(learning: Learning) -> str:
+    if learning.skill_name is None or learning.skill_description is None:
+        raise LearningError(f"learning {learning.key!r} is missing skill metadata")
+    title = " ".join(part.capitalize() for part in learning.skill_name.split("-"))
+    return "\n".join(
+        [
+            "---",
+            f"name: {learning.skill_name}",
+            f"description: {json.dumps(learning.skill_description)}",
+            "---",
+            "<!-- Generated by impl/scripts/learning.py. Do not edit by hand. -->",
+            f"# {title}",
+            "",
+            learning.rule,
+            "",
+        ]
+    )
+
+
+def render_skill_index(runs: Sequence[RunRecord]) -> str:
+    skills = promoted_skills(runs)
+    lines = [
+        "<!-- Generated by impl/scripts/learning.py. Do not edit by hand. -->",
+        "# Generated project skills",
+        "",
+        "> Each skill requires verified recurrence across distinct changes.",
+        "> Review it before copying it into a discovered skill directory or publishing it.",
+        "",
+    ]
+    if not skills:
+        lines.extend(["No generated project skills.", ""])
+        return "\n".join(lines)
+    for skill_name, occurrences in sorted(skills.items()):
+        learning = occurrences[0].learning
+        lines.extend(
+            [
+                f"## {skill_name}",
+                "",
+                f"Path: `skills/{skill_name}/SKILL.md`",
+                "",
+                f"{learning.skill_description}",
+                "",
+                "Evidence:",
+                "",
+            ]
+        )
+        for occurrence in occurrences:
+            references = ", ".join(
+                f"`{reference}`" for reference in occurrence.learning.evidence_refs
+            )
+            lines.append(
+                f"- `{occurrence.run_id}` (`{occurrence.change}`): "
+                f"{occurrence.learning.evidence} [{references}]"
+            )
+        lines.append("")
+    return "\n".join(lines)
+
+
 def render_quality_signals(runs: Sequence[RunRecord]) -> str:
     outcomes = Counter(run.outcome for run in runs)
     grades = Counter(task.grade for run in runs for task in run.tasks)
@@ -600,10 +699,35 @@ def render_quality_signals(runs: Sequence[RunRecord]) -> str:
 
 
 def generated_artifacts(runs: Sequence[RunRecord]) -> dict[Path, str]:
-    return {
+    artifacts = {
         ACTIVE_RULES_FILE: render_active_rules(runs),
         GATE_CANDIDATES_FILE: render_gate_candidates(runs),
         QUALITY_SIGNALS_FILE: render_quality_signals(runs),
+        SKILL_INDEX_FILE: render_skill_index(runs),
+    }
+    for skill_name, occurrences in promoted_skills(runs).items():
+        artifacts[SKILLS_DIRECTORY / skill_name / "SKILL.md"] = render_skill(
+            occurrences[0].learning
+        )
+    return artifacts
+
+
+def existing_generated_skill_files(repo: Path) -> set[Path]:
+    skills_root = repo / SKILLS_DIRECTORY
+    if not skills_root.exists():
+        return set()
+    return {
+        path.relative_to(repo)
+        for path in skills_root.glob("*/SKILL.md")
+        if "Generated by impl/scripts/learning.py" in path.read_text(encoding="utf-8")
+    }
+
+
+def skill_artifact_paths(artifacts: dict[Path, str]) -> set[Path]:
+    return {
+        path
+        for path in artifacts
+        if path.parent.parent == SKILLS_DIRECTORY
     }
 
 
@@ -631,6 +755,11 @@ def atomic_write_text(path: Path, content: str) -> None:
 
 def refresh(repo: Path) -> tuple[Path, ...]:
     artifacts = generated_artifacts(load_runs(repo))
+    expected_skill_files = skill_artifact_paths(artifacts)
+    for stale_path in existing_generated_skill_files(repo) - expected_skill_files:
+        absolute_path = repo / stale_path
+        absolute_path.unlink()
+        absolute_path.parent.rmdir()
     paths: list[Path] = []
     for relative_path, content in artifacts.items():
         path = repo / relative_path
@@ -641,6 +770,12 @@ def refresh(repo: Path) -> tuple[Path, ...]:
 
 def check(repo: Path) -> tuple[Path, ...]:
     artifacts = generated_artifacts(load_runs(repo))
+    unexpected_skill_files = existing_generated_skill_files(repo) - skill_artifact_paths(
+        artifacts
+    )
+    if unexpected_skill_files:
+        unexpected = ", ".join(str(path) for path in sorted(unexpected_skill_files))
+        raise LearningError(f"generated skill files are stale: {unexpected}; run refresh")
     paths: list[Path] = []
     for relative_path, expected in artifacts.items():
         path = repo / relative_path
@@ -657,18 +792,18 @@ def build_parser() -> argparse.ArgumentParser:
         description="Compile verified impl lessons into project-local artifacts."
     )
     parser.add_argument("command", choices=("refresh", "check"))
-    parser.add_argument("--repo", type=Path, default=Path.cwd())
+    add_runtime_arguments(parser)
     return parser
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     arguments = build_parser().parse_args(argv)
-    repo = arguments.repo.resolve()
     try:
+        repo = runtime_from_arguments(arguments).project_directory
         paths = refresh(repo) if arguments.command == "refresh" else check(repo)
         for path in paths:
             print(path)
-    except (LearningError, OSError) as error:
+    except (LearningError, OSError, RuntimeConfigError) as error:
         print(f"learning: {error}", file=sys.stderr)
         return 1
     return 0

@@ -21,6 +21,7 @@ from learning import (
     validate_external_evidence_ref,
     validate_run_references,
 )
+from runtime_config import RuntimeConfigError, add_runtime_arguments, runtime_from_arguments
 
 
 SCHEMA_VERSION = 1
@@ -90,7 +91,13 @@ def process_exists(process_id: str) -> bool:
             text=True,
         )
         return result.returncode == 0 and f'"{process_id}"' in result.stdout
-    return Path(f"/proc/{process_id}").exists()
+    try:
+        os.kill(int(process_id), 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    return True
 
 
 def parse_pending_tasks(tasks_file: Path) -> list[dict[str, Any]]:
@@ -526,7 +533,7 @@ def command_export_run(arguments: argparse.Namespace) -> dict[str, Any]:
     if run_path.exists():
         raise StateError(f"run record already exists: {run_path}")
     record = {
-        "schema_version": 2,
+        "schema_version": 3,
         "run_id": state["run_id"],
         "change": state["change"],
         "completed_at": now(),
@@ -554,7 +561,7 @@ def command_show(arguments: argparse.Namespace) -> dict[str, Any]:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Manage crash-safe impl run state.")
-    parser.add_argument("--repo", type=Path, default=Path.cwd())
+    add_runtime_arguments(parser)
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     init_parser = subparsers.add_parser("init")
@@ -612,9 +619,10 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: Sequence[str] | None = None) -> int:
     arguments = build_parser().parse_args(argv)
     try:
+        arguments.repo = runtime_from_arguments(arguments).project_directory
         result = arguments.handler(arguments)
         print(json.dumps(result, indent=2))
-    except (LearningError, StateError, OSError) as error:
+    except (LearningError, RuntimeConfigError, StateError, OSError) as error:
         print(f"impl-state: {error}", file=sys.stderr)
         return 1
     return 0

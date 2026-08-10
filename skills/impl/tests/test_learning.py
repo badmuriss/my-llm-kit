@@ -34,9 +34,11 @@ class LearningTestCase(unittest.TestCase):
         task_evidence_refs: list[str] | None = None,
         learning_evidence_refs: list[str] | None = None,
         incidents: list[dict[str, object]] | None = None,
+        skill_name: str | None = None,
+        skill_description: str | None = None,
     ) -> Path:
         record = {
-            "schema_version": 2,
+            "schema_version": 3,
             "run_id": run_id,
             "change": change or f"change-{run_id}",
             "completed_at": "2026-08-09T12:00:00Z",
@@ -64,6 +66,10 @@ class LearningTestCase(unittest.TestCase):
                 }
             ],
         }
+        if skill_name is not None:
+            record["learnings"][0]["skill_name"] = skill_name
+        if skill_description is not None:
+            record["learnings"][0]["skill_description"] = skill_description
         path = self.runs_directory / filename
         path.write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
         return path
@@ -267,7 +273,71 @@ class GeneratedArtifactsBehavior(LearningTestCase):
         result = self.run_learning("refresh")
 
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn("conflicting kind, rule text", result.stderr)
+        self.assertIn("conflicting kind, content", result.stderr)
+
+    def test_generates_a_skill_after_verified_recurrence(self) -> None:
+        for run_id, change in (("run-1", "change-a"), ("run-2", "change-b")):
+            self.write_run(
+                f"{run_id}.json",
+                run_id,
+                change=change,
+                key="skills.verify-api-contract",
+                kind="skill",
+                rule=(
+                    "Trace the API payload through producer, transport, and consumer. "
+                    "Verify each boundary."
+                ),
+                skill_name="verify-api-contract",
+                skill_description=(
+                    "Verify an API contract across every application boundary."
+                ),
+            )
+
+        result = self.run_learning("refresh")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        skill = (
+            self.repo
+            / "openspec"
+            / "impl-learning"
+            / "skills"
+            / "verify-api-contract"
+            / "SKILL.md"
+        )
+        self.assertTrue(skill.is_file())
+        content = skill.read_text(encoding="utf-8")
+        self.assertIn("name: verify-api-contract", content)
+        self.assertIn('description: "Verify an API contract', content)
+        self.assertIn("Trace the API payload", content)
+        self.assertIn("## verify-api-contract", self.artifact("SKILLS.md"))
+
+    def test_keeps_a_single_skill_observation_uncreated(self) -> None:
+        self.write_run(
+            "run-1.json",
+            "run-1",
+            kind="skill",
+            skill_name="verify-api-contract",
+            skill_description="Verify an API contract across every application boundary.",
+        )
+
+        result = self.run_learning("refresh")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("No generated project skills.", self.artifact("SKILLS.md"))
+        self.assertFalse((self.repo / "openspec" / "impl-learning" / "skills").exists())
+
+    def test_rejects_skill_metadata_on_a_rule(self) -> None:
+        self.write_run(
+            "run-1.json",
+            "run-1",
+            skill_name="verify-api-contract",
+            skill_description="Verify an API contract across every application boundary.",
+        )
+
+        result = self.run_learning("refresh")
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("skill fields require kind skill", result.stderr)
 
     def test_detects_generated_artifact_drift(self) -> None:
         self.write_run("run-1.json", "run-1")

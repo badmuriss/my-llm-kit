@@ -277,7 +277,7 @@ class ResumeBehavior(ImplStateTestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         run_record = self.repo / "openspec" / "impl-learning" / "runs" / "run-1.json"
         record = json.loads(run_record.read_text(encoding="utf-8"))
-        self.assertEqual(record["schema_version"], 2)
+        self.assertEqual(record["schema_version"], 3)
         self.assertEqual(record["tasks"][0]["grade"], "pass")
         self.assertEqual(record["tasks"][0]["evidence_refs"], ["file:proof.txt"])
         self.assertEqual(record["incidents"], [])

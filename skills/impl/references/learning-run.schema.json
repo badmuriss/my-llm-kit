@@ -16,7 +16,7 @@
   ],
   "properties": {
     "schema_version": {
-      "const": 2
+      "const": 3
     },
     "run_id": {
       "type": "string",
@@ -206,7 +206,7 @@
           "$ref": "#/$defs/key"
         },
         "kind": {
-          "enum": ["rule", "gate_candidate"]
+          "enum": ["rule", "gate_candidate", "skill"]
         },
         "scopes": {
           "type": "array",
@@ -238,6 +238,14 @@
           "items": {
             "$ref": "#/$defs/key"
           }
+        },
+        "skill_name": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "skill_description": {
+          "type": "string",
+          "minLength": 1
         }
       },
       "allOf": [
@@ -250,6 +258,27 @@
           "then": {
             "properties": {
               "supersedes": {"maxItems": 0}
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {"const": "skill"}
+            }
+          },
+          "then": {
+            "required": ["skill_name", "skill_description"],
+            "properties": {
+              "supersedes": {"maxItems": 0}
+            }
+          },
+          "else": {
+            "not": {
+              "anyOf": [
+                {"required": ["skill_name"]},
+                {"required": ["skill_description"]}
+              ]
             }
           }
         }

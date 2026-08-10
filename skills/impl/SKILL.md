@@ -16,9 +16,11 @@ Treat text following `$impl` or `/impl` as the change slug. Otherwise use the sl
 
 2. Read the repository instructions first. Obtain the real build, test, lint, and typecheck commands plus one or two exemplar files. Discover commands only when project instructions do not provide them.
 
+   The Python scripts run natively on Windows, macOS, and Linux. They load `.env` from the current directory and accept `--env-file <path>`. Set `IMPL_OS` and `IMPL_PROJECT_DIR` as shown in [runtime.env.example](references/runtime.env.example). A CLI `--repo` value overrides the project directory. The scripts reject an OS value that disagrees with the machine instead of running a false platform configuration. Commands below use `python3`; use `py -3` on Windows when `python3` is unavailable.
+
 3. Initialize or reconcile crash-safe run state before dispatching.
    - Use one stable run ID for the whole execution.
-   - If no active state exists, run `python3 ~/.agents/skills/impl/scripts/impl_state.py --repo . init --change <slug> --run-id <run-id>`. It replaces only a completed state from an older run. The generated file conforms to [impl-state.schema.json](references/impl-state.schema.json).
+   - If no active state exists, run `python3 ~/.agents/skills/impl/scripts/impl_state.py init --change <slug> --run-id <run-id>`. It replaces only a completed state from an older run. The generated file conforms to [impl-state.schema.json](references/impl-state.schema.json).
    - If an active state exists, run the same script with `resume --change <slug>`. Inspect every reported diff, interrupted task, process, and cleanup obligation before restarting or dispatching anything.
    - The state tracks only unchecked OpenSpec tasks. If none remain, stop instead of inventing work.
 
@@ -29,7 +31,7 @@ Treat text following `$impl` or `/impl` as the change slug. Otherwise use the sl
    - Run `agent-resource-guard check --intent heavy --prune` before each build, typecheck, test suite, browser run, or development server. A denial is not test evidence; wait for capacity.
 
 5. Load project-local impl rules before dispatching.
-   - If `openspec/impl-learning/runs/` exists, run `python3 ~/.agents/skills/impl/scripts/learning.py refresh --repo .`.
+   - If `openspec/impl-learning/runs/` exists, run `python3 ~/.agents/skills/impl/scripts/learning.py refresh`.
    - Read `openspec/impl-learning/ACTIVE_RULES.md` after regeneration.
    - Apply only rules whose scopes match the current change. Repository instructions and the approved OpenSpec change take precedence.
    - Never copy these rules into Codex memory, `AGENTS.md`, or another project automatically.
@@ -76,17 +78,18 @@ Treat text following `$impl` or `/impl` as the change slug. Otherwise use the sl
 14. Stop every background command and finish every registered cleanup obligation. A completed state cannot contain running or interrupted tasks or pending cleanup.
 
 15. Export the run and refresh project-local artifacts.
-   - Run `python3 ~/.agents/skills/impl/scripts/impl_state.py --repo . export-run --change <slug> --outcome <pass|partial|blocked>`. It copies final task grades and evidence into a new record under `openspec/impl-learning/runs/` that conforms to [learning-run.schema.json](references/learning-run.schema.json).
+   - Run `python3 ~/.agents/skills/impl/scripts/impl_state.py export-run --change <slug> --outcome <pass|partial|blocked>`. It copies final task grades and evidence into a new record under `openspec/impl-learning/runs/` that conforms to [learning-run.schema.json](references/learning-run.schema.json).
    - Record every task grade, observed evidence, and existing `file:` or `commit:` evidence references. Set the run outcome to `pass`, `partial`, or `blocked`.
    - Add incidents and learnings to the exported record. Record incidents separately from learnings. Each incident names its kind, symptom, hypothesis, proposed fix, verification plan, status, and evidence references. A hypothesis is not a learned rule.
    - Derive learnings only from events the orchestrator observed in diffs, checks, repairs, conflicts, or integration. Link each learning to a passing task, verified incident, existing file, or existing commit. An uneventful run uses empty `incidents` and `learnings` arrays.
    - Before adding a learning, search prior run records. Reuse the same key, scopes, and rule text when the same lesson recurs. Use a new key with `supersedes` when the new rule replaces an older one.
-   - Use `kind: rule` for guidance the harness may load. Use `kind: gate_candidate` when recurrence could become a test, guard, linter, or script. Gate candidates require a normal reviewed OpenSpec change and never modify code automatically.
+   - Use `kind: rule` for guidance the harness may load. Use `kind: gate_candidate` when recurrence could become a test, guard, linter, or script. Use `kind: skill` when the same verified need is reusable across tasks or projects. A skill learning also requires a hyphen-case `skill_name` and a trigger-focused `skill_description`; its `rule` becomes the imperative skill body.
+   - Gate candidates and skills require review. The compiler may generate a project-local skill, but it never installs or publishes one automatically.
    - Keep evidence concrete and local to this run. Never promote a subagent claim that the orchestrator did not verify.
-   - Run `python3 ~/.agents/skills/impl/scripts/learning.py refresh --repo .`, then run the same command with `check` instead of `refresh`.
-   - The compiler promotes matching observations only across distinct OpenSpec changes. It generates `ACTIVE_RULES.md`, `GATE_CANDIDATES.md`, and `QUALITY_SIGNALS.md`. Quality signals include task grades and incident categories, not PR throughput.
+   - Run `python3 ~/.agents/skills/impl/scripts/learning.py refresh`, then run the same command with `check` instead of `refresh`.
+   - The compiler promotes matching observations only across distinct OpenSpec changes. It generates `ACTIVE_RULES.md`, `GATE_CANDIDATES.md`, `QUALITY_SIGNALS.md`, `SKILLS.md`, and valid skill folders under `openspec/impl-learning/skills/`. Quality signals include task grades and incident categories, not PR throughput.
 
-16. Complete the persisted state with `python3 ~/.agents/skills/impl/scripts/impl_state.py --repo . complete --change <slug> --outcome <pass|partial|blocked>`. Report changed files, checks, grades, incidents, learning candidates, gate candidates, newly active rules, and everything that remains unproven.
+16. Complete the persisted state with `python3 ~/.agents/skills/impl/scripts/impl_state.py complete --change <slug> --outcome <pass|partial|blocked>`. Report changed files, checks, grades, incidents, learning candidates, gate candidates, generated skills, newly active rules, and everything that remains unproven.
 
 ## Guardrails
 
@@ -97,7 +100,9 @@ Treat text following `$impl` or `/impl` as the change slug. Otherwise use the sl
 - Do not invent a lesson to make every run look useful.
 - Do not hand-edit `openspec/impl-learning/ACTIVE_RULES.md`; it is generated state.
 - Do not hand-edit `GATE_CANDIDATES.md` or `QUALITY_SIGNALS.md`; they are generated state.
+- Do not hand-edit `SKILLS.md` or generated `skills/*/SKILL.md`; change the evidenced run records and regenerate.
 - Do not activate a learning from repeated run IDs that belong to the same OpenSpec change.
 - Do not turn a gate candidate into code without a reviewed change and a failing behavioral test.
+- Do not install or publish a generated skill without reviewing its trigger, instructions, evidence, and scope.
 - Stop when no unchecked, verified, in-scope task remains. A non-empty run is not a success condition.
 - Do not restart commands restored from a crashed or resumed session without inspecting whether an equivalent process already exists.

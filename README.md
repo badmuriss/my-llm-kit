@@ -74,7 +74,7 @@ Everything `setup.sh` installs, in one table.
 | grill-me | Relentless interview about a plan until shared understanding | Own |
 | grill-with-docs | Same grilling, but updates CONTEXT.md and ADRs as decisions land | Own |
 | spec | Plans a change with an architecture lens and emits an OpenSpec package ready for implementation | Own |
-| impl | Executes an OpenSpec change, grades evidence, and promotes recurring project-local lessons | Own |
+| impl | Executes an OpenSpec change, grades evidence, and turns recurring needs into rules, gate candidates, or reviewable skills | Own |
 | scrapingdog | ScrapingDog as default paid scraper: SERP, Maps, Trends, News, Amazon, LinkedIn, Instagram | Own; needs `SCRAPINGDOG_API_KEY` in the environment |
 | readme-pass | Top-starred presentation pass for a repo README: banner, badges, anchor nav, install up top, prose untouched | Own |
 
@@ -183,13 +183,16 @@ Each `$impl` or `/impl` run starts with atomic state under `openspec/impl-state/
 
 After the run, `impl_state.py export-run` copies task grades and evidence into `openspec/impl-learning/runs/`. The orchestrator adds only structured incidents and verified lessons. Evidence references must resolve to a repository file, immutable full commit SHA, passing task, or verified incident. Repeated run IDs from one change do not count as independent evidence.
 
-The compiler generates three project-local artifacts:
+The compiler generates project-local artifacts:
 
 - `ACTIVE_RULES.md` contains recurring guidance proven across distinct OpenSpec changes.
 - `GATE_CANDIDATES.md` contains recurring lessons that could become a test, guard, linter, or script. They require a normal reviewed change and never implement themselves.
 - `QUALITY_SIGNALS.md` aggregates task evidence grades and incident categories such as conflicts, resource denials, stale processes, and crash recovery. It excludes PR throughput.
+- `SKILLS.md` indexes recurring cross-task needs, while `skills/<name>/SKILL.md` materializes each one as a valid, reviewable skill.
 
-The compiler rejects conflicting meanings, missing evidence, unverified incident links, and generated-file drift. It supports explicit supersession and writes the complete rule with its evidence. Learning stays inside the project. The harness never writes it into host memory, global instructions, or another repository.
+The compiler rejects conflicting meanings, missing evidence, unverified incident links, and generated-file drift. It supports explicit supersession and writes the complete rule with its evidence. Generated skills require the same recurrence across distinct changes as active rules. Learning stays inside the project. The harness never installs or publishes a skill, writes host memory, changes global instructions, or modifies another repository.
+
+The Python state and learning tools run on Windows, macOS, and Linux. A project can keep its local runtime in a git-ignored `.env` with `IMPL_OS` and `IMPL_PROJECT_DIR`; command-line `--repo` remains an explicit override. OS values are checked against the actual machine so a copied config fails clearly instead of running the wrong platform assumptions.
 
 The loop has an explicit stop condition: if no unchecked, verified, in-scope task remains, it stops instead of inventing work.
 
