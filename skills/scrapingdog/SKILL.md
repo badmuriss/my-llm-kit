@@ -20,12 +20,16 @@ credential.
 
 ## First Checks
 
-1. `SCRAPINGDOG_API_KEY` must be in the environment. Never hardcode it in source, markdown, logs or examples.
-2. Pick the dedicated endpoint from the routing table below. Generic `/scrape` is the last resort, not the default.
-3. If the project already has a ScrapingDog client or helper module, reuse it instead of writing new HTTP code.
-4. Build the query with `URLSearchParams` or a params object, never string concatenation.
-5. Timeout around 60s (120s for `/chatgpt` and `/google/ai_mode`).
-6. Before a batch job, hit `/account` for remaining credits and active concurrency.
+1. Run `scripts/key-env-check.sh`. Never conclude that `SCRAPINGDOG_API_KEY` is missing from one non-interactive environment check.
+   - `current`: use the current shell.
+   - `interactive`: the key exists in shell startup files. Run ScrapingDog calls inside `bash -ic '...'` so that shell loads the key.
+   - `missing`: only then record the key as absent and follow the fallback policy.
+2. Never print, grep, copy, persist or hardcode the key. The checker reports only where the key became available, never its value.
+3. Pick the dedicated endpoint from the routing table below. Generic `/scrape` is the last resort, not the default.
+4. If the project already has a ScrapingDog client or helper module, reuse it instead of writing new HTTP code.
+5. Build the query with `URLSearchParams` or a params object, never string concatenation.
+6. Timeout around 60s (120s for `/chatgpt` and `/google/ai_mode`).
+7. Before a batch job, hit `/account` for remaining credits and active concurrency.
 
 ## Routing Table
 
