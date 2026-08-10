@@ -10,9 +10,9 @@
 
 <p align="center">
   <a href="#install">Install</a> ·
+  <a href="#the-harness">The harness</a> ·
   <a href="#which-agents-this-works-with">Which agents</a> ·
   <a href="#the-full-stack">The full stack</a> ·
-  <a href="#workflow-spec-and-impl">Workflow</a> ·
   <a href="#what-the-installers-do">What the installers do</a> ·
   <a href="#credits">Credits</a>
 </p>
@@ -53,11 +53,56 @@ Set-ExecutionPolicy -Scope Process Bypass
 .\setup.ps1
 ```
 
-A personal, versioned setup for coding agents: writing, research, coding standards, audit skills, resource limits, shared instructions, and idempotent installers.
+A personal, versioned harness for coding agents. It turns research into an explicit spec, executes that spec with evidence, learns from repeated implementation needs, and keeps the result readable.
 
 ## Why this exists
 
 Agent config rots quietly. Skills drift out of sync between machines, the global instructions file forks into local edits nobody remembers making, and every new agent you try wants its own copy of everything. This repo pins the whole setup to git, so a fresh machine is one clone and one script away from the same environment, on whichever agent you happen to be running that week.
+
+## The harness
+
+The core of this repo is its own plan, work, review, and learning loop. It does not depend on `claude-code-harness` or another orchestration plugin. The same harness runs as `$spec` and `$impl` across supported agents, with `/spec` and `/impl` wrappers available for Claude Code.
+
+The working loop is:
+
+```text
+research when facts are uncertain
+        ↓
+$spec turns decisions into proposal.md, design.md, and tasks.md
+        ↓
+$impl executes tasks, checks the diff, runs evidence, and grades the result
+        ↓
+verified lessons become project-local rules, gate candidates, or skills
+```
+
+Four skills carry most of the system:
+
+| Skill | Role in the harness | Concrete result |
+|---|---|---|
+| `research` | Grounds claims before architecture or implementation. It starts with primary sources, preserves disagreements, and records an auditable trail. | A finding under `research/` with source URLs, access dates, and explicit confidence limits. |
+| `spec` | Reads the affected code, resolves product and architecture decisions, and uses `grill-me` when the plan still has open branches. It plans but never implements. | `openspec/changes/<slug>/proposal.md`, `design.md`, and self-contained `tasks.md`. |
+| `impl` | Executes an approved OpenSpec change through bounded, clean-context work. It persists crash-safe state, reviews every diff, verifies behavior, and grades the evidence for each task. | Implemented code, test evidence, task grades, incident records, and a resumable run state. |
+| `writing` | Keeps technical documentation, commit messages, PR descriptions, and errors short and concrete. It is the communication layer around the work, not a generic prose generator. | Documentation and handoffs that say what changed, why, and how it was verified. |
+
+`research` is conditional: the agent uses it when the work depends on external facts, changing APIs, numbers, or source comparison. `spec` and `impl` form the required delivery path. `writing` applies whenever that work must be explained.
+
+The `impl` loop also improves itself without changing global state behind your back. After a run, it records only lessons supported by repository evidence. Recurring lessons across distinct changes can become active project rules, reviewable gate candidates, or valid project-local skills. Nothing is installed or published automatically.
+
+### Running it
+
+Ask any supported agent:
+
+```text
+Use $spec to plan <change>. Resolve the important decisions with me and create the OpenSpec files. Do not implement yet.
+```
+
+Then execute the approved change:
+
+```text
+Use $impl <slug> to implement the OpenSpec change. Verify every task and report the evidence grades and learned candidates.
+```
+
+On Claude Code, `/spec` and `/impl` invoke native wrappers for the same files and workflow.
 
 ## Which agents this works with
 
@@ -126,17 +171,18 @@ Those last two are built to hand off to each other: one decides every pixel, the
 
 Skills that need credentials still install without them; they just stay dormant until the key or login exists.
 
-### Plugins (Claude Code and Codex)
+### Optional plugins (Claude Code and Codex)
 
 Both hosts read a git plugin marketplace, and Codex accepts the `.claude-plugin/marketplace.json` layout, so the same entries install on either one. Only the subcommand differs: `claude plugin install` against `codex plugin add`. Each setup script runs whichever hosts it finds and reads the list from the shared manifest.
 
-Verified on codex-cli 0.146.0: all three marketplace repos below resolve through `codex plugin marketplace add`, and `codex plugin add last30days@last30days-skill` installs.
+The harness itself is not a plugin. These optional plugins add domain capabilities around it. They do not replace `spec`, `impl`, `research`, or `writing`.
+
+Verified on codex-cli 0.146.0: both marketplace repos below resolve through `codex plugin marketplace add`, and `codex plugin add last30days@last30days-skill` installs.
 
 Gemini CLI, Copilot CLI and OpenCode have no plugin marketplace. They still get every skill through `~/.agents/skills/`, so what they lose is the slash commands and hooks a plugin bundles, not the knowledge.
 
 | Plugin | What it does | Marketplace repo |
 |---|---|---|
-| claude-code-harness | Plan/work/review/release loop with team orchestration | [Chachamaru127/claude-code-harness](https://github.com/Chachamaru127/claude-code-harness) |
 | cloudflare | Workers, Pages, KV, D1, R2, Durable Objects, wrangler skills | [cloudflare/skills](https://github.com/cloudflare/skills) |
 | last30days | Community pulse over the last 30 days (Reddit, HN, X, GitHub, arXiv), plugs into the research skill | [mvanhorn/last30days-skill](https://github.com/mvanhorn/last30days-skill) (MIT) |
 
@@ -193,7 +239,7 @@ The setup scripts register only `paper-search` (scientific literature on arXiv, 
 | skills/spec, skills/impl | Cross-agent form of the plan to implementation workflow, installed by both setup scripts |
 | commands/, agents/ | Claude Code slash-command wrappers for the same workflow, installed by `install.sh` |
 
-## Workflow: /spec and /impl
+## Harness internals: /spec and /impl
 
 The workflow ships in two forms. `skills/spec` and `skills/impl` work across agents and can be invoked as `$spec` and `$impl`. Claude Code keeps native `/spec` and `/impl` wrappers under `commands/`. Both forms emit and consume the same OpenSpec files.
 

@@ -29,10 +29,6 @@
   ],
   "plugins": [
     {
-      "marketplace": "Chachamaru127/claude-code-harness",
-      "plugin": "claude-code-harness@claude-code-harness-marketplace"
-    },
-    {
       "marketplace": "cloudflare/skills",
       "plugin": "cloudflare@cloudflare"
     },
