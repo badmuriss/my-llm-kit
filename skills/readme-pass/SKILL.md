@@ -20,7 +20,7 @@ Make the README useful before making it pretty. Optimize for a distracted reader
    - compatibility
    - advanced setup and safety
    - credits and license
-5. Run the `unslop` skill in EDIT mode when the prose is verbose or synthetic. Preserve facts, commands, links, names, and licenses.
+5. Apply the `writing` skill. Preserve facts, commands, links, names, and licenses.
 6. Add presentation only after the content is lean.
 7. Verify commands, anchors, links, supported operating systems, and the staged diff.
 

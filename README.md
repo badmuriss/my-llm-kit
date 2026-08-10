@@ -70,7 +70,7 @@ project-local rules, gate candidates, and skills
 |---|---|---|
 | `research` | Checks changing facts and compares sources before they shape the code. | An auditable finding under `research/`. |
 | `spec` | Uses a short council before grilling, resolves owner decisions, then validates the final draft. | `proposal.md`, `design.md`, `tasks.md`, and two concise council reports. |
-| `impl` | Executes an approved spec, reviews each diff, verifies behavior, and grades task evidence. | Code, checks, evidence grades, incidents, and resumable state. |
+| `impl` | Routes approved tasks to Luna, Terra, or Sol by scope and risk, then reviews each diff and grades the evidence. | Code, checks, evidence grades, incidents, and resumable state. |
 | `writing` | Keeps docs, commits, PR descriptions, and errors short and concrete. | A clear record of what changed, why, and how it was checked. |
 
 Start a change:
@@ -101,6 +101,10 @@ After implementation, verified lessons go to `openspec/impl-learning/`. Recurrin
 Generated files stay inside the project. The harness does not install or publish a generated skill automatically.
 
 The loop stops when no verified, unchecked, in-scope task remains.
+
+### Codex model routing
+
+`impl` uses Luna for fast, bounded work, Terra for integration and ambiguous debugging, and Sol for high-stakes judgment. Luna `xhigh` is available for difficult tasks with a narrow scope and objective checks. It is not the global default. If the Codex runtime rejects Luna as a child model, `impl` retries with Terra and reports the fallback.
 
 ## What's included
 
@@ -182,7 +186,7 @@ The installers:
 
 ### Safety tools
 
-`dcg` blocks destructive shell commands before they run. This repo adds calibrated rules under `dcg/` and checks every case in `dcg/regression.txt` during setup.
+`dcg` blocks destructive shell commands before they run. This repo installs a shared configuration from `dcg/`.
 
 `agent-resource-guard` allows up to 20 active agent sessions by default and can still deny work earlier for memory or heavy-command pressure. It also cleans up tagged child processes after their owner exits. Manual processes and persistent terminal shells are excluded.
 

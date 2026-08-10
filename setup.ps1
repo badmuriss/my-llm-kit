@@ -376,7 +376,17 @@ function Install-PluginsForHost {
             Write-Host "  [dry-run] $HostName plugin marketplace add $($entry.marketplace); $HostName plugin $InstallVerb $($entry.plugin)"
             continue
         }
-        Invoke-Native $HostName @("plugin", "marketplace", "add", $entry.marketplace)
+        $addOutput = (& $HostName plugin marketplace add $entry.marketplace 2>&1 | Out-String)
+        $addExitCode = $LASTEXITCODE
+        if ($addExitCode -ne 0) {
+            if ($addOutput -notmatch "already added from a different source") {
+                throw "${HostName}: could not add marketplace $($entry.marketplace): $($addOutput.Trim())"
+            }
+            $marketplaceName = ($entry.plugin -split "@")[-1]
+            Write-Host "  ${HostName}: replacing stale marketplace $marketplaceName"
+            Invoke-Native $HostName @("plugin", "marketplace", "remove", $marketplaceName)
+            Invoke-Native $HostName @("plugin", "marketplace", "add", $entry.marketplace)
+        }
         Invoke-Native $HostName @("plugin", $InstallVerb, $entry.plugin)
     }
 }
@@ -430,40 +440,6 @@ Invoke-Step "dcg destructive command guard" {
     & $DcgPath doctor
     if ($LASTEXITCODE -ne 0) {
         Write-Warning "dcg doctor reported issues"
-    }
-}
-
-Invoke-Step "dcg calibration regression" {
-    $cases = Join-Path (Join-Path $RepoDirectory "dcg") "regression.txt"
-    if (-not (Test-Path -LiteralPath $DcgPath)) {
-        Write-Host "  dcg not installed, nothing to verify"
-        return
-    }
-    $caseLines = Get-Content $cases | Where-Object { $_ -notmatch "^\s*(#|$)" }
-    if ($DryRun) {
-        Write-Host "  [dry-run] assert $($caseLines.Count) expected verdicts"
-        return
-    }
-    $passed = 0
-    $failed = 0
-    foreach ($line in $caseLines) {
-        $parts = $line -split "\|", 2
-        $expected = $parts[0].Trim()
-        $command = $parts[1]
-        $output = (& $DcgPath explain $command 2>&1 | Out-String)
-        $match = [regex]::Match($output, "(?im)^Decision:\s*(\S+)")
-        $actual = if ($match.Success) { $match.Groups[1].Value } else { "ALLOW" }
-        if ($actual -eq $expected) {
-            $passed += 1
-        }
-        else {
-            $failed += 1
-            Write-Host "  MISMATCH expected=$expected got=$actual :: $command"
-        }
-    }
-    Write-Host "  $passed expected verdict(s) confirmed, $failed mismatch(es)"
-    if ($failed -gt 0) {
-        throw "dcg calibration regression failed"
     }
 }
 

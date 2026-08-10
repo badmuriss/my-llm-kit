@@ -2,6 +2,8 @@
 
 Use for architecture, complex debugging, algorithms, risky migrations, and trade-off analysis. Choose the strongest available coding subagent with a clean context.
 
+On Codex, follow [model-routing.md](model-routing.md). Start with Terra for implementation judgment. Reserve Sol for high-stakes review, architecture, security, or final arbitration.
+
 Instruct the worker to:
 
 1. Derive an independent conclusion from the relevant code.

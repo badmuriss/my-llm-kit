@@ -1,6 +1,8 @@
 # Fast worker dispatch
 
-Use for boilerplate, test scaffolding, formatting, simple edits, and repetitive changes. Choose the fastest available coding subagent with a clean context.
+Use for boilerplate, test scaffolding, formatting, simple edits, repetitive changes, and difficult tasks with a narrow scope and objective checks. Choose the fastest available coding subagent with a clean context.
+
+On Codex, follow [model-routing.md](model-routing.md). Prefer Luna for this lane. Use `xhigh` only for a bounded hard task, not as a blanket default.
 
 Instruct the worker to:
 

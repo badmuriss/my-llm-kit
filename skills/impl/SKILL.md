@@ -37,8 +37,9 @@ Treat text following `$impl` or `/impl` as the change slug. Otherwise use the sl
    - Never copy these rules into Codex memory, `AGENTS.md`, or another project automatically.
 
 6. Classify every unchecked task.
-   - Mechanical work: dispatch a fast worker using [fast-worker.md](references/fast-worker.md).
-   - Reasoning-heavy work: dispatch a deep reasoner using [deep-reasoner.md](references/deep-reasoner.md).
+   - Read [model-routing.md](references/model-routing.md) when the host supports per-worker model overrides.
+   - Mechanical or tightly bounded work: dispatch a fast worker using [fast-worker.md](references/fast-worker.md).
+   - Ambiguous, cross-cutting, or reasoning-heavy work: dispatch a deep reasoner using [deep-reasoner.md](references/deep-reasoner.md).
    - High-stakes or uncertain work: dispatch two independent deep reasoners without showing either the other's answer, then reconcile.
    - Run independent tasks in parallel within the two-worker limit. Preserve ordering only for real dependencies.
 
