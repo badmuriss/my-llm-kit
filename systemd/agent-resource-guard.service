@@ -1,0 +1,8 @@
+[Unit]
+Description=Remove stale workloads and excess idle coding agents
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/agent-resource-guard prune --quiet
+Nice=10
+IOSchedulingClass=idle

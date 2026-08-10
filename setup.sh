@@ -327,13 +327,12 @@ link_agents_md() {
 run_step "AGENTS.md" link_agents_md
 
 # 6. plugins. Claude Code and Codex both read a git marketplace and both accept the
-# `.claude-plugin/marketplace.json` layout, so the same four entries install on either host.
-# Verified on codex-cli 0.146.0: `codex plugin marketplace add` resolves all four repos below
+# `.claude-plugin/marketplace.json` layout, so the same three entries install on either host.
+# Verified on codex-cli 0.146.0: `codex plugin marketplace add` resolves all three repos below
 # and `codex plugin add <plugin>@<market>` installs them. Only the subcommand names differ
 # (`claude plugin install` vs `codex plugin add`), so this branches on the verb, not the list.
 PLUGINS=(
   "Chachamaru127/claude-code-harness|claude-code-harness@claude-code-harness-marketplace"
-  "anthropics/claude-plugins-official|chrome-devtools-mcp@claude-plugins-official"
   "cloudflare/skills|cloudflare@cloudflare"
   "mvanhorn/last30days-skill|last30days@last30days-skill"
 )
@@ -392,7 +391,43 @@ install_plugins() {
 }
 run_step "plugins (Claude Code + Codex)" install_plugins
 
-# 7. dcg blocks destructive shell commands before execution. The calibrated config and
+# 7. install the cross-agent resource guard. The CLI admits new workers and heavy commands
+# against machine-wide limits. A user timer removes orphaned workloads and excess idle
+# agents; it leaves manual processes and persistent terminal shells alone.
+install_resource_guard() {
+  local source="$REPO_DIR/scripts/agent_resource_guard.py"
+  local target="$HOME/.local/bin/agent-resource-guard"
+  local unit_dir="$HOME/.config/systemd/user"
+
+  [ -f "$source" ] || { echo "  $source is missing"; return 1; }
+  if [ "$DRY" -eq 1 ]; then
+    echo "  [dry-run] install agent-resource-guard into $target"
+    if command -v systemctl >/dev/null 2>&1; then
+      echo "  [dry-run] install and enable agent-resource-guard.timer"
+    else
+      echo "  systemd user manager unavailable; CLI only"
+    fi
+    return 0
+  fi
+
+  mkdir -p "$(dirname "$target")"
+  install -m 0755 "$source" "$target"
+
+  if ! command -v systemctl >/dev/null 2>&1 || ! systemctl --user show-environment >/dev/null 2>&1; then
+    echo "  systemd user manager unavailable; installed CLI only"
+    return 0
+  fi
+
+  mkdir -p "$unit_dir"
+  install -m 0644 "$REPO_DIR/systemd/agent-resource-guard.service" "$unit_dir/"
+  install -m 0644 "$REPO_DIR/systemd/agent-resource-guard.timer" "$unit_dir/"
+  systemctl --user daemon-reload
+  systemctl --user enable --now agent-resource-guard.timer
+  "$target" prune --quiet
+}
+run_step "agent resource guard" install_resource_guard
+
+# 8. dcg blocks destructive shell commands before execution. The calibrated config and
 # allowlist live in dcg/ in this repo, with the reason for every entry written down.
 install_dcg() {
   local dcg_bin="$HOME/.local/bin/dcg"
@@ -437,7 +472,7 @@ install_dcg() {
 }
 run_step "dcg (destructive command guard)" install_dcg
 
-# 7b. prove the calibration still holds. A security config that quietly stops protecting
+# 8b. prove the calibration still holds. A security config that quietly stops protecting
 # something is worse than none, so every expected verdict is asserted, not assumed.
 verify_dcg() {
   local dcg_bin="$HOME/.local/bin/dcg"

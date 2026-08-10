@@ -1,0 +1,11 @@
+[Unit]
+Description=Check coding-agent resource usage
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=10s
+AccuracySec=1s
+Persistent=true
+
+[Install]
+WantedBy=timers.target

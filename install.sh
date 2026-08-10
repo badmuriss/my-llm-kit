@@ -37,6 +37,35 @@ install_one() {
 for f in "$SRC"/commands/*.md; do install_one "$f" "$DIR/commands/$(basename "$f")"; done
 for f in "$SRC"/agents/*.md; do install_one "$f" "$DIR/agents/$(basename "$f")"; done
 
+install_vendored_skill() {
+  local name="$1"
+  local source="$SRC/skills/$name"
+  local canonical="$HOME/.agents/skills/$name"
+  local claude_target="$HOME/.claude/skills/$name"
+
+  mkdir -p "$HOME/.agents/skills" "$HOME/.claude/skills"
+  if [ ! -e "$canonical" ] && [ ! -L "$canonical" ]; then
+    if [ "$LINK" = 1 ]; then
+      ln -s "$source" "$canonical"
+    else
+      cp -R "$source" "$canonical"
+    fi
+  elif [ "$LINK" = 1 ] && [ -L "$canonical" ]; then
+    ln -sfn "$source" "$canonical"
+  elif [ ! -L "$canonical" ]; then
+    echo "$canonical is a real directory, leaving it alone"
+  fi
+
+  if [ ! -e "$claude_target" ] || [ -L "$claude_target" ]; then
+    ln -sfn "$canonical" "$claude_target"
+  else
+    echo "$claude_target is a real directory, leaving it alone"
+  fi
+}
+
+install_vendored_skill spec
+install_vendored_skill impl
+
 npx -y skills add badmuriss/incredibly-pretty-websites -g -y
 npx -y skills add badmuriss/unslop -g -y
 npx -y skills add mattpocock/skills --skill grill-with-docs -g -y

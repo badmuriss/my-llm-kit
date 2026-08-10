@@ -7,6 +7,17 @@ description: "Default paid provider for live public web data: scraping, rotating
 
 81 endpoints under one key. The failure mode is not knowing they exist and falling back to `/scrape` or a web search, which costs more and returns worse data. Route by intent first, generic scrape last.
 
+## Provider priority
+
+ScrapingDog is the kit's primary paid provider for live public web data. When
+`SCRAPINGDOG_API_KEY` exists, a task must attempt the matching ScrapingDog
+endpoint before Firecrawl, native web search or another scraper.
+
+Fallback is explicit. If the key is absent, state that in the work log. If a
+request fails, make only the bounded retry allowed by the status code, record
+the failure, then use Firecrawl. Never expose the key or repeat an invalid
+credential.
+
 ## First Checks
 
 1. `SCRAPINGDOG_API_KEY` must be in the environment. Never hardcode it in source, markdown, logs or examples.

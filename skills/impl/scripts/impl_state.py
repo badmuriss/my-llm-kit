@@ -1,0 +1,624 @@
+#!/usr/bin/env python3
+"""Persist and reconcile crash-safe state for one OpenSpec implementation run."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import re
+import subprocess
+import sys
+from datetime import UTC, datetime
+from pathlib import Path
+from typing import Any, Sequence
+
+from learning import (
+    LearningError,
+    atomic_write_text,
+    check as check_learning,
+    parse_run_file,
+    validate_external_evidence_ref,
+    validate_run_references,
+)
+
+
+SCHEMA_VERSION = 1
+MAX_REPAIR_HYPOTHESES = 2
+STATE_DIRECTORY = Path("openspec/impl-state")
+CHANGE_PATTERN = re.compile(r"^[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*$")
+RUN_ID_PATTERN = CHANGE_PATTERN
+TASK_PATTERN = re.compile(
+    r"^\s*-\s+\[([ xX])\]\s+((?=[A-Za-z0-9._-]*\d)[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*)\s+(.+?)\s*$"
+)
+TASK_STATUSES = {"pending", "running", "interrupted", "pass", "fail", "unobserved", "blocked"}
+UPDATE_TASK_STATUSES = TASK_STATUSES - {"interrupted"}
+CLEANUP_KINDS = {"process", "worktree", "branch", "temp_path", "other"}
+CLEANUP_STATUSES = {"pending", "done"}
+RUN_STATUSES = {"active", "complete"}
+OUTCOMES = {"pass", "partial", "blocked"}
+
+
+class StateError(ValueError):
+    """Reports invalid impl state or an unsafe transition."""
+
+
+def now() -> str:
+    return datetime.now(UTC).isoformat().replace("+00:00", "Z")
+
+
+def require_change(change: str) -> str:
+    if not CHANGE_PATTERN.fullmatch(change):
+        raise StateError("change must be one OpenSpec slug without path separators")
+    return change
+
+
+def state_path(repo: Path, change: str) -> Path:
+    return repo / STATE_DIRECTORY / f"{require_change(change)}.json"
+
+
+def current_commit(repo: Path) -> str:
+    result = subprocess.run(
+        ["git", "-C", str(repo), "rev-parse", "HEAD"],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    return result.stdout.strip() if result.returncode == 0 else "unborn"
+
+
+def dirty_paths(repo: Path) -> list[str]:
+    result = subprocess.run(
+        ["git", "-C", str(repo), "status", "--porcelain"],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        return []
+    return [line[3:] for line in result.stdout.splitlines() if len(line) > 3]
+
+
+def process_exists(process_id: str) -> bool:
+    if not process_id.isdigit():
+        return False
+    if os.name == "nt":
+        result = subprocess.run(
+            ["tasklist", "/FI", f"PID eq {process_id}", "/FO", "CSV", "/NH"],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        return result.returncode == 0 and f'"{process_id}"' in result.stdout
+    return Path(f"/proc/{process_id}").exists()
+
+
+def parse_pending_tasks(tasks_file: Path) -> list[dict[str, Any]]:
+    if not tasks_file.is_file():
+        raise StateError(f"tasks file does not exist: {tasks_file}")
+    tasks: list[dict[str, Any]] = []
+    for line_number, line in enumerate(tasks_file.read_text(encoding="utf-8").splitlines(), 1):
+        if not re.match(r"^\s*-\s+\[[ xX]\]", line):
+            continue
+        match = TASK_PATTERN.fullmatch(line)
+        if not match:
+            raise StateError(f"{tasks_file}:{line_number}: task needs a stable leading id")
+        checked, task_id, text = match.groups()
+        if checked.lower() == "x":
+            continue
+        tasks.append(
+            {
+                "id": task_id,
+                "text": text,
+                "status": "pending",
+                "worker": None,
+                "hypotheses": [],
+                "evidence_refs": [],
+                "note": "",
+            }
+        )
+    task_ids = [task["id"] for task in tasks]
+    if len(task_ids) != len(set(task_ids)):
+        raise StateError(f"{tasks_file} contains duplicate task ids")
+    if not tasks:
+        raise StateError("no unchecked tasks remain; stop instead of inventing work")
+    return tasks
+
+
+def validate_state(state: Any, path: Path) -> dict[str, Any]:
+    if not isinstance(state, dict):
+        raise StateError(f"{path} must contain an object")
+    required = {
+        "schema_version",
+        "change",
+        "run_id",
+        "status",
+        "outcome",
+        "started_at",
+        "updated_at",
+        "base_commit",
+        "last_observed_commit",
+        "tasks",
+        "cleanup",
+        "digest",
+    }
+    if state.keys() != required:
+        missing = required - state.keys()
+        unknown = state.keys() - required
+        details = []
+        if missing:
+            details.append(f"missing {', '.join(sorted(missing))}")
+        if unknown:
+            details.append(f"unknown {', '.join(sorted(unknown))}")
+        raise StateError(f"{path}: {'; '.join(details)}")
+    if state["schema_version"] != SCHEMA_VERSION:
+        raise StateError(f"{path}: schema_version must be {SCHEMA_VERSION}")
+    require_change(state["change"])
+    if not isinstance(state["run_id"], str) or not RUN_ID_PATTERN.fullmatch(state["run_id"]):
+        raise StateError(f"{path}: run_id must be safe for use as a filename")
+    if state["status"] not in RUN_STATUSES:
+        raise StateError(f"{path}: invalid run status")
+    if state["outcome"] is not None and state["outcome"] not in OUTCOMES:
+        raise StateError(f"{path}: invalid outcome")
+    if state["status"] == "active" and state["outcome"] is not None:
+        raise StateError(f"{path}: active state cannot have an outcome")
+    if state["status"] == "complete" and state["outcome"] is None:
+        raise StateError(f"{path}: complete state requires an outcome")
+    for field in ("started_at", "updated_at", "base_commit", "last_observed_commit"):
+        if not isinstance(state[field], str) or not state[field].strip():
+            raise StateError(f"{path}: {field} must be a non-empty string")
+    if not isinstance(state["tasks"], list) or not isinstance(state["cleanup"], list):
+        raise StateError(f"{path}: tasks and cleanup must be arrays")
+    if not isinstance(state["digest"], list) or not all(
+        isinstance(entry, str) and entry.strip() for entry in state["digest"]
+    ):
+        raise StateError(f"{path}: digest must contain non-empty strings")
+
+    task_ids: list[str] = []
+    for task in state["tasks"]:
+        if not isinstance(task, dict) or task.keys() != {
+            "id",
+            "text",
+            "status",
+            "worker",
+            "hypotheses",
+            "evidence_refs",
+            "note",
+        }:
+            raise StateError(f"{path}: invalid task entry")
+        if task["status"] not in TASK_STATUSES:
+            raise StateError(f"{path}: invalid status for task {task.get('id')}")
+        if not isinstance(task["id"], str) or not task["id"].strip():
+            raise StateError(f"{path}: task id must be a non-empty string")
+        if not isinstance(task["text"], str) or not task["text"].strip():
+            raise StateError(f"{path}: task text must be a non-empty string")
+        if task["worker"] is not None and (
+            not isinstance(task["worker"], str) or not task["worker"].strip()
+        ):
+            raise StateError(f"{path}: task worker must be null or a non-empty string")
+        if not isinstance(task["note"], str):
+            raise StateError(f"{path}: task note must be a string")
+        if not isinstance(task["hypotheses"], list) or not all(
+            isinstance(entry, str) and entry.strip() for entry in task["hypotheses"]
+        ):
+            raise StateError(f"{path}: invalid hypotheses for task {task.get('id')}")
+        if len(task["hypotheses"]) > MAX_REPAIR_HYPOTHESES or len(
+            task["hypotheses"]
+        ) != len(
+            set(task["hypotheses"])
+        ):
+            raise StateError(f"{path}: task hypotheses must be distinct and capped at two")
+        if not isinstance(task["evidence_refs"], list) or not all(
+            isinstance(entry, str) and entry.strip() for entry in task["evidence_refs"]
+        ):
+            raise StateError(f"{path}: invalid arrays for task {task.get('id')}")
+        if len(task["evidence_refs"]) != len(set(task["evidence_refs"])):
+            raise StateError(f"{path}: duplicate evidence refs for task {task.get('id')}")
+        if task["status"] == "running" and task["worker"] is None:
+            raise StateError(f"{path}: running task {task['id']} requires a worker")
+        if task["status"] in {"pass", "fail"} and not task["evidence_refs"]:
+            raise StateError(f"{path}: task {task['id']} requires evidence refs")
+        if task["status"] in {"pass", "fail", "unobserved", "blocked"} and not task[
+            "note"
+        ].strip():
+            raise StateError(f"{path}: final task {task['id']} requires a note")
+        task_ids.append(task["id"])
+    if len(task_ids) != len(set(task_ids)):
+        raise StateError(f"{path}: duplicate task ids")
+
+    cleanup_targets: list[str] = []
+    for obligation in state["cleanup"]:
+        if not isinstance(obligation, dict) or obligation.keys() != {
+            "kind",
+            "target",
+            "owner",
+            "status",
+        }:
+            raise StateError(f"{path}: invalid cleanup entry")
+        if obligation["kind"] not in CLEANUP_KINDS or obligation["status"] not in CLEANUP_STATUSES:
+            raise StateError(f"{path}: invalid cleanup kind or status")
+        for field in ("target", "owner"):
+            if not isinstance(obligation[field], str) or not obligation[field].strip():
+                raise StateError(f"{path}: cleanup {field} must be a non-empty string")
+        if obligation["kind"] == "process" and not obligation["target"].isdigit():
+            raise StateError(f"{path}: process cleanup target must be a PID")
+        cleanup_targets.append(obligation["target"])
+    if len(cleanup_targets) != len(set(cleanup_targets)):
+        raise StateError(f"{path}: duplicate cleanup targets")
+    return state
+
+
+def load_state(repo: Path, change: str) -> tuple[Path, dict[str, Any]]:
+    path = state_path(repo, change)
+    if not path.is_file():
+        raise StateError(f"state does not exist: {path}")
+    try:
+        state = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as error:
+        raise StateError(f"{path}: invalid JSON: {error.msg}") from error
+    validated = validate_state(state, path)
+    for task in validated["tasks"]:
+        for reference in task["evidence_refs"]:
+            validate_external_evidence_ref(repo, reference, f"task {task['id']}")
+    return path, validated
+
+
+def save_state(path: Path, state: dict[str, Any]) -> None:
+    state["updated_at"] = now()
+    validate_state(state, path)
+    atomic_write_text(path, json.dumps(state, indent=2) + "\n")
+
+
+def find_task(state: dict[str, Any], task_id: str) -> dict[str, Any]:
+    for task in state["tasks"]:
+        if task["id"] == task_id:
+            return task
+    raise StateError(f"unknown task: {task_id}")
+
+
+def command_init(arguments: argparse.Namespace) -> dict[str, Any]:
+    repo = arguments.repo.resolve()
+    path = state_path(repo, arguments.change)
+    if path.exists():
+        _, existing = load_state(repo, arguments.change)
+        if existing["status"] == "active":
+            raise StateError(f"active state already exists: {path}; resume it")
+    tasks_file = repo / "openspec" / "changes" / arguments.change / "tasks.md"
+    commit = current_commit(repo)
+    timestamp = now()
+    state = {
+        "schema_version": SCHEMA_VERSION,
+        "change": arguments.change,
+        "run_id": arguments.run_id,
+        "status": "active",
+        "outcome": None,
+        "started_at": timestamp,
+        "updated_at": timestamp,
+        "base_commit": commit,
+        "last_observed_commit": commit,
+        "tasks": parse_pending_tasks(tasks_file),
+        "cleanup": [],
+        "digest": [],
+    }
+    save_state(path, state)
+    return state
+
+
+def command_update_task(arguments: argparse.Namespace) -> dict[str, Any]:
+    repo = arguments.repo.resolve()
+    path, state = load_state(repo, arguments.change)
+    if state["status"] != "active":
+        raise StateError("cannot update a completed run")
+    task = find_task(state, arguments.task)
+    if arguments.hypothesis:
+        if arguments.hypothesis in task["hypotheses"]:
+            raise StateError("repair hypotheses must be distinct")
+        if len(task["hypotheses"]) >= MAX_REPAIR_HYPOTHESES:
+            raise StateError("repair hypothesis cap reached; grade the task blocked")
+        task["hypotheses"].append(arguments.hypothesis)
+    for reference in arguments.evidence_ref:
+        validate_external_evidence_ref(repo, reference, f"task {arguments.task}")
+        if reference not in task["evidence_refs"]:
+            task["evidence_refs"].append(reference)
+    if arguments.status == "running" and not arguments.worker:
+        raise StateError("running tasks require --worker")
+    if arguments.status in {"pass", "fail"} and not task["evidence_refs"]:
+        raise StateError(f"status {arguments.status} requires evidence refs")
+    if arguments.status in {"pass", "fail", "unobserved", "blocked"} and not arguments.note:
+        raise StateError(f"status {arguments.status} requires --note")
+    task["status"] = arguments.status
+    if arguments.worker:
+        task["worker"] = arguments.worker
+    if arguments.note:
+        task["note"] = arguments.note
+    if arguments.status in {"pending", "pass", "fail", "unobserved", "blocked"}:
+        task["worker"] = None
+    state["last_observed_commit"] = current_commit(repo)
+    save_state(path, state)
+    return state
+
+
+def command_add_cleanup(arguments: argparse.Namespace) -> dict[str, Any]:
+    path, state = load_state(arguments.repo.resolve(), arguments.change)
+    if state["status"] != "active":
+        raise StateError("cannot add cleanup to a completed run")
+    if any(entry["target"] == arguments.target for entry in state["cleanup"]):
+        raise StateError(f"cleanup target already exists: {arguments.target}")
+    state["cleanup"].append(
+        {
+            "kind": arguments.kind,
+            "target": arguments.target,
+            "owner": arguments.owner,
+            "status": "pending",
+        }
+    )
+    save_state(path, state)
+    return state
+
+
+def cleanup_still_exists(repo: Path, obligation: dict[str, str]) -> bool:
+    kind = obligation["kind"]
+    target = obligation["target"]
+    if kind == "process":
+        return process_exists(target)
+    if kind == "branch":
+        result = subprocess.run(
+            ["git", "-C", str(repo), "show-ref", "--verify", "--quiet", f"refs/heads/{target}"],
+            check=False,
+        )
+        return result.returncode == 0
+    if kind in {"worktree", "temp_path"}:
+        target_path = Path(target)
+        if not target_path.is_absolute():
+            target_path = repo / target_path
+        if target_path.exists():
+            return True
+        if kind == "temp_path":
+            return False
+        result = subprocess.run(
+            ["git", "-C", str(repo), "worktree", "list", "--porcelain"],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        registered_paths = [
+            Path(line.removeprefix("worktree ")).resolve()
+            for line in result.stdout.splitlines()
+            if line.startswith("worktree ")
+        ]
+        return target_path.resolve() in registered_paths
+    return False
+
+
+def command_finish_cleanup(arguments: argparse.Namespace) -> dict[str, Any]:
+    repo = arguments.repo.resolve()
+    path, state = load_state(repo, arguments.change)
+    if state["status"] != "active":
+        raise StateError("cannot update cleanup on a completed run")
+    for obligation in state["cleanup"]:
+        if obligation["target"] == arguments.target:
+            if cleanup_still_exists(repo, obligation):
+                raise StateError(f"cleanup target still exists: {arguments.target}")
+            obligation["status"] = "done"
+            save_state(path, state)
+            return state
+    raise StateError(f"unknown cleanup target: {arguments.target}")
+
+
+def command_digest(arguments: argparse.Namespace) -> dict[str, Any]:
+    path, state = load_state(arguments.repo.resolve(), arguments.change)
+    if state["status"] != "active":
+        raise StateError("cannot update the digest on a completed run")
+    state["digest"].append(arguments.entry)
+    save_state(path, state)
+    return state
+
+
+def command_resume(arguments: argparse.Namespace) -> dict[str, Any]:
+    repo = arguments.repo.resolve()
+    path, state = load_state(repo, arguments.change)
+    if state["status"] != "active":
+        raise StateError("cannot resume a completed run")
+    interrupted: list[str] = []
+    for task in state["tasks"]:
+        if task["status"] != "running":
+            continue
+        task["status"] = "interrupted"
+        task["worker"] = None
+        task["note"] = "Interrupted before evidence was reconciled."
+        interrupted.append(task["id"])
+    recorded_commit = state["last_observed_commit"]
+    observed_commit = current_commit(repo)
+    state["last_observed_commit"] = observed_commit
+    save_state(path, state)
+    process_status = []
+    for obligation in state["cleanup"]:
+        if obligation["kind"] != "process" or obligation["status"] != "pending":
+            continue
+        target = obligation["target"]
+        process_status.append(
+            {"target": target, "alive": process_exists(target)}
+        )
+    return {
+        "change": state["change"],
+        "run_id": state["run_id"],
+        "interrupted_tasks": interrupted,
+        "recorded_commit": recorded_commit,
+        "observed_commit": observed_commit,
+        "head_changed": recorded_commit != observed_commit,
+        "dirty_paths": dirty_paths(repo),
+        "pending_cleanup": [
+            entry for entry in state["cleanup"] if entry["status"] == "pending"
+        ],
+        "process_status": process_status,
+        "instruction": (
+            "Inspect diffs and listed processes before dispatching or restarting commands."
+        ),
+    }
+
+
+def command_complete(arguments: argparse.Namespace) -> dict[str, Any]:
+    repo = arguments.repo.resolve()
+    path, state = load_state(repo, arguments.change)
+    unstable = [
+        task["id"]
+        for task in state["tasks"]
+        if task["status"] in {"running", "interrupted"}
+    ]
+    if unstable:
+        raise StateError(f"reconcile running or interrupted tasks first: {', '.join(unstable)}")
+    pending_cleanup = [
+        entry["target"] for entry in state["cleanup"] if entry["status"] == "pending"
+    ]
+    if pending_cleanup:
+        raise StateError(f"finish cleanup first: {', '.join(pending_cleanup)}")
+    if arguments.outcome == "pass":
+        not_passed = [task["id"] for task in state["tasks"] if task["status"] != "pass"]
+        if not_passed:
+            raise StateError(f"pass outcome requires every task to pass: {', '.join(not_passed)}")
+    run_path = repo / "openspec" / "impl-learning" / "runs" / f"{state['run_id']}.json"
+    if not run_path.is_file():
+        raise StateError(f"export and review the run record first: {run_path}")
+    run = parse_run_file(run_path)
+    validate_run_references(repo, run)
+    if run.run_id != state["run_id"] or run.change != state["change"]:
+        raise StateError("run record identity does not match impl state")
+    if run.outcome != arguments.outcome:
+        raise StateError("run record outcome does not match completed state")
+    expected_tasks = [
+        (task["id"], task["status"], task["note"], tuple(sorted(task["evidence_refs"])))
+        for task in state["tasks"]
+    ]
+    recorded_tasks = [
+        (task.task_id, task.grade, task.evidence, task.evidence_refs) for task in run.tasks
+    ]
+    if recorded_tasks != expected_tasks:
+        raise StateError("run record task grades or evidence diverge from impl state")
+    check_learning(repo)
+    state["status"] = "complete"
+    state["outcome"] = arguments.outcome
+    state["last_observed_commit"] = current_commit(repo)
+    save_state(path, state)
+    return state
+
+
+def command_export_run(arguments: argparse.Namespace) -> dict[str, Any]:
+    repo = arguments.repo.resolve()
+    _, state = load_state(repo, arguments.change)
+    unfinished = [
+        task["id"]
+        for task in state["tasks"]
+        if task["status"] not in {"pass", "fail", "unobserved", "blocked"}
+    ]
+    if unfinished:
+        raise StateError(f"grade every task before export: {', '.join(unfinished)}")
+    pending_cleanup = [
+        entry["target"] for entry in state["cleanup"] if entry["status"] == "pending"
+    ]
+    if pending_cleanup:
+        raise StateError(f"finish cleanup before export: {', '.join(pending_cleanup)}")
+    if arguments.outcome == "pass":
+        not_passed = [task["id"] for task in state["tasks"] if task["status"] != "pass"]
+        if not_passed:
+            raise StateError(f"pass outcome requires every task to pass: {', '.join(not_passed)}")
+
+    run_path = repo / "openspec" / "impl-learning" / "runs" / f"{state['run_id']}.json"
+    if run_path.exists():
+        raise StateError(f"run record already exists: {run_path}")
+    record = {
+        "schema_version": 2,
+        "run_id": state["run_id"],
+        "change": state["change"],
+        "completed_at": now(),
+        "outcome": arguments.outcome,
+        "tasks": [
+            {
+                "id": task["id"],
+                "grade": task["status"],
+                "evidence": task["note"],
+                "evidence_refs": task["evidence_refs"],
+            }
+            for task in state["tasks"]
+        ],
+        "incidents": [],
+        "learnings": [],
+    }
+    atomic_write_text(run_path, json.dumps(record, indent=2) + "\n")
+    return {"run_record": str(run_path), "record": record}
+
+
+def command_show(arguments: argparse.Namespace) -> dict[str, Any]:
+    _, state = load_state(arguments.repo.resolve(), arguments.change)
+    return state
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="Manage crash-safe impl run state.")
+    parser.add_argument("--repo", type=Path, default=Path.cwd())
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    init_parser = subparsers.add_parser("init")
+    init_parser.add_argument("--change", required=True)
+    init_parser.add_argument("--run-id", required=True)
+    init_parser.set_defaults(handler=command_init)
+
+    update_parser = subparsers.add_parser("update-task")
+    update_parser.add_argument("--change", required=True)
+    update_parser.add_argument("--task", required=True)
+    update_parser.add_argument("--status", choices=sorted(UPDATE_TASK_STATUSES), required=True)
+    update_parser.add_argument("--worker")
+    update_parser.add_argument("--hypothesis")
+    update_parser.add_argument("--evidence-ref", action="append", default=[])
+    update_parser.add_argument("--note")
+    update_parser.set_defaults(handler=command_update_task)
+
+    cleanup_parser = subparsers.add_parser("add-cleanup")
+    cleanup_parser.add_argument("--change", required=True)
+    cleanup_parser.add_argument("--kind", choices=sorted(CLEANUP_KINDS), required=True)
+    cleanup_parser.add_argument("--target", required=True)
+    cleanup_parser.add_argument("--owner", required=True)
+    cleanup_parser.set_defaults(handler=command_add_cleanup)
+
+    finish_parser = subparsers.add_parser("finish-cleanup")
+    finish_parser.add_argument("--change", required=True)
+    finish_parser.add_argument("--target", required=True)
+    finish_parser.set_defaults(handler=command_finish_cleanup)
+
+    digest_parser = subparsers.add_parser("digest")
+    digest_parser.add_argument("--change", required=True)
+    digest_parser.add_argument("--entry", required=True)
+    digest_parser.set_defaults(handler=command_digest)
+
+    resume_parser = subparsers.add_parser("resume")
+    resume_parser.add_argument("--change", required=True)
+    resume_parser.set_defaults(handler=command_resume)
+
+    complete_parser = subparsers.add_parser("complete")
+    complete_parser.add_argument("--change", required=True)
+    complete_parser.add_argument("--outcome", choices=sorted(OUTCOMES), required=True)
+    complete_parser.set_defaults(handler=command_complete)
+
+    export_parser = subparsers.add_parser("export-run")
+    export_parser.add_argument("--change", required=True)
+    export_parser.add_argument("--outcome", choices=sorted(OUTCOMES), required=True)
+    export_parser.set_defaults(handler=command_export_run)
+
+    show_parser = subparsers.add_parser("show")
+    show_parser.add_argument("--change", required=True)
+    show_parser.set_defaults(handler=command_show)
+    return parser
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    arguments = build_parser().parse_args(argv)
+    try:
+        result = arguments.handler(arguments)
+        print(json.dumps(result, indent=2))
+    except (LearningError, StateError, OSError) as error:
+        print(f"impl-state: {error}", file=sys.stderr)
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

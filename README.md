@@ -26,7 +26,7 @@ cd my-llm-kit
 ./setup.sh
 ```
 
-A personal, versioned setup for coding agents: a writing system, a research system, coding standards, audit skills, a shared `AGENTS.md`, and one idempotent script that wires it into the directories your agents actually read.
+A personal, versioned setup for coding agents: writing, research, coding standards, audit skills, resource limits, shared instructions, and one idempotent installer.
 
 ## Why this exists
 
@@ -74,7 +74,7 @@ Everything `setup.sh` installs, in one table.
 | grill-me | Relentless interview about a plan until shared understanding | Own |
 | grill-with-docs | Same grilling, but updates CONTEXT.md and ADRs as decisions land | Own |
 | spec | Plans a change with an architecture lens and emits an OpenSpec package ready for implementation | Own |
-| impl | Executes an OpenSpec change through isolated subagents and evidence-based task grades | Own |
+| impl | Executes an OpenSpec change, grades evidence, and promotes recurring project-local lessons | Own |
 | scrapingdog | ScrapingDog as default paid scraper: SERP, Maps, Trends, News, Amazon, LinkedIn, Instagram | Own; needs `SCRAPINGDOG_API_KEY` in the environment |
 | readme-pass | Top-starred presentation pass for a repo README: banner, badges, anchor nav, install up top, prose untouched | Own |
 
@@ -101,16 +101,15 @@ Skills that need credentials still install without them; they just stay dormant 
 
 ### Plugins (Claude Code and Codex)
 
-Both hosts read a git plugin marketplace, and Codex accepts the `.claude-plugin/marketplace.json` layout, so the same four entries install on either one. Only the subcommand differs: `claude plugin install` against `codex plugin add`. `setup.sh` runs whichever hosts it finds and installs the same list on each.
+Both hosts read a git plugin marketplace, and Codex accepts the `.claude-plugin/marketplace.json` layout, so the same three entries install on either one. Only the subcommand differs: `claude plugin install` against `codex plugin add`. `setup.sh` runs whichever hosts it finds and installs the same list on each.
 
-Verified on codex-cli 0.146.0: all four marketplace repos below resolve through `codex plugin marketplace add`, and `codex plugin add last30days@last30days-skill` installs.
+Verified on codex-cli 0.146.0: all three marketplace repos below resolve through `codex plugin marketplace add`, and `codex plugin add last30days@last30days-skill` installs.
 
 Gemini CLI, Copilot CLI and OpenCode have no plugin marketplace. They still get every skill through `~/.agents/skills/`, so what they lose is the slash commands and hooks a plugin bundles, not the knowledge.
 
 | Plugin | What it does | Marketplace repo |
 |---|---|---|
 | claude-code-harness | Plan/work/review/release loop with team orchestration | [Chachamaru127/claude-code-harness](https://github.com/Chachamaru127/claude-code-harness) |
-| chrome-devtools-mcp | Browser debugging, automation, performance traces via Chrome DevTools | [anthropics/claude-plugins-official](https://github.com/anthropics/claude-plugins-official) |
 | cloudflare | Workers, Pages, KV, D1, R2, Durable Objects, wrangler skills | [cloudflare/skills](https://github.com/cloudflare/skills) |
 | last30days | Community pulse over the last 30 days (Reddit, HN, X, GitHub, arXiv), plugs into the research skill | [mvanhorn/last30days-skill](https://github.com/mvanhorn/last30days-skill) (MIT) |
 
@@ -135,9 +134,26 @@ What was deliberately **not** loosened: the redirect guard that blocks `> ~/.bas
 
 `setup.sh` asserts all 25 verdicts after installing the config, so a calibration that quietly stops protecting something fails the install instead of passing in silence.
 
+### Agent resource guard
+
+`agent-resource-guard` prevents independent agent terminals from multiplying builds and subagents until the desktop runs out of memory. The shared instructions require a capacity check before new workers, builds, tests, browsers, and development servers.
+
+The default machine-wide budget allows eight agent sessions and four heavy command trees. It also rejects new work when available memory falls below 20% or agent cgroups exceed 65% of physical memory. Each root agent may keep at most two subagents active.
+
+A systemd user timer runs cleanup every ten seconds on Linux. It waits five minutes after an owning agent exits, then terminates its tagged workload tree. When more than eight agent sessions remain open, it also closes the oldest sessions after 30 idle minutes. Untagged manual processes and persistent terminal shells are excluded.
+
+If agent cgroups pass 72% of physical memory or available memory drops below 12%, the timer terminates the largest agent tree before `systemd-oomd` can take down the desktop session.
+
+```bash
+agent-resource-guard status
+agent-resource-guard check --intent agent --demand 2 --prune
+agent-resource-guard check --intent heavy --prune
+agent-resource-guard prune --dry-run
+```
+
 ### MCP servers
 
-`setup.sh` registers only `paper-search` (scientific literature on arXiv, PubMed, Semantic Scholar, Crossref, OpenAlex, Unpaywall), on each host that is present. Other generic public MCPs worth adding by hand: `playwright` (browser automation) and `shadcn` (component registry). Paid or account-bound MCPs are not part of this kit; see below.
+`setup.sh` registers only `paper-search` (scientific literature on arXiv, PubMed, Semantic Scholar, Crossref, OpenAlex, Unpaywall), on each host that is present. Browser automation uses the Playwright CLI on demand instead of a long-lived browser MCP. The script does not uninstall browser tools that a user added or kept separately. `shadcn` remains a useful MCP to add by hand. Paid or account-bound MCPs are not part of this kit; see below.
 
 ### Config
 
@@ -155,11 +171,27 @@ The workflow ships in two forms. `skills/spec` and `skills/impl` work across age
 | File | What it is |
 |---|---|
 | `skills/spec/SKILL.md` | Cross-agent spec workflow for Codex, Gemini, Copilot, OpenCode and Claude Code. |
-| `skills/impl/SKILL.md` | Cross-agent implementation orchestrator with evidence grades and clean-context dispatch. |
+| `skills/impl/SKILL.md` | Cross-agent implementation orchestrator with bounded dispatch, evidence grades, crash-safe state, and project-local learning. |
 | `commands/spec.md` | `/spec <change>` — plans with an architecture lens (deep modules, deletion test, YAGNI), grills the decisions with you, and emits an openspec change (`proposal.md`, `design.md`, self-contained `tasks.md`). A new permanent rule has to name which existing rule it replaces. |
-| `commands/impl.md` | `/impl <change>` — dumb dispatcher: delegates each task to a subagent, reads the diff instead of the summary, and grades every task `pass`, `fail`, `unobserved` or `blocked`. Missing evidence is never `pass`. |
+| `commands/impl.md` | `/impl <change>` — delegates each task, verifies the diff, grades evidence, and records integrator-observed lessons after the run. |
 | `agents/deep-reasoner.md` | Frontier-tier subagent with a clean, unanchored context. For architecture, debugging, algorithm design. |
 | `agents/fast-worker.md` | Fast-tier subagent for mechanical work: boilerplate, tests, formatting, simple edits. |
+
+### Project-local learning
+
+Each `$impl` or `/impl` run starts with atomic state under `openspec/impl-state/`. It records unchecked tasks, workers, repair hypotheses, evidence references, the running digest, and cleanup obligations. After a crash, `impl_state.py resume` marks unfinished dispatches interrupted and reports the real git and process state. It never restarts work automatically.
+
+After the run, `impl_state.py export-run` copies task grades and evidence into `openspec/impl-learning/runs/`. The orchestrator adds only structured incidents and verified lessons. Evidence references must resolve to a repository file, immutable full commit SHA, passing task, or verified incident. Repeated run IDs from one change do not count as independent evidence.
+
+The compiler generates three project-local artifacts:
+
+- `ACTIVE_RULES.md` contains recurring guidance proven across distinct OpenSpec changes.
+- `GATE_CANDIDATES.md` contains recurring lessons that could become a test, guard, linter, or script. They require a normal reviewed change and never implement themselves.
+- `QUALITY_SIGNALS.md` aggregates task evidence grades and incident categories such as conflicts, resource denials, stale processes, and crash recovery. It excludes PR throughput.
+
+The compiler rejects conflicting meanings, missing evidence, unverified incident links, and generated-file drift. It supports explicit supersession and writes the complete rule with its evidence. Learning stays inside the project. The harness never writes it into host memory, global instructions, or another repository.
+
+The loop has an explicit stop condition: if no unchecked, verified, in-scope task remains, it stops instead of inventing work.
 
 `setup.sh` installs the cross-agent skills. Claude Code users who also want the native slash-command wrappers can install them on their own:
 
@@ -216,8 +248,9 @@ Two skills adapted from [research-stack](https://github.com/nett0eth/research-st
 8. Installs `AGENTS.md` at `~/.agents/AGENTS.md` and points each host's expected filename at it, with backups.
 9. Fans every skill in the canonical root out to each host that needs its own copy, whatever put the skill there: this repo, a community clone, the Firecrawl CLI, or a plain `npx skills add --global`. This is the step that makes adding a host later a no-op, so installing Codex on a machine that already ran the script is one rerun away from parity. Real directories a host already owns are reported and left alone.
 10. Adds each plugin marketplace and installs the plugins on every host that has one (Claude Code, Codex), skipping what is already installed.
-11. Installs [dcg](https://github.com/Dicklesworthstone/destructive_command_guard), copies the calibrated `dcg/config.toml` and `dcg/allowlist.toml` into `~/.config/dcg/` (backing up anything different that was already there), and lets dcg wire its own hooks. dcg 0.9.4 covers Claude Code, Codex CLI, Gemini CLI, Copilot CLI and Cursor, emitting the right protocol per host.
-12. Asserts the 25 expected verdicts in `dcg/regression.txt`, so a broken calibration fails the install.
+11. Installs `agent-resource-guard` and enables its stale-process timer when a systemd user manager is available.
+12. Installs [dcg](https://github.com/Dicklesworthstone/destructive_command_guard), copies the calibrated `dcg/config.toml` and `dcg/allowlist.toml` into `~/.config/dcg/` (backing up anything different that was already there), and lets dcg wire its own hooks. dcg 0.9.4 covers Claude Code, Codex CLI, Gemini CLI, Copilot CLI and Cursor, emitting the right protocol per host.
+13. Asserts the 25 expected verdicts in `dcg/regression.txt`, so a broken calibration fails the install.
 
 Heavy converters (MinerU, docling) are opt-in and not installed by the script. The whole thing is idempotent: a second run changes nothing.
 

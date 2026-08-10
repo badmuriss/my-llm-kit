@@ -29,9 +29,13 @@ Rule 4 (auditable output) survives delegation only if the orchestrator opens the
 **Papers and scientific literature**: use the `paper-search` MCP to find material on arXiv, PubMed, Semantic Scholar, Crossref, OpenAlex and Unpaywall. Always ask for the DOI along with the title, because the DOI survives a broken link.
 
 **General web**: follow the stack's fallback order.
-1. ScrapingDog (the `scrapingdog` skill) is the default scraper and SERP when `SCRAPINGDOG_API_KEY` exists in the environment.
-2. Firecrawl (the `firecrawl-search` and `firecrawl-scrape` skills) is the fallback when ScrapingDog is unavailable or fails.
+1. ScrapingDog (the `scrapingdog` skill) is the mandatory first attempt when `SCRAPINGDOG_API_KEY` exists in the environment. Pick its dedicated endpoint before generic `/scrape`.
+2. Firecrawl (the `firecrawl-search` and `firecrawl-scrape` skills) is the fallback only when the key is absent or a bounded ScrapingDog attempt fails. Record that reason in the research trail before continuing.
 3. Whatever web search the host gives you natively comes last, only when the two above do not solve it.
+
+Never choose Firecrawl first merely because it is already authenticated or more
+convenient. Never retry an invalid ScrapingDog credential indefinitely, expose
+the credential, or hide the fallback from the audit file.
 
 **Technology or product**: when the topic is technology rather than science, the primary source is the project's repository, official documentation and changelog. Star counts, version numbers and prices must be read on the project's own page, never in a third-party article that cites the project.
 
