@@ -1,100 +1,79 @@
 ---
 name: readme-pass
-description: "Give a public repo README top-starred presentation with agent-first installation, without dropping prose. use_when: make a README pretty, add banner or badges, add a copyable agent install prompt, or run a readme presentation pass. do_not_use_when: rewriting the documentation content itself."
+description: "Make a public repo README concise, scannable, and agent-first. Use when a README is verbose, hard to scan, missing a copyable agent-install prompt, or needs a presentation pass with a banner, badges, and navigation."
 ---
 
 # readme-pass
 
-Presentation pass for a repo README, grounded in how top-starred repos open
-(block/buzz, mvanhorn/last30days). The existing prose is never rewritten,
-it only moves. If the prose needs work, that is a job for the unslop skill,
-not this one.
+Make the README useful before making it pretty. Optimize for a distracted reader who wants to know what the project does, how to install it, and whether it fits their stack.
 
-## Header block
+## Workflow
 
-Insert this, in this order, before the current content:
+1. Read the repository instructions, README, installer files, and manifest. Do not document unsupported behavior.
+2. Find existing brand assets before generating a banner. Check `assets/`, `public/`, `docs/`, logos, and brand files.
+3. Cut before adding. Remove repeated claims, generic motivation, stale implementation detail, and sections that restate a table.
+4. Put the sections in this order when the project supports them:
+   - one-line value
+   - agent-first install
+   - core workflow or example
+   - included capabilities
+   - compatibility
+   - advanced setup and safety
+   - credits and license
+5. Run the `unslop` skill in EDIT mode when the prose is verbose or synthetic. Preserve facts, commands, links, names, and licenses.
+6. Add presentation only after the content is lean.
+7. Verify commands, anchors, links, supported operating systems, and the staged diff.
 
-0. Existing brand wins. Before generating anything, search the repo for
-   official brand assets (`find . -iname "*logo*" -o -iname "*brand*"`,
-   check `assets/`, `public/`, design PDFs). If a real logo exists, use it
-   instead of a generated banner, with GitHub's dark/light switching:
+## Attention budget
 
-   ```html
-   <p align="center">
-     <picture>
-       <source media="(prefers-color-scheme: dark)" srcset="assets/logo-white.png">
-       <img src="assets/logo-black.png" width="140" alt="...">
-     </picture>
-   </p>
-   <h1 align="center">Project Name</h1>
-   ```
+- Answer "what is this?" in one sentence.
+- Keep paragraphs to one idea and usually one to three sentences.
+- Prefer a short table for repeated mappings such as skill to purpose or host to support.
+- Show the main workflow once. Link or move deep internals instead of explaining them twice.
+- Put copyable prompts and commands before implementation details.
+- Keep examples small enough to understand without scrolling back.
+- Delete any sentence that only announces importance or repeats the heading.
+- Do not preserve prose merely because it already exists.
 
-   Match badge accent colors to the brand's palette. Only generate a
-   banner when the repo has no identity of its own.
-1. Centered banner (only when step 0 found no brand assets):
-   `<p align="center"><img src="docs/banner.png" width="720" alt="..."></p>`
-2. Centered bold tagline, one line, concrete value, no hype. Reuse the
-   repo's own first sentence when it fits.
-3. Centered badge row, shields.io with `style=flat-square`:
-   - license badge matching the repo's actual license (no LICENSE file =
-     no license badge, never invent one)
-   - a static "agent skill" badge linking https://skills.sh when the repo
-     is an installable skill
-   - dynamic stars: `https://img.shields.io/github/stars/<owner>/<repo>?style=flat-square`
-   - last commit: `https://img.shields.io/github/last-commit/<owner>/<repo>?style=flat-square`
-4. Centered nav line with anchor links to the README's main sections.
-   Check each anchor against GitHub slug rules: lowercase, spaces to
-   dashes, dots and slashes dropped ("What setup.sh does" is
-   `#what-setupsh-does`).
-5. The install section, moved up from wherever it lives. Put a copyable
-   agent-install prompt before manual commands whenever setup changes the
-   user's machine. Most users will ask an agent to install the project.
-   The prompt must tell the agent to:
-   - detect the operating system and choose the documented installer;
-   - read repository instructions before mutation;
-   - preserve local changes and user-owned configuration;
-   - run the documented dry-run or preview first;
-   - proceed only when the preview has no blocker;
-   - verify the installed capability, rerun to prove idempotence when the
-     installer claims it, and report backups, skips, and unverified steps.
+## Agent-first install
 
-   Use only commands and operating systems the repository actually
-   supports. Never invent an installer. Keep the existing manual commands
-   below the prompt as a fallback for debugging and constrained environments.
+When setup changes the user's machine, place a copyable agent-install prompt before manual commands. Tell the agent to:
 
-Then the existing content follows, with at most light heading
-reorganization so the anchors work. Drop the old H1: the banner carries
-the wordmark.
+- detect the operating system and select a documented installer;
+- read repository instructions before mutation;
+- preserve local changes and user-owned configuration;
+- run the documented dry-run or preview first;
+- continue only when no blocker remains;
+- verify the installed capability and report backups, skips, failures, and unverified steps.
 
-## Banner
+Use only commands and operating systems present in the repo. Keep manual commands below the prompt as a fallback.
 
-Generate with the image-gen skill (Codex, native rendering). Art
-direction, non-negotiable:
+## Header
 
-- Dark background always, never white. Typographic, premium, minimalist:
-  big repo wordmark plus a small tagline underneath, one accent color.
-- Banned: mockups, people, generic AI icons, purple AI glow, pulsing
-  dots, background grids.
-- No em dash anywhere in the banner text. Accented characters spelled
-  out explicitly in the prompt.
-- Target 1600x400. The model usually renders taller; center-crop to 4:1
-  and resize with ImageMagick, which is legitimate post-processing.
-  Rendering text with ImageMagick is not.
-- Inspect every PNG by reading it as an image before accepting it.
-  Garbled text means regenerate natively, never overlay text with a tool.
-- If image generation is unavailable or the quality stays bad, do not
-  commit a bad image: fall back to a typographic
-  `<h1 align="center">` with no image, and say so in the report.
+Use this order:
 
-## Writing rules for any new line
+1. Existing logo or banner. Existing brand assets win.
+2. One concrete tagline.
+3. A small badge row for facts the repo proves, such as license, stars, or last commit.
+4. Anchor navigation for the main sections.
+5. Install.
 
-No em dash, sentence case in headings, no decorative triads, no empty
-promises. Taglines and alt text follow the same rules.
+If the repo has light and dark logo variants, use a `<picture>` element. If it has no identity, use a centered typographic H1 or generate a banner with `image-gen`.
+
+For a generated banner:
+
+- use a dark, minimal, typographic composition;
+- avoid mockups, people, generic AI icons, purple glow, dots, and grids;
+- target a wide 4:1 image and inspect the rendered PNG;
+- reject garbled text instead of repairing it with an overlay;
+- fall back to a typographic H1 when generation fails.
+
+## Writing rules
+
+Use sentence-case headings, plain words, and concrete claims. Avoid em dashes, decorative triads, boldface spam, empty promises, and repeated feature lists.
 
 ## Delivery
 
-- Commit message: `docs: readme presentation pass (banner, badges, nav)`.
-- Stage only the README and the banner when the working tree has
-  unrelated changes.
-- Before pushing a public repo, grep the staged diff for private terms
-  (client names, internal hosts, project codenames) and stop on any hit.
+- Stage only the README and assets created for it.
+- Scan the staged diff for client names, internal hosts, project codenames, and secrets before publishing.
+- Report what was cut, what moved, what was added, and what remains unverified.

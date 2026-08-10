@@ -29,7 +29,7 @@ Install my-llm-kit from https://github.com/badmuriss/my-llm-kit.
 4. Preview with .\setup.ps1 -DryRun on Windows or ./setup.sh --dry-run on macOS/Linux.
 5. Fix safe prerequisites. Do not delete user-owned configuration.
 6. Run the matching installer, then run it again to verify idempotence.
-7. Confirm that spec, impl, and grill-me are available to the installed agents.
+7. Confirm that spec, impl, grill-me, and llm-council are available to the installed agents.
 8. Report changes, skips, backups, failures, and anything left unverified.
 ```
 
@@ -87,6 +87,14 @@ Use $impl <slug> to implement the OpenSpec change. Verify every task and report 
 
 Claude Code also has `/spec` and `/impl` wrappers for the same workflow.
 
+For a costly or uncertain design, add `--council`:
+
+```text
+Use $spec --council to plan <change> and pressure-test the draft before finalizing it.
+```
+
+The flag invokes `llm-council` after the first draft. Normal specs stay fast and skip it.
+
 ### What `impl` remembers
 
 Every run stores crash-safe state under `openspec/impl-state/`. A resumed run reports interrupted tasks, current diffs, and active processes before work continues.
@@ -116,7 +124,7 @@ The loop stops when no verified, unchecked, in-scope task remains.
 | `grill-me` | Decision interview used by `spec`. |
 | `grill-with-docs` | Decision interview that also updates context and ADRs. |
 | `scrapingdog` | Paid public-web data provider. Requires `SCRAPINGDOG_API_KEY`. |
-| `readme-pass` | README presentation and agent-first installation pass. |
+| `readme-pass` | Concise, scannable README with agent-first installation. |
 
 ### Skills linked from their own repos
 
@@ -130,9 +138,7 @@ The loop stops when no verified, unchecked, in-scope task remains.
 
 | Skill | Purpose | Source |
 |---|---|---|
-| `humanizer` | Removes common AI-writing patterns. | [blader/humanizer](https://github.com/blader/humanizer) |
-| `notebooklm` | Queries NotebookLM with source-grounded answers. | [PleasePrompto/notebooklm-skill](https://github.com/PleasePrompto/notebooklm-skill) |
-| `llm-council` | Sends a question to several advisors for anonymous peer review. | [tenfoldmarc/llm-council-skill](https://github.com/tenfoldmarc/llm-council-skill) |
+| `llm-council` | Optional multi-perspective review for `$spec --council` and other costly decisions. | [tenfoldmarc/llm-council-skill](https://github.com/tenfoldmarc/llm-council-skill) |
 | `firecrawl` suite | Search, scrape, crawl, and map through the Firecrawl CLI. | [firecrawl/cli](https://github.com/firecrawl/cli) |
 
 Credentials are optional during setup. A skill stays dormant until its key or login is available.

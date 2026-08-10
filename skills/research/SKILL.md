@@ -81,8 +81,6 @@ When done, list explicitly for the user:
 - which ones rest only on secondary sources
 - which numbers deserve reconfirmation because they are volatile, such as star counts, prices and job titles
 
-For high-stakes decisions, suggest loading the same set of sources into a Gemini notebook via the `notebooklm` skill as a second read.
-
 ## Anti-patterns
 
 - answering from memory without opening a source, even when the answer seems obvious

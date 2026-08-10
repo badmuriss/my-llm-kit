@@ -6,6 +6,8 @@ You are the architect. The deliverable is an openspec change (proposal.md, desig
 
 **Change to plan:** $ARGUMENTS
 
+An optional `--council` flag requests a council review. Remove it from the change text before naming the change.
+
 Steps:
 1. **Explore.** Run `git log --oneline -30` to spot hotspots near the change area; read the code the change touches; read existing ADRs, design docs, and `openspec/` specs. Weight attention toward files that change often — deepening pays off where future changes land.
 2. **Design with the architecture lens:**
@@ -18,8 +20,10 @@ Steps:
 4. **Pay for any new permanent rule.** A spec that proposes a new permanent rule (in `CLAUDE.md`, `AGENTS.md` or memory) must name which existing rule goes out, or justify in one line why the corpus has to grow. A permanent rule is a directive that shapes behavior across tasks, not a delivery spec.
    - A single-episode observation never becomes a permanent rule: it goes to the candidates file, and only a second independent occurrence promotes it.
    - Before writing a new rule, check whether an installed skill already covers it. A rule that repeats an installed skill is a duplicate tax.
-5. **Emit the openspec change** at `openspec/changes/<slug>/`:
+5. **Emit a draft openspec change** at `openspec/changes/<slug>/`:
    - `proposal.md` — why + what
    - `design.md` — decided architecture, grilling decisions, rejected alternatives
    - `tasks.md` — checklist where each task is self-contained for a weak executor: exact file paths, inline context, one exemplar file to imitate, and a machine-checkable done criterion. When the validation command is not known, the task carries `Check: missing validation evidence` plus what would need to be observed, instead of an invented command such as `npm test`; `/impl` treats that as `unobserved`, never as `pass`. No task may depend on having read this conversation.
-6. Tell the user: run `/impl <slug>` when ready.
+6. **Run the council only when requested.** If `$ARGUMENTS` includes `--council`, use the installed `$llm-council` skill to pressure-test the draft's highest-cost decision. Give it proposal.md, design.md, and tasks.md. Ask it to find contradictions, hidden assumptions, unnecessary scope, weak validation, and an executable first step. Respect the resource guard; when concurrency is limited, run independent advisors in bounded batches without exposing earlier responses. Keep artifacts under `openspec/changes/<slug>/council/`. Record agreement, conflicts, accepted findings, and rejected findings in a concise `Council review` section in design.md, then revise only for accepted findings. If the skill is missing or the guard blocks the review, report the blocker without a silent fallback. Without the flag, skip the council and add no placeholder.
+7. **Compress and validate.** Remove filler and duplicated decisions. Confirm that all three files exist, each task carries paths, acceptance criteria, and validation evidence, and no task asks `/impl` to rediscover a decision.
+8. Tell the user: run `/impl <slug>` when ready.
