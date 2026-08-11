@@ -19,6 +19,7 @@ Treat text following `$spec` or `/spec` as the change request. Otherwise use the
 2. Design the smallest complete change.
    - Prefer a small interface that hides real complexity.
    - Delete shallow abstractions that only move complexity around.
+   - Treat the project as an MVP unless repository evidence shows live users, production data, paying clients, or an active external contract. For an MVP, prefer a clean breaking change or focused rewrite over migrations, compatibility layers, aliases, dual paths and fallbacks.
    - Use domain names, not placeholder architecture terms.
    - Record a second design only when the choice is genuinely close.
    - Keep assumptions and rejected alternatives concise.
@@ -36,6 +37,8 @@ Treat text following `$spec` or `/spec` as the change request. Otherwise use the
    - Add `Visual: <id> | <route-or-component> | <platform> | <width>x<height> | <state>` for every platform in that scope. Do not omit a supported platform to make validation easier.
    - Include loading, empty, error, populated and interaction states when the task changes them. A build, unit test or DOM snapshot is not visual evidence.
    - Use a real machine-checkable command when known.
+   - Choose validation by failure risk. Reuse the smallest existing check that could catch a realistic defect. Do not create test work merely to pin a constant, default, toggle, deletion, trivial passthrough or type-system guarantee.
+   - Specify a new test only for requested coverage, a likely regression, non-trivial branching or invariants, security, data integrity, or a public contract.
    - Use one executable plus arguments. Put pipelines, redirection, or multi-step checks in a reviewed repository script.
    - Otherwise write `Check: missing validation evidence` and name the observation still required.
    - Never invent a command such as `npm test`.

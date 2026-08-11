@@ -11,7 +11,7 @@ Reusable skills live in `~/.agents/skills/`, the cross-agent convention. Each is
 Focus on these principles in all code:
 - e2e type-safety
 - error monitoring/observability
-- automated tests
+- risk-proportional validation
 - readability/maintainability
 
 ## Resource discipline
@@ -28,14 +28,15 @@ The machine-wide `agent-resource-guard` keeps concurrent agent work below a safe
 - Under critical memory pressure, the guard stops the largest agent tree before the desktop session reaches the system OOM killer.
 
 ## Scope discipline
-Default assumption: a project has no external users, no live data and no paying client. Under that assumption:
-- Do not preserve backward compatibility. Delete the obsolete path instead of adding a compat layer, a fallback or a migration.
+Default assumption: a project is an MVP with no external users, live data or paying client. Under that assumption:
+- Prefer a clean breaking change or a focused rewrite. Delete the obsolete path instead of adding a migration, adapter, compatibility layer, deprecated alias, dual read/write, feature flag or fallback.
+- Do not preserve an old API, schema, default or behavior unless the repository contains evidence that an active consumer still needs it.
 - Choose the simplest implementation that fully meets the current requirement. No speculative abstraction, configuration or indirection.
 - Grow in layers. Smallest version that works end to end first, each new capability on top of something that already works. Never trade a working product for unfinished complexity.
 - Lean on dependencies already in the project before writing your own or adding a package. Check the library's docs and types before assuming a capability is missing.
 - Architectural decisions are long-term. No stopgap that only works for now and is meant to be replaced later.
 
-When the project is live (real users, paying client, production data) or the ask implies it, say so in one line and ask whether backward compatibility is required before removing anything. The rest of the rules still hold.
+When the project is live (real users, paying client, production data) or the repository shows an active external contract, say so in one line and ask whether backward compatibility is required before removing it. Do not ask for an MVP or local tool without such evidence.
 
 Detailed guidelines live in the skills:
 - Use `writing` skill for documentation and commit messages
@@ -44,9 +45,14 @@ Detailed guidelines live in the skills:
 
 ## Testing
 
+- Do not add a test by default. First choose the cheapest evidence that can catch a realistic failure.
+- Add a test when the user asks for one, when fixing a reproducible bug likely to recur, or when changing non-trivial branching, invariants, security, data integrity or a public contract.
+- Do not add a test only to pin a constant, default value, configuration toggle, removed behavior, trivial passthrough, type-system guarantee or implementation detail.
+- Prefer the smallest relevant existing check. Run a full suite only for broad or risky changes, releases, or when repository instructions require it.
+- Keep the case set minimal. Add boundary cases only when the boundary carries a plausible distinct failure.
 - Test behavior, never implementation.
 - Name tests with a third-person verb, never "should".
-- Every bug fix ships with a test that fails without the fix.
+- A regression test must fail on the known-bad behavior without the fix. If reproducing it in a test would cost more than its recurrence risk, record direct validation instead.
 - Segment the test file by feature behavior with `describe` clauses.
 
 ## Frontend visual validation

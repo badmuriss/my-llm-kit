@@ -16,7 +16,7 @@ Treat text following `$impl` or `/impl` as the change slug. Otherwise use the sl
    - Stop when no unchecked task remains.
 
 2. Read repository instructions and the touched code.
-   - Obtain the real focused and full validation commands.
+   - Obtain the smallest relevant validation command. Identify a full command only when the change is broad or risky, the repository requires it, or this is a release boundary.
    - Read one or two exemplar files. Do not load the whole repository without a reason.
 
 3. Initialize or resume state.
@@ -37,6 +37,7 @@ Treat text following `$impl` or `/impl` as the change slug. Otherwise use the sl
    - Keep the task's exact paths and acceptance criteria in scope.
    - Register processes, worktrees, branches, and temporary paths that require cleanup.
    - Reuse existing code and dependencies. Fix root causes. Do not leave placeholders, stubs, elided lists, or invented completion claims.
+   - Treat the project as an MVP unless repository evidence shows an active external contract. Prefer deleting or rewriting the affected path over migrations, adapters, deprecated aliases, dual paths and compatibility fallbacks.
    - If the request says every file or item, count the full requested scope. Sampling must be declared.
    - Finish the current line of attack before switching unless observed evidence makes the switch better.
 
@@ -48,7 +49,9 @@ Treat text following `$impl` or `/impl` as the change slug. Otherwise use the sl
 
    - The command comes from the task's `Check:` line.
    - Review that line before execution. `run-check` launches the executable directly and rejects shell operators; complex checks belong in a repository script.
-   - A bug fix needs a regression test that fails on the known-bad behavior and passes after the fix.
+   - Do not add a test by default. Add one for requested coverage, a reproducible bug likely to recur, non-trivial branching or invariants, security, data integrity, or a public contract.
+   - Do not add a test merely to pin a constant, default, toggle, removed behavior, trivial passthrough, type-system guarantee or implementation detail. Use direct validation when its evidence is proportionate to the risk.
+   - When a regression test is warranted, require it to fail on the known-bad behavior and pass after the fix.
    - Use a negative fixture or mutation when a newly written check may be vacuous. Do not mutate every task by ritual.
    - `Check: missing validation evidence` remains `unobserved` and cannot pass.
    - Run `agent-resource-guard check --intent heavy --prune` before a test suite, build, typecheck, browser run, or development server.
@@ -71,7 +74,7 @@ Treat text following `$impl` or `/impl` as the change slug. Otherwise use the sl
 
 9. Integrate and finish.
    - Append one concise digest entry after each completed task.
-   - Run the repository's full validation and OpenSpec archive step when present.
+   - Run the smallest relevant validation. Run the full suite only for broad or risky changes, releases, or when repository instructions require it. Run the OpenSpec archive step when present.
    - Stop background commands and finish every cleanup obligation.
    - Run `complete --change <slug> --outcome <pass|partial|blocked>`.
    - Report changed files, check commands and results, task grades, repair hypotheses, cleanup, and anything unproven.
