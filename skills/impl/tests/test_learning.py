@@ -40,7 +40,7 @@ class LearningBehavior(unittest.TestCase):
     ) -> Path:
         path = self.state_directory / f"{change}.json"
         state = {
-            "schema_version": 2,
+            "schema_version": 3,
             "change": change,
             "run_id": run_id,
             "status": status,
@@ -57,6 +57,7 @@ class LearningBehavior(unittest.TestCase):
                     "worker": None,
                     "hypotheses": ["The first attempt missed the contract"] if attempts > 1 else [],
                     "evidence_refs": [],
+                    "visual_expectations": [],
                     "check": {
                         "command": command,
                         "status": "passed" if task_status == "pass" else "failed",

@@ -91,6 +91,8 @@ Every run stores crash-safe state under `openspec/impl-state/`. A resumed run re
 
 Each OpenSpec task carries one `Check:` command. The state records its result, exit code, duration, and attempt count. `Check: missing validation evidence` remains `unobserved` and cannot become `pass`.
 
+Frontend tasks also carry `Visual:` contracts for each changed route, state and viewport. `impl` requires PNG screenshots inspected by a vision-capable tool and a validated manifest before the task can pass. A final guard detects frontend file changes and blocks a successful run when the plan omitted visual expectations entirely.
+
 The loop stops when no verified, unchecked, in-scope task remains.
 
 After normal completion, `learning.py` can snapshot those observed checks and compile recurring support or opposition into `openspec/impl-learning/DRAFT_CANDIDATES.md`. This shadow-mode file is never loaded by `impl`, never creates a rule or skill, and never blocks completion. Activation requires a reviewed change or a validated executable gate; paired `memory_off` and `memory_on` states can be compared without an automatic verdict. See the [trajectory-learning audit](research/2026-08-10-agent-trajectory-learning-audit.md).

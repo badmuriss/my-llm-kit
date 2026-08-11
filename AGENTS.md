@@ -49,6 +49,17 @@ Detailed guidelines live in the skills:
 - Every bug fix ships with a test that fails without the fix.
 - Segment the test file by feature behavior with `describe` clauses.
 
+## Frontend visual validation
+
+Every change that affects rendered UI must be inspected in the running application with a vision-capable tool. Unit tests, DOM snapshots, accessibility trees and successful builds do not replace visual inspection.
+
+- Cover every changed route or component in each changed state, including loading, empty, error, populated and interactive states when applicable.
+- Capture controlled desktop and mobile viewports unless the product has a documented single-viewport target.
+- Inspect every screenshot with `view_image` or `computer-use`. Record concrete observations about layout, clipping, overflow, hierarchy, typography and state correctness.
+- Store PNG evidence and its manifest under `.visual-evidence/<change>/`. Do not declare the work complete while any expected surface is missing or failed.
+- OpenSpec frontend tasks must contain `Visual:` lines using `<id> | <route-or-component> | <width>x<height> | <state>`. The `impl` state blocks a passing grade without a matching vision-reviewed manifest.
+- If the environment cannot run the UI or provide vision, grade visual evidence `unobserved` or the task `blocked`. Never silently substitute a code-only check.
+
 ## Writing (authored prose deliverables only)
 Use the `unslop` skill only when the requested deliverable is standalone prose meant for publication or direct human consumption, such as a post, newsletter, script, caption, blog, e-mail, document or marketing copy.
 

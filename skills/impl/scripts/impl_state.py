@@ -17,9 +17,10 @@ from pathlib import Path
 from typing import Any, Sequence
 
 from runtime_config import RuntimeConfigError, add_runtime_arguments, runtime_from_arguments
+from visual_evidence import VisualEvidenceError, parse_expectation, validate_manifest
 
 
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 MAX_REPAIR_HYPOTHESES = 2
 STATE_DIRECTORY = Path("openspec/impl-state")
 CHANGE_PATTERN = re.compile(r"^[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*$")
@@ -29,6 +30,7 @@ TASK_PATTERN = re.compile(
     r"^\s*-\s+\[([ xX])\]\s+((?=[A-Za-z0-9._-]*\d)[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*)\s+(.+?)\s*$"
 )
 CHECK_PATTERN = re.compile(r"^\s+(?:-\s*)?Check:\s*(.+?)\s*$", re.IGNORECASE)
+VISUAL_PATTERN = re.compile(r"^\s+(?:-\s*)?Visual:\s*(.+?)\s*$", re.IGNORECASE)
 MISSING_CHECK_MARKER = "missing validation evidence"
 TASK_STATUSES = {"pending", "running", "interrupted", "pass", "fail", "unobserved", "blocked"}
 UPDATE_TASK_STATUSES = TASK_STATUSES - {"interrupted"}
@@ -99,6 +101,45 @@ def dirty_paths(repo: Path) -> list[str]:
     if result.returncode != 0:
         return []
     return [line[3:] for line in result.stdout.splitlines() if len(line) > 3]
+
+
+FRONTEND_SUFFIXES = {
+    ".astro",
+    ".avif",
+    ".css",
+    ".gif",
+    ".html",
+    ".jpeg",
+    ".jpg",
+    ".jsx",
+    ".less",
+    ".mdx",
+    ".png",
+    ".sass",
+    ".scss",
+    ".svelte",
+    ".svg",
+    ".tsx",
+    ".vue",
+    ".webp",
+}
+
+
+def changed_paths_since(repo: Path, base_commit: str) -> list[str]:
+    paths: set[str] = set()
+    commands = [
+        ["git", "-C", str(repo), "diff", "--name-only", base_commit],
+        ["git", "-C", str(repo), "ls-files", "--others", "--exclude-standard"],
+    ]
+    for command in commands:
+        result = subprocess.run(command, check=False, capture_output=True, text=True)
+        if result.returncode == 0:
+            paths.update(line.strip() for line in result.stdout.splitlines() if line.strip())
+    return sorted(paths)
+
+
+def frontend_paths(paths: Sequence[str]) -> list[str]:
+    return sorted(path for path in paths if Path(path).suffix.casefold() in FRONTEND_SUFFIXES)
 
 
 def validate_external_evidence_ref(repo: Path, reference: str, context: str) -> None:
@@ -183,6 +224,22 @@ def parse_pending_tasks(tasks_file: Path) -> list[dict[str, Any]]:
                 f"{tasks_file}:{line_number}: task {task_id} needs exactly one Check: line"
             )
         command = None if checks[0].casefold() == MISSING_CHECK_MARKER else checks[0]
+        visual_expectations = [
+            visual_match.group(1).strip()
+            for candidate in lines[index + 1 : block_end]
+            if (visual_match := VISUAL_PATTERN.fullmatch(candidate))
+        ]
+        if len(visual_expectations) != len(set(visual_expectations)):
+            raise StateError(
+                f"{tasks_file}:{line_number}: task {task_id} has duplicate Visual entries"
+            )
+        for expectation in visual_expectations:
+            try:
+                parse_expectation(expectation)
+            except VisualEvidenceError as error:
+                raise StateError(
+                    f"{tasks_file}:{line_number}: task {task_id} has invalid Visual entry: {error}"
+                ) from error
         tasks.append(
             {
                 "id": task_id,
@@ -191,6 +248,7 @@ def parse_pending_tasks(tasks_file: Path) -> list[dict[str, Any]]:
                 "worker": None,
                 "hypotheses": [],
                 "evidence_refs": [],
+                "visual_expectations": visual_expectations,
                 "check": {
                     "command": command,
                     "status": "unobserved" if command is None else "pending",
@@ -268,6 +326,7 @@ def validate_state(state: Any, path: Path) -> dict[str, Any]:
             "worker",
             "hypotheses",
             "evidence_refs",
+            "visual_expectations",
             "check",
             "note",
         }:
@@ -300,6 +359,19 @@ def validate_state(state: Any, path: Path) -> dict[str, Any]:
             raise StateError(f"{path}: invalid arrays for task {task.get('id')}")
         if len(task["evidence_refs"]) != len(set(task["evidence_refs"])):
             raise StateError(f"{path}: duplicate evidence refs for task {task.get('id')}")
+        if not isinstance(task["visual_expectations"], list) or not all(
+            isinstance(entry, str) and entry.strip() for entry in task["visual_expectations"]
+        ):
+            raise StateError(f"{path}: invalid visual expectations for task {task.get('id')}")
+        if len(task["visual_expectations"]) != len(set(task["visual_expectations"])):
+            raise StateError(f"{path}: duplicate visual expectations for task {task.get('id')}")
+        for expectation in task["visual_expectations"]:
+            try:
+                parse_expectation(expectation)
+            except VisualEvidenceError as error:
+                raise StateError(
+                    f"{path}: invalid visual expectation for task {task.get('id')}: {error}"
+                ) from error
         check = task["check"]
         if not isinstance(check, dict) or check.keys() != {
             "command",
@@ -389,6 +461,8 @@ def load_state(repo: Path, change: str) -> tuple[Path, dict[str, Any]]:
     for task in validated["tasks"]:
         for reference in task["evidence_refs"]:
             validate_external_evidence_ref(repo, reference, f"task {task['id']}")
+        if task["status"] == "pass" and task["visual_expectations"]:
+            validate_task_visual_evidence(repo, validated["change"], task)
     return path, validated
 
 
@@ -403,6 +477,30 @@ def find_task(state: dict[str, Any], task_id: str) -> dict[str, Any]:
         if task["id"] == task_id:
             return task
     raise StateError(f"unknown task: {task_id}")
+
+
+def validate_task_visual_evidence(repo: Path, change: str, task: dict[str, Any]) -> None:
+    errors: list[str] = []
+    for reference in task["evidence_refs"]:
+        kind, _, target = reference.partition(":")
+        if kind != "file" or not target.casefold().endswith(".json"):
+            continue
+        manifest_path = repo / target
+        try:
+            validate_manifest(
+                repo,
+                manifest_path,
+                change,
+                task["id"],
+                task["visual_expectations"],
+            )
+            return
+        except VisualEvidenceError as error:
+            errors.append(f"{target}: {error}")
+    details = f" ({'; '.join(errors)})" if errors else ""
+    raise StateError(
+        f"task {task['id']} requires a valid vision-reviewed manifest in --evidence-ref{details}"
+    )
 
 
 def command_init(arguments: argparse.Namespace) -> dict[str, Any]:
@@ -453,6 +551,8 @@ def command_update_task(arguments: argparse.Namespace) -> dict[str, Any]:
         raise StateError("running tasks require --worker")
     if arguments.status == "pass" and task["check"]["status"] != "passed":
         raise StateError("status pass requires a recorded passing check")
+    if arguments.status == "pass" and task["visual_expectations"]:
+        validate_task_visual_evidence(repo, state["change"], task)
     if arguments.status == "fail" and task["check"]["status"] != "failed":
         raise StateError("status fail requires a recorded failed check")
     if arguments.status in {"pass", "fail", "unobserved", "blocked"} and not arguments.note:
@@ -675,6 +775,12 @@ def command_complete(arguments: argparse.Namespace) -> dict[str, Any]:
         not_passed = [task["id"] for task in state["tasks"] if task["status"] != "pass"]
         if not_passed:
             raise StateError(f"pass outcome requires every task to pass: {', '.join(not_passed)}")
+        changed_frontend = frontend_paths(changed_paths_since(repo, state["base_commit"]))
+        if changed_frontend and not any(task["visual_expectations"] for task in state["tasks"]):
+            raise StateError(
+                "frontend changes require Visual entries and vision-reviewed evidence: "
+                + ", ".join(changed_frontend)
+            )
     state["status"] = "complete"
     state["outcome"] = arguments.outcome
     state["last_observed_commit"] = current_commit(repo)

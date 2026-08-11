@@ -19,7 +19,7 @@
     "digest"
   ],
   "properties": {
-    "schema_version": {"const": 2},
+    "schema_version": {"const": 3},
     "change": {
       "type": "string",
       "pattern": "^[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*$"
@@ -50,6 +50,7 @@
           "worker",
           "hypotheses",
           "evidence_refs",
+          "visual_expectations",
           "check",
           "note"
         ],
@@ -82,6 +83,14 @@
                 {"type": "string", "pattern": "^file:.+$"},
                 {"type": "string", "pattern": "^commit:([0-9a-fA-F]{40}|[0-9a-fA-F]{64})$"}
               ]
+            }
+          },
+          "visual_expectations": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*\\s*\\|\\s*[^|]+\\s*\\|\\s*[0-9]+x[0-9]+\\s*\\|\\s*[^|]+$"
             }
           },
           "check": {

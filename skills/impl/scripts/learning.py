@@ -152,6 +152,7 @@ def task_fact(task: dict[str, Any]) -> dict[str, Any]:
         "check_total_duration_ms": check.get("total_duration_ms", check.get("duration_ms") or 0),
         "hypotheses": list(task.get("hypotheses", [])),
         "evidence_refs": list(task.get("evidence_refs", [])),
+        "visual_expectations": list(task.get("visual_expectations", [])),
     }
 
 
@@ -208,6 +209,7 @@ def validate_record(record: Any, path: Path) -> dict[str, Any]:
             "check_total_duration_ms",
             "hypotheses",
             "evidence_refs",
+            "visual_expectations",
         }
         if fact.keys() != expected_fact_fields:
             raise LearningError(f"{context} has missing or unknown fields")

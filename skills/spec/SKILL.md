@@ -31,6 +31,8 @@ Treat text following `$spec` or `/spec` as the change request. Otherwise use the
 
 4. Write `openspec/changes/<slug>/proposal.md`, `design.md`, and `tasks.md`.
    - Give every task a stable ID, exact paths, inline context, an acceptance criterion, and one `Check:` line.
+   - Every task that changes rendered UI needs `Visual:` lines for every changed route or component state at controlled desktop and mobile viewports. Use `Visual: <id> | <route-or-component> | <width>x<height> | <state>`.
+   - Include loading, empty, error, populated and interaction states when the task changes them. A build, unit test or DOM snapshot is not visual evidence.
    - Use a real machine-checkable command when known.
    - Use one executable plus arguments. Put pipelines, redirection, or multi-step checks in a reviewed repository script.
    - Otherwise write `Check: missing validation evidence` and name the observation still required.
