@@ -276,6 +276,32 @@ Invoke-Step "register MCP paper-search" {
     }
 }
 
+Invoke-Step "preflight paper-search" {
+    if ($DryRun) {
+        Write-Host "  [dry-run] paper-search-mcp --version"
+        Write-Host "  [dry-run] paper-search search 'CodePlan repository-level coding' -s arxiv -n 1"
+        return
+    }
+    foreach ($executable in @("paper-search-mcp", "paper-search")) {
+        if (-not (Test-Command $executable)) {
+            Write-Host "  web fallback active: ScrapingDog when keyed, then Firecrawl, then host web search"
+            throw "$executable is missing after installation"
+        }
+    }
+    Invoke-Native "paper-search-mcp" @("--version")
+    $queryOutput = (& paper-search search "CodePlan repository-level coding" -s arxiv -n 1 2>&1 | Out-String)
+    $queryExitCode = $LASTEXITCODE
+    if ($queryExitCode -ne 0) {
+        Write-Host "  web fallback active: ScrapingDog when keyed, then Firecrawl, then host web search"
+        throw "paper-search query failed with exit code ${queryExitCode}: $($queryOutput.Trim())"
+    }
+    if ($queryOutput -notmatch "CodePlan|2309\.12499") {
+        Write-Host "  web fallback active: ScrapingDog when keyed, then Firecrawl, then host web search"
+        throw "paper-search query returned no identifiable result: $($queryOutput.Trim())"
+    }
+    Write-Host "  paper-search query returned CodePlan"
+}
+
 Invoke-Step "vendored skills including grill-me" {
     Get-ChildItem -Directory (Join-Path $RepoDirectory "skills") | ForEach-Object {
         Link-Skill -Name $_.Name -Source $_.FullName

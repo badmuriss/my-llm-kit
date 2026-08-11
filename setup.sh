@@ -170,6 +170,54 @@ register_mcp() {
 }
 run_step "register MCP paper-search" register_mcp
 
+# An installed package is not proof that research works. Exercise the CLI against one
+# stable arXiv title and fail visibly when the executable or query is unavailable.
+preflight_paper_search() {
+  if [ "$DRY" -eq 1 ]; then
+    echo "  [dry-run] paper-search-mcp --version"
+    echo "  [dry-run] paper-search search 'CodePlan repository-level coding' -s arxiv -n 1"
+    return 0
+  fi
+  if ! command -v paper-search-mcp >/dev/null 2>&1; then
+    echo "  paper-search-mcp executable is missing"
+    echo "  web fallback active: ScrapingDog when keyed, then Firecrawl, then host web search"
+    return 1
+  fi
+  if ! command -v paper-search >/dev/null 2>&1; then
+    echo "  paper-search executable is missing"
+    echo "  web fallback active: ScrapingDog when keyed, then Firecrawl, then host web search"
+    return 1
+  fi
+  if ! paper-search-mcp --version; then
+    echo "  paper-search-mcp version check failed"
+    echo "  web fallback active: ScrapingDog when keyed, then Firecrawl, then host web search"
+    return 1
+  fi
+
+  local query_output query_status
+  if command -v timeout >/dev/null 2>&1; then
+    query_output="$(timeout 25s paper-search search 'CodePlan repository-level coding' -s arxiv -n 1 2>&1)"
+    query_status=$?
+  else
+    query_output="$(paper-search search 'CodePlan repository-level coding' -s arxiv -n 1 2>&1)"
+    query_status=$?
+  fi
+  if [ "$query_status" -ne 0 ]; then
+    echo "  paper-search query failed with exit code $query_status"
+    echo "$query_output" | sed -n '1,4p'
+    echo "  web fallback active: ScrapingDog when keyed, then Firecrawl, then host web search"
+    return 1
+  fi
+  if [[ "$query_output" != *"CodePlan"* && "$query_output" != *"2309.12499"* ]]; then
+    echo "  paper-search query returned no identifiable result"
+    echo "$query_output" | sed -n '1,4p'
+    echo "  web fallback active: ScrapingDog when keyed, then Firecrawl, then host web search"
+    return 1
+  fi
+  echo "  paper-search query returned CodePlan"
+}
+run_step "preflight paper-search" preflight_paper_search
+
 # 4. skills vendored in this repo
 link_vendored_skills() {
   if [ "$DRY" -eq 1 ]; then

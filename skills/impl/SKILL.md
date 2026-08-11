@@ -1,109 +1,86 @@
 ---
 name: impl
-description: Implement an existing OpenSpec change by dispatching its tasks to clean-context subagents, reviewing diffs, and grading evidence. Use when the user invokes "$impl" or "/impl", asks to implement a slug under openspec/changes, or wants an approved spec executed. Do not use to invent a missing spec.
+description: Implement an existing OpenSpec change with executable checks, resumable state, and bounded delegation. Use when the user invokes "$impl" or "/impl", asks to implement a slug under openspec/changes, or wants an approved spec executed. Do not invent a missing spec.
 ---
 
 # Impl
 
-Act as the tech-lead orchestrator. Dispatch and synthesize; do not write the bulk of the code yourself. Use subagents because tasks benefit from parallel, isolated contexts.
+Act as the integrator. Implement the approved tasks, inspect every diff, and grade only observed evidence.
 
 Treat text following `$impl` or `/impl` as the change slug. Otherwise use the slug named by the user.
 
 ## Workflow
 
-1. Read `openspec/changes/<slug>/tasks.md`, plus `proposal.md` and `design.md` when present. Do not read the whole codebase into the orchestrator context.
-   - If the slug is missing or ambiguous, list `openspec/changes/` and ask which change to use.
+1. Read `tasks.md`, then the relevant parts of `proposal.md` and `design.md`.
+   - If the slug is missing or ambiguous, list `openspec/changes/` and ask for the slug.
+   - Stop when no unchecked task remains.
 
-2. Read the repository instructions first. Obtain the real build, test, lint, and typecheck commands plus one or two exemplar files. Discover commands only when project instructions do not provide them.
+2. Read repository instructions and the touched code.
+   - Obtain the real focused and full validation commands.
+   - Read one or two exemplar files. Do not load the whole repository without a reason.
 
-   The Python scripts run natively on Windows, macOS, and Linux. They load `.env` from the current directory and accept `--env-file <path>`. Set `IMPL_OS` and `IMPL_PROJECT_DIR` as shown in [runtime.env.example](references/runtime.env.example). A CLI `--repo` value overrides the project directory. The scripts reject an OS value that disagrees with the machine instead of running a false platform configuration. Commands below use `python3`; use `py -3` on Windows when `python3` is unavailable.
+3. Initialize or resume state.
+   - Run `python3 ~/.agents/skills/impl/scripts/impl_state.py init --change <slug> --run-id <run-id>` for a new run.
+   - Run `resume --change <slug>` when active state exists.
+   - Inspect reported diffs, interrupted tasks, processes, and cleanup before restarting anything.
 
-3. Initialize or reconcile crash-safe run state before dispatching.
-   - Use one stable run ID for the whole execution.
-   - If no active state exists, run `python3 ~/.agents/skills/impl/scripts/impl_state.py init --change <slug> --run-id <run-id>`. It replaces only a completed state from an older run. The generated file conforms to [impl-state.schema.json](references/impl-state.schema.json).
-   - If an active state exists, run the same script with `resume --change <slug>`. Inspect every reported diff, interrupted task, process, and cleanup obligation before restarting or dispatching anything.
-   - The state tracks only unchecked OpenSpec tasks. If none remain, stop instead of inventing work.
+4. Choose the smallest execution path that fits the task.
+   - Execute one localized task in the current context.
+   - Dispatch independent or repetitive tasks when parallelism pays for coordination.
+   - Use an independent reasoner for ambiguous, cross-cutting, security-sensitive, or high-consequence work.
+   - Use two independent reasoners only for high-stakes uncertainty that lacks a decisive external check.
+   - Read [model-routing.md](references/model-routing.md) when the host supports model overrides.
+   - Before dispatching, run `agent-resource-guard check --intent agent --demand <count> --prune`. Keep at most two workers active.
 
-4. Check machine-wide capacity before dispatching.
-   - Run `agent-resource-guard check --intent agent --demand 2 --prune` when the command exists.
-   - Never keep more than two workers from this run active at once.
-   - If a batch of two is denied, retry with `--demand 1`. If one is denied, do integration or review work locally and retry after an existing worker exits. Do not open another terminal.
-   - Run `agent-resource-guard check --intent heavy --prune` before each build, typecheck, test suite, browser run, or development server. A denial is not test evidence; wait for capacity.
+5. Execute one task at a time per worker.
+   - Mark it `running`; use worker `local` for current-context work.
+   - Keep the task's exact paths and acceptance criteria in scope.
+   - Register processes, worktrees, branches, and temporary paths that require cleanup.
+   - Reuse existing code and dependencies. Fix root causes. Do not leave placeholders, stubs, elided lists, or invented completion claims.
+   - If the request says every file or item, count the full requested scope. Sampling must be declared.
+   - Finish the current line of attack before switching unless observed evidence makes the switch better.
 
-5. Load project-local impl rules before dispatching.
-   - If `openspec/impl-learning/runs/` exists, run `python3 ~/.agents/skills/impl/scripts/learning.py refresh`.
-   - Read `openspec/impl-learning/ACTIVE_RULES.md` after regeneration.
-   - Apply only rules whose scopes match the current change. Repository instructions and the approved OpenSpec change take precedence.
-   - Never copy these rules into Codex memory, `AGENTS.md`, or another project automatically.
+6. Run the task contract through state:
 
-6. Classify every unchecked task.
-   - Read [model-routing.md](references/model-routing.md) when the host supports per-worker model overrides.
-   - Mechanical or tightly bounded work: dispatch a fast worker using [fast-worker.md](references/fast-worker.md).
-   - Ambiguous, cross-cutting, or reasoning-heavy work: dispatch a deep reasoner using [deep-reasoner.md](references/deep-reasoner.md).
-   - High-stakes or uncertain work: dispatch two independent deep reasoners without showing either the other's answer, then reconcile.
-   - Run independent tasks in parallel within the two-worker limit. Preserve ordering only for real dependencies.
+   ```text
+   python3 ~/.agents/skills/impl/scripts/impl_state.py run-check --change <slug> --task <id>
+   ```
 
-7. Include in every dispatch:
-   - exact task text and file scope;
-   - acceptance criteria and exemplar paths;
-   - the real check command;
-   - the running digest from completed tasks;
-   - this clause:
+   - The command comes from the task's `Check:` line.
+   - Review that line before execution. `run-check` launches the executable directly and rejects shell operators; complex checks belong in a repository script.
+   - A bug fix needs a regression test that fails on the known-bad behavior and passes after the fix.
+   - Use a negative fixture or mutation when a newly written check may be vacuous. Do not mutate every task by ritual.
+   - `Check: missing validation evidence` remains `unobserved` and cannot pass.
+   - Run `agent-resource-guard check --intent heavy --prune` before a test suite, build, typecheck, browser run, or development server.
 
-     > Leave one runnable check per non-trivial logic, and prove that check can fail: break the target with an isolated fixture, fake, or transient mutation, never production or an external system. Confirm the check fails on the known-bad case, restore the mutation, confirm the diff is clean, and rerun the check green. If the check still passes with the logic broken, or the restore leaves the target dirty, grade it `unobserved`, not `pass`. If the task requires touching files outside its scope, stop and report instead of improvising.
+7. Review the diff and grade the task.
+   - `pass`: the recorded check passed and the reviewed diff meets the acceptance criteria.
+   - `fail`: the recorded check ran and failed.
+   - `unobserved`: the required evidence could not be collected.
+   - `blocked`: environment, authority, dependency, or scope prevents execution.
+   - Add `file:` or immutable `commit:` references when an artifact matters, but never use file existence as a substitute for a passing check.
+   - Only `pass` checks the task box.
 
-   - Add for Codex dispatches: reuse existing code before the standard library, installed dependencies, or new code. Fix root causes. Mark deliberate shortcuts with `ponytail:` comments.
+8. Repair from evidence.
+   - Record one distinct root-cause hypothesis before each repair.
+   - The state caps repairs after two failed hypotheses. At the cap, report both and grade `blocked`.
+   - Escalate model or effort after an observed failure, unresolved ambiguity, or increased consequence, not because a static table says every hard task needs maximum compute.
 
-8. Checkpoint every state transition.
-   - Mark a task `running` with its worker before dispatch.
-   - Register each process PID, worktree, branch, or temporary path that this run must clean with `add-cleanup`.
-   - After review, call `update-task` with the evidence grade, concise note, and `file:` or `commit:` evidence references. Commit references use the full immutable SHA. A `pass` or `fail` without an existing reference is rejected.
-   - Record each repair hypothesis before the attempt. The state script rejects repeated hypotheses and a third repair attempt.
-   - Append the running digest with the `digest` command. State writes are atomic.
+9. Integrate and finish.
+   - Append one concise digest entry after each completed task.
+   - Run the repository's full validation and OpenSpec archive step when present.
+   - Stop background commands and finish every cleanup obligation.
+   - Run `complete --change <slug> --outcome <pass|partial|blocked>`.
+   - Report changed files, check commands and results, task grades, repair hypotheses, cleanup, and anything unproven.
 
-9. Review every returned diff. Never trust the subagent summary alone. Run the check before updating `tasks.md`.
+10. Optionally record learning after normal completion.
+   - Learning is shadow-mode telemetry, never a completion gate. Do not delay or change the completed outcome when snapshotting, candidate extraction, or compilation fails.
+   - Run `python3 ~/.agents/skills/impl/scripts/learning.py snapshot --change <slug>` only after `complete`. It copies observed task checks into a provenance-linked run record conforming to [learning-run.schema.json](references/learning-run.schema.json).
+   - Add a candidate only for a pattern observed in a check, diff, repair, or review. Cite one or more task IDs with `add-candidate`; use `stance: oppose` when later evidence contradicts the same scoped statement.
+   - Run `learning.py compile` to refresh `openspec/impl-learning/DRAFT_CANDIDATES.md`. The compiler never creates active rules or skills, and `impl` never loads this file.
+   - Five supporting OpenSpec changes mark only a recurring draft. Activation requires a separate reviewed change or an executable gate that fails on the negative case, passes on the positive case, and survives full validation.
+   - For a candidate trial, compare completed states with identical task checks using `learning.py compare --candidate <key> --off-state <path> --on-state <path>`. Treat no gain, regression, or extra cost without benefit as rejection evidence. The command reports deltas and never declares a winner.
 
-10. Grade each task:
-   - `pass`: required evidence was collected and the assertion held. Check the task box.
-   - `fail`: the check ran and failed. Leave the box open.
-   - `unobserved`: required evidence could not be collected. Leave the box open.
-   - `blocked`: environment, authority, or dependency prevents execution. Leave the box open.
-   - Never turn missing evidence into `pass`.
+## Stop condition
 
-11. Cap repair at two rounds per task. Before each round, record a distinct one-line root-cause hypothesis in the state file. At the cap, grade the task `blocked` and report both hypotheses.
-
-12. Append one concise line to the persisted digest after each completed task. Include the digest in subsequent dispatches so workers reuse completed helpers.
-
-13. Run the repository's full validation commands after all task-level work. Follow the repository's OpenSpec archive step when one exists.
-
-14. Stop every background command and finish every registered cleanup obligation. A completed state cannot contain running or interrupted tasks or pending cleanup.
-
-15. Export the run and refresh project-local artifacts.
-   - Run `python3 ~/.agents/skills/impl/scripts/impl_state.py export-run --change <slug> --outcome <pass|partial|blocked>`. It copies final task grades and evidence into a new record under `openspec/impl-learning/runs/` that conforms to [learning-run.schema.json](references/learning-run.schema.json).
-   - Record every task grade, observed evidence, and existing `file:` or `commit:` evidence references. Set the run outcome to `pass`, `partial`, or `blocked`.
-   - Add incidents and learnings to the exported record. Record incidents separately from learnings. Each incident names its kind, symptom, hypothesis, proposed fix, verification plan, status, and evidence references. A hypothesis is not a learned rule.
-   - Derive learnings only from events the orchestrator observed in diffs, checks, repairs, conflicts, or integration. Link each learning to a passing task, verified incident, existing file, or existing commit. An uneventful run uses empty `incidents` and `learnings` arrays.
-   - Before adding a learning, search prior run records. Reuse the same key, scopes, and rule text when the same lesson recurs. Use a new key with `supersedes` when the new rule replaces an older one.
-   - Use `kind: rule` for guidance the harness may load. Use `kind: gate_candidate` when recurrence could become a test, guard, linter, or script. Use `kind: skill` when the same verified need is reusable across tasks or projects. A skill learning also requires a hyphen-case `skill_name` and a trigger-focused `skill_description`; its `rule` becomes the imperative skill body.
-   - Gate candidates and skills require review. The compiler may generate a project-local skill, but it never installs or publishes one automatically.
-   - Keep evidence concrete and local to this run. Never promote a subagent claim that the orchestrator did not verify.
-   - Run `python3 ~/.agents/skills/impl/scripts/learning.py refresh`, then run the same command with `check` instead of `refresh`.
-   - The compiler promotes matching observations only across distinct OpenSpec changes. It generates `ACTIVE_RULES.md`, `GATE_CANDIDATES.md`, `QUALITY_SIGNALS.md`, `SKILLS.md`, and valid skill folders under `openspec/impl-learning/skills/`. Quality signals include task grades and incident categories, not PR throughput.
-
-16. Complete the persisted state with `python3 ~/.agents/skills/impl/scripts/impl_state.py complete --change <slug> --outcome <pass|partial|blocked>`. Report changed files, checks, grades, incidents, learning candidates, gate candidates, generated skills, newly active rules, and everything that remains unproven.
-
-## Guardrails
-
-- Do not relax assertions, replace hard cases with easy ones, or widen tolerances to make a check green.
-- Do not regenerate baselines or snapshots automatically after a failure.
-- Do not mark skipped or missing evidence as success.
-- Stop a worker that expands beyond its assigned files.
-- Do not invent a lesson to make every run look useful.
-- Do not hand-edit `openspec/impl-learning/ACTIVE_RULES.md`; it is generated state.
-- Do not hand-edit `GATE_CANDIDATES.md` or `QUALITY_SIGNALS.md`; they are generated state.
-- Do not hand-edit `SKILLS.md` or generated `skills/*/SKILL.md`; change the evidenced run records and regenerate.
-- Do not activate a learning from repeated run IDs that belong to the same OpenSpec change.
-- Do not turn a gate candidate into code without a reviewed change and a failing behavioral test.
-- Do not install or publish a generated skill without reviewing its trigger, instructions, evidence, and scope.
-- Stop when no unchecked, verified, in-scope task remains. A non-empty run is not a success condition.
-- Do not restart commands restored from a crashed or resumed session without inspecting whether an equivalent process already exists.
+Stop when every requested, in-scope task is passed or explicitly reported as fail, unobserved, or blocked. More thinking is not evidence. Never load `DRAFT_CANDIDATES.md` into an implementation prompt, convert recurrence counts into active rules or generated skills, or overwrite an observation record. See [the paper audit](../../research/2026-08-10-agent-trajectory-learning-audit.md).

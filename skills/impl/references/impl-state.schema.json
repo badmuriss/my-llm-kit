@@ -19,7 +19,7 @@
     "digest"
   ],
   "properties": {
-    "schema_version": {"const": 1},
+    "schema_version": {"const": 2},
     "change": {
       "type": "string",
       "pattern": "^[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*$"
@@ -50,6 +50,7 @@
           "worker",
           "hypotheses",
           "evidence_refs",
+          "check",
           "note"
         ],
         "properties": {
@@ -83,6 +84,19 @@
               ]
             }
           },
+          "check": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["command", "status", "exit_code", "duration_ms", "total_duration_ms", "attempts"],
+            "properties": {
+              "command": {"type": ["string", "null"], "minLength": 1},
+              "status": {"enum": ["pending", "passed", "failed", "unobserved"]},
+              "exit_code": {"type": ["integer", "null"]},
+              "duration_ms": {"type": ["integer", "null"], "minimum": 0},
+              "total_duration_ms": {"type": "integer", "minimum": 0},
+              "attempts": {"type": "integer", "minimum": 0}
+            }
+          },
           "note": {"type": "string"}
         },
         "allOf": [
@@ -99,14 +113,22 @@
             }
           },
           {
-            "if": {
-              "properties": {
-                "status": {"enum": ["pass", "fail"]}
-              }
-            },
+            "if": {"properties": {"status": {"const": "pass"}}},
             "then": {
               "properties": {
-                "evidence_refs": {"minItems": 1}
+                "check": {
+                  "properties": {"status": {"const": "passed"}}
+                }
+              }
+            }
+          },
+          {
+            "if": {"properties": {"status": {"const": "fail"}}},
+            "then": {
+              "properties": {
+                "check": {
+                  "properties": {"status": {"const": "failed"}}
+                }
               }
             }
           },

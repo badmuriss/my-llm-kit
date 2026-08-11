@@ -62,15 +62,13 @@ research, when facts are uncertain
 $spec: proposal.md + design.md + tasks.md
         ↓
 $impl: code + checks + evidence grades
-        ↓
-project-local rules, gate candidates, and skills
 ```
 
 | Skill | Job | Output |
 |---|---|---|
 | `research` | Checks changing facts and compares sources before they shape the code. | An auditable finding under `research/`. |
-| `spec` | Uses a short council before grilling, resolves owner decisions, then validates the final draft. | `proposal.md`, `design.md`, `tasks.md`, and two concise council reports. |
-| `impl` | Routes approved tasks to Luna, Terra, or Sol by scope and risk, then reviews each diff and grades the evidence. | Code, checks, evidence grades, incidents, and resumable state. |
+| `spec` | Resolves decisions and writes an executable plan. A `--council` flag adds one bounded review. | `proposal.md`, `design.md`, `tasks.md`, and an optional council report. |
+| `impl` | Executes localized work directly, delegates when isolation or parallelism pays, and grades recorded checks. | Code, checks, evidence grades, and resumable state. |
 | `writing` | Keeps docs, commits, PR descriptions, and errors short and concrete. | A clear record of what changed, why, and how it was checked. |
 
 Start a change:
@@ -82,29 +80,24 @@ Use $spec to plan <change>. Resolve the important decisions with me and create t
 Implement the approved plan:
 
 ```text
-Use $impl <slug> to implement the OpenSpec change. Verify every task and report evidence grades and learned candidates.
+Use $impl <slug> to implement the OpenSpec change. Execute every task check and report its evidence grade.
 ```
 
-Claude Code also has `/spec` and `/impl` wrappers for the same workflow. Council review runs by default. Before grilling, `spec-council` reduces duplicate or unnecessary questions. After grilling, it checks architecture and executability. Each pass uses at most two reviewers and writes one short Markdown report. Use `$spec --no-council <change>` to skip both passes.
+Claude Code also has `/spec` and `/impl` wrappers for the same workflow. Council review is opt-in with `$spec --council <change>`. It challenges the completed draft once and remains advisory; executable checks decide acceptance.
 
-### What `impl` remembers
+### What `impl` records
 
 Every run stores crash-safe state under `openspec/impl-state/`. A resumed run reports interrupted tasks, current diffs, and active processes before work continues.
 
-After implementation, verified lessons go to `openspec/impl-learning/`. Recurring lessons across distinct changes can produce:
-
-- `ACTIVE_RULES.md` for proven project guidance
-- `GATE_CANDIDATES.md` for possible tests, guards, linters, or scripts
-- `QUALITY_SIGNALS.md` for evidence grades and incident categories
-- `skills/<name>/SKILL.md` for reusable project-local skills
-
-Generated files stay inside the project. The harness does not install or publish a generated skill automatically.
+Each OpenSpec task carries one `Check:` command. The state records its result, exit code, duration, and attempt count. `Check: missing validation evidence` remains `unobserved` and cannot become `pass`.
 
 The loop stops when no verified, unchecked, in-scope task remains.
 
+After normal completion, `learning.py` can snapshot those observed checks and compile recurring support or opposition into `openspec/impl-learning/DRAFT_CANDIDATES.md`. This shadow-mode file is never loaded by `impl`, never creates a rule or skill, and never blocks completion. Activation requires a reviewed change or a validated executable gate; paired `memory_off` and `memory_on` states can be compared without an automatic verdict. See the [trajectory-learning audit](research/2026-08-10-agent-trajectory-learning-audit.md).
+
 ### Codex model routing
 
-`impl` uses Luna for fast, bounded work, Terra for integration and ambiguous debugging, and Sol for high-stakes judgment. Luna `xhigh` is available for difficult tasks with a narrow scope and objective checks. It is not the global default. If the Codex runtime rejects Luna as a child model, `impl` retries with Terra and reports the fallback.
+`impl` keeps one localized task in the current context. It uses Luna for independent mechanical work, Terra for ambiguous integration, and Sol for architecture, security, or unresolved high-risk failures. Effort rises after observed failure or increased risk; `xhigh` is not a default lane.
 
 ## What's included
 
@@ -116,7 +109,7 @@ The loop stops when no verified, unchecked, in-scope task remains.
 | `ingest` | Converts received documents and repos before analysis. |
 | `writing` | Technical writing rules based on Zinsser. |
 | `spec` | Architecture-first OpenSpec planning. |
-| `impl` | Evidence-graded implementation and project-local learning. |
+| `impl` | Evidence-graded implementation with executable task checks. |
 | `grill-me` | Decision interview used by `spec`. |
 | `grill-with-docs` | Decision interview that also updates context and ADRs. |
 | `scrapingdog` | Paid public-web data provider. Requires `SCRAPINGDOG_API_KEY`. |
@@ -180,9 +173,10 @@ The installers:
 2. Install the shared skills and link them into each host.
 3. Clone the owned and community skill repos when missing.
 4. Install Firecrawl, optional plugins, and the `paper-search` MCP where supported.
-5. Install the shared `AGENTS.md`, with backups for different existing files.
-6. Install and verify `dcg`, the destructive-command guard.
-7. Install `agent-resource-guard` on Linux. Windows records an explicit skip.
+5. Verify the `paper-search` executable, version, and one real arXiv query. A failure declares the web fallback.
+6. Install the shared `AGENTS.md`, with backups for different existing files.
+7. Install and verify `dcg`, the destructive-command guard.
+8. Install `agent-resource-guard` on Linux. Windows records an explicit skip.
 
 ### Safety tools
 
