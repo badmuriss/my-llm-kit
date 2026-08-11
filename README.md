@@ -130,6 +130,12 @@ After normal completion, `learning.py` can snapshot those observed checks and co
 |---|---|---|
 | `firecrawl` suite | Search, scrape, crawl, and map through the Firecrawl CLI. | [firecrawl/cli](https://github.com/firecrawl/cli) |
 
+### Web MCP
+
+The setup installs and registers [`scrapingdog-mcp`](https://github.com/Darshan972/Scrapingdog-mcp) with Claude Code and Codex. Until [the YouTube Search fix](https://github.com/Darshan972/Scrapingdog-mcp/pull/1) ships in an npm release, installation is pinned to the immutable tarball for the tested fork commit. It performs an MCP handshake and checks the tool catalog without consuming API credits. OpenCode receives the equivalent JSON to add manually.
+
+The server reads `SCRAPINGDOG_API_KEY` from the agent process at runtime. The installer never writes the key to host configuration. Export the variable before starting the agent.
+
 Credentials are optional during setup. A skill stays dormant until its key or login is available.
 
 ### Optional plugins
@@ -172,11 +178,12 @@ The installers:
 1. Detect installed agent hosts and required tools.
 2. Install the shared skills and link them into each host.
 3. Clone the owned and community skill repos when missing.
-4. Install Firecrawl, optional plugins, and the `paper-search` MCP where supported.
-5. Verify the `paper-search` executable, version, and one real arXiv query. A failure declares the web fallback.
-6. Install the shared `AGENTS.md`, with backups for different existing files.
-7. Install and verify `dcg`, the destructive-command guard.
-8. Install `agent-resource-guard` on Linux. Windows records an explicit skip.
+4. Install Firecrawl, optional plugins, and the `paper-search` and ScrapingDog MCP servers where supported.
+5. Verify the ScrapingDog MCP handshake and tool catalog without API credits.
+6. Verify the `paper-search` executable, version, and one real arXiv query. A failure declares the web fallback.
+7. Install the shared `AGENTS.md`, with backups for different existing files.
+8. Install and verify `dcg`, the destructive-command guard.
+9. Install `agent-resource-guard` on Linux. Windows records an explicit skip.
 
 ### Safety tools
 

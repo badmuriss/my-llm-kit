@@ -10,6 +10,7 @@ $ErrorActionPreference = "Stop"
 $RepoDirectory = $PSScriptRoot
 $InstallManifestPath = Join-Path $RepoDirectory "install-manifest.json"
 $InstallManifest = Get-Content -Raw -Path $InstallManifestPath | ConvertFrom-Json
+$ScrapingDogMcpPackage = "https://codeload.github.com/badmuriss/Scrapingdog-mcp/tar.gz/8084d8a77b5836f7c0ef7cfbaec5ab12f1fcb741"
 $HomeDirectory = [Environment]::GetFolderPath("UserProfile")
 $DocumentsDirectory = [Environment]::GetFolderPath("MyDocuments")
 if ([string]::IsNullOrWhiteSpace($DocumentsDirectory)) {
@@ -273,6 +274,73 @@ Invoke-Step "register MCP paper-search" {
     }
     if (Test-Command "opencode") {
         Write-Host '  opencode: add {"mcp":{"paper-search":{"type":"local","command":["paper-search-mcp"]}}} to opencode.json'
+    }
+}
+
+Invoke-Step "install MCP scrapingdog" {
+    if ($DryRun) {
+        Write-Host "  [dry-run] npm install --global $ScrapingDogMcpPackage"
+    }
+    else {
+        Invoke-Native "npm" @("install", "--global", $ScrapingDogMcpPackage)
+        $packageDirectory = Join-Path ((& npm root --global | Out-String).Trim()) "scrapingdog-mcp"
+        Invoke-Native "npm" @("ci", "--include=dev", "--prefix", $packageDirectory)
+    }
+}
+
+Invoke-Step "register MCP scrapingdog" {
+    $entrypoint = Join-Path ((& npm root --global | Out-String).Trim()) "scrapingdog-mcp\dist\index.js"
+    if (Test-Command "claude") {
+        $details = (& claude mcp get scrapingdog 2>$null | Out-String)
+        if ($details.Contains($entrypoint)) {
+            Write-Host "  claude: scrapingdog already points to the pinned build, skipping"
+        }
+        elseif ($DryRun) {
+            if (-not [string]::IsNullOrWhiteSpace($details)) {
+                Write-Host "  [dry-run] claude mcp remove scrapingdog -s user"
+            }
+            Write-Host "  [dry-run] claude mcp add --scope user scrapingdog -- node $entrypoint"
+        }
+        else {
+            if (-not [string]::IsNullOrWhiteSpace($details)) {
+                Invoke-Native "claude" @("mcp", "remove", "scrapingdog", "-s", "user")
+            }
+            Invoke-Native "claude" @("mcp", "add", "--scope", "user", "scrapingdog", "--", "node", $entrypoint)
+        }
+    }
+    if (Test-Command "codex") {
+        $details = (& codex mcp get scrapingdog 2>$null | Out-String)
+        if ($details.Contains($entrypoint)) {
+            Write-Host "  codex: scrapingdog already points to the pinned build, skipping"
+        }
+        elseif ($DryRun) {
+            if (-not [string]::IsNullOrWhiteSpace($details)) {
+                Write-Host "  [dry-run] codex mcp remove scrapingdog"
+            }
+            Write-Host "  [dry-run] codex mcp add scrapingdog -- node $entrypoint"
+        }
+        else {
+            if (-not [string]::IsNullOrWhiteSpace($details)) {
+                Invoke-Native "codex" @("mcp", "remove", "scrapingdog")
+            }
+            Invoke-Native "codex" @("mcp", "add", "scrapingdog", "--", "node", $entrypoint)
+        }
+    }
+    if (Test-Command "opencode") {
+        Write-Host "  opencode: add {`"mcp`":{`"scrapingdog`":{`"type`":`"local`",`"command`":[`"node`",`"$entrypoint`"]}}} to opencode.json"
+    }
+    if ([string]::IsNullOrWhiteSpace($env:SCRAPINGDOG_API_KEY)) {
+        Write-Host "  scrapingdog registered without a key; set SCRAPINGDOG_API_KEY before starting an agent"
+    }
+}
+
+Invoke-Step "preflight MCP scrapingdog" {
+    $entrypoint = Join-Path ((& npm root --global | Out-String).Trim()) "scrapingdog-mcp\dist\index.js"
+    if ($DryRun) {
+        Write-Host "  [dry-run] node scripts/preflight_scrapingdog_mcp.mjs $entrypoint"
+    }
+    else {
+        Invoke-Native "node" @((Join-Path $RepoDirectory "scripts\preflight_scrapingdog_mcp.mjs"), $entrypoint)
     }
 }
 

@@ -13,10 +13,16 @@ ScrapingDog is the kit's primary paid provider for live public web data. When
 `SCRAPINGDOG_API_KEY` exists, a task must attempt the matching ScrapingDog
 endpoint before Firecrawl, native web search or another scraper.
 
+Use the `scrapingdog` MCP server first. Select the matching tool from its live
+tool catalog and call it directly. This keeps API-key injection, URL building,
+timeouts and response handling outside task code. Do not write a new HTTP call
+when the MCP already exposes the endpoint.
+
 Fallback is explicit. If the key is absent, state that in the work log. If a
 request fails, make only the bounded retry allowed by the status code, record
-the failure, then use Firecrawl. Never expose the key or repeat an invalid
-credential.
+the failure, then use an existing project helper or the HTTP fallback below.
+Use Firecrawl only after the ScrapingDog paths fail. Never expose the key or
+repeat an invalid credential.
 
 ## First Checks
 
@@ -25,11 +31,12 @@ credential.
    - `interactive`: the key exists in shell startup files. Run ScrapingDog calls inside `bash -ic '...'` so that shell loads the key.
    - `missing`: only then record the key as absent and follow the fallback policy.
 2. Never print, grep, copy, persist or hardcode the key. The checker reports only where the key became available, never its value.
-3. Pick the dedicated endpoint from the routing table below. Generic `/scrape` is the last resort, not the default.
-4. If the project already has a ScrapingDog client or helper module, reuse it instead of writing new HTTP code.
-5. Build the query with `URLSearchParams` or a params object, never string concatenation.
-6. Timeout around 60s (120s for `/chatgpt` and `/google/ai_mode`).
-7. Before a batch job, hit `/account` for remaining credits and active concurrency.
+3. Inspect the `scrapingdog` MCP tool catalog and use its dedicated tool when present. Tool names use snake case, such as `google_search`, `youtube_search` and `web_scrape`.
+4. If the MCP lacks the endpoint, reuse the project's existing ScrapingDog helper. Write a direct HTTP call only when neither path exists.
+5. Generic `web_scrape` or `/scrape` is the last resort, not the default.
+6. For an HTTP fallback, build the query with `URLSearchParams` or a params object, never string concatenation.
+7. Timeout around 60s (120s for `/chatgpt` and `/google/ai_mode`).
+8. Before a batch job, check remaining credits through a local redacting helper. Never place the raw `/account` response in model context because it may echo credentials.
 
 ## Routing Table
 
@@ -118,7 +125,10 @@ Those files were extracted from `https://www.scrapingdog.com/documentation/` on 
 - Cap calls per lead in enrichment. One SERP plus at most two scrapes, Firecrawl only as fallback.
 - `session_number` reuses the same IP across requests, free, expires 60s after last use.
 
-## HTTP Pattern
+## HTTP Fallback Pattern
+
+Use this only when the MCP tool catalog and the project's existing helpers do
+not cover the required endpoint.
 
 ```ts
 const baseUrl = "https://api.scrapingdog.com";

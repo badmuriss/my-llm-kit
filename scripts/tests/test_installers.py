@@ -53,5 +53,45 @@ class PaperSearchPreflightBehavior(unittest.TestCase):
         self.assertIn("web fallback active: ScrapingDog when keyed, then Firecrawl", setup)
 
 
+class ScrapingDogMcpBehavior(unittest.TestCase):
+    package_spec = "https://codeload.github.com/badmuriss/Scrapingdog-mcp/tar.gz/8084d8a77b5836f7c0ef7cfbaec5ab12f1fcb741"
+
+    def test_registers_and_preflights_the_server_on_unix(self) -> None:
+        setup = (ROOT / "setup.sh").read_text(encoding="utf-8")
+
+        self.assertIn(f'SCRAPINGDOG_MCP_PACKAGE="{self.package_spec}"', setup)
+        self.assertIn('npm install --global "$SCRAPINGDOG_MCP_PACKAGE"', setup)
+        self.assertIn('npm ci --include=dev --prefix "$(npm root --global)/scrapingdog-mcp"', setup)
+        self.assertIn("claude mcp add --scope user scrapingdog -- node", setup)
+        self.assertIn("codex mcp add scrapingdog -- node", setup)
+        self.assertIn("claude mcp get scrapingdog", setup)
+        self.assertIn("codex mcp get scrapingdog", setup)
+        self.assertIn('node "$REPO_DIR/scripts/preflight_scrapingdog_mcp.mjs" "$entrypoint"', setup)
+
+    def test_registers_and_preflights_the_server_on_windows(self) -> None:
+        setup = (ROOT / "setup.ps1").read_text(encoding="utf-8")
+
+        self.assertIn(f'$ScrapingDogMcpPackage = "{self.package_spec}"', setup)
+        self.assertIn('"install", "--global", $ScrapingDogMcpPackage', setup)
+        self.assertIn('"ci", "--include=dev", "--prefix", $packageDirectory', setup)
+        self.assertIn('"scrapingdog", "--", "node", $entrypoint', setup)
+        self.assertIn("mcp get scrapingdog", setup)
+        self.assertIn('"scripts\\preflight_scrapingdog_mcp.mjs"', setup)
+
+    def test_installs_the_pull_request_commit(self) -> None:
+        unix_setup = (ROOT / "setup.sh").read_text(encoding="utf-8")
+        windows_setup = (ROOT / "setup.ps1").read_text(encoding="utf-8")
+
+        self.assertIn(self.package_spec, unix_setup)
+        self.assertIn(self.package_spec, windows_setup)
+
+    def test_keeps_the_api_key_out_of_host_configuration(self) -> None:
+        unix_setup = (ROOT / "setup.sh").read_text(encoding="utf-8")
+        windows_setup = (ROOT / "setup.ps1").read_text(encoding="utf-8")
+
+        self.assertNotIn("--env SCRAPINGDOG_API_KEY=", unix_setup)
+        self.assertNotIn("-e SCRAPINGDOG_API_KEY=", unix_setup)
+        self.assertNotIn('"--env", "SCRAPINGDOG_API_KEY=', windows_setup)
+
 if __name__ == "__main__":
     unittest.main()

@@ -7,6 +7,7 @@ set -uo pipefail
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INSTALL_MANIFEST="$REPO_DIR/install-manifest.json"
+SCRAPINGDOG_MCP_PACKAGE="https://codeload.github.com/badmuriss/Scrapingdog-mcp/tar.gz/8084d8a77b5836f7c0ef7cfbaec5ab12f1fcb741"
 DRY=0
 for a in "$@"; do
   case "$a" in
@@ -169,6 +170,72 @@ register_mcp() {
   fi
 }
 run_step "register MCP paper-search" register_mcp
+
+install_scrapingdog_mcp() {
+  if [ "$DRY" -eq 1 ]; then
+    echo "  [dry-run] npm install --global $SCRAPINGDOG_MCP_PACKAGE"
+    echo "  [dry-run] npm ci --include=dev --prefix <npm-global>/scrapingdog-mcp"
+    return 0
+  fi
+  npm install --global "$SCRAPINGDOG_MCP_PACKAGE"
+  npm ci --include=dev --prefix "$(npm root --global)/scrapingdog-mcp"
+}
+run_step "install MCP scrapingdog" install_scrapingdog_mcp
+
+# ScrapingDog's MCP package exposes its public-web APIs directly to agents.
+# The child process inherits SCRAPINGDOG_API_KEY at runtime, so setup never copies the
+# secret into an agent config file.
+register_scrapingdog_mcp() {
+  local entrypoint details
+  entrypoint="$(npm root --global)/scrapingdog-mcp/dist/index.js"
+
+  if command -v claude >/dev/null 2>&1; then
+    details="$(claude mcp get scrapingdog 2>/dev/null || true)"
+    if grep -Fq "$entrypoint" <<<"$details"; then
+      echo "  claude: scrapingdog already points to the pinned build, skipping"
+    elif [ "$DRY" -eq 1 ]; then
+      [ -z "$details" ] || echo "  [dry-run] claude mcp remove scrapingdog -s user"
+      echo "  [dry-run] claude mcp add --scope user scrapingdog -- node $entrypoint"
+    else
+      [ -z "$details" ] || claude mcp remove scrapingdog -s user
+      claude mcp add --scope user scrapingdog -- node "$entrypoint"
+    fi
+  fi
+
+  if command -v codex >/dev/null 2>&1; then
+    details="$(codex mcp get scrapingdog 2>/dev/null || true)"
+    if grep -Fq "$entrypoint" <<<"$details"; then
+      echo "  codex: scrapingdog already points to the pinned build, skipping"
+    elif [ "$DRY" -eq 1 ]; then
+      [ -z "$details" ] || echo "  [dry-run] codex mcp remove scrapingdog"
+      echo "  [dry-run] codex mcp add scrapingdog -- node $entrypoint"
+    else
+      [ -z "$details" ] || codex mcp remove scrapingdog
+      codex mcp add scrapingdog -- node "$entrypoint"
+    fi
+  fi
+
+  if command -v opencode >/dev/null 2>&1; then
+    echo "  opencode: add scrapingdog by hand in ~/.config/opencode/opencode.json"
+    echo "           {\"mcp\":{\"scrapingdog\":{\"type\":\"local\",\"command\":[\"node\",\"$entrypoint\"]}}}"
+  fi
+
+  if [ -z "${SCRAPINGDOG_API_KEY:-}" ]; then
+    echo "  scrapingdog registered without a key; export SCRAPINGDOG_API_KEY before starting an agent"
+  fi
+}
+run_step "register MCP scrapingdog" register_scrapingdog_mcp
+
+preflight_scrapingdog_mcp() {
+  local entrypoint
+  entrypoint="$(npm root --global)/scrapingdog-mcp/dist/index.js"
+  if [ "$DRY" -eq 1 ]; then
+    echo "  [dry-run] node scripts/preflight_scrapingdog_mcp.mjs $entrypoint"
+    return 0
+  fi
+  node "$REPO_DIR/scripts/preflight_scrapingdog_mcp.mjs" "$entrypoint"
+}
+run_step "preflight MCP scrapingdog" preflight_scrapingdog_mcp
 
 # An installed package is not proof that research works. Exercise the CLI against one
 # stable arXiv title and fail visibly when the executable or query is unavailable.
