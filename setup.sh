@@ -595,6 +595,40 @@ install_dcg() {
 }
 run_step "dcg (destructive command guard)" install_dcg
 
+# 9. Pipelock scans agent actions and wraps existing Codex MCP transports. The helper
+# pins a release and verifies its published SHA-256 before atomically installing it.
+install_pipelock() {
+  local pipelock_bin="$HOME/.local/bin/pipelock"
+  local -a install_args=("$REPO_DIR/scripts/install_pipelock.py" --target "$pipelock_bin")
+
+  if [ "$DRY" -eq 1 ]; then
+    install_args+=(--dry-run)
+  fi
+  python3 "${install_args[@]}" || return 1
+
+  if [ "$DRY" -eq 1 ]; then
+    if command -v codex >/dev/null 2>&1 || [ -d "$HOME/.codex" ]; then
+      echo "  [dry-run] $pipelock_bin codex install --dry-run"
+    fi
+    if command -v claude >/dev/null 2>&1 || [ -d "$HOME/.claude" ]; then
+      echo "  [dry-run] $pipelock_bin claude setup --dry-run"
+    fi
+    return 0
+  fi
+
+  [ -x "$pipelock_bin" ] || { echo "  Pipelock installer did not create $pipelock_bin"; return 1; }
+  if command -v codex >/dev/null 2>&1; then
+    "$pipelock_bin" codex install || return 1
+  fi
+  if command -v claude >/dev/null 2>&1; then
+    "$pipelock_bin" claude setup || return 1
+  fi
+  if ! command -v codex >/dev/null 2>&1 && ! command -v claude >/dev/null 2>&1; then
+    echo "  Pipelock installed; no Codex or Claude host found to configure"
+  fi
+}
+run_step "pipelock agent traffic guard" install_pipelock
+
 echo
 echo "heavy dependencies (mineru, docling) are not installed by this script."
 echo "they are opt-in: pip3 install --user mineru docling"

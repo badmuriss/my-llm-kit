@@ -93,5 +93,29 @@ class ScrapingDogMcpBehavior(unittest.TestCase):
         self.assertNotIn("-e SCRAPINGDOG_API_KEY=", unix_setup)
         self.assertNotIn('"--env", "SCRAPINGDOG_API_KEY=', windows_setup)
 
+
+class DcgConfigurationBehavior(unittest.TestCase):
+    def test_keeps_checkout_from_ref_protected(self) -> None:
+        allowlist = (ROOT / "dcg" / "allowlist.toml").read_text(encoding="utf-8")
+
+        self.assertNotIn("core.git:checkout-ref-discard", allowlist)
+
+
+class PipelockIntegrationBehavior(unittest.TestCase):
+    def test_installs_and_configures_supported_hosts_on_unix(self) -> None:
+        setup = (ROOT / "setup.sh").read_text(encoding="utf-8")
+
+        self.assertIn('scripts/install_pipelock.py" --target "$pipelock_bin"', setup)
+        self.assertIn('"$pipelock_bin" codex install', setup)
+        self.assertIn('"$pipelock_bin" claude setup', setup)
+
+    def test_installs_and_configures_supported_hosts_on_windows(self) -> None:
+        setup = (ROOT / "setup.ps1").read_text(encoding="utf-8")
+
+        self.assertIn('"scripts\\install_pipelock.py"', setup)
+        self.assertIn('Invoke-Native $PipelockPath @("codex", "install")', setup)
+        self.assertIn('Invoke-Native $PipelockPath @("claude", "setup")', setup)
+
+
 if __name__ == "__main__":
     unittest.main()
