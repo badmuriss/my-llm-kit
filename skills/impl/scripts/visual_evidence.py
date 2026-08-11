@@ -16,9 +16,16 @@ from typing import Any, Sequence
 
 
 SCHEMA_VERSION = 1
+PLATFORM_PROFILES = {
+    "desktop": {"width": 1920, "height": 1080, "browser": "chromium"},
+    "notebook": {"width": 1366, "height": 768, "browser": "chromium"},
+    "tablet": {"width": 810, "height": 1080, "browser": "webkit"},
+    "mobile": {"width": 390, "height": 664, "browser": "webkit"},
+}
 EXPECTATION_PATTERN = re.compile(
     r"^(?P<id>[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*)\s*\|\s*"
-    r"(?P<surface>[^|]+?)\s*\|\s*(?P<width>\d+)x(?P<height>\d+)\s*\|\s*"
+    r"(?P<surface>[^|]+?)\s*\|\s*(?P<platform>[a-z]+)\s*\|\s*"
+    r"(?P<width>\d+)x(?P<height>\d+)\s*\|\s*"
     r"(?P<state>[^|]+?)$"
 )
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
@@ -33,14 +40,46 @@ def parse_expectation(value: str) -> dict[str, Any]:
     match = EXPECTATION_PATTERN.fullmatch(value.strip())
     if not match:
         raise VisualEvidenceError(
-            "Visual entries must use: <id> | <route-or-component> | <width>x<height> | <state>"
+            "Visual entries must use: <id> | <route-or-component> | "
+            "<platform> | <width>x<height> | <state>"
         )
     parsed: dict[str, Any] = match.groupdict()
     parsed["width"] = int(parsed["width"])
     parsed["height"] = int(parsed["height"])
-    if parsed["width"] < 320 or parsed["height"] < 480:
-        raise VisualEvidenceError("Visual viewport must be at least 320x480")
+    profile = PLATFORM_PROFILES.get(parsed["platform"])
+    if profile is None:
+        raise VisualEvidenceError(
+            f"Visual platform must be one of: {', '.join(PLATFORM_PROFILES)}"
+        )
+    if (parsed["width"], parsed["height"]) != (profile["width"], profile["height"]):
+        raise VisualEvidenceError(
+            f"Visual platform {parsed['platform']} requires "
+            f"{profile['width']}x{profile['height']}"
+        )
     return parsed
+
+
+def validate_expectation_matrix(expectations: Sequence[str]) -> None:
+    grouped: dict[tuple[str, str], set[str]] = {}
+    for expectation in expectations:
+        parsed = parse_expectation(expectation)
+        group = (parsed["surface"], parsed["state"])
+        platforms = grouped.setdefault(group, set())
+        if parsed["platform"] in platforms:
+            raise VisualEvidenceError(
+                f"duplicate {parsed['platform']} Visual entry for "
+                f"{parsed['surface']} in state {parsed['state']}"
+            )
+        platforms.add(parsed["platform"])
+
+    required = set(PLATFORM_PROFILES)
+    for (surface, state), platforms in grouped.items():
+        missing = required - platforms
+        if missing:
+            raise VisualEvidenceError(
+                f"Visual matrix for {surface} in state {state} is missing: "
+                f"{', '.join(sorted(missing))}"
+            )
 
 
 def repo_file(repo: Path, relative_value: str, context: str) -> Path:
@@ -128,6 +167,7 @@ def validate_manifest(
     task_id: str,
     expectations: Sequence[str],
 ) -> dict[str, Any]:
+    validate_expectation_matrix(expectations)
     required_directory = (repo.resolve() / ".visual-evidence" / change).resolve()
     try:
         manifest_path.resolve().relative_to(required_directory)
@@ -162,7 +202,14 @@ def validate_manifest(
 
     expected = {value: parse_expectation(value) for value in expectations}
     observed: set[str] = set()
-    result_fields = {"expectation", "screenshot", "sha256", "status", "observation"}
+    result_fields = {
+        "expectation",
+        "browser",
+        "screenshot",
+        "sha256",
+        "status",
+        "observation",
+    }
     for result in manifest["results"]:
         if not isinstance(result, dict) or set(result) != result_fields:
             raise VisualEvidenceError("each visual result has missing or unknown fields")
@@ -173,6 +220,11 @@ def validate_manifest(
             raise VisualEvidenceError(f"duplicate visual result: {expectation}")
         if result["status"] != "pass":
             raise VisualEvidenceError(f"visual result did not pass: {expectation}")
+        expected_browser = PLATFORM_PROFILES[expected[expectation]["platform"]]["browser"]
+        if result["browser"] != expected_browser:
+            raise VisualEvidenceError(
+                f"visual result for {expectation} requires browser {expected_browser}"
+            )
         if not isinstance(result["observation"], str) or len(result["observation"].strip()) < 20:
             raise VisualEvidenceError(f"visual result needs a concrete observation: {expectation}")
         screenshot_value = result["screenshot"]

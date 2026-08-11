@@ -54,10 +54,10 @@ Detailed guidelines live in the skills:
 Every change that affects rendered UI must be inspected in the running application with a vision-capable tool. Unit tests, DOM snapshots, accessibility trees and successful builds do not replace visual inspection.
 
 - Cover every changed route or component in each changed state, including loading, empty, error, populated and interactive states when applicable.
-- Capture controlled desktop and mobile viewports unless the product has a documented single-viewport target.
+- Load the `frontend-visual-validation` skill and capture its complete desktop, notebook, tablet and mobile matrix for every changed surface and state.
 - Inspect every screenshot with `view_image` or `computer-use`. Record concrete observations about layout, clipping, overflow, hierarchy, typography and state correctness.
 - Store PNG evidence and its manifest under `.visual-evidence/<change>/`. Do not declare the work complete while any expected surface is missing or failed.
-- OpenSpec frontend tasks must contain `Visual:` lines using `<id> | <route-or-component> | <width>x<height> | <state>`. The `impl` state blocks a passing grade without a matching vision-reviewed manifest.
+- OpenSpec frontend tasks must contain `Visual:` lines using `<id> | <route-or-component> | <platform> | <width>x<height> | <state>`. Each surface and state needs the complete canonical platform matrix. The `impl` state blocks a passing grade without a matching vision-reviewed manifest.
 - If the environment cannot run the UI or provide vision, grade visual evidence `unobserved` or the task `blocked`. Never silently substitute a code-only check.
 
 ## Writing (authored prose deliverables only)

@@ -6,11 +6,36 @@
   "reviewed_at": "2026-08-11T12:00:00Z",
   "results": [
     {
-      "expectation": "dashboard-desktop | /dashboard | 1440x900 | populated",
+      "expectation": "dashboard-desktop | /dashboard | desktop | 1920x1080 | populated",
+      "browser": "chromium",
       "screenshot": ".visual-evidence/dashboard-refresh/dashboard-desktop.png",
       "sha256": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
       "status": "pass",
       "observation": "Navigation, cards and chart labels are visible without clipping or horizontal overflow."
+    },
+    {
+      "expectation": "dashboard-notebook | /dashboard | notebook | 1366x768 | populated",
+      "browser": "chromium",
+      "screenshot": ".visual-evidence/dashboard-refresh/dashboard-notebook.png",
+      "sha256": "123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0",
+      "status": "pass",
+      "observation": "Primary controls remain visible and the dashboard does not introduce horizontal scrolling."
+    },
+    {
+      "expectation": "dashboard-tablet | /dashboard | tablet | 810x1080 | populated",
+      "browser": "webkit",
+      "screenshot": ".visual-evidence/dashboard-refresh/dashboard-tablet.png",
+      "sha256": "23456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef01",
+      "status": "pass",
+      "observation": "The touch layout preserves readable labels, spacing and an unobstructed content column."
+    },
+    {
+      "expectation": "dashboard-mobile | /dashboard | mobile | 390x664 | populated",
+      "browser": "webkit",
+      "screenshot": ".visual-evidence/dashboard-refresh/dashboard-mobile.png",
+      "sha256": "3456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef012",
+      "status": "pass",
+      "observation": "Cards stack correctly and every control remains readable, reachable and free of overlap."
     }
   ]
 }

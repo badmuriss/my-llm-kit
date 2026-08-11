@@ -17,10 +17,15 @@ from pathlib import Path
 from typing import Any, Sequence
 
 from runtime_config import RuntimeConfigError, add_runtime_arguments, runtime_from_arguments
-from visual_evidence import VisualEvidenceError, parse_expectation, validate_manifest
+from visual_evidence import (
+    VisualEvidenceError,
+    parse_expectation,
+    validate_expectation_matrix,
+    validate_manifest,
+)
 
 
-SCHEMA_VERSION = 3
+SCHEMA_VERSION = 4
 MAX_REPAIR_HYPOTHESES = 2
 STATE_DIRECTORY = Path("openspec/impl-state")
 CHANGE_PATTERN = re.compile(r"^[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*$")
@@ -240,6 +245,14 @@ def parse_pending_tasks(tasks_file: Path) -> list[dict[str, Any]]:
                 raise StateError(
                     f"{tasks_file}:{line_number}: task {task_id} has invalid Visual entry: {error}"
                 ) from error
+        if visual_expectations:
+            try:
+                validate_expectation_matrix(visual_expectations)
+            except VisualEvidenceError as error:
+                raise StateError(
+                    f"{tasks_file}:{line_number}: task {task_id} has incomplete Visual coverage: "
+                    f"{error}"
+                ) from error
         tasks.append(
             {
                 "id": task_id,
@@ -371,6 +384,13 @@ def validate_state(state: Any, path: Path) -> dict[str, Any]:
             except VisualEvidenceError as error:
                 raise StateError(
                     f"{path}: invalid visual expectation for task {task.get('id')}: {error}"
+                ) from error
+        if task["visual_expectations"]:
+            try:
+                validate_expectation_matrix(task["visual_expectations"])
+            except VisualEvidenceError as error:
+                raise StateError(
+                    f"{path}: incomplete visual coverage for task {task.get('id')}: {error}"
                 ) from error
         check = task["check"]
         if not isinstance(check, dict) or check.keys() != {

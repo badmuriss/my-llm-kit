@@ -1,0 +1,4 @@
+interface:
+  display_name: "Frontend Visual Validation"
+  short_description: "Validate responsive UI with browser screenshots"
+  default_prompt: "Use $frontend-visual-validation to validate every changed UI state across the required platform matrix."

@@ -19,7 +19,7 @@
     "digest"
   ],
   "properties": {
-    "schema_version": {"const": 3},
+    "schema_version": {"const": 4},
     "change": {
       "type": "string",
       "pattern": "^[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*$"
@@ -90,7 +90,7 @@
             "uniqueItems": true,
             "items": {
               "type": "string",
-              "pattern": "^[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*\\s*\\|\\s*[^|]+\\s*\\|\\s*[0-9]+x[0-9]+\\s*\\|\\s*[^|]+$"
+              "pattern": "^[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*\\s*\\|\\s*[^|]+\\s*\\|\\s*(desktop|notebook|tablet|mobile)\\s*\\|\\s*[0-9]+x[0-9]+\\s*\\|\\s*[^|]+$"
             }
           },
           "check": {

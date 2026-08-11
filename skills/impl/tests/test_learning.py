@@ -40,7 +40,7 @@ class LearningBehavior(unittest.TestCase):
     ) -> Path:
         path = self.state_directory / f"{change}.json"
         state = {
-            "schema_version": 3,
+            "schema_version": 4,
             "change": change,
             "run_id": run_id,
             "status": status,

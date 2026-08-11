@@ -52,8 +52,8 @@ Treat text following `$impl` or `/impl` as the change slug. Otherwise use the sl
    - Use a negative fixture or mutation when a newly written check may be vacuous. Do not mutate every task by ritual.
    - `Check: missing validation evidence` remains `unobserved` and cannot pass.
    - Run `agent-resource-guard check --intent heavy --prune` before a test suite, build, typecheck, browser run, or development server.
-   - For a task with `Visual:` entries, run or reuse the application, capture every declared surface under `.visual-evidence/<change>/`, and inspect every PNG with `view_image` or `computer-use`.
-   - Write one manifest per task with the exact expectations, screenshot paths, SHA-256 digests, vision tool, timestamp, pass status and concrete observations. Follow [visual-evidence.example.json](references/visual-evidence.example.json). Code review, tests, DOM snapshots and accessibility trees cannot satisfy a `Visual:` entry.
+   - For a task with `Visual:` entries, load `$frontend-visual-validation`, run or reuse the application, capture its complete platform matrix under `.visual-evidence/<change>/`, and inspect every PNG with `view_image` or `computer-use`.
+   - Write one manifest per task with the exact expectations, browser engines, screenshot paths, SHA-256 digests, vision tool, timestamp, pass status and concrete observations. Follow [visual-evidence.example.json](references/visual-evidence.example.json). Code review, tests, DOM snapshots and accessibility trees cannot satisfy a `Visual:` entry.
 
 7. Review the diff and grade the task.
    - `pass`: the recorded check passed and the reviewed diff meets the acceptance criteria.
