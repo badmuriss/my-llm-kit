@@ -23,6 +23,8 @@ hook_timeout_ms = 5000
 # with the override in place. Do not leave a policy block here. Dead config implies
 # a posture that does not exist, which is worse than no config. The two levers that
 # do work are the allowlist (allowlist.toml) and `[overrides]` below.
+# Keep core.git:checkout-ref-discard enabled: `git checkout <ref> -- <path>`
+# overwrites uncommitted changes to the path just like `git checkout -- <path>`.
 
 [overrides]
 # Tightening, not loosening. `git checkout -- <file>` is denied by core.git, but the

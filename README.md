@@ -151,13 +151,13 @@ Claude Code and Codex receive these plugins when the host is installed:
 
 Skills live once in `~/.agents/skills/`. Hosts that need their own directory receive links to the same files. Unix uses symlinks; Windows uses directory junctions.
 
-| Host | Skill setup | Plugins | MCP | dcg hooks |
-|---|---|---|---|---|
-| Claude Code | linked to `~/.claude/skills/` | yes | yes | yes |
-| Codex CLI | linked to `~/.codex/skills/` | yes | yes | yes |
-| Gemini CLI | reads shared root | no marketplace | manual | yes |
-| GitHub Copilot CLI | reads shared root | no marketplace | manual | yes |
-| OpenCode | reads shared root | no marketplace | JSON printed | not supported |
+| Host | Skill setup | Plugins | MCP | dcg hooks | Pipelock |
+|---|---|---|---|---|---|
+| Claude Code | linked to `~/.claude/skills/` | yes | yes | yes | action hooks |
+| Codex CLI | linked to `~/.codex/skills/` | yes | yes | yes | MCP proxy |
+| Gemini CLI | reads shared root | no marketplace | manual | yes | not configured |
+| GitHub Copilot CLI | reads shared root | no marketplace | manual | yes | not configured |
+| OpenCode | reads shared root | no marketplace | JSON printed | not supported | not configured |
 
 The installer only configures hosts it finds. It reports real directories instead of overwriting them.
 
@@ -184,12 +184,17 @@ The installers:
 7. Install the shared `AGENTS.md`, with backups for different existing files.
 8. Install and verify `dcg`, the destructive-command guard.
 9. Install `agent-resource-guard` on Linux. Windows records an explicit skip.
+10. Install the pinned Pipelock release after verifying its checksum, then configure detected Codex and Claude hosts.
 
 ### Safety tools
 
 `dcg` blocks destructive shell commands before they run. This repo installs a shared configuration from `dcg/`.
 
 `agent-resource-guard` allows up to 20 active agent sessions by default and can still deny work earlier for memory or heavy-command pressure. It also cleans up tagged child processes after their owner exits. Manual processes and persistent terminal shells are excluded.
+
+`Pipelock` scans agent actions at supported host boundaries. The Codex installer wraps existing MCP servers with `pipelock mcp proxy`. The Claude installer adds its action hooks. Run setup again after adding a Codex MCP server so Pipelock can wrap the new entry.
+
+This integration does not intercept every process on the machine. A child process that opens its own connection can bypass an application proxy. Use Pipelock sandbox or operating-system containment when all outbound traffic must be mediated.
 
 ### Reduced Claude Code install
 

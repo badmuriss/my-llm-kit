@@ -1,4 +1,4 @@
-# dcg allowlist. Two entries, both narrow, both with the reason spelled out.
+# dcg allowlist. Every entry is narrow and has its reason spelled out.
 #
 # An allowlisted rule is OFF, not softened, so this file stays short on purpose.
 # Before adding one, check that no safer path exists: friction with a working
@@ -9,9 +9,3 @@ rule = "cdn.cloudflare_workers:wrangler-semantic-unverified"
 reason = "catch-all that denied every `npx -y <pkg>`, including packages with no relation to wrangler (it blocked the anydoc converter the ingest skill shells out to). The concrete d1/r2/kv rules stay active and were re-verified after allowlisting this one."
 added_by = "badmuriss"
 added_at = "2026-08-07T13:49:37Z"
-
-[[allow]]
-rule = "core.git:checkout-ref-discard"
-reason = "restoring a file from a ref is routine, and the rule fires even when the path does not exist in the working tree, so there is nothing to lose. Cost, stated plainly: it will silently overwrite uncommitted changes to the named path. Scoped to that path, never the whole tree. The other eight git protections stay on: checkout-discard, restore-worktree, reset-hard, clean-force, branch-force-delete, stash-drop, push-force-long, plus the `checkout .` block added in config.toml."
-added_by = "badmuriss"
-added_at = "2026-08-07T18:49:55Z"

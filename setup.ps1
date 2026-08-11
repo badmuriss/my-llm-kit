@@ -537,6 +537,45 @@ Invoke-Step "dcg destructive command guard" {
     }
 }
 
+$PipelockPath = Join-Path $HomeDirectory ".local\bin\pipelock.exe"
+Invoke-Step "pipelock agent traffic guard" {
+    $installerArguments = @(
+        (Join-Path $RepoDirectory "scripts\install_pipelock.py"),
+        "--target",
+        $PipelockPath
+    )
+    if ($DryRun) {
+        $installerArguments += "--dry-run"
+    }
+    Invoke-Python $installerArguments
+
+    if ($DryRun) {
+        if ((Test-Command "codex") -or (Test-Path (Join-Path $HomeDirectory ".codex"))) {
+            Write-Host "  [dry-run] $PipelockPath codex install --dry-run"
+        }
+        if ((Test-Command "claude") -or (Test-Path (Join-Path $HomeDirectory ".claude"))) {
+            Write-Host "  [dry-run] $PipelockPath claude setup --dry-run"
+        }
+        return
+    }
+
+    if (-not (Test-Path -LiteralPath $PipelockPath)) {
+        throw "Pipelock installer did not create $PipelockPath"
+    }
+    $configured = $false
+    if (Test-Command "codex") {
+        Invoke-Native $PipelockPath @("codex", "install")
+        $configured = $true
+    }
+    if (Test-Command "claude") {
+        Invoke-Native $PipelockPath @("claude", "setup")
+        $configured = $true
+    }
+    if (-not $configured) {
+        Write-Host "  Pipelock installed; no Codex or Claude host found to configure"
+    }
+}
+
 Write-Host ""
 Write-Host "heavy dependencies such as MinerU and docling remain opt-in."
 Write-Host ""
