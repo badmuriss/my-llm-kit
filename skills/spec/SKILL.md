@@ -32,7 +32,8 @@ Treat text following `$spec` or `/spec` as the change request. Otherwise use the
 4. Write `openspec/changes/<slug>/proposal.md`, `design.md`, and `tasks.md`.
    - Give every task a stable ID, exact paths, inline context, an acceptance criterion, and one `Check:` line.
    - Load `$frontend-visual-validation` for every task that changes rendered UI.
-   - Every changed route or component state needs the skill's complete platform matrix. Use `Visual: <id> | <route-or-component> | <platform> | <width>x<height> | <state>`.
+   - For every changed route or component state, declare `Visual-Scope: <route-or-component> | <state> | <platforms> | <reason>`. Use every canonical profile for general responsive UI and only real targets for platform-specific UI.
+   - Add `Visual: <id> | <route-or-component> | <platform> | <width>x<height> | <state>` for every platform in that scope. Do not omit a supported platform to make validation easier.
    - Include loading, empty, error, populated and interaction states when the task changes them. A build, unit test or DOM snapshot is not visual evidence.
    - Use a real machine-checkable command when known.
    - Use one executable plus arguments. Put pipelines, redirection, or multi-step checks in a reviewed repository script.

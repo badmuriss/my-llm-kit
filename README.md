@@ -91,7 +91,7 @@ Every run stores crash-safe state under `openspec/impl-state/`. A resumed run re
 
 Each OpenSpec task carries one `Check:` command. The state records its result, exit code, duration, and attempt count. `Check: missing validation evidence` remains `unobserved` and cannot become `pass`.
 
-Frontend tasks also carry `Visual:` contracts for each changed route and state across the canonical desktop, notebook, tablet and mobile matrix. `impl` requires PNG screenshots inspected by a vision-capable tool and a validated manifest before the task can pass. A final guard detects frontend file changes and blocks a successful run when the plan omitted visual expectations entirely. The `frontend-visual-validation` skill defines the capture and review workflow.
+Frontend tasks pair a reasoned `Visual-Scope:` with `Visual:` contracts for each changed route and state. General responsive UI covers desktop, notebook, tablet and mobile; platform-specific UI covers only its declared targets. `impl` requires PNG screenshots inspected by a vision-capable tool and a validated manifest before the task can pass. A final guard detects frontend file changes and blocks a successful run when the plan omitted visual expectations entirely. The `frontend-visual-validation` skill defines the capture and review workflow.
 
 The loop stops when no verified, unchecked, in-scope task remains.
 

@@ -1,6 +1,6 @@
-# Canonical platform matrix
+# Platform profiles and contextual scope
 
-Use every profile for each changed surface and state.
+These profiles define reproducible viewports. They do not imply that every product supports every platform.
 
 | Platform | Viewport | Browser engine | Input model |
 | --- | --- | --- | --- |
@@ -11,9 +11,19 @@ Use every profile for each changed surface and state.
 
 The desktop and notebook viewports are fixed harness policies. The tablet and mobile profiles track Playwright's current iPad and iPhone CSS viewports. Set screenshot `scale: "css"` when the emulated device has a higher device scale factor.
 
+## Scope decision
+
+- Use `desktop,notebook,tablet,mobile` for a normal responsive web surface.
+- Use `desktop,notebook` for a desktop-only product or route.
+- Use `mobile` for a phone-only product or state. Add `tablet` only when the product supports it.
+- Use `tablet,mobile` for a touch-only surface that supports both form factors.
+- Choose per surface and state. A mobile drawer and the desktop navigation on the same route can have different scopes.
+- Cite concrete product evidence in the reason, such as a distribution target, route guard, product requirement or existing platform contract. “It looks mobile” is not evidence.
+
 Example for one state:
 
 ```text
+Visual-Scope: /dashboard | populated | desktop,notebook,tablet,mobile | Public dashboard is a responsive web route on every supported form factor.
 Visual: dashboard-desktop | /dashboard | desktop | 1920x1080 | populated
 Visual: dashboard-notebook | /dashboard | notebook | 1366x768 | populated
 Visual: dashboard-tablet | /dashboard | tablet | 810x1080 | populated

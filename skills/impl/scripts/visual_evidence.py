@@ -59,7 +59,66 @@ def parse_expectation(value: str) -> dict[str, Any]:
     return parsed
 
 
-def validate_expectation_matrix(expectations: Sequence[str]) -> None:
+def validate_platform_scope(platforms: Sequence[str]) -> set[str]:
+    if not platforms:
+        raise VisualEvidenceError("Visual-Scope must declare at least one platform")
+    if len(platforms) != len(set(platforms)):
+        raise VisualEvidenceError("Visual-Scope platforms cannot contain duplicates")
+    unknown = set(platforms) - set(PLATFORM_PROFILES)
+    if unknown:
+        raise VisualEvidenceError(
+            f"unknown Visual-Scope platforms: {', '.join(sorted(unknown))}"
+        )
+    return set(platforms)
+
+
+def parse_visual_scope(value: str) -> dict[str, Any]:
+    parts = [part.strip() for part in value.split("|")]
+    if len(parts) != 4 or not all(parts):
+        raise VisualEvidenceError(
+            "Visual-Scope entries must use: <route-or-component> | <state> | "
+            "<platforms> | <reason>"
+        )
+    surface, state, platform_value, reason = parts
+    platforms = [entry.strip() for entry in platform_value.split(",") if entry.strip()]
+    validate_platform_scope(platforms)
+    if len(reason) < 20:
+        raise VisualEvidenceError("Visual-Scope needs a concrete scope reason")
+    return {
+        "surface": surface,
+        "state": state,
+        "platforms": platforms,
+        "reason": reason,
+    }
+
+
+def validate_scope_object(scope: Any) -> dict[str, Any]:
+    if not isinstance(scope, dict) or set(scope) != {
+        "surface",
+        "state",
+        "platforms",
+        "reason",
+    }:
+        raise VisualEvidenceError("invalid Visual-Scope object")
+    if not isinstance(scope["surface"], str) or not scope["surface"].strip():
+        raise VisualEvidenceError("Visual-Scope surface must be a non-empty string")
+    if not isinstance(scope["state"], str) or not scope["state"].strip():
+        raise VisualEvidenceError("Visual-Scope state must be a non-empty string")
+    platforms = scope["platforms"]
+    if not isinstance(platforms, list) or not all(
+        isinstance(entry, str) and entry.strip() for entry in platforms
+    ):
+        raise VisualEvidenceError("Visual-Scope platforms must be non-empty strings")
+    validate_platform_scope(platforms)
+    if not isinstance(scope["reason"], str) or len(scope["reason"].strip()) < 20:
+        raise VisualEvidenceError("Visual-Scope needs a concrete scope reason")
+    return scope
+
+
+def validate_expectation_matrix(
+    expectations: Sequence[str],
+    scopes: Sequence[dict[str, Any]],
+) -> None:
     grouped: dict[tuple[str, str], set[str]] = {}
     for expectation in expectations:
         parsed = parse_expectation(expectation)
@@ -72,13 +131,42 @@ def validate_expectation_matrix(expectations: Sequence[str]) -> None:
             )
         platforms.add(parsed["platform"])
 
-    required = set(PLATFORM_PROFILES)
+    scoped_platforms: dict[tuple[str, str], set[str]] = {}
+    for raw_scope in scopes:
+        scope = validate_scope_object(raw_scope)
+        group = (scope["surface"], scope["state"])
+        if group in scoped_platforms:
+            raise VisualEvidenceError(
+                f"duplicate Visual-Scope for {scope['surface']} in state {scope['state']}"
+            )
+        scoped_platforms[group] = set(scope["platforms"])
+
+    missing_scopes = set(grouped) - set(scoped_platforms)
+    if missing_scopes:
+        missing = ", ".join(
+            f"{surface} [{state}]" for surface, state in sorted(missing_scopes)
+        )
+        raise VisualEvidenceError(f"missing Visual-Scope entries: {missing}")
+    unused_scopes = set(scoped_platforms) - set(grouped)
+    if unused_scopes:
+        unused = ", ".join(
+            f"{surface} [{state}]" for surface, state in sorted(unused_scopes)
+        )
+        raise VisualEvidenceError(f"Visual-Scope entries have no Visual results: {unused}")
+
     for (surface, state), platforms in grouped.items():
+        required = scoped_platforms[(surface, state)]
         missing = required - platforms
+        unexpected = platforms - required
         if missing:
             raise VisualEvidenceError(
                 f"Visual matrix for {surface} in state {state} is missing: "
                 f"{', '.join(sorted(missing))}"
+            )
+        if unexpected:
+            raise VisualEvidenceError(
+                f"Visual matrix for {surface} in state {state} has undeclared platforms: "
+                f"{', '.join(sorted(unexpected))}"
             )
 
 
@@ -166,8 +254,9 @@ def validate_manifest(
     change: str,
     task_id: str,
     expectations: Sequence[str],
+    scopes: Sequence[dict[str, Any]],
 ) -> dict[str, Any]:
-    validate_expectation_matrix(expectations)
+    validate_expectation_matrix(expectations, scopes)
     required_directory = (repo.resolve() / ".visual-evidence" / change).resolve()
     try:
         manifest_path.resolve().relative_to(required_directory)
@@ -273,6 +362,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--change", required=True)
     parser.add_argument("--task", required=True)
     parser.add_argument("--expectation", action="append", required=True)
+    parser.add_argument("--scope", action="append", required=True)
     return parser
 
 
@@ -283,7 +373,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     if not manifest.is_absolute():
         manifest = repo / manifest
     try:
-        validate_manifest(repo, manifest, arguments.change, arguments.task, arguments.expectation)
+        validate_manifest(
+            repo,
+            manifest,
+            arguments.change,
+            arguments.task,
+            arguments.expectation,
+            [parse_visual_scope(value) for value in arguments.scope],
+        )
         print("visual evidence passed")
     except VisualEvidenceError as error:
         print(f"visual-evidence: {error}", file=sys.stderr)

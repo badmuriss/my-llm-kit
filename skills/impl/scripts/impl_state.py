@@ -20,12 +20,13 @@ from runtime_config import RuntimeConfigError, add_runtime_arguments, runtime_fr
 from visual_evidence import (
     VisualEvidenceError,
     parse_expectation,
+    parse_visual_scope,
     validate_expectation_matrix,
     validate_manifest,
 )
 
 
-SCHEMA_VERSION = 4
+SCHEMA_VERSION = 5
 MAX_REPAIR_HYPOTHESES = 2
 STATE_DIRECTORY = Path("openspec/impl-state")
 CHANGE_PATTERN = re.compile(r"^[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*$")
@@ -36,6 +37,9 @@ TASK_PATTERN = re.compile(
 )
 CHECK_PATTERN = re.compile(r"^\s+(?:-\s*)?Check:\s*(.+?)\s*$", re.IGNORECASE)
 VISUAL_PATTERN = re.compile(r"^\s+(?:-\s*)?Visual:\s*(.+?)\s*$", re.IGNORECASE)
+VISUAL_SCOPE_PATTERN = re.compile(
+    r"^\s+(?:-\s*)?Visual-Scope:\s*(.+?)\s*$", re.IGNORECASE
+)
 MISSING_CHECK_MARKER = "missing validation evidence"
 TASK_STATUSES = {"pending", "running", "interrupted", "pass", "fail", "unobserved", "blocked"}
 UPDATE_TASK_STATUSES = TASK_STATUSES - {"interrupted"}
@@ -245,12 +249,29 @@ def parse_pending_tasks(tasks_file: Path) -> list[dict[str, Any]]:
                 raise StateError(
                     f"{tasks_file}:{line_number}: task {task_id} has invalid Visual entry: {error}"
                 ) from error
-        if visual_expectations:
+        visual_scope_values = [
+            scope_match.group(1).strip()
+            for candidate in lines[index + 1 : block_end]
+            if (scope_match := VISUAL_SCOPE_PATTERN.fullmatch(candidate))
+        ]
+        if visual_expectations and not visual_scope_values:
+            raise StateError(
+                f"{tasks_file}:{line_number}: task {task_id} with Visual entries needs "
+                "Visual-Scope lines"
+            )
+        if not visual_expectations and visual_scope_values:
+            raise StateError(
+                f"{tasks_file}:{line_number}: task {task_id} cannot declare Visual-Scope "
+                "without Visual entries"
+            )
+        visual_scopes = []
+        if visual_scope_values:
             try:
-                validate_expectation_matrix(visual_expectations)
+                visual_scopes = [parse_visual_scope(value) for value in visual_scope_values]
+                validate_expectation_matrix(visual_expectations, visual_scopes)
             except VisualEvidenceError as error:
                 raise StateError(
-                    f"{tasks_file}:{line_number}: task {task_id} has incomplete Visual coverage: "
+                    f"{tasks_file}:{line_number}: task {task_id} has invalid Visual scope: "
                     f"{error}"
                 ) from error
         tasks.append(
@@ -262,6 +283,7 @@ def parse_pending_tasks(tasks_file: Path) -> list[dict[str, Any]]:
                 "hypotheses": [],
                 "evidence_refs": [],
                 "visual_expectations": visual_expectations,
+                "visual_scopes": visual_scopes,
                 "check": {
                     "command": command,
                     "status": "unobserved" if command is None else "pending",
@@ -340,6 +362,7 @@ def validate_state(state: Any, path: Path) -> dict[str, Any]:
             "hypotheses",
             "evidence_refs",
             "visual_expectations",
+            "visual_scopes",
             "check",
             "note",
         }:
@@ -385,9 +408,16 @@ def validate_state(state: Any, path: Path) -> dict[str, Any]:
                 raise StateError(
                     f"{path}: invalid visual expectation for task {task.get('id')}: {error}"
                 ) from error
-        if task["visual_expectations"]:
+        visual_scopes = task["visual_scopes"]
+        if not isinstance(visual_scopes, list):
+            raise StateError(f"{path}: invalid visual scopes for task {task.get('id')}")
+        if bool(task["visual_expectations"]) != bool(visual_scopes):
+            raise StateError(
+                f"{path}: task {task.get('id')} must pair Visual entries with visual_scopes"
+            )
+        if visual_scopes:
             try:
-                validate_expectation_matrix(task["visual_expectations"])
+                validate_expectation_matrix(task["visual_expectations"], visual_scopes)
             except VisualEvidenceError as error:
                 raise StateError(
                     f"{path}: incomplete visual coverage for task {task.get('id')}: {error}"
@@ -513,6 +543,7 @@ def validate_task_visual_evidence(repo: Path, change: str, task: dict[str, Any])
                 change,
                 task["id"],
                 task["visual_expectations"],
+                task["visual_scopes"],
             )
             return
         except VisualEvidenceError as error:

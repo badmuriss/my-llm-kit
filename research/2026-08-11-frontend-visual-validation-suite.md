@@ -24,7 +24,7 @@ A weak sample of three public skills confirmed useful reusable pieces but not th
 
 ## Decision
 
-Create `frontend-visual-validation` as the mandatory orchestration skill. Use Playwright when present, Storybook when present for isolated states, and the existing `impl` evidence validator as the final gate. Require the canonical platform matrix for every changed surface and state. Keep hosted regression services optional.
+Create `frontend-visual-validation` as the mandatory orchestration skill. Use Playwright when present, Storybook when present for isolated states, and the existing `impl` evidence validator as the final gate. Require a reasoned platform scope for every changed surface and state, then require complete evidence inside that declared scope. General responsive UI uses every canonical profile; platform-specific UI uses only its actual targets. Keep hosted regression services optional.
 
 ## Disagreements and limits
 

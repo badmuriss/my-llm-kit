@@ -1,6 +1,6 @@
 ---
 name: frontend-visual-validation
-description: Validate every rendered frontend change across desktop, notebook, tablet and mobile with reproducible browser screenshots and vision review. Use whenever Codex creates, edits, fixes, refactors or reviews UI, CSS, responsive layouts, routes, components, visual states, interactions or frontend assets, and before declaring any frontend implementation complete.
+description: Validate every rendered frontend change on its actual supported platforms with reproducible browser screenshots and vision review. Use whenever Codex creates, edits, fixes, refactors or reviews UI, CSS, responsive layouts, routes, components, visual states, interactions or frontend assets, and before declaring any frontend implementation complete.
 ---
 
 # Frontend Visual Validation
@@ -10,14 +10,15 @@ Treat browser automation and vision as separate mandatory layers. Browser checks
 ## Workflow
 
 1. Inventory every changed route or component and every affected state. Include loading, empty, error, populated, disabled, expanded, modal and post-interaction states when the change can render them.
-2. Read [platform-matrix.md](references/platform-matrix.md). Declare the full canonical matrix for each surface and state. Do not collapse platforms into one responsive screenshot.
-3. Run `agent-resource-guard check --intent heavy --prune` before starting or reusing browser automation.
-4. Reuse the project's Playwright setup when present and read [playwright.md](references/playwright.md). Reuse Storybook for isolated component states when present. Do not add a hosted visual-testing dependency by default.
-5. Stabilize data, time, animations and network responses. Reach the declared state through real behavior or an existing deterministic fixture. Do not edit the DOM into the expected appearance.
-6. Capture one PNG per expectation under `.visual-evidence/<change>/`. With Playwright, use CSS-pixel screenshot scale so the PNG width matches the declared viewport.
-7. Inspect every PNG individually with `view_image` or `computer-use`. Check all edges and the main content for clipping, overlap, overflow, unreadable text, broken hierarchy, incorrect state, unusable controls and touch-target problems.
-8. Fix every observed defect, recapture the affected matrix and inspect it again. A pixel diff can detect change, but it cannot replace vision review.
-9. Record the exact screenshot hash and a concrete observation in the task manifest. Pass that manifest to `impl_state.py` as file evidence.
+2. Read [platform-matrix.md](references/platform-matrix.md). Decide the supported platforms separately for each surface and state from product requirements, existing routes, distribution targets and adjacent tests. Use every profile for general responsive UI. Do not test nonexistent targets.
+3. Record each decision as `Visual-Scope:` with a concrete reason. Never label a surface platform-specific merely because the other layouts are currently broken.
+4. Run `agent-resource-guard check --intent heavy --prune` before starting or reusing browser automation.
+5. Reuse the project's Playwright setup when present and read [playwright.md](references/playwright.md). Reuse Storybook for isolated component states when present. Do not add a hosted visual-testing dependency by default.
+6. Stabilize data, time, animations and network responses. Reach the declared state through real behavior or an existing deterministic fixture. Do not edit the DOM into the expected appearance.
+7. Capture one PNG per expectation under `.visual-evidence/<change>/`. With Playwright, use CSS-pixel screenshot scale so the PNG width matches the declared viewport.
+8. Inspect every PNG individually with `view_image` or `computer-use`. Check all edges and the main content for clipping, overlap, overflow, unreadable text, broken hierarchy, incorrect state, unusable controls and touch-target problems.
+9. Fix every observed defect, recapture the affected scope and inspect it again. A pixel diff can detect change, but it cannot replace vision review.
+10. Record the exact screenshot hash and a concrete observation in the task manifest. Pass that manifest to `impl_state.py` as file evidence.
 
 ## Existing suites
 
@@ -31,10 +32,11 @@ Treat browser automation and vision as separate mandatory layers. Browser checks
 Use:
 
 ```text
+Visual-Scope: <route-or-component> | <state> | <platforms> | <reason>
 Visual: <id> | <route-or-component> | <platform> | <width>x<height> | <state>
 ```
 
-The gate rejects an incomplete platform matrix, noncanonical dimensions, missing or corrupt PNGs, screenshots changed after review, failed observations and manifests that do not name a vision-capable reviewer.
+The gate rejects a missing or vague scope, expectations outside the scope, missing declared platforms, noncanonical dimensions, corrupt PNGs, screenshots changed after review, failed observations and manifests that do not name a vision-capable reviewer.
 
 ## Stop conditions
 

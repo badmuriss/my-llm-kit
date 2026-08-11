@@ -56,7 +56,8 @@
         "check_total_duration_ms",
         "hypotheses",
         "evidence_refs",
-        "visual_expectations"
+        "visual_expectations",
+        "visual_scopes"
       ],
       "properties": {
         "task_id": {"type": "string", "minLength": 1},
@@ -86,6 +87,25 @@
           "type": "array",
           "uniqueItems": true,
           "items": {"type": "string", "minLength": 1}
+        },
+        "visual_scopes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["surface", "state", "platforms", "reason"],
+            "properties": {
+              "surface": {"type": "string", "minLength": 1},
+              "state": {"type": "string", "minLength": 1},
+              "platforms": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {"enum": ["desktop", "notebook", "tablet", "mobile"]}
+              },
+              "reason": {"type": "string", "minLength": 20}
+            }
+          }
         }
       }
     },

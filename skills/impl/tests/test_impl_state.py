@@ -43,11 +43,34 @@ class ImplStateBehavior(unittest.TestCase):
     def tearDown(self) -> None:
         self.temporary_directory.cleanup()
 
-    def writes_task(self, check: str | None, visuals: list[str] | None = None) -> None:
+    def writes_task(
+        self,
+        check: str | None,
+        visuals: list[str] | None = None,
+        *,
+        platforms: list[str] | None = None,
+        scope_reason: str = "The product supports these declared platform classes.",
+        include_visual_scope: bool = True,
+    ) -> None:
         check_line = "" if check is None else f"\n  Check: {check}"
         visual_lines = "".join(f"\n  Visual: {visual}" for visual in visuals or [])
+        visual_scope_lines = ""
+        if visuals and include_visual_scope:
+            grouped: dict[tuple[str, str], list[str]] = {}
+            for expectation in visuals:
+                _, surface, platform, _, state = [
+                    part.strip() for part in expectation.split("|")
+                ]
+                grouped.setdefault((surface, state), []).append(platform)
+            for (surface, state), group_platforms in grouped.items():
+                selected_platforms = platforms or list(dict.fromkeys(group_platforms))
+                visual_scope_lines += (
+                    f"\n  Visual-Scope: {surface} | {state} | "
+                    f"{','.join(selected_platforms)} | {scope_reason}"
+                )
         self.tasks_file.write_text(
-            f"# Tasks\n\n- [ ] 1.1 Verify the harness{check_line}{visual_lines}\n",
+            f"# Tasks\n\n- [ ] 1.1 Verify the harness{check_line}"
+            f"{visual_scope_lines}{visual_lines}\n",
             encoding="utf-8",
         )
 
@@ -265,8 +288,17 @@ class CheckExecutionBehavior(ImplStateBehavior):
 class VisualEvidenceBehavior(ImplStateBehavior):
     expectations = visual_expectations()
 
-    def prepares_passing_task(self, *, visuals: list[str] | None = None) -> None:
-        self.writes_task(f'"{sys.executable}" -c "raise SystemExit(0)"', visuals)
+    def prepares_passing_task(
+        self,
+        *,
+        visuals: list[str] | None = None,
+        platforms: list[str] | None = None,
+    ) -> None:
+        self.writes_task(
+            f'"{sys.executable}" -c "raise SystemExit(0)"',
+            visuals,
+            platforms=platforms,
+        )
         self.assertEqual(self.initializes().returncode, 0)
         self.assertEqual(
             self.run_state("run-check", "--change", self.change, "--task", "1.1").returncode,
@@ -277,12 +309,72 @@ class VisualEvidenceBehavior(ImplStateBehavior):
         self.writes_task(
             f'"{sys.executable}" -c "raise SystemExit(0)"',
             self.expectations[:-1],
+            platforms=list(PLATFORM_VIEWPORTS),
         )
 
         result = self.initializes()
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("is missing: mobile", result.stderr)
+
+    def test_accepts_a_contextual_mobile_only_scope(self) -> None:
+        mobile = [
+            expectation
+            for expectation in self.expectations
+            if "| mobile |" in expectation
+        ]
+        self.prepares_passing_task(visuals=mobile, platforms=["mobile"])
+        evidence_ref = self.writes_visual_evidence(mobile)
+
+        result = self.records_task(
+            "pass",
+            "Vision confirmed the mobile-only interface.",
+            evidence_ref,
+        )
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_accepts_different_scopes_for_changed_states(self) -> None:
+        mobile_loading = [
+            expectation
+            for expectation in visual_expectations("loading")
+            if "| mobile |" in expectation
+        ]
+        scoped_expectations = self.expectations + mobile_loading
+        self.prepares_passing_task(visuals=scoped_expectations)
+        evidence_ref = self.writes_visual_evidence(scoped_expectations)
+
+        result = self.records_task(
+            "pass",
+            "Vision confirmed responsive content and the mobile-only loading state.",
+            evidence_ref,
+        )
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_requires_an_explicit_visual_scope(self) -> None:
+        self.writes_task(
+            f'"{sys.executable}" -c "raise SystemExit(0)"',
+            self.expectations,
+            include_visual_scope=False,
+        )
+
+        result = self.initializes()
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("needs Visual-Scope lines", result.stderr)
+
+    def test_rejects_a_vague_visual_scope_reason(self) -> None:
+        self.writes_task(
+            f'"{sys.executable}" -c "raise SystemExit(0)"',
+            self.expectations,
+            scope_reason="Because mobile",
+        )
+
+        result = self.initializes()
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("needs a concrete scope reason", result.stderr)
 
     def test_rejects_a_noncanonical_platform_viewport(self) -> None:
         invalid = [
