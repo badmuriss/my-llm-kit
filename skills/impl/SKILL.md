@@ -72,14 +72,21 @@ Treat text following `$impl` or `/impl` as the change slug. Otherwise use the sl
    - The state caps repairs after two failed hypotheses. At the cap, report both and grade `blocked`.
    - Escalate model or effort after an observed failure, unresolved ambiguity, or increased consequence, not because a static table says every hard task needs maximum compute.
 
-9. Integrate and finish.
+9. Run an independent maintainability review for code changes.
+   - Skip this step when the completed diff contains no source code.
+   - Load `$thermo-nuclear-code-quality-review` and dispatch one read-only reviewer over the tracked merge-base-to-worktree diff plus every untracked, non-ignored source file reported by `git status --porcelain`. Require confirmation that both sets were inspected. Give it repository instructions and only the neighboring files needed to judge ownership and existing abstractions.
+   - Before dispatching, run `agent-resource-guard check --intent agent --demand 1 --prune`. If capacity is denied, wait for an existing worker or perform the same rubric locally; never bypass the guard.
+   - The reviewer must not edit files. Verify every finding against the code. Repair only high-confidence issues that preserve the approved behavior and scope, then rerun the affected task checks.
+   - Treat the review as design evidence, never as proof that behavior is correct. Record `No material maintainability findings` or the verified findings in the final digest.
+
+10. Integrate and finish.
    - Append one concise digest entry after each completed task.
    - Run the smallest relevant validation. Run the full suite only for broad or risky changes, releases, or when repository instructions require it. Run the OpenSpec archive step when present.
    - Stop background commands and finish every cleanup obligation.
    - Run `complete --change <slug> --outcome <pass|partial|blocked>`.
    - Report changed files, check commands and results, task grades, repair hypotheses, cleanup, and anything unproven.
 
-10. Optionally record learning after normal completion.
+11. Optionally record learning after normal completion.
    - Learning is shadow-mode telemetry, never a completion gate. Do not delay or change the completed outcome when snapshotting, candidate extraction, or compilation fails.
    - Run `python3 ~/.agents/skills/impl/scripts/learning.py snapshot --change <slug>` only after `complete`. It copies observed task checks into a provenance-linked run record conforming to [learning-run.schema.json](references/learning-run.schema.json).
    - Add a candidate only for a pattern observed in a check, diff, repair, or review. Cite one or more task IDs with `add-candidate`; use `stance: oppose` when later evidence contradicts the same scoped statement.

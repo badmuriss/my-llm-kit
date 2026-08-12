@@ -215,6 +215,8 @@ From a bare shell:
 curl -fsSL https://raw.githubusercontent.com/badmuriss/my-llm-kit/main/install.sh | bash
 ```
 
+The reduced install includes `$trim-code-comments` for manual comment cleanup and an independent, read-only maintainability review that `$impl` runs after code changes.
+
 ## Not included
 
 The setup skips private, client-specific, account-bound, and narrow single-workflow skills. Install those separately when a project needs them.
@@ -226,6 +228,7 @@ Heavy converters such as MinerU and docling are opt-in.
 - `research` and `ingest` are adapted from [research-stack](https://github.com/nett0eth/research-stack) by Netto, under MIT.
 - `last30days` comes from [mvanhorn/last30days-skill](https://github.com/mvanhorn/last30days-skill), under MIT.
 - `unslop` is original work under CC BY-SA.
+- `thermo-nuclear-code-quality-review` is adapted from [Cursor Team Kit](https://github.com/cursor/plugins/tree/main/cursor-team-kit/skills/thermo-nuclear-code-quality-review), under MIT.
 - The cross-agent skill layout follows [vercel-labs/skills](https://github.com/vercel-labs/skills).
 
 Community projects keep their own licenses.

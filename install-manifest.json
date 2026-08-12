@@ -31,6 +31,8 @@
   "reduced_install_skills": [
     "spec",
     "impl",
-    "grill-me"
+    "grill-me",
+    "trim-code-comments",
+    "thermo-nuclear-code-quality-review"
   ]
 }
