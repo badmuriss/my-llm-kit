@@ -16,7 +16,13 @@ class SharedManifestBehavior(unittest.TestCase):
 
         self.assertEqual(
             manifest["reduced_install_skills"],
-            ["spec", "impl", "grill-me"],
+            [
+                "spec",
+                "impl",
+                "grill-me",
+                "trim-code-comments",
+                "thermo-nuclear-code-quality-review",
+            ],
         )
 
     def test_emits_manifest_rows_for_shell(self) -> None:
@@ -34,7 +40,16 @@ class SharedManifestBehavior(unittest.TestCase):
         )
 
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(result.stdout.splitlines(), ["spec", "impl", "grill-me"])
+        self.assertEqual(
+            result.stdout.splitlines(),
+            [
+                "spec",
+                "impl",
+                "grill-me",
+                "trim-code-comments",
+                "thermo-nuclear-code-quality-review",
+            ],
+        )
 
 
 class PaperSearchPreflightBehavior(unittest.TestCase):
