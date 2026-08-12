@@ -40,3 +40,7 @@ When uncertain, keep the comment.
 ## Output
 
 Order candidates from most redundant to least. Distinguish `remove` from `keep`; include useful comments when they are close calls so the user can see why they survived.
+
+## Provenance
+
+This independent workflow was inspired by Luke Berry's [`remove-dumb-comments`](https://github.com/LukeberryPi/skills/tree/main/skills/remove-dumb-comments) skill. See the standalone [`trim-code-comments`](https://github.com/badmuriss/trim-code-comments) repository for attribution and implementation differences.

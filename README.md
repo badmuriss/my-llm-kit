@@ -215,7 +215,7 @@ From a bare shell:
 curl -fsSL https://raw.githubusercontent.com/badmuriss/my-llm-kit/main/install.sh | bash
 ```
 
-The reduced install includes `$trim-code-comments` for manual comment cleanup and an independent, read-only maintainability review that `$impl` runs after code changes.
+The reduced install includes [`$trim-code-comments`](https://github.com/badmuriss/trim-code-comments) for manual comment cleanup and an independent, read-only maintainability review that `$impl` runs after code changes.
 
 ## Not included
 
