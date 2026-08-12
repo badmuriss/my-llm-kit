@@ -155,8 +155,11 @@ register_mcp() {
   fi
 
   if command -v codex >/dev/null 2>&1; then
-    if codex mcp list 2>/dev/null | grep -q "paper-search"; then
-      echo "  codex: paper-search already registered, skipping"
+    local details
+    details="$(codex mcp get paper-search 2>/dev/null || true)"
+    if grep -Fq "command: paper-search-mcp" <<<"$details" &&
+       grep -Fq "enabled: true" <<<"$details"; then
+      echo "  codex: paper-search already registered and enabled, skipping"
     elif [ "$DRY" -eq 1 ]; then
       echo "  [dry-run] codex mcp add paper-search -- paper-search-mcp"
     else
@@ -204,8 +207,9 @@ register_scrapingdog_mcp() {
 
   if command -v codex >/dev/null 2>&1; then
     details="$(codex mcp get scrapingdog 2>/dev/null || true)"
-    if grep -Fq "$entrypoint" <<<"$details"; then
-      echo "  codex: scrapingdog already points to the pinned build, skipping"
+    if grep -Fq "$entrypoint" <<<"$details" &&
+       grep -Fq "enabled: true" <<<"$details"; then
+      echo "  codex: scrapingdog already points to the pinned build and is enabled, skipping"
     elif [ "$DRY" -eq 1 ]; then
       [ -z "$details" ] || echo "  [dry-run] codex mcp remove scrapingdog"
       echo "  [dry-run] codex mcp add scrapingdog -- node $entrypoint"

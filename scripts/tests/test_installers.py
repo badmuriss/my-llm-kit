@@ -53,6 +53,13 @@ class SharedManifestBehavior(unittest.TestCase):
 
 
 class PaperSearchPreflightBehavior(unittest.TestCase):
+    def test_reenables_an_existing_codex_server(self) -> None:
+        unix_setup = (ROOT / "setup.sh").read_text(encoding="utf-8")
+        windows_setup = (ROOT / "setup.ps1").read_text(encoding="utf-8")
+
+        self.assertIn('grep -Fq "enabled: true" <<<"$details"', unix_setup)
+        self.assertIn('$details.Contains("enabled: true")', windows_setup)
+
     def test_runs_a_real_query_on_unix(self) -> None:
         setup = (ROOT / "setup.sh").read_text(encoding="utf-8")
 
@@ -107,6 +114,21 @@ class ScrapingDogMcpBehavior(unittest.TestCase):
         self.assertNotIn("--env SCRAPINGDOG_API_KEY=", unix_setup)
         self.assertNotIn("-e SCRAPINGDOG_API_KEY=", unix_setup)
         self.assertNotIn('"--env", "SCRAPINGDOG_API_KEY=', windows_setup)
+
+    def test_preflight_checks_research_tools(self) -> None:
+        preflight = (ROOT / "scripts" / "preflight_scrapingdog_mcp.mjs").read_text(
+            encoding="utf-8"
+        )
+
+        for tool in (
+            "google_news",
+            "google_scholar",
+            "google_search",
+            "google_trends",
+            "web_scrape",
+            "youtube_transcripts",
+        ):
+            self.assertIn(f'"{tool}"', preflight)
 
 
 class DcgConfigurationBehavior(unittest.TestCase):

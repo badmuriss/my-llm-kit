@@ -66,7 +66,7 @@ $impl: code + checks + evidence grades
 
 | Skill | Job | Output |
 |---|---|---|
-| `research` | Checks changing facts and compares sources before they shape the code. | An auditable finding under `research/`. |
+| `research` | Routes each query to the narrowest provider, adjudicates sources per claim, and optionally runs one bounded council. | An audited finding under `research/`. |
 | `spec` | Resolves decisions and writes an executable plan. A `--council` flag adds one bounded review. | `proposal.md`, `design.md`, `tasks.md`, and an optional council report. |
 | `impl` | Executes localized work directly, delegates when isolation or parallelism pays, and grades recorded checks. | Code, checks, evidence grades, and resumable state. |
 | `writing` | Keeps docs, commits, PR descriptions, and errors short and concrete. | A clear record of what changed, why, and how it was checked. |
@@ -109,7 +109,7 @@ After normal completion, `learning.py` can snapshot those observed checks and co
 
 | Skill | Purpose |
 |---|---|
-| `research` | Source-first research with an audit trail. |
+| `research` | Source-first research with provider provenance, claim adjudication, and optional council review. |
 | `ingest` | Converts received documents and repos before analysis. |
 | `writing` | Technical writing rules based on Zinsser. |
 | `spec` | Architecture-first OpenSpec planning. |

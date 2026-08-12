@@ -1,6 +1,16 @@
 import { spawn } from "node:child_process";
 import { isAbsolute } from "node:path";
 
+const REQUIRED_RESEARCH_TOOLS = [
+  "google_news",
+  "google_scholar",
+  "google_search",
+  "google_trends",
+  "web_scrape",
+  "youtube_search",
+  "youtube_transcripts",
+];
+
 const entrypoint = process.argv[2];
 if (!entrypoint || !isAbsolute(entrypoint)) {
   console.error("Usage: node preflight_scrapingdog_mcp.mjs <absolute-server-entrypoint>");
@@ -83,8 +93,9 @@ function handleMessage(line) {
       return;
     }
     const names = new Set(message.result?.tools?.map((tool) => tool.name));
-    if (!names.has("web_scrape") || !names.has("youtube_search")) {
-      fail("ScrapingDog MCP tool catalog is missing web_scrape or youtube_search.");
+    const missing = REQUIRED_RESEARCH_TOOLS.filter((name) => !names.has(name));
+    if (missing.length > 0) {
+      fail(`ScrapingDog MCP tool catalog is missing: ${missing.join(", ")}.`);
       return;
     }
     succeed();

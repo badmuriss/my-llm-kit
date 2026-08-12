@@ -261,9 +261,9 @@ Invoke-Step "register MCP paper-search" {
         }
     }
     if (Test-Command "codex") {
-        $listing = (& codex mcp list 2>$null | Out-String)
-        if ($listing -match "paper-search") {
-            Write-Host "  codex: paper-search already registered, skipping"
+        $details = (& codex mcp get paper-search 2>$null | Out-String)
+        if ($details.Contains("command: paper-search-mcp") -and $details.Contains("enabled: true")) {
+            Write-Host "  codex: paper-search already registered and enabled, skipping"
         }
         elseif ($DryRun) {
             Write-Host "  [dry-run] codex mcp add paper-search -- paper-search-mcp"
@@ -310,8 +310,8 @@ Invoke-Step "register MCP scrapingdog" {
     }
     if (Test-Command "codex") {
         $details = (& codex mcp get scrapingdog 2>$null | Out-String)
-        if ($details.Contains($entrypoint)) {
-            Write-Host "  codex: scrapingdog already points to the pinned build, skipping"
+        if ($details.Contains($entrypoint) -and $details.Contains("enabled: true")) {
+            Write-Host "  codex: scrapingdog already points to the pinned build and is enabled, skipping"
         }
         elseif ($DryRun) {
             if (-not [string]::IsNullOrWhiteSpace($details)) {
