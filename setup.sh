@@ -321,26 +321,26 @@ setup_own_repos() {
 }
 run_step "own skill repos" setup_own_repos
 
-# 4c. community skills: clone into the canonical root, then fan out. skip what is already there.
+# 4c. community skills: clone the source repository, then link its declared skill path.
 install_community_skills() {
-  local name url target
-  [ "$DRY" -eq 1 ] || mkdir -p "$SKILLS_ROOT"
-  while IFS='|' read -r name url; do
+  local name url path repo source
+  local sources_root="$HOME/.agents/community-skills"
+  [ "$DRY" -eq 1 ] || mkdir -p "$SKILLS_ROOT" "$sources_root"
+  while IFS='|' read -r name url path; do
     [ -n "$name" ] || continue
-    target="$SKILLS_ROOT/$name"
-    if [ -L "$target" ] && [ ! -e "$target" ]; then
-      [ "$DRY" -eq 1 ] || rm -f "$target"
-    fi
-    if [ -e "$target" ]; then
-      echo "  $name already present, skipping"
-      continue
-    fi
+    repo="$sources_root/$name"
+    source="$repo/$path"
     if [ "$DRY" -eq 1 ]; then
-      echo "  [dry-run] git clone $url $target (+ host fan-out)"
+      [ -d "$repo" ] || echo "  [dry-run] git clone $url $repo"
+      echo "  [dry-run] link $name -> $source (+ host fan-out)"
       continue
     fi
-    git clone "$url" "$target" || return 1
-    link_skill "$name" "$target"
+    [ -d "$repo/.git" ] || git clone "$url" "$repo" || return 1
+    if [ ! -f "$source/SKILL.md" ]; then
+      echo "  $name source has no SKILL.md at $source"
+      return 1
+    fi
+    link_skill "$name" "$source"
   done < <(manifest_rows community_skills)
 }
 run_step "community skills" install_community_skills

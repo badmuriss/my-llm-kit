@@ -11,6 +11,49 @@ MANIFEST_READER = ROOT / "scripts" / "read_install_manifest.py"
 
 
 class SharedManifestBehavior(unittest.TestCase):
+    def test_installs_community_skills_from_their_nested_paths(self) -> None:
+        manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
+
+        self.assertIn(
+            {
+                "name": "refero-design",
+                "url": "https://github.com/referodesign/refero_skill",
+                "path": "skills/refero-design",
+            },
+            manifest["community_skills"],
+        )
+        self.assertIn(
+            {
+                "name": "drawio-skill",
+                "url": "https://github.com/Agents365-ai/drawio-skill",
+                "path": "skills/drawio-skill",
+            },
+            manifest["community_skills"],
+        )
+
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(MANIFEST_READER),
+                "community_skills",
+                "--manifest",
+                str(MANIFEST),
+            ],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn(
+            "refero-design|https://github.com/referodesign/refero_skill|skills/refero-design",
+            result.stdout.splitlines(),
+        )
+        self.assertIn(
+            "drawio-skill|https://github.com/Agents365-ai/drawio-skill|skills/drawio-skill",
+            result.stdout.splitlines(),
+        )
+
     def test_includes_the_reduced_harness_dependencies(self) -> None:
         manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
 
@@ -20,6 +63,7 @@ class SharedManifestBehavior(unittest.TestCase):
                 "spec",
                 "impl",
                 "grill-me",
+                "remove-ai-marks",
                 "trim-code-comments",
                 "thermo-nuclear-code-quality-review",
             ],
@@ -46,6 +90,7 @@ class SharedManifestBehavior(unittest.TestCase):
                 "spec",
                 "impl",
                 "grill-me",
+                "remove-ai-marks",
                 "trim-code-comments",
                 "thermo-nuclear-code-quality-review",
             ],

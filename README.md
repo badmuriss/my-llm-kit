@@ -128,6 +128,13 @@ After normal completion, `learning.py` can snapshot those observed checks and co
 | `site-audit` | UX, SEO, AEO, GEO, and Core Web Vitals audit for a running site. | [badmuriss/site-audit](https://github.com/badmuriss/site-audit) |
 | `spec-council` | Bounded multi-perspective review for OpenSpec drafts. | [badmuriss/spec-council](https://github.com/badmuriss/spec-council) |
 
+### Community design and diagram skills
+
+| Skill | Purpose | Repo |
+|---|---|---|
+| `refero-design` | Leads UI research through Refero styles, screens, and flows, then produces a reference lock and decision ledger. `$incredibly-pretty-websites` consumes that direction for implementation craft and frontend constraints. | [referodesign/refero_skill](https://github.com/referodesign/refero_skill) |
+| `drawio-skill` | Creates editable architecture, flow, UML, ER, and system diagrams, validates their structure, exports common formats, and requires visual review. | [Agents365-ai/drawio-skill](https://github.com/Agents365-ai/drawio-skill) |
+
 ### Web fallback
 
 | Skill | Purpose | Source |
@@ -181,7 +188,7 @@ The installers:
 
 1. Detect installed agent hosts and required tools.
 2. Install the shared skills and link them into each host.
-3. Clone the owned and community skill repos when missing.
+3. Clone the owned and community skill repos when missing, including skills stored in a repository subdirectory.
 4. Install Firecrawl, optional plugins, and the `paper-search` and ScrapingDog MCP servers where supported.
 5. Verify the ScrapingDog MCP handshake and tool catalog without API credits.
 6. Verify the `paper-search` executable, version, and one real arXiv query. A failure declares the web fallback.
