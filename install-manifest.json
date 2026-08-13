@@ -17,7 +17,18 @@
       "url": "https://github.com/badmuriss/spec-council"
     }
   ],
-  "community_skills": [],
+  "community_skills": [
+    {
+      "name": "refero-design",
+      "url": "https://github.com/referodesign/refero_skill",
+      "path": "skills/refero-design"
+    },
+    {
+      "name": "drawio-skill",
+      "url": "https://github.com/Agents365-ai/drawio-skill",
+      "path": "skills/drawio-skill"
+    }
+  ],
   "plugins": [
     {
       "marketplace": "cloudflare/skills",
@@ -32,6 +43,7 @@
     "spec",
     "impl",
     "grill-me",
+    "remove-ai-marks",
     "trim-code-comments",
     "thermo-nuclear-code-quality-review"
   ]

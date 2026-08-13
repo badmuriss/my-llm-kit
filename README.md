@@ -66,7 +66,7 @@ $impl: code + checks + evidence grades
 
 | Skill | Job | Output |
 |---|---|---|
-| `research` | Checks changing facts and compares sources before they shape the code. | An auditable finding under `research/`. |
+| `research` | Routes each query to the narrowest provider, adjudicates sources per claim, and optionally runs one bounded council. | An audited finding under `research/`. |
 | `spec` | Resolves decisions and writes an executable plan. A `--council` flag adds one bounded review. | `proposal.md`, `design.md`, `tasks.md`, and an optional council report. |
 | `impl` | Executes localized work directly, delegates when isolation or parallelism pays, and grades recorded checks. | Code, checks, evidence grades, and resumable state. |
 | `writing` | Keeps docs, commits, PR descriptions, and errors short and concrete. | A clear record of what changed, why, and how it was checked. |
@@ -109,7 +109,7 @@ After normal completion, `learning.py` can snapshot those observed checks and co
 
 | Skill | Purpose |
 |---|---|
-| `research` | Source-first research with an audit trail. |
+| `research` | Source-first research with provider provenance, claim adjudication, and optional council review. |
 | `ingest` | Converts received documents and repos before analysis. |
 | `writing` | Technical writing rules based on Zinsser. |
 | `spec` | Architecture-first OpenSpec planning. |
@@ -127,6 +127,13 @@ After normal completion, `learning.py` can snapshot those observed checks and co
 | `incredibly-pretty-websites` | Research-driven frontend design system. | [badmuriss/incredibly-pretty-websites](https://github.com/badmuriss/incredibly-pretty-websites) |
 | `site-audit` | UX, SEO, AEO, GEO, and Core Web Vitals audit for a running site. | [badmuriss/site-audit](https://github.com/badmuriss/site-audit) |
 | `spec-council` | Bounded multi-perspective review for OpenSpec drafts. | [badmuriss/spec-council](https://github.com/badmuriss/spec-council) |
+
+### Community design and diagram skills
+
+| Skill | Purpose | Repo |
+|---|---|---|
+| `refero-design` | Leads UI research through Refero styles, screens, and flows, then produces a reference lock and decision ledger. `$incredibly-pretty-websites` consumes that direction for implementation craft and frontend constraints. | [referodesign/refero_skill](https://github.com/referodesign/refero_skill) |
+| `drawio-skill` | Creates editable architecture, flow, UML, ER, and system diagrams, validates their structure, exports common formats, and requires visual review. | [Agents365-ai/drawio-skill](https://github.com/Agents365-ai/drawio-skill) |
 
 ### Web fallback
 
@@ -181,7 +188,7 @@ The installers:
 
 1. Detect installed agent hosts and required tools.
 2. Install the shared skills and link them into each host.
-3. Clone the owned and community skill repos when missing.
+3. Clone the owned and community skill repos when missing, including skills stored in a repository subdirectory.
 4. Install Firecrawl, optional plugins, and the `paper-search` and ScrapingDog MCP servers where supported.
 5. Verify the ScrapingDog MCP handshake and tool catalog without API credits.
 6. Verify the `paper-search` executable, version, and one real arXiv query. A failure declares the web fallback.
@@ -215,7 +222,7 @@ From a bare shell:
 curl -fsSL https://raw.githubusercontent.com/badmuriss/my-llm-kit/main/install.sh | bash
 ```
 
-The reduced install includes `$trim-code-comments` for manual comment cleanup and an independent, read-only maintainability review that `$impl` runs after code changes.
+The reduced install includes [`$trim-code-comments`](https://github.com/badmuriss/trim-code-comments) for manual comment cleanup and an independent, read-only maintainability review that `$impl` runs after code changes.
 
 ## Not included
 

@@ -261,9 +261,9 @@ Invoke-Step "register MCP paper-search" {
         }
     }
     if (Test-Command "codex") {
-        $listing = (& codex mcp list 2>$null | Out-String)
-        if ($listing -match "paper-search") {
-            Write-Host "  codex: paper-search already registered, skipping"
+        $details = (& codex mcp get paper-search 2>$null | Out-String)
+        if ($details.Contains("command: paper-search-mcp") -and $details.Contains("enabled: true")) {
+            Write-Host "  codex: paper-search already registered and enabled, skipping"
         }
         elseif ($DryRun) {
             Write-Host "  [dry-run] codex mcp add paper-search -- paper-search-mcp"
@@ -310,8 +310,8 @@ Invoke-Step "register MCP scrapingdog" {
     }
     if (Test-Command "codex") {
         $details = (& codex mcp get scrapingdog 2>$null | Out-String)
-        if ($details.Contains($entrypoint)) {
-            Write-Host "  codex: scrapingdog already points to the pinned build, skipping"
+        if ($details.Contains($entrypoint) -and $details.Contains("enabled: true")) {
+            Write-Host "  codex: scrapingdog already points to the pinned build and is enabled, skipping"
         }
         elseif ($DryRun) {
             if (-not [string]::IsNullOrWhiteSpace($details)) {
@@ -392,20 +392,26 @@ Invoke-Step "own skill repositories" {
 }
 
 Invoke-Step "community skills" {
+    $sourcesRoot = Join-Path $HomeDirectory ".agents\community-skills"
     if (-not $DryRun) {
         New-Item -ItemType Directory -Force -Path $SkillsRoot | Out-Null
+        New-Item -ItemType Directory -Force -Path $sourcesRoot | Out-Null
     }
     foreach ($skill in $InstallManifest.community_skills) {
-        $target = Join-Path $SkillsRoot $skill.name
-        if (-not (Test-Path -LiteralPath $target)) {
+        $repository = Join-Path $sourcesRoot $skill.name
+        $source = Join-Path $repository $skill.path
+        if (-not (Test-Path -LiteralPath (Join-Path $repository ".git"))) {
             if ($DryRun) {
-                Write-Host "  [dry-run] git clone $($skill.url) $target"
+                Write-Host "  [dry-run] git clone $($skill.url) $repository"
             }
             else {
-                Invoke-Native "git" @("clone", $skill.url, $target)
+                Invoke-Native "git" @("clone", $skill.url, $repository)
             }
         }
-        Link-Skill -Name $skill.name -Source $target
+        if (-not $DryRun -and -not (Test-Path -LiteralPath (Join-Path $source "SKILL.md"))) {
+            throw "$($skill.name) source has no SKILL.md at $source"
+        }
+        Link-Skill -Name $skill.name -Source $source
     }
 }
 

@@ -11,6 +11,49 @@ MANIFEST_READER = ROOT / "scripts" / "read_install_manifest.py"
 
 
 class SharedManifestBehavior(unittest.TestCase):
+    def test_installs_community_skills_from_their_nested_paths(self) -> None:
+        manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
+
+        self.assertIn(
+            {
+                "name": "refero-design",
+                "url": "https://github.com/referodesign/refero_skill",
+                "path": "skills/refero-design",
+            },
+            manifest["community_skills"],
+        )
+        self.assertIn(
+            {
+                "name": "drawio-skill",
+                "url": "https://github.com/Agents365-ai/drawio-skill",
+                "path": "skills/drawio-skill",
+            },
+            manifest["community_skills"],
+        )
+
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(MANIFEST_READER),
+                "community_skills",
+                "--manifest",
+                str(MANIFEST),
+            ],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn(
+            "refero-design|https://github.com/referodesign/refero_skill|skills/refero-design",
+            result.stdout.splitlines(),
+        )
+        self.assertIn(
+            "drawio-skill|https://github.com/Agents365-ai/drawio-skill|skills/drawio-skill",
+            result.stdout.splitlines(),
+        )
+
     def test_includes_the_reduced_harness_dependencies(self) -> None:
         manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
 
@@ -20,6 +63,7 @@ class SharedManifestBehavior(unittest.TestCase):
                 "spec",
                 "impl",
                 "grill-me",
+                "remove-ai-marks",
                 "trim-code-comments",
                 "thermo-nuclear-code-quality-review",
             ],
@@ -46,6 +90,7 @@ class SharedManifestBehavior(unittest.TestCase):
                 "spec",
                 "impl",
                 "grill-me",
+                "remove-ai-marks",
                 "trim-code-comments",
                 "thermo-nuclear-code-quality-review",
             ],
@@ -53,6 +98,13 @@ class SharedManifestBehavior(unittest.TestCase):
 
 
 class PaperSearchPreflightBehavior(unittest.TestCase):
+    def test_reenables_an_existing_codex_server(self) -> None:
+        unix_setup = (ROOT / "setup.sh").read_text(encoding="utf-8")
+        windows_setup = (ROOT / "setup.ps1").read_text(encoding="utf-8")
+
+        self.assertIn('grep -Fq "enabled: true" <<<"$details"', unix_setup)
+        self.assertIn('$details.Contains("enabled: true")', windows_setup)
+
     def test_runs_a_real_query_on_unix(self) -> None:
         setup = (ROOT / "setup.sh").read_text(encoding="utf-8")
 
@@ -107,6 +159,21 @@ class ScrapingDogMcpBehavior(unittest.TestCase):
         self.assertNotIn("--env SCRAPINGDOG_API_KEY=", unix_setup)
         self.assertNotIn("-e SCRAPINGDOG_API_KEY=", unix_setup)
         self.assertNotIn('"--env", "SCRAPINGDOG_API_KEY=', windows_setup)
+
+    def test_preflight_checks_research_tools(self) -> None:
+        preflight = (ROOT / "scripts" / "preflight_scrapingdog_mcp.mjs").read_text(
+            encoding="utf-8"
+        )
+
+        for tool in (
+            "google_news",
+            "google_scholar",
+            "google_search",
+            "google_trends",
+            "web_scrape",
+            "youtube_transcripts",
+        ):
+            self.assertIn(f'"{tool}"', preflight)
 
 
 class DcgConfigurationBehavior(unittest.TestCase):

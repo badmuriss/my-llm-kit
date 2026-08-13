@@ -12,7 +12,7 @@ from typing import Any, Sequence
 
 SECTIONS = {
     "own_repositories": ("name", "url"),
-    "community_skills": ("name", "url"),
+    "community_skills": ("name", "url", "path"),
     "plugins": ("marketplace", "plugin"),
     "reduced_install_skills": (),
 }
