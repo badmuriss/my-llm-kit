@@ -582,6 +582,36 @@ Invoke-Step "pipelock agent traffic guard" {
     }
 }
 
+Invoke-Step "global git ignore for agent artifacts" {
+    # Visual-evidence screenshots land in whatever repo the agent works on;
+    # a machine-wide git exclude keeps them out of every repo at once.
+    $excludeFile = ""
+    if (Test-Command "git") {
+        $excludeFile = (& git config --global core.excludesFile 2>$null)
+    }
+    if ([string]::IsNullOrWhiteSpace($excludeFile)) {
+        $excludeFile = Join-Path $HomeDirectory ".config\git\ignore"
+    }
+    if ($DryRun) {
+        Write-Host "  [dry-run] ensure '.visual-evidence/' listed in $excludeFile"
+        return
+    }
+    $excludeDir = Split-Path -Parent $excludeFile
+    if (-not (Test-Path -LiteralPath $excludeDir)) {
+        New-Item -ItemType Directory -Path $excludeDir -Force | Out-Null
+    }
+    if (-not (Test-Path -LiteralPath $excludeFile)) {
+        New-Item -ItemType File -Path $excludeFile -Force | Out-Null
+    }
+    $lines = Get-Content -LiteralPath $excludeFile -ErrorAction SilentlyContinue
+    if ($lines -notcontains ".visual-evidence/") {
+        Add-Content -LiteralPath $excludeFile -Value ".visual-evidence/"
+        Write-Host "  added .visual-evidence/ to $excludeFile"
+    } else {
+        Write-Host "  .visual-evidence/ already in $excludeFile"
+    }
+}
+
 Write-Host ""
 Write-Host "heavy dependencies such as MinerU and docling remain opt-in."
 Write-Host ""

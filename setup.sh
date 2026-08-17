@@ -633,6 +633,31 @@ install_pipelock() {
 }
 run_step "pipelock agent traffic guard" install_pipelock
 
+# 10. Agent-produced artifacts (visual evidence screenshots) land in whatever repo the
+# agent is working on. A machine-wide git exclude keeps them out of every repo at once
+# instead of patching each project's .gitignore.
+install_global_git_ignore() {
+  local exclude_file
+  exclude_file="$(git config --global core.excludesFile || true)"
+  [ -n "$exclude_file" ] || exclude_file="$HOME/.config/git/ignore"
+  exclude_file="${exclude_file/#\~/$HOME}"
+
+  if [ "$DRY" -eq 1 ]; then
+    echo "  [dry-run] ensure '.visual-evidence/' listed in $exclude_file"
+    return 0
+  fi
+
+  mkdir -p "$(dirname "$exclude_file")"
+  touch "$exclude_file"
+  if ! grep -qxF '.visual-evidence/' "$exclude_file"; then
+    echo '.visual-evidence/' >> "$exclude_file"
+    echo "  added .visual-evidence/ to $exclude_file"
+  else
+    echo "  .visual-evidence/ already in $exclude_file"
+  fi
+}
+run_step "global git ignore for agent artifacts" install_global_git_ignore
+
 echo
 echo "heavy dependencies (mineru, docling) are not installed by this script."
 echo "they are opt-in: pip3 install --user mineru docling"
