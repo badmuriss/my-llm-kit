@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/badmuriss/my-llm-kit/schemas/agent-graph-coordinator-capsule.json",
+  "title": "Agent graph coordinator capsule",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "repository",
+    "change",
+    "run_id",
+    "driver",
+    "base_commit",
+    "dirty_paths",
+    "coordinator_generation",
+    "resume_command"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "repository": {"type": "string", "pattern": "^(?:/|[A-Za-z]:[\\\\/]).+"},
+    "change": {"type": "string", "pattern": "^[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*$"},
+    "run_id": {"type": "string", "pattern": "^[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*$"},
+    "driver": {"enum": ["auto", "host", "orca"]},
+    "base_commit": {"type": "string", "minLength": 1},
+    "dirty_paths": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "coordinator_generation": {"type": "integer", "minimum": 1},
+    "resume_command": {"type": "string", "minLength": 1}
+  }
+}

@@ -15,12 +15,17 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Iterable, Sequence
 
-from runtime_config import RuntimeConfigError, add_runtime_arguments, runtime_from_arguments
+AGENT_GRAPH_SCRIPTS = Path(__file__).resolve().parents[2] / "agent-graph" / "scripts"
+if str(AGENT_GRAPH_SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(AGENT_GRAPH_SCRIPTS))
+
+from runtime_config import RuntimeConfigError, add_runtime_arguments, runtime_from_arguments  # noqa: E402
+from visual_evidence import parse_visual_scope  # noqa: E402
 
 
 SCHEMA_VERSION = 1
 MIN_RECURRING_CHANGES = 5
-STATE_DIRECTORY = Path("openspec/impl-state")
+GRAPH_RUNS_DIRECTORY = Path("openspec/runs")
 LEARNING_ROOT = Path("openspec/impl-learning")
 RUNS_DIRECTORY = LEARNING_ROOT / "runs"
 EVIDENCE_DIRECTORY = LEARNING_ROOT / "evidence"
@@ -122,21 +127,44 @@ def validate_completed_state(state: Any, path: Path) -> dict[str, Any]:
     require_identifier(state.get("change"), f"{path}.change")
     require_identifier(state.get("run_id"), f"{path}.run_id")
     tasks = state.get("tasks")
-    if not isinstance(tasks, list) or not tasks:
-        raise LearningError(f"{path}.tasks must be a non-empty array")
-    for index, task in enumerate(tasks):
-        context = f"{path}.tasks[{index}]"
+    if not isinstance(tasks, dict) or not tasks:
+        raise LearningError(f"{path}.tasks must be a non-empty graph projection")
+    normalized_tasks: list[dict[str, Any]] = []
+    for task_id, task in tasks.items():
+        context = f"{path}.tasks[{task_id}]"
         if not isinstance(task, dict):
             raise LearningError(f"{context} must be an object")
-        require_string(task.get("id"), f"{context}.id")
-        if task.get("status") not in TASK_STATUSES:
-            raise LearningError(f"{context}.status must be terminal")
+        require_string(task_id, f"{context}.id")
+        grade = task.get("grade")
+        if grade not in TASK_STATUSES:
+            raise LearningError(f"{context}.grade must be terminal")
         check = task.get("check")
         if not isinstance(check, dict):
             raise LearningError(f"{context}.check must be an object")
         if not isinstance(check.get("attempts"), int) or check["attempts"] < 0:
             raise LearningError(f"{context}.check.attempts must be non-negative")
-    return state
+        contract = task.get("contract")
+        if not isinstance(contract, dict):
+            raise LearningError(f"{context}.contract must be an object")
+        raw_scopes = contract.get("visual_scope", [])
+        try:
+            visual_scopes = [parse_visual_scope(value) for value in raw_scopes]
+        except (TypeError, ValueError) as error:
+            raise LearningError(f"{context}.visual_scope is invalid: {error}") from error
+        normalized_tasks.append(
+            {
+                "id": task_id,
+                "status": grade,
+                "check": check,
+                "hypotheses": list(task.get("hypotheses", [])),
+                "evidence_refs": list(task.get("evidence_refs", [])),
+                "visual_expectations": list(contract.get("visual", [])),
+                "visual_scopes": visual_scopes,
+            }
+        )
+    normalized = dict(state)
+    normalized["tasks"] = normalized_tasks
+    return normalized
 
 
 def task_fact(task: dict[str, Any]) -> dict[str, Any]:
@@ -352,7 +380,22 @@ def render_drafts(records: Iterable[tuple[Path, dict[str, Any]]]) -> str:
 def command_snapshot(arguments: argparse.Namespace) -> dict[str, Any]:
     repo = arguments.repo.resolve()
     change = require_identifier(arguments.change, "change")
-    state_path = repo / STATE_DIRECTORY / f"{change}.json"
+    change_runs = repo / GRAPH_RUNS_DIRECTORY / change
+    if arguments.run_id:
+        run_id = require_identifier(arguments.run_id, "run-id")
+        state_path = change_runs / run_id / "state.json"
+    else:
+        candidates = [
+            path
+            for path in sorted(change_runs.glob("*/state.json"))
+            if isinstance((candidate := read_json(path)), dict)
+            and candidate.get("status") == "complete"
+        ]
+        if not candidates:
+            raise LearningError(f"no completed graph run exists for {change}")
+        if len(candidates) > 1:
+            raise LearningError(f"multiple completed graph runs exist for {change}; pass --run-id")
+        state_path = candidates[0]
     state = validate_completed_state(read_json(state_path), state_path)
     output = repo / RUNS_DIRECTORY / f"{state['run_id']}.json"
     evidence_path = repo / EVIDENCE_DIRECTORY / f"{state['run_id']}.state.json"
@@ -473,6 +516,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     snapshot = subparsers.add_parser("snapshot")
     snapshot.add_argument("--change", required=True)
+    snapshot.add_argument("--run-id")
     snapshot.set_defaults(handler=command_snapshot)
 
     add_candidate = subparsers.add_parser("add-candidate")

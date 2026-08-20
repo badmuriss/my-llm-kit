@@ -506,10 +506,6 @@ Invoke-Step "plugins for Claude Code and Codex" {
     }
 }
 
-Invoke-Step "agent resource guard" {
-    Write-Host "  agent resource guard is Linux-only; Windows skips it explicitly"
-}
-
 $DcgPath = Join-Path $HomeDirectory ".local\bin\dcg.exe"
 Invoke-Step "dcg destructive command guard" {
     if (-not (Test-Path -LiteralPath $DcgPath)) {

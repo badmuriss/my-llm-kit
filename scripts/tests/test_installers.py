@@ -96,6 +96,19 @@ class SharedManifestBehavior(unittest.TestCase):
             ],
         )
 
+    def test_discovers_agent_graph_through_cross_platform_skill_loops(self) -> None:
+        unix_setup = (ROOT / "setup.sh").read_text(encoding="utf-8")
+        windows_setup = (ROOT / "setup.ps1").read_text(encoding="utf-8")
+
+        self.assertTrue((ROOT / "skills" / "agent-graph" / "SKILL.md").is_file())
+        self.assertIn('for dir in "$REPO_DIR/skills/"*/; do', unix_setup)
+        self.assertIn(
+            'Get-ChildItem -Directory (Join-Path $RepoDirectory "skills")',
+            windows_setup,
+        )
+        self.assertIn('Link-Skill -Name $_.Name -Source $_.FullName', windows_setup)
+        self.assertNotIn('cp -R "$REPO_DIR/skills/agent-graph"', unix_setup)
+
 
 class PaperSearchPreflightBehavior(unittest.TestCase):
     def test_reenables_an_existing_codex_server(self) -> None:

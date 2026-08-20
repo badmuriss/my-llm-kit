@@ -1,21 +1,20 @@
 #!/usr/bin/env python3
-"""Resolve the impl project and operating system from CLI or a local .env file."""
+"""Resolve the repository and operating system for Agent Graph commands."""
 
 from __future__ import annotations
 
 import argparse
-import json
 import os
 import re
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Mapping, Sequence
+from typing import Mapping
 
 
-PROJECT_DIRECTORY_VARIABLE = "IMPL_PROJECT_DIR"
-OPERATING_SYSTEM_VARIABLE = "IMPL_OS"
-SUPPORTED_OPERATING_SYSTEMS = {"linux", "macos", "windows"}
+PROJECT_DIRECTORY_VARIABLE = "AGENT_GRAPH_PROJECT_DIR"
+OPERATING_SYSTEM_VARIABLE = "AGENT_GRAPH_OS"
+SUPPORTED_OPERATING_SYSTEMS = frozenset({"linux", "macos", "windows"})
 ENV_KEY_PATTERN = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 
 
@@ -23,7 +22,7 @@ class RuntimeConfigError(ValueError):
     """Reports invalid or contradictory runtime configuration."""
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class RuntimeConfig:
     project_directory: Path
     operating_system: str
@@ -40,7 +39,11 @@ def detected_operating_system() -> str:
 
 def parse_env_file(path: Path) -> dict[str, str]:
     values: dict[str, str] = {}
-    for line_number, raw_line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+    try:
+        lines = path.read_text(encoding="utf-8").splitlines()
+    except (OSError, UnicodeError) as error:
+        raise RuntimeConfigError(f"cannot read environment file {path}: {error}") from error
+    for line_number, raw_line in enumerate(lines, 1):
         line = raw_line.strip()
         if not line or line.startswith("#"):
             continue
@@ -65,12 +68,12 @@ def resolve_runtime_config(
     environment: Mapping[str, str] | None = None,
 ) -> RuntimeConfig:
     working_directory = (current_directory or Path.cwd()).resolve()
-    selected_env_file = env_file.resolve() if env_file is not None else working_directory / ".env"
-    env_values = parse_env_file(selected_env_file) if selected_env_file.is_file() else {}
-    merged_environment = {**env_values, **dict(environment or os.environ)}
+    selected_env = env_file.resolve() if env_file is not None else working_directory / ".env"
+    file_values = parse_env_file(selected_env) if selected_env.is_file() else {}
+    values = {**file_values, **dict(environment or os.environ)}
 
-    configured_os = merged_environment.get(OPERATING_SYSTEM_VARIABLE, "").strip().lower()
     actual_os = detected_operating_system()
+    configured_os = values.get(OPERATING_SYSTEM_VARIABLE, "").strip().casefold()
     if configured_os and configured_os not in SUPPORTED_OPERATING_SYSTEMS:
         choices = ", ".join(sorted(SUPPORTED_OPERATING_SYSTEMS))
         raise RuntimeConfigError(f"{OPERATING_SYSTEM_VARIABLE} must be one of: {choices}")
@@ -79,26 +82,25 @@ def resolve_runtime_config(
             f"{OPERATING_SYSTEM_VARIABLE}={configured_os} does not match detected OS {actual_os}"
         )
 
-    configured_project = merged_environment.get(PROJECT_DIRECTORY_VARIABLE, "").strip()
+    configured_project = values.get(PROJECT_DIRECTORY_VARIABLE, "").strip()
     if project_directory is not None:
         selected_project = project_directory
-        project_base = working_directory
+        base = working_directory
     elif configured_project:
         selected_project = Path(configured_project)
-        project_base = selected_env_file.parent
+        base = selected_env.parent
     else:
         selected_project = working_directory
-        project_base = working_directory
+        base = working_directory
     if not selected_project.is_absolute():
-        selected_project = project_base / selected_project
-    resolved_project = selected_project.resolve()
-    if not resolved_project.is_dir():
-        raise RuntimeConfigError(f"project directory does not exist: {resolved_project}")
-
+        selected_project = base / selected_project
+    repository = selected_project.resolve()
+    if not repository.is_dir():
+        raise RuntimeConfigError(f"project directory does not exist: {repository}")
     return RuntimeConfig(
-        project_directory=resolved_project,
+        project_directory=repository,
         operating_system=actual_os,
-        env_file=selected_env_file if selected_env_file.is_file() else None,
+        env_file=selected_env if selected_env.is_file() else None,
     )
 
 
@@ -106,43 +108,19 @@ def add_runtime_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--repo",
         type=Path,
-        help=f"project directory; overrides {PROJECT_DIRECTORY_VARIABLE}",
+        default=argparse.SUPPRESS,
+        help=f"repository root; overrides {PROJECT_DIRECTORY_VARIABLE}",
     )
     parser.add_argument(
         "--env-file",
         type=Path,
+        default=argparse.SUPPRESS,
         help="configuration file; defaults to .env in the current directory",
     )
 
 
 def runtime_from_arguments(arguments: argparse.Namespace) -> RuntimeConfig:
     return resolve_runtime_config(
-        project_directory=arguments.repo,
-        env_file=arguments.env_file,
+        project_directory=getattr(arguments, "repo", None),
+        env_file=getattr(arguments, "env_file", None),
     )
-
-
-def main(argv: Sequence[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Show the resolved impl runtime configuration.")
-    add_runtime_arguments(parser)
-    arguments = parser.parse_args(argv)
-    try:
-        runtime = runtime_from_arguments(arguments)
-    except (OSError, RuntimeConfigError) as error:
-        print(f"impl-runtime: {error}", file=sys.stderr)
-        return 1
-    print(
-        json.dumps(
-            {
-                "project_directory": str(runtime.project_directory),
-                "operating_system": runtime.operating_system,
-                "env_file": str(runtime.env_file) if runtime.env_file else None,
-            },
-            indent=2,
-        )
-    )
-    return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())

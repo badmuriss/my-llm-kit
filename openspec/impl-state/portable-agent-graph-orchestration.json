@@ -1,0 +1,194 @@
+{
+  "schema_version": 5,
+  "change": "portable-agent-graph-orchestration",
+  "run_id": "20260820T-local-coordinator",
+  "status": "complete",
+  "outcome": "pass",
+  "started_at": "2026-08-20T15:40:03.313271Z",
+  "updated_at": "2026-08-20T17:27:00.545117Z",
+  "base_commit": "919a231b0059b478d7bcba135db84a162b8011df",
+  "last_observed_commit": "919a231b0059b478d7bcba135db84a162b8011df",
+  "tasks": [
+    {
+      "id": "AGR-01",
+      "text": "Build the graph parser, journal, projection, and deterministic scheduler.",
+      "status": "pass",
+      "worker": null,
+      "hypotheses": [],
+      "evidence_refs": [],
+      "visual_expectations": [],
+      "visual_scopes": [],
+      "check": {
+        "command": "python3 -m unittest discover -s skills/agent-graph/tests -p test_graph_core.py",
+        "status": "passed",
+        "exit_code": 0,
+        "duration_ms": 159,
+        "total_duration_ms": 159,
+        "attempts": 1
+      },
+      "note": "Reviewed complete AGR-01 diff; declared check passed."
+    },
+    {
+      "id": "AGR-02",
+      "text": "Implement the Orca driver with supervised and tracked-terminal lifecycle tiers.",
+      "status": "pass",
+      "worker": null,
+      "hypotheses": [
+        "The topological ordering pass checks created external IDs before creation, misclassifying an already ordered local dependency as unknown."
+      ],
+      "evidence_refs": [],
+      "visual_expectations": [],
+      "visual_scopes": [],
+      "check": {
+        "command": "python3 -m unittest discover -s skills/agent-graph/tests -p test_orca_driver.py",
+        "status": "passed",
+        "exit_code": 0,
+        "duration_ms": 86,
+        "total_duration_ms": 267,
+        "attempts": 3
+      },
+      "note": "Reviewed Orca driver and fake-CLI lifecycle coverage; declared check passed after dependency-order repair."
+    },
+    {
+      "id": "AGR-03",
+      "text": "Implement the host driver and structured task capsules.",
+      "status": "pass",
+      "worker": null,
+      "hypotheses": [],
+      "evidence_refs": [],
+      "visual_expectations": [],
+      "visual_scopes": [],
+      "check": {
+        "command": "python3 -m unittest discover -s skills/agent-graph/tests -p test_host_driver.py",
+        "status": "passed",
+        "exit_code": 0,
+        "duration_ms": 115,
+        "total_duration_ms": 115,
+        "attempts": 1
+      },
+      "note": "Reviewed bounded host capsule/result implementation; declared check passed."
+    },
+    {
+      "id": "AGR-04",
+      "text": "Expose the graph runtime through one cross-platform CLI.",
+      "status": "pass",
+      "worker": null,
+      "hypotheses": [],
+      "evidence_refs": [],
+      "visual_expectations": [],
+      "visual_scopes": [],
+      "check": {
+        "command": "python3 -m unittest discover -s skills/agent-graph/tests -p test_agent_graph_cli.py",
+        "status": "passed",
+        "exit_code": 0,
+        "duration_ms": 4116,
+        "total_duration_ms": 4116,
+        "attempts": 1
+      },
+      "note": "Reviewed CLI, validation, runtime config, and focused tests; declared check passed."
+    },
+    {
+      "id": "AGR-05",
+      "text": "Replace the flat impl runtime and reconnect evidence, visual validation, and shadow learning.",
+      "status": "pass",
+      "worker": null,
+      "hypotheses": [],
+      "evidence_refs": [],
+      "visual_expectations": [],
+      "visual_scopes": [],
+      "check": {
+        "command": "python3 -m unittest discover -s skills/agent-graph/tests -p test_impl_evidence.py",
+        "status": "passed",
+        "exit_code": 0,
+        "duration_ms": 3257,
+        "total_duration_ms": 3257,
+        "attempts": 1
+      },
+      "note": "Reviewed graph evidence integration, flat-runtime removal, and shadow-learning projection snapshot; declared check passed."
+    },
+    {
+      "id": "AGR-06",
+      "text": "Route `spec`, `impl`, and research through the portable graph contract.",
+      "status": "pass",
+      "worker": null,
+      "hypotheses": [],
+      "evidence_refs": [],
+      "visual_expectations": [],
+      "visual_scopes": [],
+      "check": {
+        "command": "python3 -m unittest scripts.tests.test_harness_contracts",
+        "status": "passed",
+        "exit_code": 0,
+        "duration_ms": 201,
+        "total_duration_ms": 201,
+        "attempts": 1
+      },
+      "note": "Reviewed spec, impl, research, command, README, visual-validation, and contract-test changes; declared check passed."
+    },
+    {
+      "id": "AGR-07",
+      "text": "Validate installation and full portable execution without Orca.",
+      "status": "pass",
+      "worker": null,
+      "hypotheses": [
+        "The Windows installer assertion scans the whole script and mistakes legitimate managed-file copies for skill duplication; it must scope evidence to the skill junction loop."
+      ],
+      "evidence_refs": [],
+      "visual_expectations": [],
+      "visual_scopes": [],
+      "check": {
+        "command": "python3 -m unittest discover -s skills/agent-graph/tests -p test_end_to_end.py",
+        "status": "passed",
+        "exit_code": 0,
+        "duration_ms": 4473,
+        "total_duration_ms": 4473,
+        "attempts": 1
+      },
+      "note": "Reviewed host-only portable end-to-end flow and cross-platform skill discovery; both focused end-to-end and installer suites passed."
+    },
+    {
+      "id": "AGR-08",
+      "text": "Run the implemented Orca adapter against the real local runtime and preserve the receipt.",
+      "status": "pass",
+      "worker": null,
+      "hypotheses": [
+        "The live terminal-create receipt carries only a routing handle on this Orca build; incarnation-safe cleanup must resolve the full identity with terminal show before ownership is accepted.",
+        "The live Delivery serializes worker_done payload as a JSON string, so outcome validation must decode that provider field before applying the structured result contract."
+      ],
+      "evidence_refs": [
+        "file:openspec/changes/portable-agent-graph-orchestration/evidence/orca-live.json"
+      ],
+      "visual_expectations": [],
+      "visual_scopes": [],
+      "check": {
+        "command": "python3 skills/agent-graph/scripts/agent_graph.py probe-orca --change portable-agent-graph-orchestration --artifact openspec/changes/portable-agent-graph-orchestration/evidence/orca-live.json",
+        "status": "passed",
+        "exit_code": 0,
+        "duration_ms": 151727,
+        "total_duration_ms": 426279,
+        "attempts": 3
+      },
+      "note": "Real Orca acceptance passed after final recovery and cleanup hardening: fresh coordinator, two dependent supervised workers, ask/reply, unchanged source digest, and every created terminal released."
+    }
+  ],
+  "cleanup": [
+    {
+      "kind": "temp_path",
+      "target": "/tmp/my-llm-kit-impl-state.pO2tqU",
+      "owner": "local",
+      "status": "done"
+    }
+  ],
+  "digest": [
+    "AGR-01 pass: graph parser, scheduler, journal replay/repair, generation fencing, schemas, and structured artifact validation; focused unittest passed.",
+    "AGR-02 pass: pinned Orca CLI preflight, supervised and tracked-terminal tiers, bounded polling, question reply, reconciliation, and incarnation-safe cleanup; focused unittest and real read-only detect passed.",
+    "AGR-03 pass: repository-backed host capsules, shared worker-result validation, local/native parity, resume reconciliation, and exact manual coordinator invocation; focused unittest passed.",
+    "AGR-04 pass: cross-platform graph CLI, coordinator fencing, fixed driver selection, direct checks, idempotent receipts, cleanup gates, status and completion; focused unittest passed.",
+    "AGR-05 pass: removed flat impl runtime, moved shared visual validation, added repair caps and manifest grading to graph runs, and taught shadow learning to snapshot completed projections; focused unittest passed.",
+    "AGR-06 pass: spec validates complete graph fields; impl enforces fresh coordinator and graph commands; research uses read-mode collectors; docs cover Orca, host, auto, degradation, and future Maestri; focused contract unittest passed.",
+    "AGR-07 pass: transcript-free bootstrap, host claim, dependency scheduling, write-conflict exclusion, fail/retry evidence, takeover fencing, cleanup, completion, and automatic Unix/Windows skill discovery were validated without Orca.",
+    "AGR-08 pass: two independent real Orca executions completed; the final receipt records fresh coordinator generation 2, stale bootstrap fencing, run/task/dispatch IDs, dependency transition, ask/reply, structured reports, local grades, supervised tiers, unchanged source, and verified cleanup.",
+    "Thermonuclear read-only review completed after lifecycle recovery repairs; no high-confidence blocker or high-severity finding remains.",
+    "Final validation: 57 agent-graph tests and 31 installer/harness tests passed; real Orca run run_8d32f376eb59 preserved its full receipt and cleaned all created terminals."
+  ]
+}

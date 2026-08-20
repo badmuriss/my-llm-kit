@@ -1,0 +1,2204 @@
+{
+  "change": "portable-agent-graph-orchestration",
+  "cleanup": {
+    "all_created_terminals_gone": true,
+    "coordinator_receipts": {
+      "coordinator_cleanup": {
+        "already_gone": false,
+        "close": {
+          "_meta": {
+            "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+          },
+          "id": "c36e4411-6a1f-4707-97f5-27d3c400d552",
+          "ok": true,
+          "result": {
+            "close": {
+              "closeMode": "tab",
+              "handle": "term_fadda3da-34ef-4bc1-b4ae-0785a2d4b727",
+              "ptyKilled": false,
+              "tabId": "ba81b602-0291-4d20-9046-3565d6a32610"
+            }
+          }
+        },
+        "show": {
+          "_meta": {
+            "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+          },
+          "id": "e5fd88ed-688e-4014-8d25-06d7942404ca",
+          "ok": true,
+          "result": {
+            "terminal": {
+              "branch": "refs/heads/main",
+              "connected": true,
+              "handle": "term_fadda3da-34ef-4bc1-b4ae-0785a2d4b727",
+              "incarnationId": "2426e442-a67a-4dd7-a724-b471506e07f3",
+              "lastOutputAt": 1787246762151,
+              "leafId": "54cf171e-74d3-49d5-80cc-7890dfdd2856",
+              "orphaned": false,
+              "paneRuntimeId": -1,
+              "preview": "\u2500\u2500\n\u2022 Probe completed successfully with exit code 0.  \u203a Ask Codex to do anything   gpt-5.6-sol high \u00b7 ~/Documents/my-llm-kit\nrun_id: run_8d32f376eb59\n\u2500 Worked for 2m 15s \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+              "ptyId": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit@@2f030ba4",
+              "rendererGraphEpoch": 2,
+              "tabId": "ba81b602-0291-4d20-9046-3565d6a32610",
+              "title": "my-llm-kit",
+              "worktreeId": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit",
+              "worktreePath": "/home/badmuriss/Documents/my-llm-kit",
+              "writable": true
+            }
+          }
+        }
+      },
+      "detect": {
+        "degradation": null,
+        "external_refs": {
+          "capabilities": [
+            "runtime.status.compat.v1",
+            "runtime.environments.v1",
+            "remote-runtime.shared-control.v1",
+            "orchestration.federation.v1",
+            "orchestration.federation-control-mail.v1",
+            "orchestration.federation-lifecycle-settlement.v1",
+            "orchestration.worker-launch-preferences.v1",
+            "orchestration.contract.v1",
+            "browser.screencast.v1",
+            "terminal.binary-stream.v1",
+            "terminal.multiplex.v1",
+            "workspace-ports.v1",
+            "mobile.tasks.v1",
+            "project-host-setup.v1",
+            "task-source-context.v1",
+            "workspace-run-context.v1",
+            "worktree.linked-work-item-context.v1",
+            "folder-workspace.path-status.v1",
+            "linear.issue-attribute-filter.v1",
+            "aiVault.v1",
+            "aiVault.session-titles.v1",
+            "terminal.query-reply-input.v1",
+            "terminal.paired-parking.v1",
+            "terminal.quick-commands.v1",
+            "worktree.create-idempotency.v1",
+            "terminal.create-idempotency.v2",
+            "session-tabs.close-intent.v1",
+            "agent-session.session-boundary.v1",
+            "updater.remote-control.v1",
+            "agent-session.host-authority.v1",
+            "agent-session.omp-resume-path.v1",
+            "files.mutation-ownership.v1",
+            "accounts.import-host-credentials.v1",
+            "accounts.codex-reset-credit.v1",
+            "browser.certificate-trust.v1"
+          ],
+          "runtime_id": "9a5ebd87-1db9-49ac-9b89-78654a336595",
+          "worktree_id": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit"
+        },
+        "local_ids": {},
+        "operation": "detect",
+        "raw": {
+          "status": {
+            "_meta": {
+              "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+            },
+            "id": "local-status",
+            "ok": true,
+            "result": {
+              "app": {
+                "desktopWindowStatus": "available",
+                "pid": 3874296,
+                "running": true
+              },
+              "graph": {
+                "state": "ready"
+              },
+              "runtime": {
+                "appVersion": "1.4.183",
+                "capabilities": [
+                  "runtime.status.compat.v1",
+                  "runtime.environments.v1",
+                  "remote-runtime.shared-control.v1",
+                  "orchestration.federation.v1",
+                  "orchestration.federation-control-mail.v1",
+                  "orchestration.federation-lifecycle-settlement.v1",
+                  "orchestration.worker-launch-preferences.v1",
+                  "orchestration.contract.v1",
+                  "browser.screencast.v1",
+                  "terminal.binary-stream.v1",
+                  "terminal.multiplex.v1",
+                  "workspace-ports.v1",
+                  "mobile.tasks.v1",
+                  "project-host-setup.v1",
+                  "task-source-context.v1",
+                  "workspace-run-context.v1",
+                  "worktree.linked-work-item-context.v1",
+                  "folder-workspace.path-status.v1",
+                  "linear.issue-attribute-filter.v1",
+                  "aiVault.v1",
+                  "aiVault.session-titles.v1",
+                  "terminal.query-reply-input.v1",
+                  "terminal.paired-parking.v1",
+                  "terminal.quick-commands.v1",
+                  "worktree.create-idempotency.v1",
+                  "terminal.create-idempotency.v2",
+                  "session-tabs.close-intent.v1",
+                  "agent-session.session-boundary.v1",
+                  "updater.remote-control.v1",
+                  "agent-session.host-authority.v1",
+                  "agent-session.omp-resume-path.v1",
+                  "files.mutation-ownership.v1",
+                  "accounts.import-host-credentials.v1",
+                  "accounts.codex-reset-credit.v1",
+                  "browser.certificate-trust.v1"
+                ],
+                "reachable": true,
+                "remoteUpdateSupport": {
+                  "automatic": true,
+                  "installMode": "interactive",
+                  "reason": "available"
+                },
+                "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595",
+                "state": "ready"
+              }
+            }
+          },
+          "terminal_list": {
+            "_meta": {
+              "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+            },
+            "id": "35e480db-817d-439f-bf40-c4c4c996e10e",
+            "ok": true,
+            "result": {
+              "terminals": [
+                {
+                  "branch": "",
+                  "connected": true,
+                  "handle": "term_9f8021c4-d6fd-4486-9199-8ec330622d4b",
+                  "incarnationId": "be6716b3-a187-4160-b0a1-37fe823eb4c7",
+                  "lastOutputAt": 1787246620552,
+                  "leafId": "006de077-0199-41ed-a702-611c36073087",
+                  "orphaned": false,
+                  "preview": "orkWorki\u2022 \u00b7 1 background terminal running \u00b7 /ps to view \u00b7 /stop to closeWorkin\u2022Working\u2022WorkingWorking\u2022Working\u2022orking\u2022rking\u2022kinging\u2022ng8gW9Wo\u2022Wor\u2022Work\u2022WorkiWorkin\u2022Working\u2022Working\u2022WorkingWorking\u2022orking\u2022rking\u2022king\u2022ingng30gW1Wo\u2022Wor\u2022WorkWorki\u2022Workin\u2022Working\u2022Working\u2022WorkingWorking\u2022orking\u2022rking\u2022kinging\u2022ng2g",
+                  "ptyId": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit@@99f9c508",
+                  "tabId": "789f120b-2663-4d15-9187-36e183d020ca",
+                  "title": "\u2807 my-llm-kit",
+                  "worktreeId": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit",
+                  "worktreePath": "/home/badmuriss/Documents/my-llm-kit",
+                  "writable": true
+                }
+              ],
+              "topologyRevisions": {
+                "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit": 53
+              },
+              "totalCount": 1,
+              "truncated": false
+            }
+          },
+          "worktree": {
+            "_meta": {
+              "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+            },
+            "id": "13db15b0-8b81-463c-b4b2-26117fe32a88",
+            "ok": true,
+            "result": {
+              "worktree": {
+                "branch": "refs/heads/main",
+                "childWorktreeIds": [],
+                "comment": "",
+                "displayName": "main",
+                "git": {
+                  "branch": "refs/heads/main",
+                  "head": "919a231b0059b478d7bcba135db84a162b8011df",
+                  "isBare": false,
+                  "isMainWorktree": true,
+                  "path": "/home/badmuriss/Documents/my-llm-kit"
+                },
+                "head": "919a231b0059b478d7bcba135db84a162b8011df",
+                "hostId": "local",
+                "id": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit",
+                "instanceId": "62e80120-c7af-421b-8363-e6b0d2154260",
+                "isArchived": false,
+                "isBare": false,
+                "isMainWorktree": true,
+                "isPinned": false,
+                "isUnread": false,
+                "lastActivityAt": 1787245049154,
+                "lineage": null,
+                "linkedAzureDevOpsPR": null,
+                "linkedBitbucketPR": null,
+                "linkedGitLabIssue": null,
+                "linkedGitLabMR": null,
+                "linkedGiteaPR": null,
+                "linkedIssue": null,
+                "linkedLinearIssue": null,
+                "linkedLinearIssueOrganizationUrlKey": null,
+                "linkedLinearIssueWorkspaceId": null,
+                "linkedPR": null,
+                "linkedTaskSourceContext": null,
+                "linkedWorkItem": null,
+                "parentWorktreeId": null,
+                "path": "/home/badmuriss/Documents/my-llm-kit",
+                "projectHostSetupId": "fb2a9411-f3cb-46d4-94f7-067f40719b71",
+                "projectId": "github:badmuriss/my-llm-kit",
+                "repoId": "fb2a9411-f3cb-46d4-94f7-067f40719b71",
+                "sortOrder": 1787246604341,
+                "workspaceStatus": "in-progress"
+              }
+            }
+          },
+          "worktree_show": {
+            "_meta": {
+              "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+            },
+            "id": "a8e236c3-e05d-49d5-bb00-ccae21d9c62f",
+            "ok": true,
+            "result": {
+              "worktree": {
+                "branch": "refs/heads/main",
+                "childWorktreeIds": [],
+                "comment": "",
+                "displayName": "main",
+                "git": {
+                  "branch": "refs/heads/main",
+                  "head": "919a231b0059b478d7bcba135db84a162b8011df",
+                  "isBare": false,
+                  "isMainWorktree": true,
+                  "path": "/home/badmuriss/Documents/my-llm-kit"
+                },
+                "head": "919a231b0059b478d7bcba135db84a162b8011df",
+                "hostId": "local",
+                "id": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit",
+                "instanceId": "62e80120-c7af-421b-8363-e6b0d2154260",
+                "isArchived": false,
+                "isBare": false,
+                "isMainWorktree": true,
+                "isPinned": false,
+                "isUnread": false,
+                "lastActivityAt": 1787245049154,
+                "lineage": null,
+                "linkedAzureDevOpsPR": null,
+                "linkedBitbucketPR": null,
+                "linkedGitLabIssue": null,
+                "linkedGitLabMR": null,
+                "linkedGiteaPR": null,
+                "linkedIssue": null,
+                "linkedLinearIssue": null,
+                "linkedLinearIssueOrganizationUrlKey": null,
+                "linkedLinearIssueWorkspaceId": null,
+                "linkedPR": null,
+                "linkedTaskSourceContext": null,
+                "linkedWorkItem": null,
+                "parentWorktreeId": null,
+                "path": "/home/badmuriss/Documents/my-llm-kit",
+                "projectHostSetupId": "fb2a9411-f3cb-46d4-94f7-067f40719b71",
+                "projectId": "github:badmuriss/my-llm-kit",
+                "repoId": "fb2a9411-f3cb-46d4-94f7-067f40719b71",
+                "sortOrder": 1787246604341,
+                "workspaceStatus": "in-progress"
+              }
+            }
+          }
+        },
+        "status": "available"
+      },
+      "prompt_delivery": {
+        "_meta": {
+          "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+        },
+        "id": "88c7e343-5a73-4938-871f-a778dec0d6c4",
+        "ok": true,
+        "result": {
+          "send": {
+            "accepted": true,
+            "bytesWritten": 534,
+            "handle": "term_fadda3da-34ef-4bc1-b4ae-0785a2d4b727"
+          }
+        }
+      },
+      "recovery": [
+        {
+          "worker_stop": {
+            "_meta": {
+              "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+            },
+            "id": "ac7a0aba-283d-4ab5-a5fa-8b9817782daf",
+            "ok": true,
+            "result": {
+              "alreadySettled": true,
+              "dispatchId": "ctx_75379cdf2839",
+              "mutation": {
+                "replayed": false,
+                "requestId": "e9f7a47a-b7c3-444e-8890-680b249482af"
+              },
+              "processAction": "none",
+              "state": "succeeded"
+            }
+          }
+        },
+        {
+          "worker_release": {
+            "_meta": {
+              "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+            },
+            "id": "f78c794a-4a70-416c-8243-5a0444cba9c9",
+            "ok": true,
+            "result": {
+              "archive": {
+                "source": "transcript",
+                "status": "captured"
+              },
+              "dispatchId": "ctx_75379cdf2839",
+              "mutation": {
+                "replayed": false,
+                "requestId": "4df554b3-93a5-4666-84fa-6db6b16e263e"
+              },
+              "processAction": "none",
+              "state": "already_released"
+            }
+          }
+        }
+      ],
+      "terminal_create": {
+        "_meta": {
+          "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+        },
+        "id": "abe15a37-b935-4e8c-bf49-bacf1cd66fed",
+        "ok": true,
+        "result": {
+          "terminal": {
+            "executionHostId": "local",
+            "handle": "term_fadda3da-34ef-4bc1-b4ae-0785a2d4b727",
+            "hostPlatform": "linux",
+            "surface": "visible",
+            "tabId": "ba81b602-0291-4d20-9046-3565d6a32610",
+            "title": "agent-graph-probe-coordinator-orca-probe-20260820T172340Z-1018286",
+            "worktreeId": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit"
+          }
+        }
+      },
+      "terminal_show_after_create": {
+        "_meta": {
+          "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+        },
+        "id": "31445c83-673e-4df4-89c3-cf4eae947c0b",
+        "ok": true,
+        "result": {
+          "terminal": {
+            "branch": "refs/heads/main",
+            "connected": true,
+            "handle": "term_fadda3da-34ef-4bc1-b4ae-0785a2d4b727",
+            "incarnationId": "2426e442-a67a-4dd7-a724-b471506e07f3",
+            "lastOutputAt": 1787246623418,
+            "leafId": "54cf171e-74d3-49d5-80cc-7890dfdd2856",
+            "orphaned": false,
+            "paneRuntimeId": 1,
+            "preview": "                                     \u2502\u2502 model:       loading   /model to change \u2502\u2502 directory:   ~/Documents/my-llm-kit     \u2502\u2502 permissions: YOLO mode                  \u2502\u2570\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u256f  \u203a Ask Codex to do anything   ? for shortcutsgpt-5.6-sol default \u00b7 ~/Documents/my-llm-kit",
+            "ptyId": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit@@2f030ba4",
+            "rendererGraphEpoch": 2,
+            "tabId": "ba81b602-0291-4d20-9046-3565d6a32610",
+            "title": "my-llm-kit",
+            "worktreeId": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit",
+            "worktreePath": "/home/badmuriss/Documents/my-llm-kit",
+            "writable": true
+          }
+        }
+      },
+      "terminal_wait": {
+        "_meta": {
+          "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+        },
+        "id": "3603bff5-3466-4008-aee5-5ad7e495d16e",
+        "ok": true,
+        "result": {
+          "wait": {
+            "condition": "tui-idle",
+            "exitCode": null,
+            "handle": "term_fadda3da-34ef-4bc1-b4ae-0785a2d4b727",
+            "satisfied": true,
+            "status": "running"
+          }
+        }
+      }
+    },
+    "created_terminal_handles": [
+      "term_fadda3da-34ef-4bc1-b4ae-0785a2d4b727"
+    ],
+    "final_terminal_list": {
+      "_meta": {
+        "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+      },
+      "id": "b6f7bf88-255a-40ca-a892-b7f6831918a8",
+      "ok": true,
+      "result": {
+        "terminals": [
+          {
+            "branch": "",
+            "connected": true,
+            "handle": "term_9f8021c4-d6fd-4486-9199-8ec330622d4b",
+            "incarnationId": "be6716b3-a187-4160-b0a1-37fe823eb4c7",
+            "lastOutputAt": 1787246767251,
+            "leafId": "006de077-0199-41ed-a702-611c36073087",
+            "orphaned": false,
+            "preview": "orking\u2022WorkingWorking\u2022orking\u2022rking\u2022king\u2022ingngg2WWo\u2022Wor\u2022Work3Worki\u2022Workin\u2022Working\u2022Working\u2022WorkingWorking\u2022orking\u2022rking\u2022kinging\u2022ngg4WWo\u2022Wor\u2022Work5Worki\u2022Workin\u2022Working\u2022WorkingWorking\u2022Working\u2022orking\u2022rking\u2022king\u2022ingngg6WWo\u2022Wor\u2022Work7\u2022WorkiWorkin\u2022Working\u2022Working\u2022WorkingWorking\u2022orking\u2022rking\u2022kinging\u2022ngg8WWo\u2022Wor",
+            "ptyId": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit@@99f9c508",
+            "tabId": "789f120b-2663-4d15-9187-36e183d020ca",
+            "title": "\u2834 my-llm-kit",
+            "worktreeId": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit",
+            "worktreePath": "/home/badmuriss/Documents/my-llm-kit",
+            "writable": true
+          }
+        ],
+        "topologyRevisions": {
+          "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit": 64
+        },
+        "totalCount": 1,
+        "truncated": false
+      }
+    },
+    "worker_receipts": [
+      {
+        "degradation": null,
+        "external_refs": {
+          "dispatch_id": "ctx_1f77dfcfe014",
+          "tier": "supervised"
+        },
+        "local_ids": {},
+        "operation": "release",
+        "raw": {
+          "_meta": {
+            "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+          },
+          "id": "f543b74c-0f4c-41f6-bbb4-f79cf868a8c3",
+          "ok": true,
+          "result": {
+            "archive": {
+              "source": "transcript",
+              "status": "captured"
+            },
+            "dispatchId": "ctx_1f77dfcfe014",
+            "mutation": {
+              "replayed": false,
+              "requestId": "b582020a-172c-4d49-a2ba-deb633fc4623"
+            },
+            "processAction": "closed_agent_terminal",
+            "state": "released"
+          }
+        },
+        "status": "released"
+      },
+      {
+        "degradation": null,
+        "external_refs": {
+          "dispatch_id": "ctx_75379cdf2839",
+          "tier": "supervised"
+        },
+        "local_ids": {},
+        "operation": "release",
+        "raw": {
+          "_meta": {
+            "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+          },
+          "id": "0c639e81-38ff-42a9-aa68-cc209cc13b18",
+          "ok": true,
+          "result": {
+            "archive": {
+              "source": "transcript",
+              "status": "captured"
+            },
+            "dispatchId": "ctx_75379cdf2839",
+            "mutation": {
+              "replayed": false,
+              "requestId": "cd949389-4484-468a-af9d-3f320f8c905d"
+            },
+            "processAction": "closed_agent_terminal",
+            "state": "released"
+          }
+        },
+        "status": "released"
+      }
+    ]
+  },
+  "degradations": [],
+  "dependency_transition": {
+    "local": [
+      {
+        "ready_after_local_grade": [
+          "ORCA-PROBE-02"
+        ],
+        "ready_before_dispatch": [
+          "ORCA-PROBE-01"
+        ],
+        "task_id": "ORCA-PROBE-01"
+      },
+      {
+        "ready_before_dispatch": [
+          "ORCA-PROBE-02"
+        ],
+        "task_id": "ORCA-PROBE-02"
+      }
+    ],
+    "orca_after_root": {
+      "_meta": {
+        "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+      },
+      "id": "0d00c15a-f784-42eb-9b98-fa2173d52e22",
+      "ok": true,
+      "result": {
+        "count": 1,
+        "legacyReadOnly": false,
+        "runId": "run_8d32f376eb59",
+        "tasks": [
+          {
+            "completed_at": null,
+            "created_at": "2026-08-20 17:24:01",
+            "created_by_pane_key": "ba81b602-0291-4d20-9046-3565d6a32610:54cf171e-74d3-49d5-80cc-7890dfdd2856",
+            "created_by_process_incarnation": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit@@2f030ba4:2426e442-a67a-4dd7-a724-b471506e07f3",
+            "created_by_run_generation": 1,
+            "created_by_terminal_handle": "term_fadda3da-34ef-4bc1-b4ae-0785a2d4b727",
+            "deps": "[\"task_e4b93d9c8b6d\"]",
+            "display_name": "Confirm README.md exists, make no edits, and report worker_done with outcome...",
+            "id": "task_112146dedc6f",
+            "parent_id": null,
+            "result": null,
+            "run_id": "run_8d32f376eb59",
+            "spec": "Confirm README.md exists, make no edits, and report worker_done with outcome succeeded and no modified files.",
+            "spec_truncated": false,
+            "status": "ready",
+            "task_title": "Confirm README.md exists, make no edits, and report worker_done with outcome..."
+          }
+        ]
+      }
+    },
+    "orca_before": {
+      "_meta": {
+        "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+      },
+      "id": "fb125f80-cd3c-4105-ac6c-b1ecc1390152",
+      "ok": true,
+      "result": {
+        "count": 1,
+        "legacyReadOnly": false,
+        "runId": "run_8d32f376eb59",
+        "tasks": [
+          {
+            "completed_at": null,
+            "created_at": "2026-08-20 17:24:00",
+            "created_by_pane_key": "ba81b602-0291-4d20-9046-3565d6a32610:54cf171e-74d3-49d5-80cc-7890dfdd2856",
+            "created_by_process_incarnation": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit@@2f030ba4:2426e442-a67a-4dd7-a724-b471506e07f3",
+            "created_by_run_generation": 1,
+            "created_by_terminal_handle": "term_fadda3da-34ef-4bc1-b4ae-0785a2d4b727",
+            "deps": "[]",
+            "display_name": "Read only the first heading of AGENTS.md. Ask the coordinator whether to cont...",
+            "id": "task_e4b93d9c8b6d",
+            "parent_id": null,
+            "result": null,
+            "run_id": "run_8d32f376eb59",
+            "spec": "Read only the first heading of AGENTS.md. Ask the coordinator whether to continue with option yes or no, wait for the answer, then report worker_done with outc\u2026",
+            "spec_truncated": true,
+            "status": "ready",
+            "task_title": "Read only the first heading of AGENTS.md. Ask the coordinator whether to cont..."
+          }
+        ]
+      }
+    }
+  },
+  "driver_tiers": [
+    "supervised",
+    "supervised"
+  ],
+  "handoff": {
+    "bootstrap_coordinator_id": "bootstrap-1018286",
+    "bootstrap_generation": 1,
+    "coordinator_dispatch_id": null,
+    "coordinator_modeled_as_worker_dispatch": false,
+    "fresh_coordinator": {
+      "generation": 2,
+      "id": "orca-terminal:term_fadda3da-34ef-4bc1-b4ae-0785a2d4b727",
+      "terminal_identity": {
+        "created_by_harness": true,
+        "handle": "term_fadda3da-34ef-4bc1-b4ae-0785a2d4b727",
+        "incarnation_id": "2426e442-a67a-4dd7-a724-b471506e07f3",
+        "leaf_id": "54cf171e-74d3-49d5-80cc-7890dfdd2856",
+        "pane_key": "ba81b602-0291-4d20-9046-3565d6a32610:54cf171e-74d3-49d5-80cc-7890dfdd2856",
+        "process_incarnation": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit@@2f030ba4:2426e442-a67a-4dd7-a724-b471506e07f3",
+        "pty_id": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit@@2f030ba4",
+        "runtime_id": "9a5ebd87-1db9-49ac-9b89-78654a336595",
+        "tab_id": "ba81b602-0291-4d20-9046-3565d6a32610",
+        "worktree_id": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit"
+      }
+    },
+    "fresh_generation": 2,
+    "stale_error": "coordinator generation 1 is stale; current generation is 2",
+    "stale_mutation_rejected": true
+  },
+  "local_and_orca_ids": {
+    "local_run_id": "orca-probe-20260820T172340Z-1018286",
+    "orca_run_id": "run_8d32f376eb59",
+    "orca_task_ids": {
+      "ORCA-PROBE-01": "task_e4b93d9c8b6d",
+      "ORCA-PROBE-02": "task_112146dedc6f"
+    },
+    "worker_reports": [
+      {
+        "attempt_id": "orca-probe-attempt-01",
+        "checks_run": [],
+        "evidence_refs": [],
+        "external_refs": {
+          "dispatch_id": "ctx_1f77dfcfe014",
+          "message_id": "msg_b933f048a721",
+          "orca_dispatch_id": "ctx_1f77dfcfe014",
+          "orca_run_id": "run_8d32f376eb59",
+          "orca_task_id": "task_e4b93d9c8b6d",
+          "provider": "orca",
+          "provider_outcome": "succeeded",
+          "task_id": "task_e4b93d9c8b6d"
+        },
+        "files_changed": [],
+        "outcome": "reported",
+        "questions": [],
+        "summary": "I read only the first heading of AGENTS.md. The coordinator answered yes when asked whether to continue. Nothing remains, and no files were modified.",
+        "task_id": "ORCA-PROBE-01"
+      },
+      {
+        "attempt_id": "orca-probe-attempt-02",
+        "checks_run": [],
+        "evidence_refs": [],
+        "external_refs": {
+          "dispatch_id": "ctx_75379cdf2839",
+          "message_id": "msg_24aae0468a00",
+          "orca_dispatch_id": "ctx_75379cdf2839",
+          "orca_run_id": "run_8d32f376eb59",
+          "orca_task_id": "task_112146dedc6f",
+          "provider": "orca",
+          "provider_outcome": "succeeded",
+          "task_id": "task_112146dedc6f"
+        },
+        "files_changed": [],
+        "outcome": "reported",
+        "questions": [],
+        "summary": "Confirmed README.md exists in the repository root. Made no edits and modified no files. Nothing remains for this task.",
+        "task_id": "ORCA-PROBE-02"
+      }
+    ]
+  },
+  "local_evidence_grades": [
+    {
+      "evidence_refs": [
+        "file:openspec/changes/portable-agent-graph-orchestration/evidence/orca-live.json"
+      ],
+      "grade": "pass",
+      "note": "The read-only worker report and local check passed.",
+      "task_id": "ORCA-PROBE-01"
+    },
+    {
+      "evidence_refs": [
+        "file:openspec/changes/portable-agent-graph-orchestration/evidence/orca-live.json"
+      ],
+      "grade": "pass",
+      "note": "The read-only worker report and local check passed.",
+      "task_id": "ORCA-PROBE-02"
+    }
+  ],
+  "local_projection": {
+    "attempts": {
+      "orca-probe-attempt-01": {
+        "attempt_id": "orca-probe-attempt-01",
+        "dependency_digest": {},
+        "driver": "orca",
+        "external_refs": {
+          "dispatch_id": "ctx_1f77dfcfe014",
+          "run_id": "run_8d32f376eb59",
+          "task_id": "task_e4b93d9c8b6d",
+          "tier": "supervised"
+        },
+        "receipt_id": "receipt-d1a162a624ebeac48403efcab61105985bfd0adf906f3e61b3a0b5ab1536b724",
+        "receipt_path": "inline:orca-live.json",
+        "report": {
+          "attempt_id": "orca-probe-attempt-01",
+          "checks_run": [],
+          "evidence_refs": [],
+          "external_refs": {
+            "dispatch_id": "ctx_1f77dfcfe014",
+            "message_id": "msg_b933f048a721",
+            "orca_dispatch_id": "ctx_1f77dfcfe014",
+            "orca_run_id": "run_8d32f376eb59",
+            "orca_task_id": "task_e4b93d9c8b6d",
+            "provider": "orca",
+            "provider_outcome": "succeeded",
+            "task_id": "task_e4b93d9c8b6d"
+          },
+          "files_changed": [],
+          "outcome": "reported",
+          "questions": [],
+          "summary": "I read only the first heading of AGENTS.md. The coordinator answered yes when asked whether to continue. Nothing remains, and no files were modified.",
+          "task_id": "ORCA-PROBE-01"
+        },
+        "status": "reported",
+        "task": {
+          "acceptance": "Read only the first heading of AGENTS.md. Ask the coordinator whether to continue with option yes or no, wait for the answer, then report worker_done with outcome succeeded and no modified files. Do not edit any file.",
+          "check": "/home/linuxbrew/.linuxbrew/opt/python@3.14/bin/python3.14 -c \"from pathlib import Path; assert Path('AGENTS.md').is_file()\"",
+          "checked": false,
+          "context": "This is a read-only live transport probe. Do not modify repository files.",
+          "depends": [],
+          "id": "ORCA-PROBE-01",
+          "isolation": "auto",
+          "mode": "read",
+          "paths": [
+            "AGENTS.md"
+          ],
+          "source_line": 0,
+          "title": "Read the repository instructions and ask one bounded question",
+          "visual": [],
+          "visual_scope": []
+        },
+        "task_id": "ORCA-PROBE-01",
+        "tier": "supervised",
+        "worker": "codex"
+      },
+      "orca-probe-attempt-02": {
+        "attempt_id": "orca-probe-attempt-02",
+        "dependency_digest": {},
+        "driver": "orca",
+        "external_refs": {
+          "dispatch_id": "ctx_75379cdf2839",
+          "run_id": "run_8d32f376eb59",
+          "task_id": "task_112146dedc6f",
+          "tier": "supervised"
+        },
+        "receipt_id": "receipt-f633b65992c4e587dcd401e662af724229cce3b117996560396817f6b82496fb",
+        "receipt_path": "inline:orca-live.json",
+        "report": {
+          "attempt_id": "orca-probe-attempt-02",
+          "checks_run": [],
+          "evidence_refs": [],
+          "external_refs": {
+            "dispatch_id": "ctx_75379cdf2839",
+            "message_id": "msg_24aae0468a00",
+            "orca_dispatch_id": "ctx_75379cdf2839",
+            "orca_run_id": "run_8d32f376eb59",
+            "orca_task_id": "task_112146dedc6f",
+            "provider": "orca",
+            "provider_outcome": "succeeded",
+            "task_id": "task_112146dedc6f"
+          },
+          "files_changed": [],
+          "outcome": "reported",
+          "questions": [],
+          "summary": "Confirmed README.md exists in the repository root. Made no edits and modified no files. Nothing remains for this task.",
+          "task_id": "ORCA-PROBE-02"
+        },
+        "status": "reported",
+        "task": {
+          "acceptance": "Confirm README.md exists, make no edits, and report worker_done with outcome succeeded and no modified files.",
+          "check": "/home/linuxbrew/.linuxbrew/opt/python@3.14/bin/python3.14 -c \"from pathlib import Path; assert Path('README.md').is_file()\"",
+          "checked": false,
+          "context": "This task must not start until the first task has a local pass grade.",
+          "depends": [
+            "ORCA-PROBE-01"
+          ],
+          "id": "ORCA-PROBE-02",
+          "isolation": "auto",
+          "mode": "read",
+          "paths": [
+            "README.md"
+          ],
+          "source_line": 0,
+          "title": "Read the dependent repository marker",
+          "visual": [],
+          "visual_scope": []
+        },
+        "task_id": "ORCA-PROBE-02",
+        "tier": "supervised",
+        "worker": "codex"
+      }
+    },
+    "base_commit": "919a231b0059b478d7bcba135db84a162b8011df",
+    "change": "portable-agent-graph-orchestration",
+    "cleanup": {
+      "cleanup-orca-probe-attempt-01": {
+        "cleanup_id": "cleanup-orca-probe-attempt-01",
+        "kind": "terminal",
+        "owner": "orca-probe-attempt-01",
+        "receipt": {
+          "degradation": null,
+          "external_refs": {
+            "dispatch_id": "ctx_1f77dfcfe014",
+            "tier": "supervised"
+          },
+          "local_ids": {},
+          "operation": "release",
+          "raw": {
+            "_meta": {
+              "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+            },
+            "id": "f543b74c-0f4c-41f6-bbb4-f79cf868a8c3",
+            "ok": true,
+            "result": {
+              "archive": {
+                "source": "transcript",
+                "status": "captured"
+              },
+              "dispatchId": "ctx_1f77dfcfe014",
+              "mutation": {
+                "replayed": false,
+                "requestId": "b582020a-172c-4d49-a2ba-deb633fc4623"
+              },
+              "processAction": "closed_agent_terminal",
+              "state": "released"
+            }
+          },
+          "status": "released"
+        },
+        "status": "done",
+        "target": "ctx_1f77dfcfe014"
+      },
+      "cleanup-orca-probe-attempt-02": {
+        "cleanup_id": "cleanup-orca-probe-attempt-02",
+        "kind": "terminal",
+        "owner": "orca-probe-attempt-02",
+        "receipt": {
+          "degradation": null,
+          "external_refs": {
+            "dispatch_id": "ctx_75379cdf2839",
+            "tier": "supervised"
+          },
+          "local_ids": {},
+          "operation": "release",
+          "raw": {
+            "_meta": {
+              "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+            },
+            "id": "0c639e81-38ff-42a9-aa68-cc209cc13b18",
+            "ok": true,
+            "result": {
+              "archive": {
+                "source": "transcript",
+                "status": "captured"
+              },
+              "dispatchId": "ctx_75379cdf2839",
+              "mutation": {
+                "replayed": false,
+                "requestId": "cd949389-4484-468a-af9d-3f320f8c905d"
+              },
+              "processAction": "closed_agent_terminal",
+              "state": "released"
+            }
+          },
+          "status": "released"
+        },
+        "status": "done",
+        "target": "ctx_75379cdf2839"
+      }
+    },
+    "coordinator": {
+      "generation": 2,
+      "id": "orca-terminal:term_fadda3da-34ef-4bc1-b4ae-0785a2d4b727"
+    },
+    "degradations": [],
+    "dirty_paths": [
+      ".claude",
+      "AGENTS.md",
+      "README.md",
+      "commands/impl.md",
+      "commands/spec.md",
+      "openspec",
+      "research/2026-08-20-agent-orchestration-harness.md",
+      "scripts/tests/test_harness_contracts.py",
+      "scripts/tests/test_installers.py",
+      "setup.ps1",
+      "setup.sh",
+      "skills/agent-graph",
+      "skills/frontend-visual-validation/SKILL.md",
+      "skills/impl/SKILL.md",
+      "skills/impl/references/impl-state.schema.json",
+      "skills/impl/references/visual-evidence.example.json",
+      "skills/impl/scripts/impl_state.py",
+      "skills/impl/scripts/learning.py",
+      "skills/impl/scripts/runtime_config.py",
+      "skills/impl/scripts/visual_evidence.py",
+      "skills/impl/tests/test_impl_state.py",
+      "skills/impl/tests/test_learning.py",
+      "skills/impl/tests/test_runtime_config.py",
+      "skills/research/SKILL.md",
+      "skills/spec/SKILL.md"
+    ],
+    "driver": "orca",
+    "driver_reservation": null,
+    "last_sequence": 21,
+    "outcome": "pass",
+    "questions": {
+      "msg_67a6f4b644be": {
+        "answer": "yes",
+        "attempt_id": "orca-probe-attempt-01",
+        "body": "The first heading reads: Shared instructions for any coding agent (Claude Code, Codex, OpenCode, Gemini CLI, Copilot CLI) running on this machine. Continue?",
+        "question_id": "msg_67a6f4b644be",
+        "receipt_path": "inline:orca-live.json",
+        "status": "answered"
+      }
+    },
+    "run_id": "orca-probe-20260820T172340Z-1018286",
+    "schema_version": 1,
+    "status": "complete",
+    "tasks": {
+      "ORCA-PROBE-01": {
+        "attempt_ids": [
+          "orca-probe-attempt-01"
+        ],
+        "check": {
+          "artifact": "inline:orca-live.json",
+          "attempts": 1,
+          "command": "/home/linuxbrew/.linuxbrew/opt/python@3.14/bin/python3.14 -c \"from pathlib import Path; assert Path('AGENTS.md').is_file()\"",
+          "duration_ms": 0,
+          "exit_code": 0,
+          "status": "passed",
+          "task_id": "ORCA-PROBE-01",
+          "total_duration_ms": 0
+        },
+        "contract": {
+          "acceptance": "Read only the first heading of AGENTS.md. Ask the coordinator whether to continue with option yes or no, wait for the answer, then report worker_done with outcome succeeded and no modified files. Do not edit any file.",
+          "check": "/home/linuxbrew/.linuxbrew/opt/python@3.14/bin/python3.14 -c \"from pathlib import Path; assert Path('AGENTS.md').is_file()\"",
+          "checked": false,
+          "context": "This is a read-only live transport probe. Do not modify repository files.",
+          "depends": [],
+          "id": "ORCA-PROBE-01",
+          "isolation": "auto",
+          "mode": "read",
+          "paths": [
+            "AGENTS.md"
+          ],
+          "source_line": 0,
+          "title": "Read the repository instructions and ask one bounded question",
+          "visual": [],
+          "visual_scope": []
+        },
+        "evidence_refs": [
+          "file:openspec/changes/portable-agent-graph-orchestration/evidence/orca-live.json"
+        ],
+        "grade": "pass",
+        "hypotheses": [],
+        "note": "The read-only worker report and local check passed.",
+        "status": "pass"
+      },
+      "ORCA-PROBE-02": {
+        "attempt_ids": [
+          "orca-probe-attempt-02"
+        ],
+        "check": {
+          "artifact": "inline:orca-live.json",
+          "attempts": 1,
+          "command": "/home/linuxbrew/.linuxbrew/opt/python@3.14/bin/python3.14 -c \"from pathlib import Path; assert Path('README.md').is_file()\"",
+          "duration_ms": 0,
+          "exit_code": 0,
+          "status": "passed",
+          "task_id": "ORCA-PROBE-02",
+          "total_duration_ms": 0
+        },
+        "contract": {
+          "acceptance": "Confirm README.md exists, make no edits, and report worker_done with outcome succeeded and no modified files.",
+          "check": "/home/linuxbrew/.linuxbrew/opt/python@3.14/bin/python3.14 -c \"from pathlib import Path; assert Path('README.md').is_file()\"",
+          "checked": false,
+          "context": "This task must not start until the first task has a local pass grade.",
+          "depends": [
+            "ORCA-PROBE-01"
+          ],
+          "id": "ORCA-PROBE-02",
+          "isolation": "auto",
+          "mode": "read",
+          "paths": [
+            "README.md"
+          ],
+          "source_line": 0,
+          "title": "Read the dependent repository marker",
+          "visual": [],
+          "visual_scope": []
+        },
+        "evidence_refs": [
+          "file:openspec/changes/portable-agent-graph-orchestration/evidence/orca-live.json"
+        ],
+        "grade": "pass",
+        "hypotheses": [],
+        "note": "The read-only worker report and local check passed.",
+        "status": "pass"
+      }
+    }
+  },
+  "mocked": false,
+  "observed_at": "2026-08-20T17:26:07.308411Z",
+  "probe": "real-orca-read-only",
+  "question_reply": [
+    {
+      "delivery_id": "delivery_db33ef14f52a",
+      "question": {
+        "body": "The first heading reads: Shared instructions for any coding agent (Claude Code, Codex, OpenCode, Gemini CLI, Copilot CLI) running on this machine. Continue?",
+        "created_at": "2026-08-20T17:24:51Z",
+        "delivered_at": null,
+        "delivery_contract": "current_delivery",
+        "from_handle": "dispatch:ctx_1f77dfcfe014",
+        "id": "msg_67a6f4b644be",
+        "payload": "{\"taskId\":\"task_e4b93d9c8b6d\",\"dispatchId\":\"ctx_1f77dfcfe014\",\"question\":\"The first heading reads: Shared instructions for any coding agent (Claude Code, Codex, OpenCode, Gemini CLI, Copilot CLI) running on this machine. Continue?\",\"options\":[\"yes\",\"no\"]}",
+        "priority": "normal",
+        "read": 0,
+        "run_id": "run_8d32f376eb59",
+        "sender_pane_key": null,
+        "sequence": 20,
+        "subject": "Question",
+        "thread_id": "msg_67a6f4b644be",
+        "to_handle": "run:run_8d32f376eb59",
+        "type": "question"
+      },
+      "reply": {
+        "degradation": null,
+        "external_refs": {
+          "dispatch_id": "ctx_1f77dfcfe014",
+          "run_id": "run_8d32f376eb59"
+        },
+        "local_ids": {},
+        "operation": "send",
+        "raw": {
+          "_meta": {
+            "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+          },
+          "id": "9dfbd4fe-d38e-45f1-bae2-3319d951c02b",
+          "ok": true,
+          "result": {
+            "duplicate": false,
+            "message": {
+              "body": "yes",
+              "created_at": "2026-08-20T17:24:52Z",
+              "delivered_at": null,
+              "delivery_contract": "current_delivery",
+              "from_handle": "run:run_8d32f376eb59",
+              "id": "msg_74bd41c93bfe",
+              "payload": null,
+              "priority": "normal",
+              "read": 1,
+              "run_id": "run_8d32f376eb59",
+              "sender_pane_key": null,
+              "sequence": 21,
+              "subject": "Re: Question",
+              "thread_id": "msg_67a6f4b644be",
+              "to_handle": "dispatch:ctx_1f77dfcfe014",
+              "type": "status"
+            },
+            "mutation": {
+              "replayed": false,
+              "requestId": "f049fd22-85dc-41b8-8228-7d661a7bf230"
+            },
+            "question": {
+              "answer_body": "yes",
+              "answer_message_id": "msg_74bd41c93bfe",
+              "answered_at": "2026-08-20T17:24:52Z",
+              "answered_by_generation": 1,
+              "asker_handle": "term_2aa98fdb-c822-4b7b-997e-8ba41dc2186c",
+              "closed_at": null,
+              "created_at": "2026-08-20T17:24:51Z",
+              "dispatch_id": "ctx_1f77dfcfe014",
+              "message_id": "msg_67a6f4b644be",
+              "run_id": "run_8d32f376eb59",
+              "status": "answered"
+            }
+          }
+        },
+        "status": "sent"
+      }
+    },
+    {
+      "ack": {
+        "_meta": {
+          "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+        },
+        "id": "7c872228-b4ad-458e-8435-277a888df0de",
+        "ok": true,
+        "result": {
+          "acknowledged": "delivery_db33ef14f52a",
+          "cancelled": false,
+          "connectionLost": false,
+          "count": 0,
+          "deliveryId": null,
+          "messages": [],
+          "mutation": {
+            "replayed": false,
+            "requestId": "e1d73a3e-e571-49d9-b972-7d51333d8e11"
+          },
+          "runId": "run_8d32f376eb59",
+          "timedOut": false
+        }
+      },
+      "delivery_id": "delivery_db33ef14f52a"
+    },
+    {
+      "ack": {
+        "_meta": {
+          "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+        },
+        "id": "7b3c1a57-efbf-4f35-99bb-07d0f92d651c",
+        "ok": true,
+        "result": {
+          "acknowledged": "delivery_d24cee6ddca6",
+          "cancelled": false,
+          "connectionLost": false,
+          "count": 0,
+          "deliveryId": null,
+          "messages": [],
+          "mutation": {
+            "replayed": false,
+            "requestId": "ac6f20be-9d76-4bdf-bc87-0f6e76c527f2"
+          },
+          "runId": "run_8d32f376eb59",
+          "timedOut": false
+        }
+      },
+      "delivery_id": "delivery_d24cee6ddca6"
+    },
+    {
+      "ack": {
+        "_meta": {
+          "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+        },
+        "id": "2dd705e3-286a-40f8-93b5-440fc151f476",
+        "ok": true,
+        "result": {
+          "acknowledged": "delivery_7c632586d1e7",
+          "cancelled": false,
+          "connectionLost": false,
+          "count": 0,
+          "deliveryId": null,
+          "messages": [],
+          "mutation": {
+            "replayed": false,
+            "requestId": "ce260d3c-8ee0-4bd9-b7b2-f130b0708deb"
+          },
+          "runId": "run_8d32f376eb59",
+          "timedOut": false
+        }
+      },
+      "delivery_id": "delivery_7c632586d1e7"
+    }
+  ],
+  "raw_receipts": {
+    "coordinator": {
+      "coordinator_cleanup": {
+        "already_gone": false,
+        "close": {
+          "_meta": {
+            "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+          },
+          "id": "c36e4411-6a1f-4707-97f5-27d3c400d552",
+          "ok": true,
+          "result": {
+            "close": {
+              "closeMode": "tab",
+              "handle": "term_fadda3da-34ef-4bc1-b4ae-0785a2d4b727",
+              "ptyKilled": false,
+              "tabId": "ba81b602-0291-4d20-9046-3565d6a32610"
+            }
+          }
+        },
+        "show": {
+          "_meta": {
+            "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+          },
+          "id": "e5fd88ed-688e-4014-8d25-06d7942404ca",
+          "ok": true,
+          "result": {
+            "terminal": {
+              "branch": "refs/heads/main",
+              "connected": true,
+              "handle": "term_fadda3da-34ef-4bc1-b4ae-0785a2d4b727",
+              "incarnationId": "2426e442-a67a-4dd7-a724-b471506e07f3",
+              "lastOutputAt": 1787246762151,
+              "leafId": "54cf171e-74d3-49d5-80cc-7890dfdd2856",
+              "orphaned": false,
+              "paneRuntimeId": -1,
+              "preview": "\u2500\u2500\n\u2022 Probe completed successfully with exit code 0.  \u203a Ask Codex to do anything   gpt-5.6-sol high \u00b7 ~/Documents/my-llm-kit\nrun_id: run_8d32f376eb59\n\u2500 Worked for 2m 15s \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+              "ptyId": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit@@2f030ba4",
+              "rendererGraphEpoch": 2,
+              "tabId": "ba81b602-0291-4d20-9046-3565d6a32610",
+              "title": "my-llm-kit",
+              "worktreeId": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit",
+              "worktreePath": "/home/badmuriss/Documents/my-llm-kit",
+              "writable": true
+            }
+          }
+        }
+      },
+      "detect": {
+        "degradation": null,
+        "external_refs": {
+          "capabilities": [
+            "runtime.status.compat.v1",
+            "runtime.environments.v1",
+            "remote-runtime.shared-control.v1",
+            "orchestration.federation.v1",
+            "orchestration.federation-control-mail.v1",
+            "orchestration.federation-lifecycle-settlement.v1",
+            "orchestration.worker-launch-preferences.v1",
+            "orchestration.contract.v1",
+            "browser.screencast.v1",
+            "terminal.binary-stream.v1",
+            "terminal.multiplex.v1",
+            "workspace-ports.v1",
+            "mobile.tasks.v1",
+            "project-host-setup.v1",
+            "task-source-context.v1",
+            "workspace-run-context.v1",
+            "worktree.linked-work-item-context.v1",
+            "folder-workspace.path-status.v1",
+            "linear.issue-attribute-filter.v1",
+            "aiVault.v1",
+            "aiVault.session-titles.v1",
+            "terminal.query-reply-input.v1",
+            "terminal.paired-parking.v1",
+            "terminal.quick-commands.v1",
+            "worktree.create-idempotency.v1",
+            "terminal.create-idempotency.v2",
+            "session-tabs.close-intent.v1",
+            "agent-session.session-boundary.v1",
+            "updater.remote-control.v1",
+            "agent-session.host-authority.v1",
+            "agent-session.omp-resume-path.v1",
+            "files.mutation-ownership.v1",
+            "accounts.import-host-credentials.v1",
+            "accounts.codex-reset-credit.v1",
+            "browser.certificate-trust.v1"
+          ],
+          "runtime_id": "9a5ebd87-1db9-49ac-9b89-78654a336595",
+          "worktree_id": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit"
+        },
+        "local_ids": {},
+        "operation": "detect",
+        "raw": {
+          "status": {
+            "_meta": {
+              "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+            },
+            "id": "local-status",
+            "ok": true,
+            "result": {
+              "app": {
+                "desktopWindowStatus": "available",
+                "pid": 3874296,
+                "running": true
+              },
+              "graph": {
+                "state": "ready"
+              },
+              "runtime": {
+                "appVersion": "1.4.183",
+                "capabilities": [
+                  "runtime.status.compat.v1",
+                  "runtime.environments.v1",
+                  "remote-runtime.shared-control.v1",
+                  "orchestration.federation.v1",
+                  "orchestration.federation-control-mail.v1",
+                  "orchestration.federation-lifecycle-settlement.v1",
+                  "orchestration.worker-launch-preferences.v1",
+                  "orchestration.contract.v1",
+                  "browser.screencast.v1",
+                  "terminal.binary-stream.v1",
+                  "terminal.multiplex.v1",
+                  "workspace-ports.v1",
+                  "mobile.tasks.v1",
+                  "project-host-setup.v1",
+                  "task-source-context.v1",
+                  "workspace-run-context.v1",
+                  "worktree.linked-work-item-context.v1",
+                  "folder-workspace.path-status.v1",
+                  "linear.issue-attribute-filter.v1",
+                  "aiVault.v1",
+                  "aiVault.session-titles.v1",
+                  "terminal.query-reply-input.v1",
+                  "terminal.paired-parking.v1",
+                  "terminal.quick-commands.v1",
+                  "worktree.create-idempotency.v1",
+                  "terminal.create-idempotency.v2",
+                  "session-tabs.close-intent.v1",
+                  "agent-session.session-boundary.v1",
+                  "updater.remote-control.v1",
+                  "agent-session.host-authority.v1",
+                  "agent-session.omp-resume-path.v1",
+                  "files.mutation-ownership.v1",
+                  "accounts.import-host-credentials.v1",
+                  "accounts.codex-reset-credit.v1",
+                  "browser.certificate-trust.v1"
+                ],
+                "reachable": true,
+                "remoteUpdateSupport": {
+                  "automatic": true,
+                  "installMode": "interactive",
+                  "reason": "available"
+                },
+                "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595",
+                "state": "ready"
+              }
+            }
+          },
+          "terminal_list": {
+            "_meta": {
+              "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+            },
+            "id": "35e480db-817d-439f-bf40-c4c4c996e10e",
+            "ok": true,
+            "result": {
+              "terminals": [
+                {
+                  "branch": "",
+                  "connected": true,
+                  "handle": "term_9f8021c4-d6fd-4486-9199-8ec330622d4b",
+                  "incarnationId": "be6716b3-a187-4160-b0a1-37fe823eb4c7",
+                  "lastOutputAt": 1787246620552,
+                  "leafId": "006de077-0199-41ed-a702-611c36073087",
+                  "orphaned": false,
+                  "preview": "orkWorki\u2022 \u00b7 1 background terminal running \u00b7 /ps to view \u00b7 /stop to closeWorkin\u2022Working\u2022WorkingWorking\u2022Working\u2022orking\u2022rking\u2022kinging\u2022ng8gW9Wo\u2022Wor\u2022Work\u2022WorkiWorkin\u2022Working\u2022Working\u2022WorkingWorking\u2022orking\u2022rking\u2022king\u2022ingng30gW1Wo\u2022Wor\u2022WorkWorki\u2022Workin\u2022Working\u2022Working\u2022WorkingWorking\u2022orking\u2022rking\u2022kinging\u2022ng2g",
+                  "ptyId": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit@@99f9c508",
+                  "tabId": "789f120b-2663-4d15-9187-36e183d020ca",
+                  "title": "\u2807 my-llm-kit",
+                  "worktreeId": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit",
+                  "worktreePath": "/home/badmuriss/Documents/my-llm-kit",
+                  "writable": true
+                }
+              ],
+              "topologyRevisions": {
+                "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit": 53
+              },
+              "totalCount": 1,
+              "truncated": false
+            }
+          },
+          "worktree": {
+            "_meta": {
+              "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+            },
+            "id": "13db15b0-8b81-463c-b4b2-26117fe32a88",
+            "ok": true,
+            "result": {
+              "worktree": {
+                "branch": "refs/heads/main",
+                "childWorktreeIds": [],
+                "comment": "",
+                "displayName": "main",
+                "git": {
+                  "branch": "refs/heads/main",
+                  "head": "919a231b0059b478d7bcba135db84a162b8011df",
+                  "isBare": false,
+                  "isMainWorktree": true,
+                  "path": "/home/badmuriss/Documents/my-llm-kit"
+                },
+                "head": "919a231b0059b478d7bcba135db84a162b8011df",
+                "hostId": "local",
+                "id": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit",
+                "instanceId": "62e80120-c7af-421b-8363-e6b0d2154260",
+                "isArchived": false,
+                "isBare": false,
+                "isMainWorktree": true,
+                "isPinned": false,
+                "isUnread": false,
+                "lastActivityAt": 1787245049154,
+                "lineage": null,
+                "linkedAzureDevOpsPR": null,
+                "linkedBitbucketPR": null,
+                "linkedGitLabIssue": null,
+                "linkedGitLabMR": null,
+                "linkedGiteaPR": null,
+                "linkedIssue": null,
+                "linkedLinearIssue": null,
+                "linkedLinearIssueOrganizationUrlKey": null,
+                "linkedLinearIssueWorkspaceId": null,
+                "linkedPR": null,
+                "linkedTaskSourceContext": null,
+                "linkedWorkItem": null,
+                "parentWorktreeId": null,
+                "path": "/home/badmuriss/Documents/my-llm-kit",
+                "projectHostSetupId": "fb2a9411-f3cb-46d4-94f7-067f40719b71",
+                "projectId": "github:badmuriss/my-llm-kit",
+                "repoId": "fb2a9411-f3cb-46d4-94f7-067f40719b71",
+                "sortOrder": 1787246604341,
+                "workspaceStatus": "in-progress"
+              }
+            }
+          },
+          "worktree_show": {
+            "_meta": {
+              "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+            },
+            "id": "a8e236c3-e05d-49d5-bb00-ccae21d9c62f",
+            "ok": true,
+            "result": {
+              "worktree": {
+                "branch": "refs/heads/main",
+                "childWorktreeIds": [],
+                "comment": "",
+                "displayName": "main",
+                "git": {
+                  "branch": "refs/heads/main",
+                  "head": "919a231b0059b478d7bcba135db84a162b8011df",
+                  "isBare": false,
+                  "isMainWorktree": true,
+                  "path": "/home/badmuriss/Documents/my-llm-kit"
+                },
+                "head": "919a231b0059b478d7bcba135db84a162b8011df",
+                "hostId": "local",
+                "id": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit",
+                "instanceId": "62e80120-c7af-421b-8363-e6b0d2154260",
+                "isArchived": false,
+                "isBare": false,
+                "isMainWorktree": true,
+                "isPinned": false,
+                "isUnread": false,
+                "lastActivityAt": 1787245049154,
+                "lineage": null,
+                "linkedAzureDevOpsPR": null,
+                "linkedBitbucketPR": null,
+                "linkedGitLabIssue": null,
+                "linkedGitLabMR": null,
+                "linkedGiteaPR": null,
+                "linkedIssue": null,
+                "linkedLinearIssue": null,
+                "linkedLinearIssueOrganizationUrlKey": null,
+                "linkedLinearIssueWorkspaceId": null,
+                "linkedPR": null,
+                "linkedTaskSourceContext": null,
+                "linkedWorkItem": null,
+                "parentWorktreeId": null,
+                "path": "/home/badmuriss/Documents/my-llm-kit",
+                "projectHostSetupId": "fb2a9411-f3cb-46d4-94f7-067f40719b71",
+                "projectId": "github:badmuriss/my-llm-kit",
+                "repoId": "fb2a9411-f3cb-46d4-94f7-067f40719b71",
+                "sortOrder": 1787246604341,
+                "workspaceStatus": "in-progress"
+              }
+            }
+          }
+        },
+        "status": "available"
+      },
+      "prompt_delivery": {
+        "_meta": {
+          "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+        },
+        "id": "88c7e343-5a73-4938-871f-a778dec0d6c4",
+        "ok": true,
+        "result": {
+          "send": {
+            "accepted": true,
+            "bytesWritten": 534,
+            "handle": "term_fadda3da-34ef-4bc1-b4ae-0785a2d4b727"
+          }
+        }
+      },
+      "recovery": [
+        {
+          "worker_stop": {
+            "_meta": {
+              "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+            },
+            "id": "ac7a0aba-283d-4ab5-a5fa-8b9817782daf",
+            "ok": true,
+            "result": {
+              "alreadySettled": true,
+              "dispatchId": "ctx_75379cdf2839",
+              "mutation": {
+                "replayed": false,
+                "requestId": "e9f7a47a-b7c3-444e-8890-680b249482af"
+              },
+              "processAction": "none",
+              "state": "succeeded"
+            }
+          }
+        },
+        {
+          "worker_release": {
+            "_meta": {
+              "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+            },
+            "id": "f78c794a-4a70-416c-8243-5a0444cba9c9",
+            "ok": true,
+            "result": {
+              "archive": {
+                "source": "transcript",
+                "status": "captured"
+              },
+              "dispatchId": "ctx_75379cdf2839",
+              "mutation": {
+                "replayed": false,
+                "requestId": "4df554b3-93a5-4666-84fa-6db6b16e263e"
+              },
+              "processAction": "none",
+              "state": "already_released"
+            }
+          }
+        }
+      ],
+      "terminal_create": {
+        "_meta": {
+          "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+        },
+        "id": "abe15a37-b935-4e8c-bf49-bacf1cd66fed",
+        "ok": true,
+        "result": {
+          "terminal": {
+            "executionHostId": "local",
+            "handle": "term_fadda3da-34ef-4bc1-b4ae-0785a2d4b727",
+            "hostPlatform": "linux",
+            "surface": "visible",
+            "tabId": "ba81b602-0291-4d20-9046-3565d6a32610",
+            "title": "agent-graph-probe-coordinator-orca-probe-20260820T172340Z-1018286",
+            "worktreeId": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit"
+          }
+        }
+      },
+      "terminal_show_after_create": {
+        "_meta": {
+          "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+        },
+        "id": "31445c83-673e-4df4-89c3-cf4eae947c0b",
+        "ok": true,
+        "result": {
+          "terminal": {
+            "branch": "refs/heads/main",
+            "connected": true,
+            "handle": "term_fadda3da-34ef-4bc1-b4ae-0785a2d4b727",
+            "incarnationId": "2426e442-a67a-4dd7-a724-b471506e07f3",
+            "lastOutputAt": 1787246623418,
+            "leafId": "54cf171e-74d3-49d5-80cc-7890dfdd2856",
+            "orphaned": false,
+            "paneRuntimeId": 1,
+            "preview": "                                     \u2502\u2502 model:       loading   /model to change \u2502\u2502 directory:   ~/Documents/my-llm-kit     \u2502\u2502 permissions: YOLO mode                  \u2502\u2570\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u256f  \u203a Ask Codex to do anything   ? for shortcutsgpt-5.6-sol default \u00b7 ~/Documents/my-llm-kit",
+            "ptyId": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit@@2f030ba4",
+            "rendererGraphEpoch": 2,
+            "tabId": "ba81b602-0291-4d20-9046-3565d6a32610",
+            "title": "my-llm-kit",
+            "worktreeId": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit",
+            "worktreePath": "/home/badmuriss/Documents/my-llm-kit",
+            "writable": true
+          }
+        }
+      },
+      "terminal_wait": {
+        "_meta": {
+          "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+        },
+        "id": "3603bff5-3466-4008-aee5-5ad7e495d16e",
+        "ok": true,
+        "result": {
+          "wait": {
+            "condition": "tui-idle",
+            "exitCode": null,
+            "handle": "term_fadda3da-34ef-4bc1-b4ae-0785a2d4b727",
+            "satisfied": true,
+            "status": "running"
+          }
+        }
+      }
+    },
+    "dispatches": [
+      {
+        "_meta": {
+          "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+        },
+        "id": "aa8324af-f75c-4a95-8224-a164f64339e2",
+        "ok": true,
+        "result": {
+          "dispatch": {
+            "assignee_handle": "term_2aa98fdb-c822-4b7b-997e-8ba41dc2186c",
+            "assignee_pane_key": "1678b14f-922f-463c-a40c-5d519f58c2ce:9c57125c-e3f9-4af8-a052-c04342017ae2",
+            "capability_hash": "2686705e93a29f17f9a11ad9f94d2d2817e8a0f3ea093c14203adeb027d77028",
+            "capability_revoked_at": "2026-08-20 17:25:00",
+            "completed_at": "2026-08-20 17:25:00",
+            "contract_version": 1,
+            "created_at": "2026-08-20 17:24:05",
+            "dispatched_at": "2026-08-20 17:24:05",
+            "failure_count": 0,
+            "id": "ctx_1f77dfcfe014",
+            "last_failure": null,
+            "last_heartbeat_at": null,
+            "launch_token_hash": "23273df79af417b86cd91881e87572c924faa2d2d7f6d07ae2482bba03ee4f73",
+            "process_incarnation": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit@@f92157bf:3749b965-0548-4865-9526-1fc91da95ec1",
+            "run_id": "run_8d32f376eb59",
+            "status": "completed",
+            "task_id": "task_e4b93d9c8b6d"
+          }
+        }
+      },
+      {
+        "_meta": {
+          "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+        },
+        "id": "1c6acf2a-0470-4eee-9b9b-2667b05bcbe2",
+        "ok": true,
+        "result": {
+          "dispatch": {
+            "assignee_handle": "term_46705950-7c98-4197-82b3-a8e4411daf8b",
+            "assignee_pane_key": "ca8bf276-0b39-4347-8370-59e5a883bc0c:a18dfad5-d809-448a-968a-609a6433b6a8",
+            "capability_hash": "3cd311bc90c6c089dff9458320c2c64bf058c0b9e86cedae9412eb6634a30307",
+            "capability_revoked_at": "2026-08-20 17:25:54",
+            "completed_at": "2026-08-20 17:25:54",
+            "contract_version": 1,
+            "created_at": "2026-08-20 17:25:08",
+            "dispatched_at": "2026-08-20 17:25:08",
+            "failure_count": 0,
+            "id": "ctx_75379cdf2839",
+            "last_failure": null,
+            "last_heartbeat_at": null,
+            "launch_token_hash": "2431a462d1e85371cb6decaf4f4752aaa6f9fecc0833de626869e0f45dcfcfbe",
+            "process_incarnation": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit@@a5979769:eb94ba3e-3516-4d51-a6a0-36247b7c6dce",
+            "run_id": "run_8d32f376eb59",
+            "status": "completed",
+            "task_id": "task_112146dedc6f"
+          }
+        }
+      }
+    ],
+    "driver": {
+      "dependency_after_root": {
+        "_meta": {
+          "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+        },
+        "id": "0d00c15a-f784-42eb-9b98-fa2173d52e22",
+        "ok": true,
+        "result": {
+          "count": 1,
+          "legacyReadOnly": false,
+          "runId": "run_8d32f376eb59",
+          "tasks": [
+            {
+              "completed_at": null,
+              "created_at": "2026-08-20 17:24:01",
+              "created_by_pane_key": "ba81b602-0291-4d20-9046-3565d6a32610:54cf171e-74d3-49d5-80cc-7890dfdd2856",
+              "created_by_process_incarnation": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit@@2f030ba4:2426e442-a67a-4dd7-a724-b471506e07f3",
+              "created_by_run_generation": 1,
+              "created_by_terminal_handle": "term_fadda3da-34ef-4bc1-b4ae-0785a2d4b727",
+              "deps": "[\"task_e4b93d9c8b6d\"]",
+              "display_name": "Confirm README.md exists, make no edits, and report worker_done with outcome...",
+              "id": "task_112146dedc6f",
+              "parent_id": null,
+              "result": null,
+              "run_id": "run_8d32f376eb59",
+              "spec": "Confirm README.md exists, make no edits, and report worker_done with outcome succeeded and no modified files.",
+              "spec_truncated": false,
+              "status": "ready",
+              "task_title": "Confirm README.md exists, make no edits, and report worker_done with outcome..."
+            }
+          ]
+        }
+      },
+      "dependency_before": {
+        "_meta": {
+          "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+        },
+        "id": "fb125f80-cd3c-4105-ac6c-b1ecc1390152",
+        "ok": true,
+        "result": {
+          "count": 1,
+          "legacyReadOnly": false,
+          "runId": "run_8d32f376eb59",
+          "tasks": [
+            {
+              "completed_at": null,
+              "created_at": "2026-08-20 17:24:00",
+              "created_by_pane_key": "ba81b602-0291-4d20-9046-3565d6a32610:54cf171e-74d3-49d5-80cc-7890dfdd2856",
+              "created_by_process_incarnation": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit@@2f030ba4:2426e442-a67a-4dd7-a724-b471506e07f3",
+              "created_by_run_generation": 1,
+              "created_by_terminal_handle": "term_fadda3da-34ef-4bc1-b4ae-0785a2d4b727",
+              "deps": "[]",
+              "display_name": "Read only the first heading of AGENTS.md. Ask the coordinator whether to cont...",
+              "id": "task_e4b93d9c8b6d",
+              "parent_id": null,
+              "result": null,
+              "run_id": "run_8d32f376eb59",
+              "spec": "Read only the first heading of AGENTS.md. Ask the coordinator whether to continue with option yes or no, wait for the answer, then report worker_done with outc\u2026",
+              "spec_truncated": true,
+              "status": "ready",
+              "task_title": "Read only the first heading of AGENTS.md. Ask the coordinator whether to cont..."
+            }
+          ]
+        }
+      },
+      "detect": {
+        "degradation": null,
+        "external_refs": {
+          "capabilities": [
+            "runtime.status.compat.v1",
+            "runtime.environments.v1",
+            "remote-runtime.shared-control.v1",
+            "orchestration.federation.v1",
+            "orchestration.federation-control-mail.v1",
+            "orchestration.federation-lifecycle-settlement.v1",
+            "orchestration.worker-launch-preferences.v1",
+            "orchestration.contract.v1",
+            "browser.screencast.v1",
+            "terminal.binary-stream.v1",
+            "terminal.multiplex.v1",
+            "workspace-ports.v1",
+            "mobile.tasks.v1",
+            "project-host-setup.v1",
+            "task-source-context.v1",
+            "workspace-run-context.v1",
+            "worktree.linked-work-item-context.v1",
+            "folder-workspace.path-status.v1",
+            "linear.issue-attribute-filter.v1",
+            "aiVault.v1",
+            "aiVault.session-titles.v1",
+            "terminal.query-reply-input.v1",
+            "terminal.paired-parking.v1",
+            "terminal.quick-commands.v1",
+            "worktree.create-idempotency.v1",
+            "terminal.create-idempotency.v2",
+            "session-tabs.close-intent.v1",
+            "agent-session.session-boundary.v1",
+            "updater.remote-control.v1",
+            "agent-session.host-authority.v1",
+            "agent-session.omp-resume-path.v1",
+            "files.mutation-ownership.v1",
+            "accounts.import-host-credentials.v1",
+            "accounts.codex-reset-credit.v1",
+            "browser.certificate-trust.v1"
+          ],
+          "runtime_id": "9a5ebd87-1db9-49ac-9b89-78654a336595",
+          "worktree_id": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit"
+        },
+        "local_ids": {},
+        "operation": "detect",
+        "raw": {
+          "status": {
+            "_meta": {
+              "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+            },
+            "id": "local-status",
+            "ok": true,
+            "result": {
+              "app": {
+                "desktopWindowStatus": "available",
+                "pid": 3874296,
+                "running": true
+              },
+              "graph": {
+                "state": "ready"
+              },
+              "runtime": {
+                "appVersion": "1.4.183",
+                "capabilities": [
+                  "runtime.status.compat.v1",
+                  "runtime.environments.v1",
+                  "remote-runtime.shared-control.v1",
+                  "orchestration.federation.v1",
+                  "orchestration.federation-control-mail.v1",
+                  "orchestration.federation-lifecycle-settlement.v1",
+                  "orchestration.worker-launch-preferences.v1",
+                  "orchestration.contract.v1",
+                  "browser.screencast.v1",
+                  "terminal.binary-stream.v1",
+                  "terminal.multiplex.v1",
+                  "workspace-ports.v1",
+                  "mobile.tasks.v1",
+                  "project-host-setup.v1",
+                  "task-source-context.v1",
+                  "workspace-run-context.v1",
+                  "worktree.linked-work-item-context.v1",
+                  "folder-workspace.path-status.v1",
+                  "linear.issue-attribute-filter.v1",
+                  "aiVault.v1",
+                  "aiVault.session-titles.v1",
+                  "terminal.query-reply-input.v1",
+                  "terminal.paired-parking.v1",
+                  "terminal.quick-commands.v1",
+                  "worktree.create-idempotency.v1",
+                  "terminal.create-idempotency.v2",
+                  "session-tabs.close-intent.v1",
+                  "agent-session.session-boundary.v1",
+                  "updater.remote-control.v1",
+                  "agent-session.host-authority.v1",
+                  "agent-session.omp-resume-path.v1",
+                  "files.mutation-ownership.v1",
+                  "accounts.import-host-credentials.v1",
+                  "accounts.codex-reset-credit.v1",
+                  "browser.certificate-trust.v1"
+                ],
+                "reachable": true,
+                "remoteUpdateSupport": {
+                  "automatic": true,
+                  "installMode": "interactive",
+                  "reason": "available"
+                },
+                "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595",
+                "state": "ready"
+              }
+            }
+          },
+          "terminal_list": {
+            "_meta": {
+              "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+            },
+            "id": "18bcb8aa-b73c-471c-bca6-1484789a2556",
+            "ok": true,
+            "result": {
+              "terminals": [
+                {
+                  "branch": "",
+                  "connected": true,
+                  "handle": "term_9f8021c4-d6fd-4486-9199-8ec330622d4b",
+                  "incarnationId": "be6716b3-a187-4160-b0a1-37fe823eb4c7",
+                  "lastOutputAt": 1787246637963,
+                  "leafId": "006de077-0199-41ed-a702-611c36073087",
+                  "orphaned": false,
+                  "preview": "orkiWorkin\u2022Working\u2022Working\u2022WorkingWorking\u2022orking\u2022rking\u2022king\u2022ingng4gW5Wo\u2022Wor\u2022WorkWorki\u2022Workin\u2022Working\u2022Working\u2022WorkingWorking\u2022orking\u2022rking\u2022kinging\u2022ng6gW7Wo\u2022Wor\u2022WorkWorki\u2022Workin\u2022Working\u2022WorkingWorking\u2022\u2022Workingorking\u2022rking\u2022kinging\u2022ng8gW9Wo\u2022Wor\u2022Work\u2022WorkiWorkin\u2022Working\u2022Working\u2022WorkingWorking\u2022orking\u2022rking",
+                  "ptyId": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit@@99f9c508",
+                  "tabId": "789f120b-2663-4d15-9187-36e183d020ca",
+                  "title": "\u2839 my-llm-kit",
+                  "worktreeId": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit",
+                  "worktreePath": "/home/badmuriss/Documents/my-llm-kit",
+                  "writable": true
+                },
+                {
+                  "branch": "",
+                  "connected": true,
+                  "handle": "term_fadda3da-34ef-4bc1-b4ae-0785a2d4b727",
+                  "incarnationId": "2426e442-a67a-4dd7-a724-b471506e07f3",
+                  "lastOutputAt": 1787246637939,
+                  "leafId": "54cf171e-74d3-49d5-80cc-7890dfdd2856",
+                  "orphaned": false,
+                  "preview": "Wo\u2022Wor\u2022WorkWorki\u2022Workin\u2022Working\u2022Working\u2022WorkingWorking\u20223 \u00b7 1 background terminal running \u00b7 /ps to view \u00b7 /stop to closeorking\u2022rking\u2022king\u2022ingngg4WWo\u2022Wor\u2022WorkWorki\u2022Workin\u2022Working\u2022Working\u2022WorkingWorking5\u2022orking\u2022rking\u2022kinging\u2022ngg6WWo\u2022Wor\u2022WorkWorki\u2022Workin\u2022\u2022WokingWorking\u2022Working7\u2022orking\u2022rking\u2022king\u2022ingngg8",
+                  "ptyId": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit@@2f030ba4",
+                  "tabId": "ba81b602-0291-4d20-9046-3565d6a32610",
+                  "title": "\u2819 my-llm-kit",
+                  "worktreeId": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit",
+                  "worktreePath": "/home/badmuriss/Documents/my-llm-kit",
+                  "writable": true
+                }
+              ],
+              "topologyRevisions": {
+                "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit": 54
+              },
+              "totalCount": 2,
+              "truncated": false
+            }
+          },
+          "worktree": {
+            "_meta": {
+              "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+            },
+            "id": "08e8abd8-fe62-4040-8a85-776d74ed7cd3",
+            "ok": true,
+            "result": {
+              "worktree": {
+                "branch": "refs/heads/main",
+                "childWorktreeIds": [],
+                "comment": "",
+                "displayName": "main",
+                "git": {
+                  "branch": "refs/heads/main",
+                  "head": "919a231b0059b478d7bcba135db84a162b8011df",
+                  "isBare": false,
+                  "isMainWorktree": true,
+                  "path": "/home/badmuriss/Documents/my-llm-kit"
+                },
+                "head": "919a231b0059b478d7bcba135db84a162b8011df",
+                "hostId": "local",
+                "id": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit",
+                "instanceId": "62e80120-c7af-421b-8363-e6b0d2154260",
+                "isArchived": false,
+                "isBare": false,
+                "isMainWorktree": true,
+                "isPinned": false,
+                "isUnread": false,
+                "lastActivityAt": 1787246622197,
+                "lineage": null,
+                "linkedAzureDevOpsPR": null,
+                "linkedBitbucketPR": null,
+                "linkedGitLabIssue": null,
+                "linkedGitLabMR": null,
+                "linkedGiteaPR": null,
+                "linkedIssue": null,
+                "linkedLinearIssue": null,
+                "linkedLinearIssueOrganizationUrlKey": null,
+                "linkedLinearIssueWorkspaceId": null,
+                "linkedPR": null,
+                "linkedTaskSourceContext": null,
+                "linkedWorkItem": null,
+                "parentWorktreeId": null,
+                "path": "/home/badmuriss/Documents/my-llm-kit",
+                "projectHostSetupId": "fb2a9411-f3cb-46d4-94f7-067f40719b71",
+                "projectId": "github:badmuriss/my-llm-kit",
+                "repoId": "fb2a9411-f3cb-46d4-94f7-067f40719b71",
+                "sortOrder": 1787246604341,
+                "workspaceStatus": "in-progress"
+              }
+            }
+          },
+          "worktree_show": {
+            "_meta": {
+              "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+            },
+            "id": "b8c6935d-bcfa-4576-8c36-e45412c0bf28",
+            "ok": true,
+            "result": {
+              "worktree": {
+                "branch": "refs/heads/main",
+                "childWorktreeIds": [],
+                "comment": "",
+                "displayName": "main",
+                "git": {
+                  "branch": "refs/heads/main",
+                  "head": "919a231b0059b478d7bcba135db84a162b8011df",
+                  "isBare": false,
+                  "isMainWorktree": true,
+                  "path": "/home/badmuriss/Documents/my-llm-kit"
+                },
+                "head": "919a231b0059b478d7bcba135db84a162b8011df",
+                "hostId": "local",
+                "id": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit",
+                "instanceId": "62e80120-c7af-421b-8363-e6b0d2154260",
+                "isArchived": false,
+                "isBare": false,
+                "isMainWorktree": true,
+                "isPinned": false,
+                "isUnread": false,
+                "lastActivityAt": 1787246622197,
+                "lineage": null,
+                "linkedAzureDevOpsPR": null,
+                "linkedBitbucketPR": null,
+                "linkedGitLabIssue": null,
+                "linkedGitLabMR": null,
+                "linkedGiteaPR": null,
+                "linkedIssue": null,
+                "linkedLinearIssue": null,
+                "linkedLinearIssueOrganizationUrlKey": null,
+                "linkedLinearIssueWorkspaceId": null,
+                "linkedPR": null,
+                "linkedTaskSourceContext": null,
+                "linkedWorkItem": null,
+                "parentWorktreeId": null,
+                "path": "/home/badmuriss/Documents/my-llm-kit",
+                "projectHostSetupId": "fb2a9411-f3cb-46d4-94f7-067f40719b71",
+                "projectId": "github:badmuriss/my-llm-kit",
+                "repoId": "fb2a9411-f3cb-46d4-94f7-067f40719b71",
+                "sortOrder": 1787246604341,
+                "workspaceStatus": "in-progress"
+              }
+            }
+          }
+        },
+        "status": "available"
+      },
+      "run_current": {
+        "_meta": {
+          "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+        },
+        "id": "03499f25-021e-4e87-8de5-4f3672f32acd",
+        "ok": true,
+        "result": {
+          "run": {
+            "consumer_generation": 1,
+            "coordinator_handle": "term_fadda3da-34ef-4bc1-b4ae-0785a2d4b727",
+            "coordinator_pane_key": "ba81b602-0291-4d20-9046-3565d6a32610:54cf171e-74d3-49d5-80cc-7890dfdd2856",
+            "created_at": "2026-08-20T17:23:59Z",
+            "home_database": "this_database",
+            "id": "run_8d32f376eb59",
+            "legacy": 0,
+            "objective": "Agent Graph bounded read-only Orca live probe",
+            "updated_at": "2026-08-20T17:23:59Z"
+          }
+        }
+      },
+      "start_run": {
+        "degradation": null,
+        "external_refs": {
+          "run_id": "run_8d32f376eb59",
+          "task_ids": {
+            "ORCA-PROBE-01": "task_e4b93d9c8b6d",
+            "ORCA-PROBE-02": "task_112146dedc6f"
+          }
+        },
+        "local_ids": {},
+        "operation": "start_run",
+        "raw": {
+          "run": {
+            "_meta": {
+              "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+            },
+            "id": "053b68d7-d93b-4ad0-92f9-d6fb117fc80d",
+            "ok": true,
+            "result": {
+              "binding": {
+                "consumerGeneration": 1
+              },
+              "mutation": {
+                "replayed": false,
+                "requestId": "92801b35-f5d0-4cb2-9bc9-d9b0aff3c282"
+              },
+              "run": {
+                "consumer_generation": 1,
+                "coordinator_handle": "term_fadda3da-34ef-4bc1-b4ae-0785a2d4b727",
+                "coordinator_pane_key": "ba81b602-0291-4d20-9046-3565d6a32610:54cf171e-74d3-49d5-80cc-7890dfdd2856",
+                "created_at": "2026-08-20T17:23:59Z",
+                "home_database": "this_database",
+                "id": "run_8d32f376eb59",
+                "legacy": 0,
+                "objective": "Agent Graph bounded read-only Orca live probe",
+                "updated_at": "2026-08-20T17:23:59Z"
+              }
+            }
+          },
+          "tasks": [
+            {
+              "_meta": {
+                "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+              },
+              "id": "4672a5c4-aec7-40c2-a770-f1ef050484ec",
+              "ok": true,
+              "result": {
+                "mutation": {
+                  "replayed": false,
+                  "requestId": "50413659-e56a-477f-b80a-d3051aa676d4"
+                },
+                "task": {
+                  "completed_at": null,
+                  "created_at": "2026-08-20 17:24:00",
+                  "created_by_pane_key": "ba81b602-0291-4d20-9046-3565d6a32610:54cf171e-74d3-49d5-80cc-7890dfdd2856",
+                  "created_by_process_incarnation": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit@@2f030ba4:2426e442-a67a-4dd7-a724-b471506e07f3",
+                  "created_by_run_generation": 1,
+                  "created_by_terminal_handle": "term_fadda3da-34ef-4bc1-b4ae-0785a2d4b727",
+                  "deps": "[]",
+                  "display_name": "Read only the first heading of AGENTS.md. Ask the coordinator whether to cont...",
+                  "id": "task_e4b93d9c8b6d",
+                  "parent_id": null,
+                  "result": null,
+                  "run_id": "run_8d32f376eb59",
+                  "spec": "Read only the first heading of AGENTS.md. Ask the coordinator whether to continue with option yes or no, wait for the answer, then report worker_done with outcome succeeded and no modified files. Do not edit any file.",
+                  "status": "ready",
+                  "task_title": "Read only the first heading of AGENTS.md. Ask the coordinator whether to cont..."
+                }
+              }
+            },
+            {
+              "_meta": {
+                "runtimeId": "9a5ebd87-1db9-49ac-9b89-78654a336595"
+              },
+              "id": "930aa5e7-1d4e-45ac-b4a2-19a17ec2cd2d",
+              "ok": true,
+              "result": {
+                "mutation": {
+                  "replayed": false,
+                  "requestId": "9667713d-63a2-4303-b0de-7661029f6c70"
+                },
+                "task": {
+                  "completed_at": null,
+                  "created_at": "2026-08-20 17:24:01",
+                  "created_by_pane_key": "ba81b602-0291-4d20-9046-3565d6a32610:54cf171e-74d3-49d5-80cc-7890dfdd2856",
+                  "created_by_process_incarnation": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit@@2f030ba4:2426e442-a67a-4dd7-a724-b471506e07f3",
+                  "created_by_run_generation": 1,
+                  "created_by_terminal_handle": "term_fadda3da-34ef-4bc1-b4ae-0785a2d4b727",
+                  "deps": "[\"task_e4b93d9c8b6d\"]",
+                  "display_name": "Confirm README.md exists, make no edits, and report worker_done with outcome...",
+                  "id": "task_112146dedc6f",
+                  "parent_id": null,
+                  "result": null,
+                  "run_id": "run_8d32f376eb59",
+                  "spec": "Confirm README.md exists, make no edits, and report worker_done with outcome succeeded and no modified files.",
+                  "status": "pending",
+                  "task_title": "Confirm README.md exists, make no edits, and report worker_done with outcome..."
+                }
+              }
+            }
+          ]
+        },
+        "status": "started"
+      }
+    }
+  },
+  "runtime": {
+    "command": [
+      "orca"
+    ],
+    "run_id": "run_8d32f376eb59",
+    "runtime_id": "9a5ebd87-1db9-49ac-9b89-78654a336595",
+    "task_ids": {
+      "ORCA-PROBE-01": "task_e4b93d9c8b6d",
+      "ORCA-PROBE-02": "task_112146dedc6f"
+    },
+    "worktree_id": "fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/Documents/my-llm-kit"
+  },
+  "runtime_capabilities": [
+    "runtime.status.compat.v1",
+    "runtime.environments.v1",
+    "remote-runtime.shared-control.v1",
+    "orchestration.federation.v1",
+    "orchestration.federation-control-mail.v1",
+    "orchestration.federation-lifecycle-settlement.v1",
+    "orchestration.worker-launch-preferences.v1",
+    "orchestration.contract.v1",
+    "browser.screencast.v1",
+    "terminal.binary-stream.v1",
+    "terminal.multiplex.v1",
+    "workspace-ports.v1",
+    "mobile.tasks.v1",
+    "project-host-setup.v1",
+    "task-source-context.v1",
+    "workspace-run-context.v1",
+    "worktree.linked-work-item-context.v1",
+    "folder-workspace.path-status.v1",
+    "linear.issue-attribute-filter.v1",
+    "aiVault.v1",
+    "aiVault.session-titles.v1",
+    "terminal.query-reply-input.v1",
+    "terminal.paired-parking.v1",
+    "terminal.quick-commands.v1",
+    "worktree.create-idempotency.v1",
+    "terminal.create-idempotency.v2",
+    "session-tabs.close-intent.v1",
+    "agent-session.session-boundary.v1",
+    "updater.remote-control.v1",
+    "agent-session.host-authority.v1",
+    "agent-session.omp-resume-path.v1",
+    "files.mutation-ownership.v1",
+    "accounts.import-host-credentials.v1",
+    "accounts.codex-reset-credit.v1",
+    "browser.certificate-trust.v1"
+  ],
+  "schema_version": 1,
+  "source_integrity": {
+    "after": "6de7ba625f91babd9bd054c15926f3004b13f9821911594a16f4b13d8173182a",
+    "algorithm": "sha256 of tracked diff plus nonignored untracked files, excluding probe run and artifact",
+    "before": "6de7ba625f91babd9bd054c15926f3004b13f9821911594a16f4b13d8173182a",
+    "unchanged": true
+  },
+  "worker_reports": [
+    {
+      "attempt_id": "orca-probe-attempt-01",
+      "checks_run": [],
+      "evidence_refs": [],
+      "external_refs": {
+        "dispatch_id": "ctx_1f77dfcfe014",
+        "message_id": "msg_b933f048a721",
+        "orca_dispatch_id": "ctx_1f77dfcfe014",
+        "orca_run_id": "run_8d32f376eb59",
+        "orca_task_id": "task_e4b93d9c8b6d",
+        "provider": "orca",
+        "provider_outcome": "succeeded",
+        "task_id": "task_e4b93d9c8b6d"
+      },
+      "files_changed": [],
+      "outcome": "reported",
+      "questions": [],
+      "summary": "I read only the first heading of AGENTS.md. The coordinator answered yes when asked whether to continue. Nothing remains, and no files were modified.",
+      "task_id": "ORCA-PROBE-01"
+    },
+    {
+      "attempt_id": "orca-probe-attempt-02",
+      "checks_run": [],
+      "evidence_refs": [],
+      "external_refs": {
+        "dispatch_id": "ctx_75379cdf2839",
+        "message_id": "msg_24aae0468a00",
+        "orca_dispatch_id": "ctx_75379cdf2839",
+        "orca_run_id": "run_8d32f376eb59",
+        "orca_task_id": "task_112146dedc6f",
+        "provider": "orca",
+        "provider_outcome": "succeeded",
+        "task_id": "task_112146dedc6f"
+      },
+      "files_changed": [],
+      "outcome": "reported",
+      "questions": [],
+      "summary": "Confirmed README.md exists in the repository root. Made no edits and modified no files. Nothing remains for this task.",
+      "task_id": "ORCA-PROBE-02"
+    }
+  ]
+}

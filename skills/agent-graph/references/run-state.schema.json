@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/badmuriss/my-llm-kit/schemas/agent-graph-run-state.json",
+  "title": "Agent graph run projection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "change",
+    "run_id",
+    "status",
+    "outcome",
+    "base_commit",
+    "dirty_paths",
+    "coordinator",
+    "driver",
+    "driver_reservation",
+    "tasks",
+    "attempts",
+    "questions",
+    "cleanup",
+    "degradations",
+    "last_sequence"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "change": {"type": ["string", "null"]},
+    "run_id": {"type": ["string", "null"]},
+    "status": {"enum": ["new", "active", "complete"]},
+    "outcome": {"enum": ["pass", "partial", "blocked", null]},
+    "base_commit": {"type": ["string", "null"]},
+    "dirty_paths": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "coordinator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "generation"],
+      "properties": {
+        "id": {"type": ["string", "null"]},
+        "generation": {"type": "integer", "minimum": 0}
+      }
+    },
+    "driver": {"enum": ["host", "orca", null]},
+    "driver_reservation": {"type": ["object", "null"]},
+    "tasks": {"type": "object", "additionalProperties": {"$ref": "#/$defs/task"}},
+    "attempts": {"type": "object", "additionalProperties": {"type": "object"}},
+    "questions": {"type": "object", "additionalProperties": {"type": "object"}},
+    "cleanup": {"type": "object", "additionalProperties": {"type": "object"}},
+    "degradations": {"type": "array", "items": {"type": "object"}},
+    "last_sequence": {"type": "integer", "minimum": 0}
+  },
+  "$defs": {
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contract", "status", "grade", "attempt_ids", "check", "hypotheses", "evidence_refs", "note"],
+      "properties": {
+        "contract": {"type": "object"},
+        "status": {"enum": ["pending", "ready", "reserved", "running", "interrupted", "abandoned", "reported", "pass", "fail", "unobserved", "blocked"]},
+        "grade": {"enum": ["pass", "fail", "unobserved", "blocked", null]},
+        "attempt_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "check": {"type": ["object", "null"]},
+        "hypotheses": {"type": "array", "maxItems": 2, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "evidence_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "note": {"type": "string"}
+      }
+    }
+  }
+}

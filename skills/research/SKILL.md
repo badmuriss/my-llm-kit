@@ -26,6 +26,22 @@ Delegate source discovery and ingestion to one fast collector when agent capacit
 allows it. Keep protocol definition, source adjudication, synthesis, and council
 adjudication with the orchestrator.
 
+When delegation is useful, express collectors as an Agent Graph package. Collector
+tasks use `Mode: read`, explicit `Depends`, normalized `Paths`, `Isolation: auto`,
+and one direct `Check:`. Validate and start the host graph with:
+
+```text
+python3 skills/agent-graph/scripts/agent_graph.py validate --change <research-slug> --json
+python3 skills/agent-graph/scripts/agent_graph.py init --change <research-slug> --run-id <run-id> --coordinator-id <id> --driver host --json
+python3 skills/agent-graph/scripts/agent_graph.py ready --change <research-slug> --run-id <run-id> --json
+```
+
+Use `dispatch`, `record-result`, `run-check`, and `grade` for collector attempts.
+The generated capsule is the worker prompt. A collector report is an artifact, not
+an accepted claim. The main researcher opens sources, adjudicates the claim ledger,
+and owns the final finding. Orca degradation stays visible when Orca is selected.
+Maestri remains a future driver boundary.
+
 Require the collector to return only source URLs, access dates, local converted
 paths, provider trail rows, and verification status. Do not accept conclusions or
 paraphrased claims from the collector. Open the converted source before using it.
@@ -129,9 +145,11 @@ Run one bounded council after the first complete draft when any condition holds:
 - credible primary sources disagree on a material claim
 - a material conclusion rests only on secondary evidence
 
-Before dispatching, run `agent-resource-guard check --intent agent --demand 2
---prune`. If capacity is denied, record the council as `unverified`; do not launch
-workers elsewhere.
+Before dispatching, use `agent-resource-guard check --intent agent --demand 2
+--prune` only when that optional Linux command is installed. If it denies capacity,
+record the council as `unverified`; do not launch workers elsewhere. On macOS,
+Windows or an unguarded Linux host, obey the agent host's concurrency limit and
+continue without treating the missing command as a failure.
 
 Dispatch at most two independent reviewers. Do not show either reviewer the
 other's response.

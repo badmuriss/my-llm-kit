@@ -2,16 +2,18 @@
 # my-llm-kit :: installs dependencies, registers MCP servers and links skills. idempotent.
 # host-agnostic: skills land in ~/.agents/skills (the cross-agent convention) and are
 # fanned out to the host dirs that don't read it natively.
-# usage: ./setup.sh [--dry-run]
+# usage: ./setup.sh [--dry-run] [--with-resource-guard]
 set -uo pipefail
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INSTALL_MANIFEST="$REPO_DIR/install-manifest.json"
 SCRAPINGDOG_MCP_PACKAGE="https://codeload.github.com/badmuriss/Scrapingdog-mcp/tar.gz/8084d8a77b5836f7c0ef7cfbaec5ab12f1fcb741"
 DRY=0
+WITH_RESOURCE_GUARD=0
 for a in "$@"; do
   case "$a" in
     --dry-run) DRY=1 ;;
+    --with-resource-guard) WITH_RESOURCE_GUARD=1 ;;
     *) echo "unknown flag: $a"; exit 2 ;;
   esac
 done
@@ -518,13 +520,17 @@ install_plugins() {
 }
 run_step "plugins (Claude Code + Codex)" install_plugins
 
-# 7. install the cross-agent resource guard. The CLI admits new workers and heavy commands
-# against machine-wide limits. A user timer removes orphaned workloads and excess idle
-# agents; it leaves manual processes and persistent terminal shells alone.
+# 7. Optionally install the Linux-only cross-agent resource guard. Normal setup does not
+# install it: most users can rely on their agent host and operating system process controls.
 install_resource_guard() {
   local source="$REPO_DIR/scripts/agent_resource_guard.py"
   local target="$HOME/.local/bin/agent-resource-guard"
   local unit_dir="$HOME/.config/systemd/user"
+
+  if [ "$(uname -s)" != "Linux" ]; then
+    echo "  agent-resource-guard is Linux-only; this host will use native process controls"
+    return 0
+  fi
 
   [ -f "$source" ] || { echo "  $source is missing"; return 1; }
   if [ "$DRY" -eq 1 ]; then
@@ -552,7 +558,9 @@ install_resource_guard() {
   systemctl --user enable --now agent-resource-guard.timer
   "$target" prune --quiet
 }
-run_step "agent resource guard" install_resource_guard
+if [ "$WITH_RESOURCE_GUARD" -eq 1 ]; then
+  run_step "optional resource guard" install_resource_guard
+fi
 
 # 8. dcg blocks destructive shell commands before execution. The calibrated config and
 # allowlist live in dcg/ in this repo, with the reason for every entry written down.

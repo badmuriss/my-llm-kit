@@ -68,7 +68,7 @@ $impl: code + checks + evidence grades
 |---|---|---|
 | `research` | Routes each query to the narrowest provider, adjudicates sources per claim, and optionally runs one bounded council. | An audited finding under `research/`. |
 | `spec` | Resolves decisions and writes an executable plan. A `--council` flag adds one bounded review. | `proposal.md`, `design.md`, `tasks.md`, and an optional council report. |
-| `impl` | Executes localized work directly, delegates when isolation or parallelism pays, and grades recorded checks. | Code, checks, evidence grades, and resumable state. |
+| `impl` | Transfers to a fresh coordinator, schedules a durable task graph, and grades recorded checks. | Code, checks, evidence grades, and a replayable run journal. |
 | `writing` | Keeps docs, commits, PR descriptions, and errors short and concrete. | A clear record of what changed, why, and how it was checked. |
 
 Start a change:
@@ -87,7 +87,7 @@ Claude Code also has `/spec` and `/impl` wrappers for the same workflow. Council
 
 ### What `impl` records
 
-Every run stores crash-safe state under `openspec/impl-state/`. A resumed run reports interrupted tasks, current diffs, and active processes before work continues.
+Every run stores an append-only journal and rebuilt projection under `openspec/runs/<change>/<run-id>/`. A resumed coordinator reads task, attempt, driver, evidence, question, and cleanup state without loading terminal transcripts.
 
 Each OpenSpec task carries one `Check:` command. The state records its result, exit code, duration, and attempt count. `Check: missing validation evidence` remains `unobserved` and cannot become `pass`.
 
@@ -95,7 +95,11 @@ Validation is proportional to risk. The harness reuses the smallest relevant che
 
 Frontend tasks pair a reasoned `Visual-Scope:` with `Visual:` contracts for each changed route and state. General responsive UI covers desktop, notebook, tablet and mobile; platform-specific UI covers only its declared targets. `impl` requires PNG screenshots inspected by a vision-capable tool and a validated manifest before the task can pass. A final guard detects frontend file changes and blocks a successful run when the plan omitted visual expectations entirely. The `frontend-visual-validation` skill defines the capture and review workflow.
 
-The loop stops when no verified, unchecked, in-scope task remains.
+Tasks declare dependencies, read or write mode, repository path prefixes, and isolation. A task becomes ready only after every dependency has grade `pass`. Concurrent writes require non-overlapping path prefixes. Provider completion creates a report, never a passing grade.
+
+Orca and host-native execution share the same graph. Orca prefers supervised workers and records tracked-terminal degradation. Host mode uses bounded repository capsules. Auto mode records one choice. Maestri is a reserved future driver boundary.
+
+The loop stops when no verified, unchecked, in-scope task remains and every cleanup obligation has a receipt.
 
 After normal completion, `learning.py` can snapshot those observed checks and compile recurring support or opposition into `openspec/impl-learning/DRAFT_CANDIDATES.md`. This shadow-mode file is never loaded by `impl`, never creates a rule or skill, and never blocks completion. Activation requires a reviewed change or a validated executable gate; paired `memory_off` and `memory_on` states can be compared without an automatic verdict. See the [trajectory-learning audit](research/2026-08-10-agent-trajectory-learning-audit.md).
 
@@ -113,7 +117,8 @@ After normal completion, `learning.py` can snapshot those observed checks and co
 | `ingest` | Converts received documents and repos before analysis. |
 | `writing` | Technical writing rules based on Zinsser. |
 | `spec` | Architecture-first OpenSpec planning. |
-| `impl` | Evidence-graded implementation with executable task checks. |
+| `agent-graph` | Durable dependencies, task capsules, driver receipts, evidence grades, and cleanup. |
+| `impl` | Fresh-coordinator implementation over the portable graph runtime. |
 | `grill-me` | Decision interview used by `spec`. |
 | `grill-with-docs` | Decision interview that also updates context and ADRs. |
 | `scrapingdog` | Paid public-web data provider. Requires `SCRAPINGDOG_API_KEY`. |
@@ -194,14 +199,14 @@ The installers:
 6. Verify the `paper-search` executable, version, and one real arXiv query. A failure declares the web fallback.
 7. Install the shared `AGENTS.md`, with backups for different existing files.
 8. Install and verify `dcg`, the destructive-command guard.
-9. Install `agent-resource-guard` on Linux. Windows records an explicit skip.
+9. Leave resource management to the host and operating system by default. Linux users may opt into `agent-resource-guard` with `./setup.sh --with-resource-guard`.
 10. Install the pinned Pipelock release after verifying its checksum, then configure detected Codex and Claude hosts.
 
 ### Safety tools
 
 `dcg` blocks destructive shell commands before they run. This repo installs a shared configuration from `dcg/`.
 
-`agent-resource-guard` allows up to 20 active agent sessions by default and can still deny work earlier for memory or heavy-command pressure. It also cleans up tagged child processes after their owner exits. Manual processes and persistent terminal shells are excluded.
+`agent-resource-guard` is an optional Linux-only enhancement for machines that regularly run many concurrent agents or overlapping heavy commands. Install it explicitly with `./setup.sh --with-resource-guard`. When present, the harness can use it for machine-wide admission and stale-workload cleanup. Normal Linux installs, macOS and native Windows use their host's process controls instead; a missing guard never blocks work.
 
 `Pipelock` scans agent actions at supported host boundaries. The Codex installer wraps existing MCP servers with `pipelock mcp proxy`. The Claude installer adds its action hooks. Run setup again after adding a Codex MCP server so Pipelock can wrap the new entry.
 

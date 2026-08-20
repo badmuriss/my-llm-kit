@@ -15,17 +15,14 @@ Focus on these principles in all code:
 - readability/maintainability
 
 ## Resource discipline
-The machine-wide `agent-resource-guard` keeps concurrent agent work below a safe budget.
+Resource management is capability-driven and operating-system aware. `agent-resource-guard` is an optional Linux enhancement, never a prerequisite for normal harness work.
 
-- Before spawning subagents, run `agent-resource-guard check --intent agent --demand <count> --prune`. Exit code 75 means no capacity. Reduce the batch, work locally, or wait for an existing worker. Never bypass a denial by launching another terminal.
-- Before a build, typecheck, test suite, browser run, or development server, run `agent-resource-guard check --intent heavy --prune`. Do not start the command when capacity is denied.
-- The global default admits up to 20 active agent sessions. Memory and heavy-command limits can still deny work earlier.
-- Keep no more than two subagents active from one root agent. Global capacity may be lower.
+- Do not invoke the guard for a routine single worker, build, browser run or test command. Before unusually high fan-out or overlapping heavy commands, check whether `agent-resource-guard` exists. If it does, use the matching `check --intent agent --demand <count> --prune` or `check --intent heavy --prune` command and honor exit code 75. If it does not exist, continue without treating that as an error.
+- On Linux, the optional guard may provide machine-wide admission and stale-workload cleanup. On macOS and Windows, do not expect it; use the host's own process controls and reduce concurrency only when observed memory, load or responsiveness calls for it.
+- The harness imposes no fixed subagent count. Start with the smallest useful fan-out, obey the active host or tool's own concurrency limit, and add workers only when the tasks are genuinely independent.
 - Never run the same build or typecheck concurrently in one worktree. Reuse an active development server instead of starting another.
 - Stop every background command when its task ends. Cancellation must terminate the full child process tree.
 - After a crash or resumed session, inspect existing work before restarting commands. Do not restore interrupted builds, tests, browsers, or development servers automatically.
-- The periodic guard removes stale workloads tagged with an exited session. When the machine is over budget, it also closes the oldest agent sessions after 30 idle minutes. It does not kill untagged manual processes or terminal shells.
-- Under critical memory pressure, the guard stops the largest agent tree before the desktop session reaches the system OOM killer.
 
 ## Scope discipline
 Default assumption: a project is an MVP with no external users, live data or paying client. Under that assumption:

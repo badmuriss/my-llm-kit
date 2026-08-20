@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agent Graph"
+  short_description: "Coordinates durable dependency-aware agent runs"
+  default_prompt: "Use $agent-graph to coordinate a validated task graph with durable state."

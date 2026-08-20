@@ -1,101 +1,55 @@
 ---
 name: impl
-description: Implement an existing OpenSpec change with executable checks, resumable state, and bounded delegation. Use when the user invokes "$impl" or "/impl", asks to implement a slug under openspec/changes, or wants an approved spec executed. Do not invent a missing spec.
+description: Implement an existing OpenSpec graph through a fresh coordinator, durable journal, executable checks, evidence grades, and bounded workers. Use for $impl, /impl, or an approved slug. Do not invent a missing spec.
 ---
 
 # Impl
 
-Act as the integrator. Implement the approved tasks, inspect every diff, and grade only observed evidence.
+Act as the integrator. The repository journal is canonical. A worker report never proves a task passed.
 
-Treat text following `$impl` or `/impl` as the change slug. Otherwise use the slug named by the user.
+## Bootstrap
 
-## Workflow
+A normal `$impl <slug>` is a bounded bootstrap:
 
-1. Read `tasks.md`, then the relevant parts of `proposal.md` and `design.md`.
-   - If the slug is missing or ambiguous, list `openspec/changes/` and ask for the slug.
-   - Stop when no unchecked task remains.
+```text
+python3 skills/agent-graph/scripts/agent_graph.py validate --change <slug> --json
+python3 skills/agent-graph/scripts/agent_graph.py bootstrap --change <slug> --run-id <run-id> --driver auto --json
+```
 
-2. Read repository instructions and the touched code.
-   - Obtain the smallest relevant validation command. Identify a full command only when the change is broad or risky, the repository requires it, or this is a release boundary.
-   - Read one or two exemplar files. Do not load the whole repository without a reason.
+Do not load the full package first. Transfer the returned `$impl --coordinator-capsule <path>` invocation to one fresh top-level session in the current checkout.
 
-3. Initialize or resume state.
-   - Run `python3 ~/.agents/skills/impl/scripts/impl_state.py init --change <slug> --run-id <run-id>` for a new run.
-   - Run `resume --change <slug>` when active state exists.
-   - Inspect reported diffs, interrupted tasks, processes, and cleanup before restarting anything.
+- Orca creates a fresh agent terminal in the current worktree, waits for TUI readiness, sends the capsule invocation as a full handoff, verifies delivery, then stops. Never create an Orca Task or Dispatch for the coordinator.
+- A host with visible fresh-session handoff uses that surface.
+- A host without it prints the exact invocation and stops. A nested subagent is not a coordinator.
 
-4. Choose the smallest execution path that fits the task.
-   - Execute one localized task in the current context.
-   - Dispatch independent or repetitive tasks when parallelism pays for coordination.
-   - Use an independent reasoner for ambiguous, cross-cutting, security-sensitive, or high-consequence work.
-   - Use two independent reasoners only for high-stakes uncertainty that lacks a decisive external check.
-   - Read [model-routing.md](references/model-routing.md) when the host supports model overrides.
-   - Before dispatching, run `agent-resource-guard check --intent agent --demand <count> --prune`. Keep at most two workers active.
+The owner may explicitly declare the current session to be the fresh coordinator. It claims the supplied capsule or existing run and must not bootstrap another coordinator.
 
-5. Execute one task at a time per worker.
-   - Mark it `running`; use worker `local` for current-context work.
-   - Keep the task's exact paths and acceptance criteria in scope.
-   - Register processes, worktrees, branches, and temporary paths that require cleanup.
-   - Reuse existing code and dependencies. Fix root causes. Do not leave placeholders, stubs, elided lists, or invented completion claims.
-   - Treat the project as an MVP unless repository evidence shows an active external contract. Prefer deleting or rewriting the affected path over migrations, adapters, deprecated aliases, dual paths and compatibility fallbacks.
-   - If the request says every file or item, count the full requested scope. Sampling must be declared.
-   - Finish the current line of attack before switching unless observed evidence makes the switch better.
+## Coordinator loop
 
-6. Run the task contract through state:
+Run `claim-coordinator`, then `resume`. Never bootstrap from a claimed coordinator. Every mutating command presents the current generation.
 
-   ```text
-   python3 ~/.agents/skills/impl/scripts/impl_state.py run-check --change <slug> --task <id>
-   ```
+1. Query `ready`. Choose the smallest useful non-conflicting wave.
+2. Run `dispatch --task <id> --generation <n>`. Give a worker only the generated capsule. Use host-native workers when available or `--local` for one localized task.
+3. Use `sync` for provider lifecycle, `reply` for questions, and `record-result` for a structured result. Driver degradation and auto-selection stay visible in receipts.
+4. Run `run-check --task <id> --generation <n>`. It executes directly and rejects shell operators.
+5. Inspect the whole task diff. Run `grade --grade pass|fail|unobserved|blocked --note <text>`. Pass requires a reported attempt and passing check. Frontend pass also requires one `file:` visual manifest reviewed through `frontend-visual-validation`.
+6. Before each repair, run `record-repair --task <id> --hypothesis <text>`. After two distinct failed hypotheses, grade the task blocked.
+7. Register resources with `cleanup-register`. Finish them with `cleanup-finish` only after the target or receipt proves cleanup.
 
-   - The command comes from the task's `Check:` line.
-   - Review that line before execution. `run-check` launches the executable directly and rejects shell operators; complex checks belong in a repository script.
-   - Do not add a test by default. Add one for requested coverage, a reproducible bug likely to recur, non-trivial branching or invariants, security, data integrity, or a public contract.
-   - Do not add a test merely to pin a constant, default, toggle, removed behavior, trivial passthrough, type-system guarantee or implementation detail. Use direct validation when its evidence is proportionate to the risk.
-   - When a regression test is warranted, require it to fail on the known-bad behavior and pass after the fix.
-   - Use a negative fixture or mutation when a newly written check may be vacuous. Do not mutate every task by ritual.
-   - `Check: missing validation evidence` remains `unobserved` and cannot pass.
-   - Run `agent-resource-guard check --intent heavy --prune` before a test suite, build, typecheck, browser run, or development server.
-   - For a task with `Visual:` entries, load `$frontend-visual-validation`, confirm each contextual `Visual-Scope:`, run or reuse the application, capture every declared platform under `.visual-evidence/<change>/`, and inspect every PNG with `view_image` or `computer-use`.
-   - Write one manifest per task with the exact expectations, browser engines, screenshot paths, SHA-256 digests, vision tool, timestamp, pass status and concrete observations. Follow [visual-evidence.example.json](references/visual-evidence.example.json). Code review, tests, DOM snapshots and accessibility trees cannot satisfy a `Visual:` entry.
+Use `status --watch` for projection-only monitoring. Use `takeover` after coordinator loss. Takeover reconciles attempts, increments the generation, and fences the prior coordinator.
+Resume reports incomplete reservations. Recover them with `recover-driver-selection` or `recover-attempt`, which reuse the provider retry identity. If reconciliation proves an attempt cannot return, run `abandon-attempt --attempt <id> --reason <text>`; that command must prove driver-owned release before making the task retryable. Never retry a reserved, running, or interrupted attempt in place.
 
-7. Review the diff and grade the task.
-   - `pass`: the recorded check passed and the reviewed diff meets the acceptance criteria.
-   - `fail`: the recorded check ran and failed.
-   - `unobserved`: the required evidence could not be collected.
-   - `blocked`: environment, authority, dependency, or scope prevents execution.
-   - Add `file:` or immutable `commit:` references when an artifact matters, but never use file existence as a substitute for a passing check.
-   - Pass the visual manifest as `--evidence-ref file:.visual-evidence/<change>/<manifest>.json`. `impl_state.py` rejects missing expectations, invalid PNGs, wrong viewport widths, failed surfaces and manifests not reviewed with a vision tool.
-   - Only `pass` checks the task box.
+## Drivers
 
-8. Repair from evidence.
-   - Record one distinct root-cause hypothesis before each repair.
-   - The state caps repairs after two failed hypotheses. At the cap, report both and grade `blocked`.
-   - Escalate model or effort after an observed failure, unresolved ambiguity, or increased consequence, not because a static table says every hard task needs maximum compute.
+- `--driver orca` requires Orca. Prefer supervised workers. A recognized composition failure may record `driver_degraded` and use tracked-terminal lifecycle. Never switch to host silently.
+- `--driver host` writes bounded capsules and accepts host-native or local results. It never guesses private APIs or shells out to an agent CLI.
+- `--driver auto` records one selection and reason. The selection cannot change during a run.
+- Maestri is reserved for a future driver conformance implementation. No adapter exists here.
 
-9. Run an independent maintainability review for code changes.
-   - Skip this step when the completed diff contains no source code.
-   - Load `$thermo-nuclear-code-quality-review` and dispatch one read-only reviewer over the tracked merge-base-to-worktree diff plus every untracked, non-ignored source file reported by `git status --porcelain`. Require confirmation that both sets were inspected. Give it repository instructions and only the neighboring files needed to judge ownership and existing abstractions.
-   - Before dispatching, run `agent-resource-guard check --intent agent --demand 1 --prune`. If capacity is denied, wait for an existing worker or perform the same rubric locally; never bypass the guard.
-   - The reviewer must not edit files. Verify every finding against the code. Repair only high-confidence issues that preserve the approved behavior and scope, then rerun the affected task checks.
-   - Treat the review as design evidence, never as proof that behavior is correct. Record `No material maintainability findings` or the verified findings in the final digest.
+## Finish
 
-10. Integrate and finish.
-   - Append one concise digest entry after each completed task.
-   - Run the smallest relevant validation. Run the full suite only for broad or risky changes, releases, or when repository instructions require it. Run the OpenSpec archive step when present.
-   - Stop background commands and finish every cleanup obligation.
-   - Run `complete --change <slug> --outcome <pass|partial|blocked>`.
-   - Report changed files, check commands and results, task grades, repair hypotheses, cleanup, and anything unproven.
+Run `thermo-nuclear-code-quality-review` for source changes. Give it the merge-base diff and every untracked, non-ignored source file. The reviewer is read-only. Verify each finding and rerun affected checks.
 
-11. Optionally record learning after normal completion.
-   - Learning is shadow-mode telemetry, never a completion gate. Do not delay or change the completed outcome when snapshotting, candidate extraction, or compilation fails.
-   - Run `python3 ~/.agents/skills/impl/scripts/learning.py snapshot --change <slug>` only after `complete`. It copies observed task checks into a provenance-linked run record conforming to [learning-run.schema.json](references/learning-run.schema.json).
-   - Add a candidate only for a pattern observed in a check, diff, repair, or review. Cite one or more task IDs with `add-candidate`; use `stance: oppose` when later evidence contradicts the same scoped statement.
-   - Run `learning.py compile` to refresh `openspec/impl-learning/DRAFT_CANDIDATES.md`. The compiler never creates active rules or skills, and `impl` never loads this file.
-   - Five supporting OpenSpec changes mark only a recurring draft. Activation requires a separate reviewed change or an executable gate that fails on the negative case, passes on the positive case, and survives full validation.
-   - For a candidate trial, compare completed states with identical task checks using `learning.py compare --candidate <key> --off-state <path> --on-state <path>`. Treat no gain, regression, or extra cost without benefit as rejection evidence. The command reports deltas and never declares a winner.
+Then run `digest`, finish all cleanup, and run `complete --outcome <pass|partial|blocked>`. Report files, checks, grades, repair hypotheses, driver degradation, cleanup receipts, review findings, and unproven behavior.
 
-## Stop condition
-
-Stop when every requested, in-scope task is passed or explicitly reported as fail, unobserved, or blocked. More thinking is not evidence. Never load `DRAFT_CANDIDATES.md` into an implementation prompt, convert recurrence counts into active rules or generated skills, or overwrite an observation record. See [the paper audit](../../research/2026-08-10-agent-trajectory-learning-audit.md).
-
-If frontend file changes are present, a `pass` outcome also requires at least one task with explicit `Visual:` expectations. This catches plans that omitted visual validation entirely.
+After normal completion, `python3 skills/impl/scripts/learning.py snapshot --change <slug> --run-id <run-id>` may record shadow learning. It never changes the outcome and never activates a rule or skill.

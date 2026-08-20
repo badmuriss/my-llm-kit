@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/badmuriss/my-llm-kit/schemas/agent-graph-worker-result.json",
+  "title": "Agent graph worker result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "task_id",
+    "attempt_id",
+    "outcome",
+    "summary",
+    "files_changed",
+    "checks_run",
+    "evidence_refs",
+    "questions",
+    "external_refs"
+  ],
+  "properties": {
+    "task_id": {"type": "string", "pattern": "^[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*$"},
+    "attempt_id": {"type": "string", "minLength": 1},
+    "outcome": {"const": "reported"},
+    "summary": {"type": "string", "minLength": 1},
+    "files_changed": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "checks_run": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "evidence_refs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "oneOf": [
+          {"type": "string", "pattern": "^file:.+$"},
+          {"type": "string", "pattern": "^commit:(?:[0-9a-fA-F]{40}|[0-9a-fA-F]{64})$"}
+        ]
+      }
+    },
+    "questions": {"type": "array", "items": {"type": "object"}},
+    "external_refs": {
+      "type": "object",
+      "additionalProperties": {"type": ["string", "integer", "boolean", "null"]}
+    }
+  }
+}
