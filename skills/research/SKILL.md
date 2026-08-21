@@ -87,13 +87,25 @@ This preflight applies to documentation and product facts. It does not replace a
 dedicated live-data endpoint when the task needs current search results, social
 metrics, prices, or other observations that documentation cannot supply.
 
-| Intent | First route | Fallback |
+| Intent | First route | Credits |
 |---|---|---|
-| Local or product fact | Repository, official docs, changelog | General web route |
-| Scientific literature | `paper-search` MCP; retain DOI when present | ScrapingDog `google_scholar`, then general web route |
-| General public web | ScrapingDog dedicated endpoint | Firecrawl, then host web search |
-| Community pulse | `last30days` | ScrapingDog social/news endpoint, then general web route |
-| Known document | Open the primary URL, then ingest | ScrapingDog `web_scrape`, then Firecrawl scrape |
+| Local or product fact | repository, official docs, changelog | 0 |
+| Scientific literature | `paper-search` MCP (arXiv, OpenAlex, Crossref), keep the DOI; then `google_scholar` | 0 / 5 |
+| Recent events, announcements | `google_news` | 5 |
+| Demand, seasonality, comparison | `google_trends`; `trending_now` for what is hot | 5 |
+| Local business, reviews, voice of customer | `google_maps` + `google_maps/reviews` | 5 to 10 |
+| What AI or Google answers | `google/ai_overview` (5); `ai_mode` (10) only when sources matter; `chatgpt` (30) only on explicit request | 5 to 30 |
+| Video, talk, tutorial | `youtube/search` + `youtube/transcripts` | 5 + 1 |
+| Price, product | `google_shopping`, `amazon/*` | 10 / 1 |
+| Job market, hiring signal | `google_jobs`, `linkedin jobs` | 5 |
+| Community pulse, tech or English | `last30days` plugin (free: HN, Reddit, GitHub, YouTube) | 0 |
+| Community pulse, Brazil or social | `google_news` + `youtube/search` + `x/profile` of known voices | 5 each |
+| Known document | open the primary URL, then `ingest`; `web_scrape` only if blocked | 0 / 1 |
+| Generic page | `web_scrape dynamic=false` (1); dynamic only after a static failure | 1 / 5 |
+
+Reaching `google_search` + `web_scrape` without trying the dedicated endpoint is a
+routing failure; record it in the provider trail. Fallback order after a bounded
+ScrapingDog failure: Firecrawl, then host web search, never silently.
 
 For ScrapingDog, load the `scrapingdog` skill, check the key without exposing it,
 inspect the live MCP catalog, and select the dedicated endpoint before
@@ -106,6 +118,15 @@ changelog as primary sources. Read volatile values on the official page.
 
 For community pulse, treat engagement as relevance, not truth. Confirm factual
 claims against a primary source.
+
+### Brazil profile
+
+When the question is in Portuguese or scoped to Brazil, pass `country=br`,
+`language=pt`, `domain=google.com.br` on SERP-family calls (`google_search`,
+`google_news`, `google_shopping`, `google_jobs`; `geo=BR` on `google_trends`).
+Prefer BR primary sources: gov.br, IBGE/SIDRA, BCB, INPI, Diário Oficial,
+Reclame Aqui (static scrape), Procon, CVM, TSE, ANPD. Write money as `R$ 1.234,56`
+and dates as `DD/MM/YYYY` in prose; keep `YYYY-MM-DD` in ledger and source lines.
 
 ## Station 3: ingest
 

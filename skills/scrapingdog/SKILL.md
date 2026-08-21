@@ -36,11 +36,11 @@ repeat an invalid credential.
 5. Generic `web_scrape` or `/scrape` is the last resort, not the default.
 6. For an HTTP fallback, build the query with `URLSearchParams` or a params object, never string concatenation.
 7. Timeout around 60s (120s for `/chatgpt` and `/google/ai_mode`).
-8. Before a batch job, check remaining credits through a local redacting helper. Never place the raw `/account` response in model context because it may echo credentials.
+8. Before a batch job, run `scripts/account_summary.sh` for remaining credits. Never place the raw `/account` response in model context because it echoes email and key.
 
 ## Routing Table
 
-Credits per successful request, taken from the official docs. `?` means the doc page does not state it; check `/account` before a batch.
+Credits per successful request, taken from the official docs. `?` means the doc page does not state it; run `scripts/account_summary.sh` before a batch.
 
 | Intent | Endpoint | Cred |
 |---|---|---|
@@ -93,7 +93,7 @@ Credits per successful request, taken from the official docs. `?` means the doc 
 | Amazon product / search | `/amazon/product`, `/amazon/search` | 1 |
 | Amazon offers / reviews / autocomplete | `/amazon/offers`, `/amazon/reviews`, `/amazon/autocomplete` | ? / 5 / 5 |
 | Walmart, eBay, Flipkart, Myntra, Apple | see `references/commerce-travel.md` | 5 |
-| Credits and concurrency left | `/account` | ? |
+| Credits and concurrency left | `scripts/account_summary.sh` (wraps `/account`) | 0 |
 
 Two entries deserve a second look before you fire them: `/profile?type=person` at up to 100 credits, and `/chatgpt` at 30. Everything else is cheap enough to use freely.
 

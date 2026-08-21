@@ -2,6 +2,8 @@
 
 Fonte: doc oficial ScrapingDog, coletada 2026-08-05. `api_key` em query param em toda chamada (omitido abaixo). Base: `https://api.scrapingdog.com`.
 
+Perfil Brasil: em `/google`, `/google_news`, `/google_shopping` e `/google_jobs` passe `country=br`, `language=pt` e `domain=google.com.br`; em `/google_trends` use `geo=BR`.
+
 
 ## Google Search + AI
 
