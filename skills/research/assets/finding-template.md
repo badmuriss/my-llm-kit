@@ -6,18 +6,20 @@
 - Decision criterion:
 - Falsifier:
 - Risk: routine
+- Budget: 25 credits
+- Credits used: 0
 
 ## Provider trail
 
-| Intent | Provider | Tool or endpoint | Outcome | Fallback reason |
-|---|---|---|---|---|
-| | | | | None |
+| Intent | Provider | Tool or endpoint | Outcome | Credits | Fallback reason |
+|---|---|---|---|---|---|
+| | | | | 0 | None |
 
 ## Claim ledger
 
-| Claim | Source | Accessed | Primary | Direct | Current | Independent | Verdict |
-|---|---|---|---|---|---|---|---|
-| | https://example.com | YYYY-MM-DD | yes | yes | yes | unknown | accepted |
+| Claim | Source | Accessed | Snapshot | Primary | Direct | Current | Independent | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| | https://example.com | YYYY-MM-DD | research/sources/slug/page.md | yes | yes | yes | unknown | accepted |
 
 ## Findings
 

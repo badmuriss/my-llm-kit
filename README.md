@@ -66,7 +66,7 @@ $impl: code + checks + evidence grades
 
 | Skill | Job | Output |
 |---|---|---|
-| `research` | Routes each query to the narrowest provider, adjudicates sources per claim, and optionally runs one bounded council. | An audited finding under `research/`. |
+| `research` | Routes each query to the narrowest provider, adjudicates sources per claim, and optionally runs one bounded council. | An audited finding under `research/` with credit budget, source snapshots (`collect_sources.py`) and semantic audit. |
 | `spec` | Resolves decisions and writes an executable plan. A `--council` flag adds one bounded review. | `proposal.md`, `design.md`, `tasks.md`, and an optional council report. |
 | `impl` | Transfers to a fresh coordinator, schedules a durable task graph, and grades recorded checks. | Code, checks, evidence grades, and a replayable run journal. |
 | `writing` | Keeps docs, commits, PR descriptions, and errors short and concrete. | A clear record of what changed, why, and how it was checked. |

@@ -54,16 +54,24 @@ Write these fields before searching:
 - decision criterion
 - falsifier
 - risk: `routine`, `material`, or `high`
+- budget: `Budget: N credits`, by risk: routine 25, material 75, high 200
 
 Use `high` for medical, legal, financial, safety, security, or other decisions
 where a wrong answer can cause material harm. Use `material` when the answer can
 drive meaningful cost, architecture, or public claims. Otherwise use `routine`.
 
+Run `skills/scrapingdog/scripts/account_summary.sh` before Station 2 and again
+before Station 6; the difference fills `Credits used`. Stop paid calls at the budget.
+
 ## Station 2: route and discover
 
+Reuse first: `grep -ril` the question's keywords in the project's `research/`
+directory. Cite a prior finding in the provider trail as provider `local`, with
+its filename and date, before paying for the same source again.
+
 Choose the narrowest provider that matches the intent. Record every attempt in
-the provider trail with intent, provider, tool or endpoint, outcome, and fallback
-reason. Never hide a fallback.
+the provider trail with intent, provider, tool or endpoint, outcome, credits, and
+fallback reason. Never hide a fallback.
 
 ### Structured documentation preflight
 
@@ -136,6 +144,12 @@ delegated ingestion, then open the converted files locally.
 
 Never analyze a multi-column PDF before conversion.
 
+Snapshot web sources with `scripts/collect_sources.py --input sources.json --out
+research/sources` (JSON list of `{slug, url, dynamic?}`; `--dry-run` lists requests
+and credits first). Each slug gets `page.html`, `page.md` and `record.json` with
+URL, access time, sha256, HTTP status and credits; put the `page.md` path in the
+claim ledger `Snapshot` column.
+
 ## Station 4: adjudicate claims
 
 Record each material claim in the claim ledger while researching. Include:
@@ -191,9 +205,9 @@ high-stakes policy requires independent review.
 
 ## Station 6: save and audit
 
-Save the finding under the project's `research/` directory unless the user names
-another destination. Preserve the template sections even when a section says
-`None`.
+Save the finding as `research/YYYY-MM-DD-slug.md` unless the user names another
+destination; the audit warns on any other filename. Preserve the template sections
+even when a section says `None`. Fill `Credits used` from `account_summary.sh`.
 
 Run:
 

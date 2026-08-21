@@ -1,0 +1,53 @@
+# Research finding
+
+## Protocol
+
+- Question: How many credits does a static ScrapingDog scrape cost?
+- Decision criterion: official pricing page states the number
+- Falsifier: docs state a different value
+- Risk: routine
+- Budget: 25 credits
+- Credits used: 1
+
+## Provider trail
+
+| Intent | Provider | Tool or endpoint | Outcome | Credits | Fallback reason |
+|---|---|---|---|---|---|
+| Product fact | official docs | https://www.scrapingdog.com/documentation/ | answered | 0 | None |
+
+## Claim ledger
+
+| Claim | Source | Accessed | Snapshot | Primary | Direct | Current | Independent | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| Static scrape costs 1 credit | https://www.scrapingdog.com/documentation/ | 2026-08-21 | research/sources/docs/page.md | yes | yes | yes | yes | accepted |
+
+## Findings
+
+A static scrape costs 1 credit per request (https://www.scrapingdog.com/documentation/, accessed 2026-08-21).
+Plans start at 40 USD per month (https://example.com/pricing, accessed 2026-08-21).
+
+## Disagreements
+
+None.
+
+## Open questions
+
+None.
+
+## Council review
+
+- Status: not run
+- Reason: no council trigger
+- Accepted findings: None.
+- Rejected findings: None.
+
+## Sources consulted
+
+- https://www.scrapingdog.com/documentation/, accessed 2026-08-21.
+- https://example.com/pricing, accessed 2026-08-21.
+
+## Trial by fire
+
+- Primary-source claims: 1
+- Secondary-only claims: 0
+- Volatile claims: 0
