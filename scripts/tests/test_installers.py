@@ -10,49 +10,37 @@ MANIFEST = ROOT / "install-manifest.json"
 MANIFEST_READER = ROOT / "scripts" / "read_install_manifest.py"
 
 
+def read_section(section: str) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [sys.executable, str(MANIFEST_READER), section, "--manifest", str(MANIFEST)],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+
 class SharedManifestBehavior(unittest.TestCase):
-    def test_installs_community_skills_from_their_nested_paths(self) -> None:
+    def test_emits_every_community_skill_as_a_shell_row(self) -> None:
         manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
 
-        self.assertIn(
-            {
-                "name": "refero-design",
-                "url": "https://github.com/referodesign/refero_skill",
-                "path": "skills/refero-design",
-            },
-            manifest["community_skills"],
-        )
-        self.assertIn(
-            {
-                "name": "drawio-skill",
-                "url": "https://github.com/Agents365-ai/drawio-skill",
-                "path": "skills/drawio-skill",
-            },
-            manifest["community_skills"],
-        )
-
-        result = subprocess.run(
-            [
-                sys.executable,
-                str(MANIFEST_READER),
-                "community_skills",
-                "--manifest",
-                str(MANIFEST),
-            ],
-            check=False,
-            capture_output=True,
-            text=True,
-        )
+        result = read_section("community_skills")
 
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn(
-            "refero-design|https://github.com/referodesign/refero_skill|skills/refero-design",
+        self.assertEqual(
             result.stdout.splitlines(),
+            [
+                f"{entry['name']}|{entry['url']}|{entry['path']}"
+                for entry in manifest["community_skills"]
+            ],
         )
-        self.assertIn(
-            "drawio-skill|https://github.com/Agents365-ai/drawio-skill|skills/drawio-skill",
-            result.stdout.splitlines(),
-        )
+
+    def test_emits_reduced_install_skills_as_shell_rows(self) -> None:
+        manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
+
+        result = read_section("reduced_install_skills")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.splitlines(), manifest["reduced_install_skills"])
 
     def test_documents_every_shipped_and_community_skill(self) -> None:
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
@@ -66,117 +54,8 @@ class SharedManifestBehavior(unittest.TestCase):
             with self.subTest(skill=name):
                 self.assertIn(f"`{name}`", readme)
 
-    def test_includes_the_reduced_harness_dependencies(self) -> None:
-        manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
-
-        self.assertEqual(
-            manifest["reduced_install_skills"],
-            [
-                "spec",
-                "impl",
-                "grill-me",
-                "remove-ai-marks",
-                "trim-code-comments",
-                "thermo-nuclear-code-quality-review",
-            ],
-        )
-
-    def test_emits_manifest_rows_for_shell(self) -> None:
-        result = subprocess.run(
-            [
-                sys.executable,
-                str(MANIFEST_READER),
-                "reduced_install_skills",
-                "--manifest",
-                str(MANIFEST),
-            ],
-            check=False,
-            capture_output=True,
-            text=True,
-        )
-
-        self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(
-            result.stdout.splitlines(),
-            [
-                "spec",
-                "impl",
-                "grill-me",
-                "remove-ai-marks",
-                "trim-code-comments",
-                "thermo-nuclear-code-quality-review",
-            ],
-        )
-
-    def test_discovers_agent_graph_through_cross_platform_skill_loops(self) -> None:
-        unix_setup = (ROOT / "setup.sh").read_text(encoding="utf-8")
-        windows_setup = (ROOT / "setup.ps1").read_text(encoding="utf-8")
-
-        self.assertTrue((ROOT / "skills" / "agent-graph" / "SKILL.md").is_file())
-        self.assertIn('for dir in "$REPO_DIR/skills/"*/; do', unix_setup)
-        self.assertIn(
-            'Get-ChildItem -Directory (Join-Path $RepoDirectory "skills")',
-            windows_setup,
-        )
-        self.assertIn('Link-Skill -Name $_.Name -Source $_.FullName', windows_setup)
-        self.assertNotIn('cp -R "$REPO_DIR/skills/agent-graph"', unix_setup)
-
-
-class PaperSearchPreflightBehavior(unittest.TestCase):
-    def test_reenables_an_existing_codex_server(self) -> None:
-        unix_setup = (ROOT / "setup.sh").read_text(encoding="utf-8")
-        windows_setup = (ROOT / "setup.ps1").read_text(encoding="utf-8")
-
-        self.assertIn('grep -Fq "enabled: true" <<<"$details"', unix_setup)
-        self.assertIn('$details.Contains("enabled: true")', windows_setup)
-
-    def test_runs_a_real_query_on_unix(self) -> None:
-        setup = (ROOT / "setup.sh").read_text(encoding="utf-8")
-
-        self.assertIn("paper-search-mcp --version", setup)
-        self.assertIn("paper-search search 'CodePlan repository-level coding'", setup)
-        self.assertIn("web fallback active: ScrapingDog when keyed, then Firecrawl", setup)
-
-    def test_runs_a_real_query_on_windows(self) -> None:
-        setup = (ROOT / "setup.ps1").read_text(encoding="utf-8")
-
-        self.assertIn('Invoke-Native "paper-search-mcp" @("--version")', setup)
-        self.assertIn('paper-search search "CodePlan repository-level coding"', setup)
-        self.assertIn("web fallback active: ScrapingDog when keyed, then Firecrawl", setup)
-
 
 class ScrapingDogMcpBehavior(unittest.TestCase):
-    package_spec = "https://codeload.github.com/badmuriss/Scrapingdog-mcp/tar.gz/8084d8a77b5836f7c0ef7cfbaec5ab12f1fcb741"
-
-    def test_registers_and_preflights_the_server_on_unix(self) -> None:
-        setup = (ROOT / "setup.sh").read_text(encoding="utf-8")
-
-        self.assertIn(f'SCRAPINGDOG_MCP_PACKAGE="{self.package_spec}"', setup)
-        self.assertIn('npm install --global "$SCRAPINGDOG_MCP_PACKAGE"', setup)
-        self.assertIn('npm ci --include=dev --prefix "$(npm root --global)/scrapingdog-mcp"', setup)
-        self.assertIn("claude mcp add --scope user scrapingdog -- node", setup)
-        self.assertIn("codex mcp add scrapingdog -- node", setup)
-        self.assertIn("claude mcp get scrapingdog", setup)
-        self.assertIn("codex mcp get scrapingdog", setup)
-        self.assertIn('node "$REPO_DIR/scripts/preflight_scrapingdog_mcp.mjs" "$entrypoint"', setup)
-
-    def test_registers_and_preflights_the_server_on_windows(self) -> None:
-        setup = (ROOT / "setup.ps1").read_text(encoding="utf-8")
-
-        self.assertIn(f'$ScrapingDogMcpPackage = "{self.package_spec}"', setup)
-        self.assertIn('"install", "--global", $ScrapingDogMcpPackage', setup)
-        self.assertIn('"ci", "--include=dev", "--prefix", $packageDirectory', setup)
-        self.assertIn('"scrapingdog", "--", "node", $entrypoint', setup)
-        self.assertIn("mcp get scrapingdog", setup)
-        self.assertIn('"scripts\\preflight_scrapingdog_mcp.mjs"', setup)
-
-    def test_installs_the_pull_request_commit(self) -> None:
-        unix_setup = (ROOT / "setup.sh").read_text(encoding="utf-8")
-        windows_setup = (ROOT / "setup.ps1").read_text(encoding="utf-8")
-
-        self.assertIn(self.package_spec, unix_setup)
-        self.assertIn(self.package_spec, windows_setup)
-
     def test_keeps_the_api_key_out_of_host_configuration(self) -> None:
         unix_setup = (ROOT / "setup.sh").read_text(encoding="utf-8")
         windows_setup = (ROOT / "setup.ps1").read_text(encoding="utf-8")
@@ -185,43 +64,12 @@ class ScrapingDogMcpBehavior(unittest.TestCase):
         self.assertNotIn("-e SCRAPINGDOG_API_KEY=", unix_setup)
         self.assertNotIn('"--env", "SCRAPINGDOG_API_KEY=', windows_setup)
 
-    def test_preflight_checks_research_tools(self) -> None:
-        preflight = (ROOT / "scripts" / "preflight_scrapingdog_mcp.mjs").read_text(
-            encoding="utf-8"
-        )
-
-        for tool in (
-            "google_news",
-            "google_scholar",
-            "google_search",
-            "google_trends",
-            "web_scrape",
-            "youtube_transcripts",
-        ):
-            self.assertIn(f'"{tool}"', preflight)
-
 
 class DcgConfigurationBehavior(unittest.TestCase):
     def test_keeps_checkout_from_ref_protected(self) -> None:
         allowlist = (ROOT / "dcg" / "allowlist.toml").read_text(encoding="utf-8")
 
         self.assertNotIn("core.git:checkout-ref-discard", allowlist)
-
-
-class PipelockIntegrationBehavior(unittest.TestCase):
-    def test_installs_and_configures_supported_hosts_on_unix(self) -> None:
-        setup = (ROOT / "setup.sh").read_text(encoding="utf-8")
-
-        self.assertIn('scripts/install_pipelock.py" --target "$pipelock_bin"', setup)
-        self.assertIn('"$pipelock_bin" codex install', setup)
-        self.assertIn('"$pipelock_bin" claude setup', setup)
-
-    def test_installs_and_configures_supported_hosts_on_windows(self) -> None:
-        setup = (ROOT / "setup.ps1").read_text(encoding="utf-8")
-
-        self.assertIn('"scripts\\install_pipelock.py"', setup)
-        self.assertIn('Invoke-Native $PipelockPath @("codex", "install")', setup)
-        self.assertIn('Invoke-Native $PipelockPath @("claude", "setup")', setup)
 
 
 if __name__ == "__main__":

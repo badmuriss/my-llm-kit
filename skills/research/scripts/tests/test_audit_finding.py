@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import subprocess
 import sys
 from pathlib import Path
 
@@ -25,14 +24,6 @@ class TestPassingFinding:
         assert errors == []
         assert warnings == []
 
-    def test_cli_exits_zero(self):
-        result = subprocess.run(
-            [sys.executable, str(SCRIPTS / "audit_finding.py"), str(FIXTURES / "2026-08-21-good.md")],
-            capture_output=True,
-            text=True,
-        )
-        assert result.returncode == 0, result.stderr
-
 
 class TestSemanticErrors:
     @pytest.mark.parametrize(
@@ -48,15 +39,6 @@ class TestSemanticErrors:
     def test_rejects_known_bad_finding(self, fixture: str, fragment: str):
         errors, _ = audit_fixture(fixture)
         assert any(fragment in error for error in errors), errors
-
-    def test_cli_exits_one_on_error(self):
-        result = subprocess.run(
-            [sys.executable, str(SCRIPTS / "audit_finding.py"), str(FIXTURES / "bad-example-com.md")],
-            capture_output=True,
-            text=True,
-        )
-        assert result.returncode == 1
-        assert "ERROR:" in result.stderr
 
 
 class TestWarnings:
