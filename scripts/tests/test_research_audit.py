@@ -13,26 +13,28 @@ VALID_FINDING = """# Research finding
 
 ## Protocol
 
-- Question: Which source supports the claim?
-- Decision criterion: The primary source states it directly.
-- Falsifier: The primary source contradicts it.
+- Question: Does unittest discovery require an importable start directory?
+- Decision criterion: The official documentation states it directly.
+- Falsifier: The official documentation contradicts it.
 - Risk: material
+- Budget: 75 credits
+- Credits used: 0
 
 ## Provider trail
 
-| Intent | Provider | Tool or endpoint | Outcome | Fallback reason |
-|---|---|---|---|---|
-| Product documentation | Official docs | Direct URL | found | None |
+| Intent | Provider | Tool or endpoint | Outcome | Credits | Fallback reason |
+|---|---|---|---|---|---|
+| Product fact | official docs | https://docs.python.org/3/library/unittest.html | answered | 0 | None |
 
 ## Claim ledger
 
-| Claim | Source | Accessed | Primary | Direct | Current | Independent | Verdict |
-|---|---|---|---|---|---|---|---|
-| The product documents the feature. | https://example.com/docs | 2026-08-12 | yes | yes | yes | unknown | accepted |
+| Claim | Source | Accessed | Snapshot | Primary | Direct | Current | Independent | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| Discovery requires an importable start directory. | https://docs.python.org/3/library/unittest.html | 2026-08-12 | research/sources/unittest/discovery.md | yes | yes | yes | yes | accepted |
 
 ## Findings
 
-The product documents the feature.
+Discovery requires an importable start directory.
 
 ## Disagreements
 
@@ -51,11 +53,11 @@ None.
 
 ## Sources consulted
 
-- https://example.com/docs, accessed 2026-08-12.
+- https://docs.python.org/3/library/unittest.html, accessed 2026-08-12.
 
 ## Trial by fire
 
-- Primary-source claims: The product documents the feature.
+- Primary-source claims: Discovery requires an importable start directory.
 - Secondary-only claims: None.
 - Volatile claims: None.
 """
@@ -64,7 +66,7 @@ None.
 class ResearchAuditBehavior(unittest.TestCase):
     def run_audit(self, content: str) -> subprocess.CompletedProcess[str]:
         with tempfile.TemporaryDirectory() as directory:
-            finding = Path(directory) / "finding.md"
+            finding = Path(directory) / "2026-08-12-unittest-discovery.md"
             finding.write_text(content, encoding="utf-8")
             return subprocess.run(
                 [sys.executable, str(AUDITOR), str(finding)],
@@ -80,8 +82,8 @@ class ResearchAuditBehavior(unittest.TestCase):
 
     def test_rejects_a_claim_without_provenance(self) -> None:
         invalid = VALID_FINDING.replace(
-            "https://example.com/docs | 2026-08-12",
-            "no-source | yesterday",
+            "| https://docs.python.org/3/library/unittest.html | 2026-08-12 |",
+            "| no-source | yesterday |",
             1,
         )
 
@@ -93,8 +95,9 @@ class ResearchAuditBehavior(unittest.TestCase):
 
     def test_rejects_a_missing_provider_trail(self) -> None:
         invalid = VALID_FINDING.replace(
-            "| Product documentation | Official docs | Direct URL | found | None |",
-            "| | | | | |",
+            "| Product fact | official docs |"
+            " https://docs.python.org/3/library/unittest.html | answered | 0 | None |",
+            "| | | | | | |",
         )
 
         result = self.run_audit(invalid)
