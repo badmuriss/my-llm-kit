@@ -54,6 +54,18 @@ class SharedManifestBehavior(unittest.TestCase):
             result.stdout.splitlines(),
         )
 
+    def test_documents_every_shipped_and_community_skill(self) -> None:
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
+        shipped = sorted(
+            path.parent.name for path in (ROOT / "skills").glob("*/SKILL.md")
+        )
+        community = [entry["name"] for entry in manifest["community_skills"]]
+
+        for name in (*shipped, *community):
+            with self.subTest(skill=name):
+                self.assertIn(f"`{name}`", readme)
+
     def test_includes_the_reduced_harness_dependencies(self) -> None:
         manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
 
