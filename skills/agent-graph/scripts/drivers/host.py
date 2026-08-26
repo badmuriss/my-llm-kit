@@ -27,6 +27,7 @@ from graph_core import (  # noqa: E402
     normalize_repo_path,
     validate_worker_result,
 )
+from artifact_policy import artifact_policy  # noqa: E402
 from drivers.base import (  # noqa: E402
     DriverError,
     DriverReceipt,
@@ -286,6 +287,7 @@ def _driver_instructions(attempt_id: str) -> dict[str, Any]:
             "outcome": "reported",
             "write_once": True,
         },
+        "artifact_policy": artifact_policy(),
         "prohibitions": [
             "Do not act as the implementation coordinator.",
             "Do not mutate the graph journal or projection.",

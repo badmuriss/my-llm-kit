@@ -91,6 +91,14 @@ Driver cleanup is independently recoverable after a report is durable. `sync` re
 
 ## Structured results
 
+The default worker artifact policy is `minimal-by-default-v1`: no speculative
+test suite or supplemental Markdown. Reuse existing artifacts first. A focused
+regression is justified only by a reproducible defect, security/data-integrity
+invariant, public contract, or explicit acceptance, with at most one new
+regression test per defect. Behavior deliberately removed from scope is not a
+regression contract. Receipts and `WorkerResult` carry check evidence, so a
+status log or duplicate plan is not required.
+
 Workers write one closed object that conforms to `worker-result.schema.json`: `outcome` is always `reported`, `external_refs` is an object, and evidence uses only `file:` or full-SHA `commit:` references. A no-change report may use empty `files_changed` and `checks_run` to record a blocker, question, or audit finding without inventing a check. A report with changed files must name at least one check. A WorkerResult only reports work: it cannot grade a task or author a task status. The coordinator's attempt-bound Check/import and public `grade` command own those transitions. A graph amendment names its active parent task and attempt, coordinator generation, normalized paths, and reason. The reducer derives an immutable effective path union, ordered amendment IDs, and digest for that attempt. Dispatch stores that exact scope in the worker capsule, and result validation uses it without changing the frozen task contract. The coordinator rejects unknown fields, mismatched task or attempt IDs, duplicate terminal reports, unsafe evidence references, and files outside that effective path union.
 
 ## Malformed result quarantine

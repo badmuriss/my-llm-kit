@@ -17,6 +17,12 @@ if ([string]::IsNullOrWhiteSpace($DocumentsDirectory)) {
     $DocumentsDirectory = Join-Path $HomeDirectory "Documents"
 }
 $SkillsRoot = Join-Path $HomeDirectory ".agents\skills"
+$OpenCodeConfigPath = if ([string]::IsNullOrWhiteSpace($env:OPENCODE_CONFIG)) {
+    Join-Path $HomeDirectory ".config\opencode\opencode.json"
+}
+else {
+    $env:OPENCODE_CONFIG
+}
 $HostSkillDirectories = @()
 $Results = @()
 $HadFailure = $false
@@ -247,6 +253,23 @@ Invoke-Step "pip markitdown+paper-search" {
     }
 }
 
+function Configure-OpenCodeMcp {
+    param(
+        [Parameter(Mandatory = $true)][string]$Name,
+        [Parameter(Mandatory = $true)][string[]]$Command
+    )
+    $arguments = @(
+        (Join-Path $RepoDirectory "scripts\configure_opencode_mcp.py"),
+        "--config", $OpenCodeConfigPath,
+        "--name", $Name,
+        "--command"
+    ) + $Command
+    if ($DryRun) {
+        $arguments += "--dry-run"
+    }
+    Invoke-Python $arguments
+}
+
 Invoke-Step "register MCP paper-search" {
     if (Test-Command "claude") {
         $listing = (& claude mcp list 2>$null | Out-String)
@@ -273,7 +296,7 @@ Invoke-Step "register MCP paper-search" {
         }
     }
     if (Test-Command "opencode") {
-        Write-Host '  opencode: add {"mcp":{"paper-search":{"type":"local","command":["paper-search-mcp"]}}} to opencode.json'
+        Configure-OpenCodeMcp -Name "paper-search" -Command @("paper-search-mcp")
     }
 }
 
@@ -327,7 +350,7 @@ Invoke-Step "register MCP scrapingdog" {
         }
     }
     if (Test-Command "opencode") {
-        Write-Host "  opencode: add {`"mcp`":{`"scrapingdog`":{`"type`":`"local`",`"command`":[`"node`",`"$entrypoint`"]}}} to opencode.json"
+        Configure-OpenCodeMcp -Name "scrapingdog" -Command @("node", $entrypoint)
     }
     if ([string]::IsNullOrWhiteSpace($env:SCRAPINGDOG_API_KEY)) {
         Write-Host "  scrapingdog registered without a key; set SCRAPINGDOG_API_KEY before starting an agent"
@@ -508,27 +531,28 @@ Invoke-Step "plugins for Claude Code and Codex" {
 
 $DcgPath = Join-Path $HomeDirectory ".local\bin\dcg.exe"
 Invoke-Step "dcg destructive command guard" {
-    if (-not (Test-Path -LiteralPath $DcgPath)) {
-        if ($DryRun) {
-            Write-Host "  [dry-run] run the official native Windows dcg PowerShell installer"
-        }
-        else {
-            $installerUrl = "https://raw.githubusercontent.com/Dicklesworthstone/destructive_command_guard/main/install.ps1"
-            $installer = Invoke-RestMethod -Uri $installerUrl
-            & ([scriptblock]::Create([string]$installer)) -EasyMode -Verify
-        }
-    }
     if ($DryRun) {
+        Write-Host "  [dry-run] refresh dcg with the official native Windows PowerShell installer"
         Write-Host "  [dry-run] copy calibrated dcg config, install hooks, and run doctor"
         return
     }
+    # Refresh even when dcg.exe exists. Windows parsing and hook protocol fixes
+    # have landed frequently, and an old binary can make read-only PowerShell
+    # commands look like configuration false positives.
+    $installerUrl = "https://raw.githubusercontent.com/Dicklesworthstone/destructive_command_guard/main/install.ps1"
+    $installer = Invoke-RestMethod -Uri $installerUrl
+    & ([scriptblock]::Create([string]$installer)) -EasyMode -Verify
     if (-not (Test-Path -LiteralPath $DcgPath)) {
         throw "dcg installer completed without creating $DcgPath"
     }
     $configDirectory = Join-Path $HomeDirectory ".config\dcg"
     New-Item -ItemType Directory -Force -Path $configDirectory | Out-Null
-    foreach ($name in @("config.toml", "allowlist.toml")) {
-        $source = Join-Path (Join-Path $RepoDirectory "dcg") $name
+    $managedDcgFiles = @{
+        "config.toml" = "config.windows.toml"
+        "allowlist.toml" = "allowlist.toml"
+    }
+    foreach ($name in $managedDcgFiles.Keys) {
+        $source = Join-Path (Join-Path $RepoDirectory "dcg") $managedDcgFiles[$name]
         $target = Join-Path $configDirectory $name
         Install-ManagedFile -Source $source -Target $target
     }

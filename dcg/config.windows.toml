@@ -1,0 +1,46 @@
+# dcg configuration for native Windows agent sessions.
+#
+# PowerShell makes recursive deletion easy to express, and agent scratch/build
+# directories normally live below the user profile. The default Windows rules
+# correctly classify that syntax as destructive, but an unqualified deny also
+# interrupts routine cleanup of data that is both generated and replaceable.
+# Keep the destructive rules enabled and exempt only exact cleanup commands for
+# known regenerable targets.
+
+[general]
+log_file = "~/.local/share/dcg/blocked.log"
+self_heal_hook = true
+hook_timeout_ms = 5000
+
+[confidence]
+# Let data-only or otherwise low-confidence matches warn while preserving every
+# critical match. This reduces PowerShell syntax false positives without making
+# catastrophic commands fail open.
+enabled = true
+warn_threshold = 0.5
+protect_critical = true
+
+[overrides]
+block = [
+  { pattern = "^git\\s+checkout\\s+(--\\s+)?\\.\\s*$", reason = "git checkout . discards the whole working tree; use git stash" },
+  { pattern = "^git\\s+restore\\s+(--\\s+)?\\.\\s*$", reason = "git restore . discards the whole working tree; use git stash" },
+]
+
+[[overrides.allowlist_rules]]
+pattern = "(?i)^\\s*remove-item\\s+-(?:recurse\\s+-force|force\\s+-recurse)\\s+(?:\\.next|\\.turbo|coverage|dist|node_modules)\\s*$"
+comment = "Permit only whole-command cleanup of regenerable relative build artifacts"
+
+[[overrides.allowlist_rules]]
+pattern = "(?i)^\\s*rm\\s+(?:-(?:rf|fr)|-r\\s+-f|-f\\s+-r)\\s+(?:\\.next|\\.turbo|coverage|dist|node_modules)\\s*$"
+comment = "Permit only whole-command cleanup of regenerable relative build artifacts from Git Bash"
+
+[packs]
+# Native Windows needs the core and operating-system packs everywhere. Database,
+# container and provider packs belong in project policy instead of every local
+# agent session; keeping them global produced unrelated blocks on ordinary work.
+enabled = [
+  "core",
+  "system.disk",
+  "windows.filesystem",
+  "windows.system",
+]

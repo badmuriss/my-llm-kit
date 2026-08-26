@@ -1,6 +1,6 @@
 ---
 name: impl
-description: Implement through the minimum justified process. Use a fresh coordinator and durable graph only for an approved graph-mode OpenSpec change. Use for $impl, /impl, a process decision, or an approved slug.
+description: Implement through the minimum justified process. Use a fresh coordinator and durable graph only for an approved graph-mode OpenSpec change. Use for $impl, a process decision, or an approved slug.
 ---
 
 # Impl
@@ -54,7 +54,7 @@ bootstrap session after the handoff receipt.
 Run `claim-coordinator`, then `resume`. Never bootstrap from a claimed coordinator. Every mutating command presents the current generation.
 
 1. Query `ready`. Choose the smallest useful non-conflicting wave.
-2. Classify ready work into only the roles it needs: research, documentation, implementation, review, verification, or integration. The coordinator filters review by cohesive package and material risk, rather than auditing every microtask. Resolve each attempt through the runtime catalog with the cheapest sufficient model and effort. Persist requested/resolved values independently with fallback, rationale, role, risk, and cost rank. Do not escalate model or effort automatically.
+2. Classify ready work into only the roles it needs: research, documentation, implementation, review, verification, or integration. The coordinator filters review by cohesive package and material risk, rather than auditing every microtask. Resolve each attempt through the runtime catalog with the cheapest sufficient model and effort. Persist requested/resolved values independently with fallback, rationale, role, risk, and cost rank. Do not escalate model or effort automatically. Apply the `minimal-by-default-v1` artifact budget from `agent-graph`: no speculative tests or Markdown.
 3. Run `dispatch --task <id> --generation <n>`. Give a worker only the generated capsule, which is bounded and transcript-free. Use host-native workers when available or `--local` for one localized task.
 4. Use `sync` for provider lifecycle, `reply` for questions, and `record-result` for a structured result. Driver degradation and auto-selection stay visible in receipts. Dynamic children inherit or narrow paths and context; they cannot grade parents, recursively delegate, or mutate the journal.
 5. Run `run-check --task <id> --generation <n>`. It executes directly and rejects shell operators. A process exit or provider completion is never a grade.
@@ -82,6 +82,6 @@ downgrade one operation or block it. They never choose the process mode.
 
 Review source changes by cohesive package and material risk. The reviewer is read-only. Verify material findings and rerun affected checks.
 
-Then run `digest`, finish all cleanup, and run `complete --outcome <pass|partial|blocked>`. Report files, checks, grades, repair hypotheses, driver degradation, cleanup receipts, review findings, and unproven behavior.
+Then run the read-only `thermo-nuclear-code-quality-review` skill. If the change touched standing-rule sources, run `rule-curator` once as the matching final curation gate; skip it when the rule corpus is unchanged. Verify findings, rerun affected checks, then run `digest`, finish all cleanup, and run `complete --outcome <pass|partial|blocked>`. Report files, checks, grades, repair hypotheses, driver degradation, cleanup receipts, review findings, and unproven behavior.
 
 After normal completion, `python3 skills/impl/scripts/learning.py snapshot --change <slug> --run-id <run-id>` may record shadow learning. It records mode, result, retries, observed time, rework, coordination overhead, resolved profiles, and provider usage or cache fields only when exposed. Missing telemetry is `unavailable`, never zero or estimated. The snapshot never changes the run, routing, capability receipt, evidence grade, rule, or skill.

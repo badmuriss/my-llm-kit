@@ -1,6 +1,6 @@
 ---
 name: spec
-description: Select the minimum planning mode for a codebase change. Emit OpenSpec only for graph mode. Use for $spec, /spec, architecture requests, or proposal.md/design.md/tasks.md. Never implement code.
+description: Select the minimum planning mode for a codebase change. Emit OpenSpec only for graph mode. Use for $spec, architecture requests, or proposal.md/design.md/tasks.md. Never implement code.
 ---
 
 # Spec
@@ -32,11 +32,12 @@ Act as the architect. Select the minimum process and produce only its required a
      Check: python3 -m unittest tests.test_api
    ```
 
-   `Depends` may be empty. `Paths` uses normalized repository-relative files or directory prefixes, never globs. `Mode` is `read` or `write`. `Isolation` is `auto` or `worktree`. Use one direct executable for `Check:` and move shell composition into a reviewed script.
+   `Depends` may be empty. `Paths` uses normalized repository-relative files or directory prefixes, never globs. `Mode` is `read` or `write`. `Isolation` is `auto` or `worktree`. Use one direct executable for `Check:` and move shell composition into a reviewed script. Do not add test or Markdown paths merely to satisfy a template; name them only when acceptance needs a focused regression, a contract check, or a requested documentation change. Workers follow the `minimal-by-default-v1` artifact budget.
 6. Load `frontend-visual-validation` for rendered graph work. Add one reasoned `Visual-Scope:` and one `Visual:` entry per supported platform and state.
 7. In graph mode, run `python3 skills/agent-graph/scripts/agent_graph.py validate --change <slug> --json`. Use `py` on Windows. Validation must pass before handoff and never starts workers. Bootstrap separately verifies that the saved decision revision, packets, checks, permission, budget, integration owner, and cleanup plan still match the graph.
 8. Run `$spec-council --phase verdict <slug>` only when `--council` is present. Record accepted and rejected findings.
-9. Tell the user to run `$impl` or `/impl` with the decision or approved graph slug.
+9. Before handoff, inspect the diff for standing-rule sources (`AGENTS.md`, skill instructions, ADRs, or process docs). If one changed, run `rule-curator` once over that corpus and apply only evidence-backed duplicate/staleness edits; otherwise record that curation was skipped because the rule corpus did not change.
+10. Tell the user to use the `$impl` skill with the decision or approved graph slug.
 
 Checks and external evidence decide acceptance. Council advice does not.
 

@@ -795,6 +795,13 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(arguments: Sequence[str] | None = None) -> int:
     options = build_parser().parse_args(arguments)
+    if sys.platform != "linux":
+        print(
+            "agent-resource-guard is Linux-only; use the host and operating system "
+            "process controls on this platform",
+            file=sys.stderr,
+        )
+        return 2
     processes = read_processes()
     pruned: list[ProcessRecord] = []
     pruned_sessions: list[str] = []

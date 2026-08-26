@@ -21,6 +21,7 @@ from drivers.base import (
     execution_profile_from_attempt,
 )
 from context_capsules import build_reused_session_handoff
+from artifact_policy import artifact_policy_prompt
 from browser_surfaces import (  # noqa: E402
     BrowserSurfaceError,
     public_receipt,
@@ -1496,6 +1497,9 @@ class OrcaDriver:
             local_id = str(task["id"])
             dependencies = [self.task_ids[str(item)] for item in task.get("depends", [])]
             capsule = str(task.get("capsule", task.get("title", local_id)))
+            policy_prompt = artifact_policy_prompt()
+            if policy_prompt not in capsule:
+                capsule = f"{capsule}\n\n{policy_prompt}"
             argv = ["orchestration", "task-create", "--spec", capsule, "--deps", json.dumps(dependencies), "--run", run_id]
             if retry_request:
                 argv.extend(["--retry-request", f"{retry_request}-{local_id}"])

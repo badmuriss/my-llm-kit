@@ -265,10 +265,9 @@ Build constraints carried over from Anthropic's official skill-authoring guide:
 - **References stay one level deep** from SKILL.md; no reference file links to
   another reference file.
 - **Naming:** `name` frontmatter = `rule-curator` (lowercase, hyphenated, no
-  spaces), matching the directory. Claude Code derives the `/slash` command from
-  the `name` field, so a space breaks invocation (`/Rule Curator` fails). The
-  Anthropic doc's space-containing examples ("PDF Processing") are misleading for
-  Claude Code use. Human-readable "Rule Curator" stays as the H1 and UI title.
+  spaces), matching the directory. Skill hosts use the exact name to resolve the
+  skill, so a space-containing alias is not a supported invocation. Human-readable
+  "Rule Curator" stays as the H1 and UI title.
 
 ## Build location
 

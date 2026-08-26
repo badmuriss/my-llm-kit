@@ -87,7 +87,7 @@ Implement the approved plan:
 Use $impl <slug> to implement the OpenSpec change. Execute every task check and report its evidence grade.
 ```
 
-Claude Code also has `/spec` and `/impl` wrappers for the same workflow. Council review is opt-in with `$spec --council <change>`. It challenges the completed draft once and remains advisory; executable checks decide acceptance.
+All supported hosts use the `spec` and `impl` skills for the same workflow. Council review is opt-in with `$spec --council <change>`. It challenges the completed draft once and remains advisory; executable checks decide acceptance.
 
 ### Portable core and adapters
 
@@ -111,7 +111,12 @@ Every run stores an append-only journal and rebuilt projection under `openspec/r
 
 Each OpenSpec task carries one `Check:` command. The state records its result, exit code, duration, and attempt count. `Check: missing validation evidence` remains `unobserved` and cannot become `pass`.
 
-Validation is proportional to risk. The harness reuses the smallest relevant check and does not add tests merely to pin constants, defaults, toggles, deletions, trivial passthroughs or guarantees already enforced by the type system. MVP changes prefer a clean rewrite over compatibility layers unless the repository shows an active external contract.
+Validation is proportional to risk. The harness defaults to `minimal-by-default-v1`: reuse the smallest relevant check and existing artifact, add at most one focused regression per reproducible defect, and do not create a regression for behavior deliberately removed or out of scope. It does not add tests merely to pin constants, defaults, toggles, deletions, trivial passthroughs or guarantees already enforced by the type system, and it does not create status Markdown or duplicate plans as evidence. MVP changes prefer a clean rewrite over compatibility layers unless the repository shows an active external contract.
+
+`rule-curator` is a maintenance pass, not another worker: `spec` runs it at
+handoff only when standing-rule sources changed, and `impl` pairs the same
+conditional gate with the final `thermo-nuclear-code-quality-review`. It is not
+run on every ordinary product task.
 
 Frontend tasks pair a reasoned `Visual-Scope:` with `Visual:` contracts for each changed route and state. General responsive UI covers desktop, notebook, tablet and mobile; platform-specific UI covers only its declared targets. `impl` requires PNG screenshots inspected by a vision-capable tool and a validated manifest before the task can pass. A final guard detects frontend file changes and blocks a successful run when the plan omitted visual expectations entirely. The `frontend-visual-validation` skill defines the capture and review workflow.
 
@@ -186,11 +191,25 @@ conversation transcripts.
 
 ### Web MCP
 
-The setup installs and registers [`scrapingdog-mcp`](https://github.com/Darshan972/Scrapingdog-mcp) with Claude Code and Codex. Until [the YouTube Search fix](https://github.com/Darshan972/Scrapingdog-mcp/pull/1) ships in an npm release, installation is pinned to the immutable tarball for the tested fork commit. It performs an MCP handshake and checks the tool catalog without consuming API credits. OpenCode receives the equivalent JSON to add manually.
+The setup installs and registers [`scrapingdog-mcp`](https://github.com/Darshan972/Scrapingdog-mcp) with Claude Code, Codex, and OpenCode. Until [the YouTube Search fix](https://github.com/Darshan972/Scrapingdog-mcp/pull/1) ships in an npm release, installation is pinned to the immutable tarball for the tested fork commit. It performs an MCP handshake and checks the tool catalog without consuming API credits. For OpenCode, setup merges the local servers into `~/.config/opencode/opencode.json` without copying credentials or replacing an existing conflicting entry.
 
 The server reads `SCRAPINGDOG_API_KEY` from the agent process at runtime. The installer never writes the key to host configuration. Export the variable before starting the agent.
 
 Credentials are optional during setup. A skill stays dormant until its key or login is available.
+
+### OpenCode and OpenCode Go
+
+OpenCode is a supported skill and MCP host. Run setup after installing it; the installer
+registers `paper-search` and `scrapingdog` in the OpenCode user config and leaves MCP
+credentials in the process environment. To use the OpenCode Go subscription, open the OpenCode TUI,
+run `/connect`, choose OpenCode Go, complete its sign-in, and select a model shown by
+`opencode models opencode-go`. The model name uses OpenCode's `provider/model` format, so
+the harness does not hard-code a model list that can go stale.
+
+The portable graph currently treats OpenCode as a first-class host for skills and MCP, while
+Host and Orca remain the worker adapters. It does not advertise an OpenCode worker profile
+until the runtime can report the same permission, effort, workspace, and cleanup receipts;
+this keeps a Go model selection from being mistaken for a verified worker lifecycle.
 
 ### Optional plugins
 
@@ -211,7 +230,7 @@ Skills live once in `~/.agents/skills/`. Hosts that need their own directory rec
 | Codex CLI | linked to `~/.codex/skills/` | yes | yes | yes | MCP proxy |
 | Gemini CLI | reads shared root | no marketplace | manual | yes | not configured |
 | GitHub Copilot CLI | reads shared root | no marketplace | manual | yes | not configured |
-| OpenCode | reads shared root | no marketplace | JSON printed | not supported | not configured |
+| OpenCode | reads shared root | no marketplace | configured | not configured | not configured |
 
 The installer only configures hosts it finds. It reports real directories instead of overwriting them.
 
@@ -232,7 +251,7 @@ The installers:
 1. Detect installed agent hosts and required tools.
 2. Install the shared skills and link them into each host.
 3. Clone the owned and community skill repos when missing, including skills stored in a repository subdirectory.
-4. Install Firecrawl, optional plugins, and the `paper-search` and ScrapingDog MCP servers where supported.
+4. Install Firecrawl, optional plugins, and the `paper-search` and ScrapingDog MCP servers where supported, including OpenCode's user config.
 5. Verify the ScrapingDog MCP handshake and tool catalog without API credits.
 6. Verify the `paper-search` executable, version, and one real arXiv query. A failure declares the web fallback.
 7. Install the shared `AGENTS.md`, with backups for different existing files.
@@ -242,9 +261,13 @@ The installers:
 
 ### Safety tools
 
-`dcg` blocks destructive shell commands before they run. This repo installs a shared configuration from `dcg/`.
+`dcg` blocks destructive shell commands before they run. This repo installs calibrated configuration from `dcg/`. Native Windows setup refreshes the binary with the upstream PowerShell installer, writes PowerShell-aware hook records, then installs `config.windows.toml`. That profile keeps core, disk and Windows protections, enables confidence filtering while preserving critical denials, and allows only whole-command recursive cleanup of relative, regenerable artifacts such as `node_modules`, `.next`, `.turbo`, `coverage` and `dist`, whether expressed as `Remove-Item` or `rm`. Absolute targets and chained commands remain blocked. Database, container and provider packs are enabled by project policy instead of burdening every Windows session.
 
-`agent-resource-guard` is an optional Linux-only enhancement for machines that regularly run many concurrent agents or overlapping heavy commands. Install it explicitly with `./setup.sh --with-resource-guard`. When present, the harness can use it for machine-wide admission and stale-workload cleanup. Normal Linux installs, macOS and native Windows use their host's process controls instead; a missing guard never blocks work.
+Direct reads with `Get-Content`, including `-Raw`, variables and ordinary parsing/filtering pipelines, are expected to pass; piping the result into an evaluator such as `Invoke-Expression` remains blocked. When a read is denied, run `dcg explain --dialect ps "<exact command>"`. If it reports `allow`, the denial came from the agent host or its plan-mode permission classifier rather than `dcg`. Run `dcg doctor` in the same host that runs the agent, then smoke-test a destructive command in a throwaway repository: a hook file being present is not proof that a particular desktop or shell integration is active.
+
+`agent-resource-guard` is an optional Linux-only enhancement for machines that regularly run many concurrent agents or overlapping heavy commands. Its implementation reads Linux `/proc` and cgroups and terminates processes with POSIX signals, so `setup.ps1` intentionally does not install it; invoking the CLI on Windows now exits with an explicit unsupported-platform message. Install it explicitly with `./setup.sh --with-resource-guard`. When present, the harness can use it for machine-wide admission and stale-workload cleanup. Normal Linux installs, macOS and native Windows use their host's process controls instead; a missing guard never blocks work.
+
+`rule-curator` has no monitoring hook, daemon, or scheduler on any operating system. It is an on-demand human curation skill. `spec` invokes it at handoff only when standing-rule sources changed, and `impl` pairs that conditional pass with the final thermo-nuclear review; ordinary product tasks do not pay that cost.
 
 `Pipelock` scans agent actions at supported host boundaries. The Codex installer wraps existing MCP servers with `pipelock mcp proxy`. The Claude installer adds its action hooks. Run setup again after adding a Codex MCP server so Pipelock can wrap the new entry.
 
@@ -252,7 +275,7 @@ This integration does not intercept every process on the machine. A child proces
 
 ### Reduced Claude Code install
 
-Claude Code users can install only the native commands, worker profiles, and their required skills:
+Claude Code users can install only the native skills, worker profiles, and their required skills:
 
 ```bash
 ./install.sh

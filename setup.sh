@@ -21,6 +21,7 @@ done
 # canonical skill root. read natively by Codex (project scope), Gemini CLI, GitHub Copilot
 # CLI and OpenCode; fanned out below to the hosts that only read their own directory.
 SKILLS_ROOT="$HOME/.agents/skills"
+OPENCODE_CONFIG_PATH="${OPENCODE_CONFIG:-$HOME/.config/opencode/opencode.json}"
 
 # host skill dirs that need per-skill symlinks, only for hosts actually present
 HOST_SKILL_DIRS=()
@@ -142,6 +143,17 @@ install_python_pkgs() {
 }
 run_step "pip markitdown+paper-search" install_python_pkgs
 
+configure_opencode_mcp() {
+  local name="$1"; shift
+  if [ "$DRY" -eq 1 ]; then
+    python3 "$REPO_DIR/scripts/configure_opencode_mcp.py" \
+      --config "$OPENCODE_CONFIG_PATH" --name "$name" --command "$@" --dry-run
+  else
+    python3 "$REPO_DIR/scripts/configure_opencode_mcp.py" \
+      --config "$OPENCODE_CONFIG_PATH" --name "$name" --command "$@"
+  fi
+}
+
 # 3. register the paper-search MCP on every host present.
 # there is no shared MCP config across hosts: Claude Code, Codex and OpenCode each use a
 # different file and format, so this branches per host instead of writing one path.
@@ -170,8 +182,7 @@ register_mcp() {
   fi
 
   if command -v opencode >/dev/null 2>&1; then
-    echo "  opencode: add paper-search by hand in ~/.config/opencode/opencode.json"
-    echo '           {"mcp":{"paper-search":{"type":"local","command":["paper-search-mcp"]}}}'
+    configure_opencode_mcp paper-search paper-search-mcp
   fi
 }
 run_step "register MCP paper-search" register_mcp
@@ -222,8 +233,7 @@ register_scrapingdog_mcp() {
   fi
 
   if command -v opencode >/dev/null 2>&1; then
-    echo "  opencode: add scrapingdog by hand in ~/.config/opencode/opencode.json"
-    echo "           {\"mcp\":{\"scrapingdog\":{\"type\":\"local\",\"command\":[\"node\",\"$entrypoint\"]}}}"
+    configure_opencode_mcp scrapingdog node "$entrypoint"
   fi
 
   if [ -z "${SCRAPINGDOG_API_KEY:-}" ]; then

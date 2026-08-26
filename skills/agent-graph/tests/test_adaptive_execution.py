@@ -379,7 +379,8 @@ class AdaptiveExecutionBehavior(unittest.TestCase):
         self.assertEqual(len(dispatches), 3)
         self.assertEqual([call[call.index("--task") + 1] for call in dispatches], ["task-1", "task-2", "task-3"])
         task_specs = [call[call.index("--spec") + 1] for call in fake.calls if call[:2] == ["orchestration", "task-create"]]
-        self.assertEqual(task_specs[0], "full initial capsule")
+        self.assertTrue(task_specs[0].startswith("full initial capsule\n\n"))
+        self.assertIn("minimal-by-default-v1", task_specs[0])
         ready_call = [call for call in fake.calls if call[:2] == ["orchestration", "task-update"]][-1]
         self.assertEqual(ready_call[ready_call.index("--id") + 1], "task-3")
         self.assertEqual(ready_call[ready_call.index("--status") + 1], "ready")

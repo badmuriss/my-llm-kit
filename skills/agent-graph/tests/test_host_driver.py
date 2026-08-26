@@ -106,6 +106,14 @@ class HostDriverBehavior(unittest.TestCase):
         )
         self.assertFalse(capsule["driver_instructions"]["coordinator"])
         self.assertEqual(
+            capsule["driver_instructions"]["artifact_policy"]["name"],
+            "minimal-by-default-v1",
+        )
+        self.assertEqual(
+            capsule["driver_instructions"]["artifact_policy"]["new_tests"],
+            "on-demand",
+        )
+        self.assertEqual(
             capsule["workspace_scope"]["execution_workspace"]["kind"],
             "folder",
         )

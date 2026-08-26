@@ -522,6 +522,7 @@ class OrcaDriverBehavior(unittest.TestCase):
             call for call in fake.calls if call[:2] == ["orchestration", "task-create"]
         ][1]
         self.assertIn('["task-1"]', second_task_call)
+        self.assertTrue(any("minimal-by-default-v1" in item for item in second_task_call))
         self.assertEqual(attempt.external_refs["tier"], "supervised")
         task_ready = next(call for call in fake.calls if call[:2] == ["orchestration", "task-update"])
         worker_start = next(call for call in fake.calls if call[:2] == ["orchestration", "worker-start"])

@@ -57,7 +57,7 @@ git clone https://github.com/bwdurst/rule-curator.git ~/.claude/skills/rule-cura
 ```
 
 or copy the folder there manually. Then ask Claude to audit, prune, or clean up
-your rules, or run `/rule-curator`.
+your rules, or invoke the `rule-curator` skill.
 
 One thing worth doing first: if your rule files are not under version control,
 run `git init` in the directory that holds them (your memory directory, for

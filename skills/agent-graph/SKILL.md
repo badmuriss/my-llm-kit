@@ -36,6 +36,15 @@ Parse each task's `Depends`, `Paths`, `Mode`, `Isolation`, `Acceptance`, and sin
 
 Schedule a task only when every dependency has grade `pass`. Serialize write tasks whose file or directory prefixes overlap. A worker report changes an attempt to `reported`; it never grades the task.
 
+## Artifact budget
+
+Workers default to `minimal-by-default-v1`: create no new test suite or supplemental Markdown. Reuse or extend an existing artifact first. Add at most one focused regression test per reproducible defect, and only when the acceptance, a security or data-integrity invariant, or a public contract requires it. Do not add tests for constants, trivial passthroughs, type guarantees, implementation details, or behavior explicitly removed from scope. Do not create status logs, duplicate plans, or narrative check reports; receipts and `WorkerResult` are the evidence trail. Run the task's declared `Check` first and widen validation only for broad or high-risk changes. Host capsules and Orca task specs carry this policy to the worker.
+
+Use `rule-curator` as an occasional maintenance pass over the standing rule
+corpus, not as a worker role or a per-task artifact. Run it after a material
+rule-set change, consolidate only evidence-backed duplicates, and leave
+project-specific rules in their canonical skill or `AGENTS.md` source.
+
 ## Safety rules
 
 - Give workers one task capsule, not the full planning transcript.
