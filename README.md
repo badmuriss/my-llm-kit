@@ -163,13 +163,14 @@ conversation transcripts.
 | `readme-pass` | Concise, scannable README with agent-first installation. |
 | `thermo-nuclear-code-quality-review` | Read-only maintainability review of a finished implementation diff. |
 | `trim-code-comments` | Removes comments that only narrate visible code. |
+| `remove-ai-marks` | Inspects and removes supported Unicode, C2PA, EXIF/XMP, and container metadata from text, images, and documents. |
 | `rule-curator` | Bulk audit and pruning of an agent's whole standing rule set. |
 
 ### Skills linked from their own repos
 
 | Skill | Purpose | Repo |
 |---|---|---|
-| `unslop` | Writes, edits, detects, scores, and removes verifiable Unicode or provenance marks. | [badmuriss/unslop](https://github.com/badmuriss/unslop) |
+| `unslop` | Writes, edits, detects, scores, and routes watermark cleanup for prose. | [badmuriss/unslop](https://github.com/badmuriss/unslop) |
 | `incredibly-pretty-websites` | Research-driven frontend design system. | [badmuriss/incredibly-pretty-websites](https://github.com/badmuriss/incredibly-pretty-websites) |
 | `site-audit` | UX, SEO, AEO, GEO, and Core Web Vitals audit for a running site. | [badmuriss/site-audit](https://github.com/badmuriss/site-audit) |
 | `spec-council` | Bounded multi-perspective review for OpenSpec drafts and consequential decisions. | [badmuriss/spec-council](https://github.com/badmuriss/spec-council) |

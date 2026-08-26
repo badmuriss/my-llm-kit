@@ -48,6 +48,7 @@
     "spec",
     "impl",
     "grill-me",
+    "remove-ai-marks",
     "trim-code-comments",
     "thermo-nuclear-code-quality-review",
     "rule-curator"
