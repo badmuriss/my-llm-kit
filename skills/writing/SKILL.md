@@ -7,6 +7,8 @@ description: "Clear writing standards based on Zinsser. use_when: documentation,
 
 Based on William Zinsser's "On Writing Well".
 
+Use this skill for technical artifacts whose primary reader is a developer or tool. For standalone prose meant for publication or direct human consumption, route to `unslop`. If a task contains both, use these rules for the technical shell and `unslop` for the authored prose; do not run the full `unslop` rubric on commits, schemas, status updates, or ordinary documentation.
+
 ## Core Principles
 
 ### Clarity
