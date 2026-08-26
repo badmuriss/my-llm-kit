@@ -27,6 +27,11 @@
       "name": "drawio-skill",
       "url": "https://github.com/Agents365-ai/drawio-skill",
       "path": "skills/drawio-skill"
+    },
+    {
+      "name": "revenue-centric-design",
+      "url": "https://github.com/heliocosta-dev/revenue-centric-design",
+      "path": "."
     }
   ],
   "plugins": [

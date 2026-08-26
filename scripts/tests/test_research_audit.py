@@ -13,9 +13,9 @@ VALID_FINDING = """# Research finding
 
 ## Protocol
 
-- Question: Which source supports the claim?
-- Decision criterion: The primary source states it directly.
-- Falsifier: The primary source contradicts it.
+- Question: Does unittest discovery require an importable start directory?
+- Decision criterion: The official documentation states it directly.
+- Falsifier: The official documentation contradicts it.
 - Risk: material
 - Credits used: 0
 
@@ -33,7 +33,7 @@ VALID_FINDING = """# Research finding
 
 ## Findings
 
-The product documents the feature.
+Discovery requires an importable start directory.
 
 ## Disagreements
 
@@ -56,7 +56,7 @@ None.
 
 ## Trial by fire
 
-- Primary-source claims: The product documents the feature.
+- Primary-source claims: Discovery requires an importable start directory.
 - Secondary-only claims: None.
 - Volatile claims: None.
 """
@@ -65,7 +65,7 @@ None.
 class ResearchAuditBehavior(unittest.TestCase):
     def run_audit(self, content: str) -> subprocess.CompletedProcess[str]:
         with tempfile.TemporaryDirectory() as directory:
-            finding = Path(directory) / "finding.md"
+            finding = Path(directory) / "2026-08-12-unittest-discovery.md"
             finding.write_text(content, encoding="utf-8")
             return subprocess.run(
                 [sys.executable, str(AUDITOR), str(finding)],

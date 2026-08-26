@@ -151,10 +151,15 @@ conversation transcripts.
 | `spec` | Architecture-first OpenSpec planning. |
 | `agent-graph` | Durable dependencies, task capsules, driver receipts, evidence grades, and cleanup. |
 | `impl` | Fresh-coordinator implementation over the portable graph runtime. |
+| `frontend-visual-validation` | Screenshot and vision-review contract for every changed UI surface and state. |
 | `grill-me` | Decision interview used by `spec`. |
 | `grill-with-docs` | Decision interview that also updates context and ADRs. |
 | `scrapingdog` | Paid public-web data provider. Requires `SCRAPINGDOG_API_KEY`. |
 | `readme-pass` | Concise, scannable README with agent-first installation. |
+| `thermo-nuclear-code-quality-review` | Read-only maintainability review of a finished implementation diff. |
+| `trim-code-comments` | Removes comments that only narrate visible code. |
+| `remove-ai-marks` | Strips invisible Unicode, text watermarks, and provenance metadata from generated files. |
+| `rule-curator` | Bulk audit and pruning of an agent's whole standing rule set. |
 
 ### Skills linked from their own repos
 
@@ -165,12 +170,13 @@ conversation transcripts.
 | `site-audit` | UX, SEO, AEO, GEO, and Core Web Vitals audit for a running site. | [badmuriss/site-audit](https://github.com/badmuriss/site-audit) |
 | `spec-council` | Bounded multi-perspective review for OpenSpec drafts. | [badmuriss/spec-council](https://github.com/badmuriss/spec-council) |
 
-### Community design and diagram skills
+### Community design, conversion, and diagram skills
 
 | Skill | Purpose | Repo |
 |---|---|---|
 | `refero-design` | Leads UI research through Refero styles, screens, and flows, then produces a reference lock and decision ledger. `$incredibly-pretty-websites` consumes that direction for implementation craft and frontend constraints. | [referodesign/refero_skill](https://github.com/referodesign/refero_skill) |
 | `drawio-skill` | Creates editable architecture, flow, UML, ER, and system diagrams, validates their structure, exports common formats, and requires visual review. | [Agents365-ai/drawio-skill](https://github.com/Agents365-ai/drawio-skill) |
+| `revenue-centric-design` | 101 sourced principles on conversion, onboarding, churn, pricing, and positioning for SaaS. `$site-audit` and `$incredibly-pretty-websites` use it as the revenue argument behind a page change. Source-available: no gambling, betting, or casino use. | [heliocosta-dev/revenue-centric-design](https://github.com/heliocosta-dev/revenue-centric-design) |
 
 ### Web fallback
 
@@ -273,6 +279,7 @@ Heavy converters such as MinerU and docling are opt-in.
 - `last30days` comes from [mvanhorn/last30days-skill](https://github.com/mvanhorn/last30days-skill), under MIT.
 - `unslop` is original work under CC BY-SA.
 - `thermo-nuclear-code-quality-review` is adapted from [Cursor Team Kit](https://github.com/cursor/plugins/tree/main/cursor-team-kit/skills/thermo-nuclear-code-quality-review), under MIT.
+- `revenue-centric-design` comes from [heliocosta-dev/revenue-centric-design](https://github.com/heliocosta-dev/revenue-centric-design), distilled from [@richardrx](https://x.com/richardrx) with permission, under a source-available license that forbids gambling, betting, and casino use.
 - The cross-agent skill layout follows [vercel-labs/skills](https://github.com/vercel-labs/skills).
 
 Community projects keep their own licenses.
