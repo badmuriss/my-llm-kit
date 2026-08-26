@@ -20,7 +20,7 @@ REQUIRED_SECTIONS = (
     "Sources consulted",
     "Trial by fire",
 )
-PROTOCOL_FIELDS = ("Question", "Decision criterion", "Falsifier", "Risk", "Budget", "Credits used")
+PROTOCOL_FIELDS = ("Question", "Decision criterion", "Falsifier", "Risk", "Credits used")
 PROVIDER_HEADERS = ("Intent", "Provider", "Tool or endpoint", "Outcome", "Credits", "Fallback reason")
 CLAIM_HEADERS = (
     "Claim",
@@ -113,10 +113,9 @@ def audit(text: str, filename: str | None = None) -> tuple[list[str], list[str]]
         risk = field_value(protocol, "Risk")
         if risk and risk not in ALLOWED_RISKS:
             errors.append(f"invalid risk: {risk}")
-        for name in ("Budget", "Credits used"):
-            value = field_value(protocol, name)
-            if value and not NUMERIC_FIELD.match(value):
-                errors.append(f"protocol field {name} must be numeric: {value}")
+        credits_used = field_value(protocol, "Credits used")
+        if credits_used and not NUMERIC_FIELD.match(credits_used):
+            errors.append(f"protocol field Credits used must be numeric: {credits_used}")
 
     provider_trail = bodies.get("Provider trail")
     if provider_trail is not None:

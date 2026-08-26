@@ -1,0 +1,261 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/badmuriss/my-llm-kit/schemas/process-decision-v1.json",
+  "title": "Adaptive process decision v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "decision_id",
+    "request_digest",
+    "repository_scope",
+    "initial_mode",
+    "mode",
+    "revision",
+    "observations",
+    "assumptions",
+    "material_questions",
+    "selected_check",
+    "budget",
+    "triggers",
+    "amendments"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "decision_id": {"$ref": "#/$defs/identifier"},
+    "request_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "repository_scope": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/repositoryPath"}
+    },
+    "initial_mode": {"$ref": "#/$defs/mode"},
+    "mode": {"$ref": "#/$defs/mode"},
+    "revision": {"type": "integer", "minimum": 1},
+    "observations": {"$ref": "#/$defs/observations"},
+    "assumptions": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {"$ref": "#/$defs/assumption"}
+    },
+    "material_questions": {
+      "type": "array",
+      "maxItems": 32,
+      "items": {"$ref": "#/$defs/materialQuestion"}
+    },
+    "selected_check": {"$ref": "#/$defs/check"},
+    "budget": {"$ref": "#/$defs/budget"},
+    "triggers": {"$ref": "#/$defs/triggers"},
+    "amendments": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {"$ref": "#/$defs/amendment"}
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*$"
+    },
+    "repositoryPath": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096,
+      "pattern": "^(?:\\.|(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\)[^\\u0000-\\u001f]+)$"
+    },
+    "mode": {"enum": ["direct", "verified_single", "light_spec", "graph"]},
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["command", "oracle"],
+      "properties": {
+        "command": {"type": "string", "minLength": 1, "maxLength": 2048},
+        "oracle": {"type": "string", "minLength": 1, "maxLength": 1024}
+      }
+    },
+    "packet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["packet_id", "paths", "check"],
+      "properties": {
+        "packet_id": {"$ref": "#/$defs/identifier"},
+        "paths": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/repositoryPath"}
+        },
+        "check": {"$ref": "#/$defs/check"}
+      }
+    },
+    "observations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cohesion",
+        "architecture_uncertainty",
+        "reversibility",
+        "blast_radius",
+        "oracle_strength",
+        "independent_packets",
+        "shared_write_coupling",
+        "context_pressure",
+        "external_effects",
+        "unattended_execution"
+      ],
+      "properties": {
+        "cohesion": {"enum": ["cohesive", "mixed", "independent"]},
+        "architecture_uncertainty": {"enum": ["known", "material"]},
+        "reversibility": {"enum": ["reversible", "costly", "irreversible"]},
+        "blast_radius": {"enum": ["local", "multi_surface", "external"]},
+        "oracle_strength": {"enum": ["strong", "weak", "absent"]},
+        "independent_packets": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {"$ref": "#/$defs/packet"}
+        },
+        "shared_write_coupling": {"type": "boolean"},
+        "context_pressure": {"enum": ["low", "medium", "high"]},
+        "external_effects": {"enum": ["none", "reversible", "irreversible"]},
+        "unattended_execution": {"type": "boolean"}
+      }
+    },
+    "assumption": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assumption_id", "statement", "basis", "evidence_ref"],
+      "properties": {
+        "assumption_id": {"$ref": "#/$defs/identifier"},
+        "statement": {"type": "string", "minLength": 1, "maxLength": 2048},
+        "basis": {"enum": ["request", "repository", "owner", "safe_default"]},
+        "evidence_ref": {"type": "string", "minLength": 1, "maxLength": 4096}
+      }
+    },
+    "materialQuestion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "question_id",
+        "question",
+        "answer",
+        "decision_effects",
+        "provenance",
+        "safe_default_selected"
+      ],
+      "properties": {
+        "question_id": {"$ref": "#/$defs/identifier"},
+        "question": {"type": "string", "minLength": 1, "maxLength": 2048},
+        "answer": {"type": "string", "minLength": 1, "maxLength": 2048},
+        "decision_effects": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"enum": ["behavior", "scope", "risk", "acceptance", "mode"]}
+        },
+        "provenance": {"enum": ["owner", "safe_default"]},
+        "safe_default_selected": {"type": "boolean"}
+      }
+    },
+    "limit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["resource", "value", "unit", "rationale"],
+      "properties": {
+        "resource": {
+          "enum": [
+            "tokens",
+            "spend",
+            "context",
+            "wall_time",
+            "attempts",
+            "workers",
+            "tool_cost",
+            "cleanup"
+          ]
+        },
+        "value": {"type": "number", "exclusiveMinimum": 0},
+        "unit": {"type": "string", "minLength": 1, "maxLength": 64},
+        "rationale": {"type": "string", "minLength": 1, "maxLength": 1024}
+      }
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["policy", "limits", "stop_conditions"],
+      "properties": {
+        "policy": {"const": "task_local"},
+        "limits": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {"$ref": "#/$defs/limit"}
+        },
+        "stop_conditions": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1, "maxLength": 1024}
+        }
+      }
+    },
+    "triggers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["escalate", "deescalate", "stop"],
+      "properties": {
+        "escalate": {
+          "type": "array",
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1, "maxLength": 1024}
+        },
+        "deescalate": {
+          "type": "array",
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1, "maxLength": 1024}
+        },
+        "stop": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1, "maxLength": 1024}
+        }
+      }
+    },
+    "amendment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "amendment_id",
+        "from_revision",
+        "to_revision",
+        "from_mode",
+        "to_mode",
+        "changed_evidence",
+        "reason",
+        "replacement_check"
+      ],
+      "properties": {
+        "amendment_id": {"$ref": "#/$defs/identifier"},
+        "from_revision": {"type": "integer", "minimum": 1},
+        "to_revision": {"type": "integer", "minimum": 2},
+        "from_mode": {"$ref": "#/$defs/mode"},
+        "to_mode": {"$ref": "#/$defs/mode"},
+        "changed_evidence": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1, "maxLength": 2048}
+        },
+        "reason": {"type": "string", "minLength": 1, "maxLength": 2048},
+        "replacement_check": {"$ref": "#/$defs/check"}
+      }
+    }
+  }
+}

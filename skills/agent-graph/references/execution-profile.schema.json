@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/badmuriss/my-llm-kit/schemas/agent-graph-execution-profile.json",
+  "title": "Attempt execution profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "role",
+    "requested",
+    "resolved",
+    "fallback_reason",
+    "placement_request",
+    "resolved_placement"
+  ],
+  "properties": {
+    "role": {"type": "string", "pattern": "^[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*$"},
+    "requested": {"$ref": "#/$defs/requested"},
+    "resolved": {"$ref": "#/$defs/resolved"},
+    "fallback_reason": {"type": ["string", "null"], "minLength": 1},
+    "placement_request": {"$ref": "https://github.com/badmuriss/my-llm-kit/schemas/agent-graph-placement.json#/$defs/placementRequest"},
+    "resolved_placement": {"$ref": "https://github.com/badmuriss/my-llm-kit/schemas/agent-graph-placement.json#/$defs/resolvedPlacement"}
+  },
+  "$defs": {
+    "effort": {"enum": ["low", "medium", "high", "xhigh"]},
+    "requested": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["lane", "agent", "model", "effort"],
+      "properties": {
+        "lane": {"enum": ["fast", "balanced", "strong"]},
+        "agent": {"type": ["string", "null"], "minLength": 1},
+        "model": {"type": ["string", "null"], "minLength": 1},
+        "effort": {"$ref": "#/$defs/effort"}
+      }
+    },
+    "resolved": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["agent", "model", "effort"],
+      "properties": {
+        "agent": {"type": "string", "minLength": 1},
+        "model": {"type": "string", "minLength": 1},
+        "effort": {"$ref": "#/$defs/effort"}
+      }
+    }
+  }
+}

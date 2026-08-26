@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "policy_id": "canvas-routing-v1",
+  "metadata": {
+    "source": "owner-approved Canvas routing seed",
+    "default_refresh_interval_days": 14,
+    "early_refresh_reasons": ["provider_removal", "catalog_incompatibility", "known_price_or_quota_change", "route_failure", "owner_request"]
+  },
+  "role_defaults": {
+    "coordinator": {"lane": "balanced", "effort": "high"},
+    "research": {"lane": "fast", "effort": "low"},
+    "documentation": {"lane": "fast", "effort": "low"},
+    "implementation": {"lane": "fast", "effort": "medium"},
+    "review": {"lane": "balanced", "effort": "medium"},
+    "verification": {"lane": "fast", "effort": "low"},
+    "integration": {"lane": "balanced", "effort": "high"}
+  },
+  "risk_minimums": {
+    "routine": {"lane": "fast", "effort": "low"},
+    "material": {"lane": "balanced", "effort": "medium"},
+    "high": {"lane": "strong", "effort": "high"}
+  },
+  "check_minimums": {
+    "decisive": {"lane": "fast", "effort": "low"},
+    "partial": {"lane": "fast", "effort": "medium"},
+    "none": {"lane": "balanced", "effort": "high"}
+  },
+  "tool_minimums": {"browser": {"lane": "balanced", "effort": "medium"}},
+  "context_bands": [
+    {"min_tokens": 0, "lane": "fast", "effort": "low"},
+    {"min_tokens": 64000, "lane": "balanced", "effort": "medium"}
+  ],
+  "candidate_order": [
+    {"provider": "openai", "agent": "codex", "model": "gpt-5.6-luna", "effort": "high"},
+    {"provider": "openai", "agent": "codex", "model": "gpt-5.6-luna", "effort": "xhigh"},
+    {"provider": "openai", "agent": "codex", "model": "gpt-5.6-terra", "effort": "medium"},
+    {"provider": "openai", "agent": "codex", "model": "gpt-5.6-terra", "effort": "high"},
+    {"provider": "openai", "agent": "codex", "model": "gpt-5.6-terra", "effort": "xhigh"},
+    {"provider": "openai", "agent": "codex", "model": "gpt-5.6-sol", "effort": "medium"},
+    {"provider": "openai", "agent": "codex", "model": "gpt-5.6-sol", "effort": "high"},
+    {"provider": "openai", "agent": "codex", "model": "gpt-5.6-sol", "effort": "xhigh"}
+  ]
+}

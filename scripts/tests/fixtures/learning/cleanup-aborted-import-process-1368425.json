@@ -1,0 +1,36 @@
+{
+  "workspace_scope": {"execution_workspace": {"execution_host_id": "local", "workspace_key": "folder:host-run-e9048eb9-75a1-446d-b6ef-86d51c2d4452"}},
+  "coordinator": {"generation": 3},
+  "attempts": {},
+  "delegations": {},
+  "cleanup": {"cleanup-aborted-import-process-1368425": {
+  "cleanup_id": "cleanup-aborted-import-process-1368425",
+  "kind": "process",
+  "status": "verified",
+  "owner": {
+    "coordinator_generation": 2,
+    "execution_host_id": "local",
+    "incarnation_id": null,
+    "process_root": 1368425,
+    "provenance": "host-observed:aborted-import-loop",
+    "terminal_id": null,
+    "workspace_key": "folder:host-run-e9048eb9-75a1-446d-b6ef-86d51c2d4452"
+  },
+  "receipt": {
+    "descendant_pids": [1369539, 1369540, 1369541, 1376657],
+    "kind": "process",
+    "owner": {
+      "coordinator_generation": 2,
+      "execution_host_id": "local",
+      "incarnation_id": null,
+      "process_root": 1368425,
+      "provenance": "host-observed:aborted-import-loop",
+      "terminal_id": null,
+      "workspace_key": "folder:host-run-e9048eb9-75a1-446d-b6ef-86d51c2d4452"
+    },
+    "status": "verified",
+    "target": {"kind": "process", "root_pid": 1368425}
+  },
+  "target": {"kind": "process", "root_pid": 1368425}
+  }}
+}

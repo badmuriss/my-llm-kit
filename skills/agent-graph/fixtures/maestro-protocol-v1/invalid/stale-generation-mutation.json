@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "protocol": "maestro-mutation/v1",
+  "mutation_id": "mutation-stale",
+  "workspace": {
+    "repository_id": "fb2a9411-f3cb-46d4-94f7-067f40719b71",
+    "execution_host_id": "host-local",
+    "workspace_key": "folder:folder-local-01",
+    "run_id": "run-mlk-01"
+  },
+  "actor": {"actor_id": "user-17", "kind": "user", "authenticated": true, "session_id": "session-42"},
+  "coordinator_generation": 2,
+  "expected_revision": 12,
+  "operation": {"kind": "move-node", "node_id": "task-mlk-01", "position": {"x": 10, "y": 20}}
+}

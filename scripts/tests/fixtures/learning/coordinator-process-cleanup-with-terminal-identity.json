@@ -1,0 +1,43 @@
+{
+  "workspace_scope": {
+    "execution_workspace": {
+      "execution_host_id": "local",
+      "workspace_key": "folder:host-run-6e4f925e-3ae2-424e-a7d4-08fffef1b638"
+    }
+  },
+  "coordinator": {"generation": 2},
+  "attempts": {},
+  "delegations": {},
+  "cleanup": {
+    "cleanup-mlk-09l-attempt-001-process": {
+      "cleanup_id": "cleanup-mlk-09l-attempt-001-process",
+      "kind": "process",
+      "status": "verified",
+      "owner": {
+        "coordinator_generation": 2,
+        "execution_host_id": "local",
+        "incarnation_id": "6b5b10a4-2e44-4e3b-b3bc-81b81605cfc5",
+        "process_root": 1986228,
+        "provenance": "orca-visible-worker:attempt-mlk-09l-001",
+        "terminal_id": "term_89b651b3-d711-416f-9da9-e857565a190e",
+        "workspace_key": "folder:host-run-6e4f925e-3ae2-424e-a7d4-08fffef1b638"
+      },
+      "receipt": {
+        "descendant_pids": [1986235, 1995008],
+        "kind": "process",
+        "owner": {
+          "coordinator_generation": 2,
+          "execution_host_id": "local",
+          "incarnation_id": "6b5b10a4-2e44-4e3b-b3bc-81b81605cfc5",
+          "process_root": 1986228,
+          "provenance": "orca-visible-worker:attempt-mlk-09l-001",
+          "terminal_id": "term_89b651b3-d711-416f-9da9-e857565a190e",
+          "workspace_key": "folder:host-run-6e4f925e-3ae2-424e-a7d4-08fffef1b638"
+        },
+        "status": "verified",
+        "target": {"kind": "process", "root_pid": 1986228}
+      },
+      "target": {"kind": "process", "root_pid": 1986228}
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "direction": "LR",
+  "nodes": [
+    {"id": "spec", "label": "OpenSpec\ntasks.md", "group": "canonical", "groupLabel": "Estado canônico"},
+    {"id": "journal", "label": "Agent Graph\nevents.jsonl + state.json", "group": "canonical"},
+    {"id": "orca", "label": "Orca runtime\nRun · Task · Dispatch · Gate", "group": "canonical"},
+    {"id": "projector", "label": "AgentGraphView v1\nnós + arestas tipadas + referências", "group": "projection", "groupLabel": "Projeção compartilhada", "width": 190, "height": 70},
+    {"id": "watcher", "label": "Atualização ao vivo\nfile watch + RPC", "group": "projection"},
+    {"id": "fleet", "label": "Modo Fleet\nagentes · worktrees · atenção", "group": "ui", "groupLabel": "Orca Agent Map evoluído"},
+    {"id": "graph", "label": "Modo Task Graph\nDAG · gates · grades · cleanup", "group": "ui", "width": 180, "height": 70},
+    {"id": "notes", "label": "PRs, notas e artefatos\nreview · Markdown · diffs · evidência", "group": "ui", "width": 190, "height": 70},
+    {"id": "inspector", "label": "Inspector lateral\ntentativa · terminal · check · arquivos", "group": "ui", "width": 190, "height": 70},
+    {"id": "timeline", "label": "Timeline\nreplay do journal", "group": "ui"},
+    {"id": "actions", "label": "Ações validadas\nCLI / RPC", "group": "commands", "groupLabel": "Comandos auditáveis"}
+  ],
+  "edges": [
+    {"source": "spec", "target": "journal", "label": "define tarefas"},
+    {"source": "journal", "target": "projector"},
+    {"source": "orca", "target": "projector"},
+    {"source": "projector", "target": "watcher"},
+    {"source": "watcher", "target": "fleet"},
+    {"source": "watcher", "target": "graph"},
+    {"source": "watcher", "target": "timeline"},
+    {"source": "notes", "target": "graph"},
+    {"source": "graph", "target": "inspector"},
+    {"source": "inspector", "target": "fleet"},
+    {"source": "graph", "target": "actions", "label": "mutação validada"},
+    {"source": "actions", "target": "journal"},
+    {"source": "actions", "target": "orca"}
+  ]
+}

@@ -8,11 +8,12 @@ result boundary shared by native and local execution.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import sys
 from pathlib import Path
-from typing import Any, Mapping, Sequence
+from typing import Any, Callable, Mapping, Sequence
 
 
 SCRIPTS_DIRECTORY = Path(__file__).resolve().parents[1]
@@ -26,12 +27,26 @@ from graph_core import (  # noqa: E402
     normalize_repo_path,
     validate_worker_result,
 )
-from drivers.base import DriverError, DriverReceipt  # noqa: E402
+from drivers.base import (  # noqa: E402
+    DriverError,
+    DriverReceipt,
+    build_capability_receipt,
+    capability,
+    execution_profile_from_attempt,
+)
+from browser_surfaces import (  # noqa: E402
+    BrowserSurfaceError,
+    public_receipt,
+    unavailable_receipt,
+    validate_browser_surface_request,
+    validate_receipt_for_request,
+)
 
 
 CAPSULE_FIELDS = frozenset(
-    {"task", "dependency_digest", "driver_instructions", "result_path"}
+    {"task", "effective_scope", "dependency_digest", "driver_instructions", "execution_profile", "workspace_scope", "result_path"}
 )
+OPTIONAL_CAPSULE_FIELDS = frozenset({"session_handoff"})
 RESULT_FIELDS = (
     "task_id",
     "attempt_id",
@@ -51,6 +66,19 @@ class HostDriverError(DriverError):
 
 class DuplicateResultError(HostDriverError):
     """Reports a second terminal result for one attempt."""
+
+
+class CanonicalResultConflictError(HostDriverError):
+    """Reports distinct candidate and canonical result bodies without mutation."""
+
+
+def _json_digest(value: Mapping[str, Any]) -> str:
+    payload = json.dumps(dict(value), separators=(",", ":"), sort_keys=True).encode("utf-8")
+    return f"sha256:{hashlib.sha256(payload).hexdigest()}"
+
+
+def _file_digest(path: Path) -> str:
+    return f"sha256:{hashlib.sha256(path.read_bytes()).hexdigest()}"
 
 
 def coordinator_capsule_invocation(capsule_path: str | Path) -> str:
@@ -115,6 +143,32 @@ def _task_payload(task: TaskContract) -> dict[str, Any]:
         "visual": list(task.visual),
         "visual_scope": list(task.visual_scope),
     }
+
+
+def _effective_scope(task: TaskContract, attempt_id: str, value: Any) -> dict[str, Any]:
+    scope = value if isinstance(value, Mapping) else {
+        "attempt_id": attempt_id,
+        "parent_task_id": task.id,
+        "paths": list(task.paths),
+        "amendment_ids": [],
+    }
+    required = {"attempt_id", "parent_task_id", "paths", "amendment_ids"}
+    if not isinstance(scope, Mapping) or set(scope) - (required | {"digest"}) or not required <= set(scope):
+        raise HostDriverError("effective_scope is invalid")
+    canonical = {key: scope[key] for key in ("attempt_id", "parent_task_id", "paths", "amendment_ids")}
+    if canonical["attempt_id"] != attempt_id or canonical["parent_task_id"] != task.id:
+        raise HostDriverError("effective_scope does not match its attempt")
+    if not isinstance(canonical["paths"], list) or not isinstance(canonical["amendment_ids"], list):
+        raise HostDriverError("effective_scope paths and amendment_ids must be arrays")
+    for path in canonical["paths"]:
+        try:
+            normalize_repo_path(path, "effective_scope path")
+        except GraphValidationError as error:
+            raise HostDriverError(str(error)) from error
+    digest = f"sha256:{hashlib.sha256(json.dumps(canonical, separators=(',', ':'), sort_keys=True).encode('utf-8')).hexdigest()}"
+    if "digest" in scope and scope["digest"] != digest:
+        raise HostDriverError("effective_scope digest is invalid")
+    return {**canonical, "digest": digest}
 
 
 def _task_from_payload(value: Mapping[str, Any]) -> TaskContract:
@@ -245,7 +299,13 @@ class HostDriver:
 
     name = "host"
 
-    def __init__(self, repository: Path, run_directory: Path) -> None:
+    def __init__(
+        self,
+        repository: Path,
+        run_directory: Path,
+        *,
+        native_browser_surface: Callable[[str, Mapping[str, Any]], Mapping[str, Any]] | None = None,
+    ) -> None:
         self.repository = Path(repository).resolve()
         self.run_directory = Path(run_directory).resolve()
         try:
@@ -254,6 +314,7 @@ class HostDriver:
             raise HostDriverError("run directory must be inside the repository") from error
         self.capsules_directory = self.run_directory / "capsules"
         self.results_directory = self.run_directory / "results"
+        self.native_browser_surface = native_browser_surface
 
     def _relative(self, path: Path) -> str:
         return path.relative_to(self.repository).as_posix()
@@ -268,16 +329,56 @@ class HostDriver:
         """Report capabilities without probing or mutating an external host."""
 
         capabilities = {
-            "repository_state": True,
-            "native_worker_handle": "optional",
-            "visible_fresh_session_handoff": "host_owned",
-            "agent_cli_subprocess": False,
+            "local_checks": capability(
+                "supported", method="configuration", evidence="host:bounded-command-runner"
+            ),
+            "user_questions": capability(
+                "supported", method="configuration", evidence="host:manual-question-boundary"
+            ),
+            "process_tree_cleanup": capability(
+                "supported", method="configuration", evidence="host:owned-process-tree-runner"
+            ),
+            "isolated_workspace": capability(
+                "unsupported", reason="Host does not create an isolated workspace."
+            ),
+            "visible_worker_dispatch": capability(
+                "unsupported", reason="Visible worker dispatch is owned by the active host."
+            ),
+            "durable_worker_handle": capability(
+                "unavailable", reason="A native worker handle is optional and was not observed."
+            ),
+            "browser_surface": (
+                capability("supported", method="configuration", evidence="host:explicit-native-browser-surface")
+                if self.native_browser_surface is not None
+                else capability("unsupported", reason="Host has no explicit native browser-surface capability.")
+            ),
+            "usage_metrics": capability(
+                "unavailable", reason="Host did not expose provider usage metrics."
+            ),
+            "cache_metrics": capability(
+                "unavailable", reason="Host did not expose provider cache metrics."
+            ),
         }
+        capability_receipt = build_capability_receipt(
+            self.name,
+            capabilities,
+            version="1",
+            extensions={
+                "host": {
+                    "execution_tiers": ["local", "host-native", "manual"],
+                    "agent_cli_subprocess": False,
+                }
+            },
+        )
 
         return DriverReceipt(
             "detect",
             "available",
-            external_refs={"driver": self.name, "capabilities": capabilities},
+            external_refs={
+                "driver": self.name,
+                "capabilities": capability_receipt["capabilities"],
+                "capability_receipt": capability_receipt,
+            },
         )
 
     def start_run(
@@ -307,6 +408,7 @@ class HostDriver:
         """Write one task capsule after confirming its dependencies passed."""
 
         task = _attempt_task(attempt)
+        execution_profile = execution_profile_from_attempt(attempt)
         attempt_id = attempt.get("attempt_id")
         _artifact_name(attempt_id)
         worker_handle = attempt.get("worker_handle")
@@ -317,13 +419,21 @@ class HostDriver:
             raise HostDriverError("worker_handle must be a non-empty string when provided")
 
         result_path = self._result_path(attempt_id)
+        effective_scope = _effective_scope(task, attempt_id, attempt.get("effective_scope"))
+        session_handoff = attempt.get("session_handoff")
+        if session_handoff is not None and not isinstance(session_handoff, Mapping):
+            raise HostDriverError("session_handoff must be a bounded object when supplied")
         capsule = {
             "task": _task_payload(task),
+            "effective_scope": effective_scope,
             "dependency_digest": _validate_dependency_digest(
                 task, attempt.get("dependency_digest")
             ),
             "driver_instructions": _driver_instructions(attempt_id),
+            "execution_profile": execution_profile,
+            "workspace_scope": attempt["workspace_scope"],
             "result_path": self._relative(result_path),
+            **({"session_handoff": dict(session_handoff)} if session_handoff is not None else {}),
         }
         capsule_path = self._capsule_path(attempt_id)
         replayed = False
@@ -344,6 +454,8 @@ class HostDriver:
                 "tier": tier,
                 "capsule_path": self._relative(capsule_path),
                 "result_path": capsule["result_path"],
+                "execution_profile": execution_profile,
+                "resolved_placement": execution_profile["resolved_placement"],
                 **({"worker_handle": worker_handle} if worker_handle else {}),
             },
             raw={
@@ -357,18 +469,24 @@ class HostDriver:
         """Load and structurally verify one repository capsule."""
 
         capsule = _read_json_object(self._capsule_path(attempt_id), "task capsule")
-        if set(capsule) != CAPSULE_FIELDS:
+        if set(capsule) not in {CAPSULE_FIELDS, CAPSULE_FIELDS | OPTIONAL_CAPSULE_FIELDS}:
             raise HostDriverError("task capsule has fields outside the bounded contract")
         if not isinstance(capsule.get("task"), Mapping):
             raise HostDriverError("task capsule task must be an object")
         _task_from_payload(capsule["task"])
+        scope = _effective_scope(_task_from_payload(capsule["task"]), attempt_id, capsule.get("effective_scope"))
+        if scope != capsule["effective_scope"]:
+            raise HostDriverError("task capsule effective_scope is invalid")
         if not isinstance(capsule.get("dependency_digest"), list):
             raise HostDriverError("task capsule dependency_digest must be an array")
         if not isinstance(capsule.get("driver_instructions"), Mapping):
             raise HostDriverError("task capsule driver_instructions must be an object")
+        execution_profile_from_attempt(capsule)
         expected_result = self._relative(self._result_path(attempt_id))
         if capsule.get("result_path") != expected_result:
             raise HostDriverError("task capsule result_path does not match its attempt")
+        if "session_handoff" in capsule and not isinstance(capsule["session_handoff"], Mapping):
+            raise HostDriverError("task capsule session_handoff must be an object")
         return capsule
 
     def record_result(
@@ -384,19 +502,49 @@ class HostDriver:
         self.load_capsule(attempt_id)
         if projection is not None:
             attempt = projection.get("attempts", {}).get(attempt_id, {})
-            if isinstance(attempt, Mapping) and attempt.get("status") == "reported":
-                raise DuplicateResultError(
-                    f"attempt already has a terminal report: {attempt_id}"
-                )
             if isinstance(attempt, Mapping) and attempt and attempt.get("task_id") != task.id:
                 raise HostDriverError("projection attempt does not belong to the task")
+        capsule = self.load_capsule(attempt_id)
+        scope = capsule["effective_scope"]
+        if projection is not None:
+            attempt = projection.get("attempts", {}).get(attempt_id, {})
+            if isinstance(attempt, Mapping):
+                try:
+                    persisted_scope = _effective_scope(task, attempt_id, attempt.get("effective_scope"))
+                except HostDriverError as error:
+                    raise HostDriverError("effective_scope drift in immutable attempt", code="scope_drift") from error
+                if persisted_scope != scope:
+                    raise HostDriverError(
+                        "effective_scope drift between immutable capsule and attempt",
+                        code="scope_drift",
+                    )
+        effective_task = TaskContract(**{**task.to_dict(), "paths": tuple(scope["paths"])})
         try:
-            validated = validate_worker_result(result, task, attempt_id)
+            validated = validate_worker_result(result, effective_task, attempt_id)
         except GraphValidationError as error:
             raise HostDriverError(str(error)) from error
         result_path = self._result_path(attempt_id)
         if result_path.exists():
-            raise DuplicateResultError(f"attempt already has a terminal report: {attempt_id}")
+            candidate_digest = _json_digest(validated)
+            canonical_digest = _file_digest(result_path)
+            try:
+                saved = self.read_result(task, attempt_id)
+            except HostDriverError as error:
+                raise CanonicalResultConflictError(
+                    f"canonical_result_conflict attempt={attempt_id} candidate_digest={candidate_digest} canonical_digest={canonical_digest}",
+                    code="canonical_result_conflict",
+                ) from error
+            if saved == validated:
+                return DriverReceipt(
+                    "record_result",
+                    "reported",
+                    local_ids={"task_id": task.id, "attempt_id": attempt_id},
+                    raw={"result": saved, "recovered_existing_file": True},
+                )
+            raise CanonicalResultConflictError(
+                f"canonical_result_conflict attempt={attempt_id} candidate_digest={candidate_digest} canonical_digest={canonical_digest}",
+                code="canonical_result_conflict",
+            )
         _write_new_json(result_path, validated, "worker result")
         return DriverReceipt(
             "record_result",
@@ -431,7 +579,9 @@ class HostDriver:
 
         result = _read_json_object(self._result_path(attempt_id), "worker result")
         try:
-            return validate_worker_result(result, task, attempt_id)
+            capsule = self.load_capsule(attempt_id)
+            effective_task = TaskContract(**{**task.to_dict(), "paths": tuple(capsule["effective_scope"]["paths"])})
+            return validate_worker_result(result, effective_task, attempt_id)
         except GraphValidationError as error:
             raise HostDriverError(str(error)) from error
 
@@ -512,6 +662,45 @@ class HostDriver:
             external_refs=({"worker_handle": worker_handle} if worker_handle else {}),
             raw={"cleanup": "none-owned-by-driver"},
         )
+
+    def _browser_surface(self, operation: str, request: Mapping[str, Any]) -> DriverReceipt:
+        try:
+            requested = validate_browser_surface_request(request)
+        except BrowserSurfaceError as error:
+            raise HostDriverError(str(error), code="browser_surface_invalid") from error
+        if self.native_browser_surface is None:
+            receipt = unavailable_receipt(
+                requested,
+                operation=operation,
+                code="native-capability-unavailable",
+                detail="Host has no explicit native browser-surface capability.",
+            )
+        else:
+            try:
+                receipt = validate_receipt_for_request(
+                    self.native_browser_surface(operation, requested), requested
+                )
+            except BrowserSurfaceError as error:
+                raise HostDriverError(str(error), code="browser_surface_invalid") from error
+        compact = public_receipt(receipt)
+        return DriverReceipt(
+            f"browser_surface_{operation}",
+            compact["status"],
+            external_refs={"browser_surface": compact},
+            raw={"receipt_id": compact["receipt_id"], "operation": operation},
+        )
+
+    def reserve_browser_surface(self, request: Mapping[str, Any]) -> DriverReceipt:
+        return self._browser_surface("reserve", request)
+
+    def bind_browser_surface(self, request: Mapping[str, Any]) -> DriverReceipt:
+        return self._browser_surface("bind", request)
+
+    def capture_browser_surface(self, request: Mapping[str, Any]) -> DriverReceipt:
+        return self._browser_surface("capture", request)
+
+    def release_browser_surface(self, request: Mapping[str, Any]) -> DriverReceipt:
+        return self._browser_surface("release", request)
 
     def reconcile(
         self, attempts: Sequence[Mapping[str, Any]]

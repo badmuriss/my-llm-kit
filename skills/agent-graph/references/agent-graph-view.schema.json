@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/badmuriss/my-llm-kit/schemas/agent-graph-view-v1.json",
+  "title": "AgentGraphView v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "protocol",
+    "kind",
+    "workspace_scope",
+    "change",
+    "run_id",
+    "coordinator",
+    "capabilities",
+    "nodes",
+    "edges",
+    "removed_node_ids",
+    "removed_edge_ids",
+    "revision",
+    "cursor",
+    "from_cursor",
+    "reset_required",
+    "progress"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "protocol": {"const": "agent-graph-view/v1"},
+    "kind": {"enum": ["snapshot", "delta"]},
+    "workspace_scope": {"$ref": "https://github.com/badmuriss/my-llm-kit/schemas/agent-graph-placement.json#/$defs/workspaceScope"},
+    "change": {"$ref": "#/$defs/identifier"},
+    "run_id": {"$ref": "#/$defs/identifier"},
+    "coordinator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "generation"],
+      "properties": {
+        "id": {"$ref": "#/$defs/identifier"},
+        "generation": {"type": "integer", "minimum": 1}
+      }
+    },
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["agents", "efforts", "placement_kinds", "watch_deltas"],
+      "properties": {
+        "agents": {"type": "array", "uniqueItems": true, "maxItems": 32, "items": {"type": "string", "minLength": 1}},
+        "efforts": {"type": "array", "uniqueItems": true, "maxItems": 4, "items": {"enum": ["low", "medium", "high", "xhigh"]}},
+        "placement_kinds": {"type": "array", "uniqueItems": true, "maxItems": 3, "items": {"enum": ["current-workspace", "existing-workspace", "create-child-worktree"]}},
+        "watch_deltas": {"type": "boolean"}
+      }
+    },
+    "nodes": {"type": "array", "maxItems": 1000, "items": {"$ref": "#/$defs/node"}},
+    "edges": {"type": "array", "maxItems": 3000, "items": {"$ref": "#/$defs/edge"}},
+    "removed_node_ids": {"type": "array", "uniqueItems": true, "maxItems": 1000, "items": {"$ref": "#/$defs/identifier"}},
+    "removed_edge_ids": {"type": "array", "uniqueItems": true, "maxItems": 3000, "items": {"$ref": "#/$defs/identifier"}},
+    "revision": {"type": "integer", "minimum": 0},
+    "cursor": {"oneOf": [{"$ref": "#/$defs/cursor"}, {"type": "null"}]},
+    "from_cursor": {"oneOf": [{"$ref": "#/$defs/cursor"}, {"type": "null"}]},
+    "reset_required": {"type": "boolean"},
+    "progress": {"$ref": "https://github.com/badmuriss/my-llm-kit/schemas/run-progress-summary-v1.json"}
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*$"
+    },
+    "cursor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stream_id", "sequence", "revision"],
+      "properties": {
+        "stream_id": {"$ref": "#/$defs/identifier"},
+        "sequence": {"type": "integer", "minimum": 0},
+        "revision": {"type": "integer", "minimum": 0}
+      }
+    },
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "status", "summary"],
+      "properties": {
+        "id": {"$ref": "#/$defs/identifier"},
+        "type": {"enum": ["task", "attempt", "note-reference", "evidence", "browser-surface"]},
+        "status": {"type": "string", "minLength": 1, "maxLength": 64},
+        "summary": {"type": "string", "minLength": 1, "maxLength": 2048},
+        "task_id": {"$ref": "#/$defs/identifier"},
+        "attempt_id": {"$ref": "#/$defs/identifier"},
+        "profile": {"$ref": "https://github.com/badmuriss/my-llm-kit/schemas/agent-graph-execution-profile.json"},
+        "blockers": {"type": "array", "maxItems": 64, "items": {"$ref": "#/$defs/identifier"}},
+        "snapshot": {"$ref": "https://github.com/badmuriss/my-llm-kit/schemas/agent-graph-context-capsule.json#/$defs/noteSnapshot"}
+      },
+      "allOf": [
+        {"if": {"properties": {"type": {"const": "attempt"}}, "required": ["type"]}, "then": {"required": ["task_id", "attempt_id", "profile"]}},
+        {"if": {"properties": {"type": {"const": "note-reference"}}, "required": ["type"]}, "then": {"required": ["snapshot"]}}
+      ]
+    },
+    "edge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "source_id", "target_id"],
+      "properties": {
+        "id": {"$ref": "#/$defs/identifier"},
+        "type": {"enum": ["depends_on", "context_for", "spawned_by", "reports_to", "produces", "uses"]},
+        "source_id": {"$ref": "#/$defs/identifier"},
+        "target_id": {"$ref": "#/$defs/identifier"}
+      }
+    }
+  }
+}

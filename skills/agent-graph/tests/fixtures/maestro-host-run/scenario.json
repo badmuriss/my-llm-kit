@@ -1,0 +1,10 @@
+{
+  "child_check": "python3 -c \"from pathlib import Path; raise SystemExit(0 if Path('markers/fail-05').is_file() else 7)\"",
+  "capability_catalog": {
+    "profiles": [
+      {"agent": "host-agent", "model": "host-balanced", "lane": "balanced", "efforts": ["medium", "high"], "tools": [], "cost_rank": 1},
+      {"agent": "host-agent", "model": "host-fast", "lane": "fast", "efforts": ["low", "medium"], "tools": [], "cost_rank": 0}
+    ]
+  },
+  "tasks_markdown": "# Tasks\n\n- [ ] ROOT-01 Establish host evidence\n  Depends: []\n  Paths: [src/root.py]\n  Mode: write\n  Isolation: auto\n  Acceptance: The root report and local evidence are recorded.\n  Check: python3 -c \"raise SystemExit(0)\"\n\n- [ ] WAVE-02 Write the first independent scope\n  Depends: [ROOT-01]\n  Paths: [src/a/]\n  Mode: write\n  Isolation: auto\n  Acceptance: The first independent scope is verified.\n  Check: python3 -c \"raise SystemExit(0)\"\n\n- [ ] WAVE-03 Write the second independent scope\n  Depends: [ROOT-01]\n  Paths: [src/b/]\n  Mode: write\n  Isolation: auto\n  Acceptance: The second independent scope is verified.\n  Check: python3 -c \"raise SystemExit(0)\"\n\n- [ ] CONFLICT-04 Serialize the overlapping scope\n  Depends: [ROOT-01]\n  Paths: [src/a/nested.py]\n  Mode: write\n  Isolation: auto\n  Acceptance: The overlapping scope waits for its owner.\n  Check: python3 -c \"raise SystemExit(0)\"\n\n- [ ] FAIL-05 Preserve failed evidence\n  Depends: [ROOT-01]\n  Paths: [src/fail.py]\n  Mode: write\n  Isolation: auto\n  Acceptance: A marker-gated check fails once, then passes after its marker is created.\n  Check: python3 -c \"from pathlib import Path; raise SystemExit(0 if Path('markers/fail-05').is_file() else 7)\"\n"
+}

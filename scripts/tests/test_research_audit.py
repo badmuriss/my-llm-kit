@@ -17,18 +17,19 @@ VALID_FINDING = """# Research finding
 - Decision criterion: The primary source states it directly.
 - Falsifier: The primary source contradicts it.
 - Risk: material
+- Credits used: 0
 
 ## Provider trail
 
-| Intent | Provider | Tool or endpoint | Outcome | Fallback reason |
-|---|---|---|---|---|
-| Product documentation | Official docs | Direct URL | found | None |
+| Intent | Provider | Tool or endpoint | Outcome | Credits | Fallback reason |
+|---|---|---|---|---|---|
+| Product documentation | Official docs | https://docs.test.invalid/product/feature | found | 0 | None |
 
 ## Claim ledger
 
-| Claim | Source | Accessed | Primary | Direct | Current | Independent | Verdict |
-|---|---|---|---|---|---|---|---|
-| The product documents the feature. | https://example.com/docs | 2026-08-12 | yes | yes | yes | unknown | accepted |
+| Claim | Source | Accessed | Snapshot | Primary | Direct | Current | Independent | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| The product documents the feature. | https://docs.test.invalid/product/feature | 2026-08-12 | research/sources/docs/page.md | yes | yes | yes | unknown | accepted |
 
 ## Findings
 
@@ -51,7 +52,7 @@ None.
 
 ## Sources consulted
 
-- https://example.com/docs, accessed 2026-08-12.
+- https://docs.test.invalid/product/feature, accessed 2026-08-12.
 
 ## Trial by fire
 
@@ -80,7 +81,7 @@ class ResearchAuditBehavior(unittest.TestCase):
 
     def test_rejects_a_claim_without_provenance(self) -> None:
         invalid = VALID_FINDING.replace(
-            "https://example.com/docs | 2026-08-12",
+            "https://docs.test.invalid/product/feature | 2026-08-12",
             "no-source | yesterday",
             1,
         )
@@ -93,8 +94,8 @@ class ResearchAuditBehavior(unittest.TestCase):
 
     def test_rejects_a_missing_provider_trail(self) -> None:
         invalid = VALID_FINDING.replace(
-            "| Product documentation | Official docs | Direct URL | found | None |",
-            "| | | | | |",
+            "| Product documentation | Official docs | https://docs.test.invalid/product/feature | found | 0 | None |",
+            "| | | | | | |",
         )
 
         result = self.run_audit(invalid)

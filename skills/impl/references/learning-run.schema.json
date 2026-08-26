@@ -12,7 +12,9 @@
     "state_ref",
     "state_sha256",
     "outcome",
+    "process_telemetry",
     "facts",
+    "run_lifecycle_receipts",
     "candidates"
   ],
   "properties": {
@@ -23,13 +25,17 @@
     "state_ref": {"type": "string", "minLength": 1},
     "state_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
     "outcome": {"enum": ["pass", "partial", "blocked"]},
+    "process_telemetry": {"$ref": "#/$defs/processTelemetry"},
     "facts": {
       "type": "array",
       "minItems": 1,
+      "maxItems": 256,
       "items": {"$ref": "#/$defs/fact"}
     },
+    "run_lifecycle_receipts": {"type": "array", "maxItems": 64, "items": {"$ref": "#/$defs/runLifecycleReceipt"}},
     "candidates": {
       "type": "array",
+      "maxItems": 32,
       "items": {"$ref": "#/$defs/candidate"}
     }
   },
@@ -57,25 +63,29 @@
         "hypotheses",
         "evidence_refs",
         "visual_expectations",
-        "visual_scopes"
+        "visual_scopes",
+        "routing_decisions",
+        "lifecycle_receipts"
       ],
       "properties": {
-        "task_id": {"type": "string", "minLength": 1},
+        "task_id": {"type": "string", "minLength": 1, "maxLength": 512},
         "status": {"enum": ["pass", "fail", "unobserved", "blocked"]},
-        "check_command": {"type": ["string", "null"], "minLength": 1},
+        "check_command": {"type": ["string", "null"], "minLength": 1, "maxLength": 512},
         "check_status": {"enum": ["passed", "failed", "unobserved"]},
         "check_attempts": {"type": "integer", "minimum": 0},
         "check_exit_code": {"type": ["integer", "null"]},
         "check_duration_ms": {"type": ["integer", "null"], "minimum": 0},
-        "check_total_duration_ms": {"type": "integer", "minimum": 0},
+        "check_total_duration_ms": {"type": ["integer", "null"], "minimum": 0},
         "hypotheses": {
           "type": "array",
           "uniqueItems": true,
-          "items": {"type": "string", "minLength": 1}
+          "maxItems": 32,
+          "items": {"type": "string", "minLength": 1, "maxLength": 512}
         },
         "evidence_refs": {
           "type": "array",
           "uniqueItems": true,
+          "maxItems": 32,
           "items": {
             "oneOf": [
               {"type": "string", "pattern": "^file:.+$"},
@@ -86,26 +96,38 @@
         "visual_expectations": {
           "type": "array",
           "uniqueItems": true,
-          "items": {"type": "string", "minLength": 1}
+          "maxItems": 32,
+          "items": {"type": "string", "minLength": 1, "maxLength": 512}
         },
         "visual_scopes": {
           "type": "array",
+          "maxItems": 32,
           "items": {
             "type": "object",
             "additionalProperties": false,
             "required": ["surface", "state", "platforms", "reason"],
             "properties": {
-              "surface": {"type": "string", "minLength": 1},
-              "state": {"type": "string", "minLength": 1},
+              "surface": {"type": "string", "minLength": 1, "maxLength": 512},
+              "state": {"type": "string", "minLength": 1, "maxLength": 512},
               "platforms": {
                 "type": "array",
                 "minItems": 1,
                 "uniqueItems": true,
                 "items": {"enum": ["desktop", "notebook", "tablet", "mobile"]}
               },
-              "reason": {"type": "string", "minLength": 20}
+              "reason": {"type": "string", "minLength": 20, "maxLength": 512}
             }
           }
+        },
+        "routing_decisions": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {"$ref": "#/$defs/routingDecision"}
+        },
+        "lifecycle_receipts": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {"$ref": "#/$defs/lifecycleReceipt"}
         }
       }
     },
@@ -131,10 +153,10 @@
           "uniqueItems": true,
           "items": {"$ref": "#/$defs/key"}
         },
-        "statement": {"type": "string", "minLength": 1},
+        "statement": {"type": "string", "minLength": 1, "maxLength": 512},
         "stance": {"enum": ["support", "oppose"]},
         "origin": {"enum": ["check", "diff", "repair", "review"]},
-        "evidence": {"type": "string", "minLength": 1},
+        "evidence": {"type": "string", "minLength": 1, "maxLength": 512},
         "task_refs": {
           "type": "array",
           "minItems": 1,
@@ -142,6 +164,204 @@
           "items": {"type": "string", "minLength": 1}
         }
       }
-    }
+    },
+    "telemetryObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "value", "unit", "source", "reason"],
+      "properties": {
+        "status": {"enum": ["observed", "unavailable"]},
+        "value": {},
+        "unit": {"type": ["string", "null"], "minLength": 1, "maxLength": 64},
+        "source": {"type": ["string", "null"], "minLength": 1, "maxLength": 64},
+        "reason": {"type": ["string", "null"], "minLength": 1, "maxLength": 512}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"status": {"const": "unavailable"}}, "required": ["status"]},
+          "then": {
+            "properties": {
+              "value": {"type": "null"},
+              "source": {"type": "null"},
+              "reason": {"type": "string"}
+            }
+          }
+        },
+        {
+          "if": {"properties": {"status": {"const": "observed"}}, "required": ["status"]},
+          "then": {
+            "properties": {
+              "value": {"not": {"type": "null"}},
+              "source": {"type": "string"},
+              "reason": {"type": "null"}
+            }
+          }
+        }
+      ]
+    },
+    "processTelemetry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["policy", "mode", "result", "retry", "time", "rework", "coordination_overhead", "provider_usage", "provider_cache", "profiles"],
+      "properties": {
+        "policy": {"const": "shadow_only"},
+        "mode": {"$ref": "#/$defs/telemetryObservation"},
+        "result": {"$ref": "#/$defs/telemetryObservation"},
+        "retry": {"$ref": "#/$defs/telemetryObservation"},
+        "time": {"$ref": "#/$defs/telemetryObservation"},
+        "rework": {"$ref": "#/$defs/telemetryObservation"},
+        "coordination_overhead": {"$ref": "#/$defs/telemetryObservation"},
+        "provider_usage": {"$ref": "#/$defs/telemetryObservation"},
+        "provider_cache": {"$ref": "#/$defs/telemetryObservation"},
+        "profiles": {"$ref": "#/$defs/telemetryObservation"}
+      }
+    },
+    "profileChoice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["lane", "agent", "model", "effort"],
+      "properties": {
+        "lane": {"type": ["string", "null"], "maxLength": 64},
+        "agent": {"type": ["string", "null"], "maxLength": 128},
+        "model": {"type": ["string", "null"], "maxLength": 256},
+        "effort": {"type": ["string", "null"], "maxLength": 32}
+      }
+    },
+    "routingDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["attempt_id", "task_id", "role", "risk", "requested", "resolved", "fallback_reason", "outcome", "blocked_reason", "rationale", "cost_rank", "reference"],
+      "properties": {
+        "attempt_id": {"type": "string", "minLength": 1, "maxLength": 512},
+        "task_id": {"type": "string", "minLength": 1, "maxLength": 512},
+        "role": {"type": "string", "minLength": 1, "maxLength": 128},
+        "risk": {"type": ["string", "null"], "maxLength": 64},
+        "requested": {"$ref": "#/$defs/profileChoice"},
+        "resolved": {"oneOf": [{"$ref": "#/$defs/profileChoice"}, {"type": "null"}]},
+        "fallback_reason": {"type": ["string", "null"], "maxLength": 512},
+        "outcome": {"type": ["string", "null"], "maxLength": 64},
+        "blocked_reason": {"type": ["string", "null"], "maxLength": 512},
+        "rationale": {"type": ["string", "null"], "maxLength": 512},
+        "cost_rank": {"type": ["integer", "null"], "minimum": 0},
+        "reference": {
+          "oneOf": [
+            {"type": "null"},
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["receipt_id", "receipt_path", "sha256"],
+              "properties": {
+                "receipt_id": {"type": "string", "minLength": 1, "maxLength": 512},
+                "receipt_path": {"type": "string", "pattern": "^openspec/runs/[^/]+/[^/]+/artifacts/.+$", "maxLength": 512},
+                "sha256": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+              }
+            }
+          ]
+        }
+      }
+    },
+    "lifecycleReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "entity_id", "attempt_id", "phase", "status", "receipt_id", "receipt_path", "sha256", "byte_length"],
+      "properties": {
+        "kind": {"enum": ["attempt", "cleanup", "delegation"]},
+        "entity_id": {"type": "string", "minLength": 1, "maxLength": 512},
+        "attempt_id": {"type": ["string", "null"], "maxLength": 512},
+        "phase": {"type": "string", "minLength": 1, "maxLength": 64},
+        "status": {"type": "string", "minLength": 1, "maxLength": 64},
+        "receipt_id": {"type": ["string", "null"], "maxLength": 512},
+        "receipt_path": {"type": ["string", "null"], "pattern": "^openspec/runs/[^/]+/[^/]+/artifacts/.+$", "maxLength": 512},
+        "sha256": {"type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$", "maxLength": 71},
+        "byte_length": {"type": ["integer", "null"], "minimum": 1}
+      },
+      "oneOf": [
+        {
+          "required": ["receipt_id", "receipt_path", "sha256", "byte_length"],
+          "properties": {
+            "receipt_id": {"type": "null"},
+            "receipt_path": {"type": "null"},
+            "sha256": {"type": "null"},
+            "byte_length": {"type": "null"}
+          }
+        },
+        {
+          "required": ["receipt_path", "sha256", "byte_length"],
+          "properties": {
+            "receipt_id": {"type": ["string", "null"]},
+            "receipt_path": {"type": "string"},
+            "sha256": {"type": "string"},
+            "byte_length": {"type": "integer", "minimum": 1}
+          }
+        }
+      ]
+    },
+    "runLifecycleReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "entity_id", "attempt_id", "phase", "status", "receipt_id", "receipt_path", "sha256", "byte_length", "owner", "target"],
+      "properties": {
+        "kind": {"const": "cleanup"},
+        "entity_id": {"type": "string", "minLength": 1, "maxLength": 512},
+        "attempt_id": {"type": "null"},
+        "phase": {"type": "string", "minLength": 1, "maxLength": 64},
+        "status": {"type": "string", "minLength": 1, "maxLength": 64},
+        "receipt_id": {"type": ["string", "null"], "maxLength": 512},
+        "receipt_path": {"type": ["string", "null"], "pattern": "^openspec/runs/[^/]+/[^/]+/artifacts/.+$", "maxLength": 512},
+        "sha256": {"type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$", "maxLength": 71},
+        "byte_length": {"type": ["integer", "null"], "minimum": 1},
+        "owner": {"anyOf": [{"$ref": "#/$defs/coordinatorProcessOwner"}, {"$ref": "#/$defs/coordinatorTerminalOwner"}]},
+        "target": {"oneOf": [{"$ref": "#/$defs/coordinatorProcessTarget"}, {"$ref": "#/$defs/coordinatorTerminalTarget"}]}
+      },
+      "allOf": [
+        {"oneOf": [
+          {"properties": {"owner": {"$ref": "#/$defs/coordinatorProcessOwner"}, "target": {"$ref": "#/$defs/coordinatorProcessTarget"}, "status": {"const": "verified"}}},
+          {"properties": {"owner": {"$ref": "#/$defs/coordinatorTerminalOwner"}, "target": {"$ref": "#/$defs/coordinatorTerminalTarget"}, "status": {"const": "verified"}}},
+          {"properties": {"owner": {"$ref": "#/$defs/coordinatorTerminalOwner"}, "target": {"$ref": "#/$defs/coordinatorTerminalTarget"}, "status": {"const": "retained"}}}
+        ]}
+      ],
+      "oneOf": [
+        {"required": ["receipt_id", "receipt_path", "sha256", "byte_length"], "properties": {"receipt_id": {"type": "null"}, "receipt_path": {"type": "null"}, "sha256": {"type": "null"}, "byte_length": {"type": "null"}}},
+        {"required": ["receipt_path", "sha256", "byte_length"], "properties": {"receipt_id": {"type": ["string", "null"]}, "receipt_path": {"type": "string"}, "sha256": {"type": "string"}, "byte_length": {"type": "integer", "minimum": 1}}}
+      ]
+    },
+    "coordinatorProcessOwner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["execution_host_id", "workspace_key", "coordinator_generation", "terminal_id", "incarnation_id", "process_root", "provenance"],
+      "properties": {
+        "execution_host_id": {"type": "string", "minLength": 1},
+        "workspace_key": {"type": "string", "minLength": 1},
+        "coordinator_generation": {"type": "integer", "minimum": 1},
+        "terminal_id": {"type": ["string", "null"], "minLength": 1},
+        "incarnation_id": {"type": ["string", "null"], "minLength": 1},
+        "process_root": {"type": "integer", "minimum": 1},
+        "provenance": {"type": "string", "minLength": 1}
+      }
+    },
+    "coordinatorTerminalOwner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["execution_host_id", "workspace_key", "coordinator_generation", "terminal_id", "incarnation_id", "process_root", "provenance"],
+      "properties": {
+        "execution_host_id": {"type": "string", "minLength": 1},
+        "workspace_key": {"type": "string", "minLength": 1},
+        "coordinator_generation": {"type": "integer", "minimum": 1},
+        "terminal_id": {"type": "string", "minLength": 1},
+        "incarnation_id": {"type": "string", "minLength": 1},
+        "process_root": {"type": ["integer", "null"], "minimum": 1},
+        "provenance": {"type": "string", "minLength": 1}
+      }
+    },
+    "coordinatorProcessTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "root_pid"],
+      "properties": {
+        "kind": {"const": "process"},
+        "root_pid": {"type": "integer", "minimum": 1}
+      }
+    },
+    "coordinatorTerminalTarget": {"type": "string", "minLength": 1}
   }
 }

@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/badmuriss/my-llm-kit/schemas/maestro-mutation-v1.json",
+  "title": "MaestroMutation v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "protocol",
+    "mutation_id",
+    "workspace",
+    "actor",
+    "coordinator_generation",
+    "expected_revision",
+    "operation"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "protocol": {"const": "maestro-mutation/v1"},
+    "mutation_id": {"$ref": "#/$defs/identifier"},
+    "workspace": {"$ref": "#/$defs/workspaceAnchor"},
+    "actor": {"$ref": "#/$defs/actorEnvelope"},
+    "coordinator_generation": {"type": "integer", "minimum": 1},
+    "expected_revision": {"type": "integer", "minimum": 0},
+    "operation": {
+      "oneOf": [
+        {"$ref": "#/$defs/moveNode"},
+        {"$ref": "#/$defs/pinNoteSnapshot"}
+      ]
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*$"
+    },
+    "workspaceAnchor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository_id", "execution_host_id", "workspace_key", "run_id"],
+      "properties": {
+        "repository_id": {"$ref": "#/$defs/identifier"},
+        "execution_host_id": {"$ref": "https://github.com/badmuriss/my-llm-kit/schemas/agent-graph-placement.json#/$defs/opaqueHostId"},
+        "workspace_key": {"$ref": "https://github.com/badmuriss/my-llm-kit/schemas/agent-graph-placement.json#/$defs/opaqueWorkspaceKey"},
+        "run_id": {"$ref": "#/$defs/identifier"}
+      }
+    },
+    "actorEnvelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actor_id", "kind", "authenticated", "session_id"],
+      "properties": {
+        "actor_id": {"$ref": "#/$defs/identifier"},
+        "kind": {"enum": ["user", "coordinator", "worker", "system"]},
+        "authenticated": {"const": true},
+        "session_id": {"$ref": "#/$defs/identifier"}
+      }
+    },
+    "moveNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "node_id", "position"],
+      "properties": {
+        "kind": {"const": "move-node"},
+        "node_id": {"$ref": "#/$defs/identifier"},
+        "position": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["x", "y"],
+          "properties": {"x": {"type": "number"}, "y": {"type": "number"}}
+        }
+      }
+    },
+    "pinNoteSnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "task_id", "snapshot"],
+      "properties": {
+        "kind": {"const": "pin-note-snapshot"},
+        "task_id": {"$ref": "#/$defs/identifier"},
+        "snapshot": {"$ref": "https://github.com/badmuriss/my-llm-kit/schemas/agent-graph-context-capsule.json#/$defs/noteSnapshot"}
+      }
+    }
+  }
+}

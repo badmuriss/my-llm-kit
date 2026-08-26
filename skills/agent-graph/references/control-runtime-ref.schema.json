@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/badmuriss/my-llm-kit/schemas/control-runtime-ref.json",
+  "title": "Pinned Agent Graph control runtime",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "entrypoint",
+    "directory",
+    "directory_digest",
+    "protocol_version",
+    "source_revision",
+    "creation_receipt"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "entrypoint": {"type": "string", "pattern": "^(?:/|[A-Za-z]:[\\\\/]).+"},
+    "directory": {"type": "string", "pattern": "^(?:/|[A-Za-z]:[\\\\/]).+"},
+    "directory_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "protocol_version": {"const": 1},
+    "source_revision": {"type": "string", "minLength": 1},
+    "creation_receipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method", "created_at", "file_count", "byte_count"],
+      "properties": {
+        "method": {"const": "atomic-directory-rename"},
+        "created_at": {"type": "string", "format": "date-time"},
+        "file_count": {"type": "integer", "minimum": 1},
+        "byte_count": {"type": "integer", "minimum": 1}
+      }
+    }
+  }
+}

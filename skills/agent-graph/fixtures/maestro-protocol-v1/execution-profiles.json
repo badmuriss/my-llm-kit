@@ -1,0 +1,53 @@
+{
+  "current_folder": {
+    "role": "implementation",
+    "requested": {"lane": "balanced", "agent": "codex", "model": "model-terra", "effort": "high"},
+    "resolved": {"agent": "codex", "model": "model-terra", "effort": "high"},
+    "fallback_reason": null,
+    "placement_request": {"kind": "current-workspace"},
+    "resolved_placement": {
+      "execution_host_id": "host-local",
+      "workspace_key": "folder:folder-local-01",
+      "kind": "folder",
+      "path": "/home/badmuriss/Documents/my-llm-kit",
+      "receipt_ref": "artifact:openspec/runs/change/run/artifacts/current-placement.json"
+    }
+  },
+  "existing_remote_with_fallback": {
+    "role": "verification",
+    "requested": {"lane": "strong", "agent": "codex", "model": "model-sol", "effort": "xhigh"},
+    "resolved": {"agent": "codex", "model": "model-terra", "effort": "high"},
+    "fallback_reason": "The remote host advertises high effort and model-terra as its strongest compatible profile.",
+    "placement_request": {
+      "kind": "existing-workspace",
+      "execution_host_id": "host-remote",
+      "workspace_key": "worktree:fb2a9411-f3cb-46d4-94f7-067f40719b71::/srv/worktrees/mlk-01"
+    },
+    "resolved_placement": {
+      "execution_host_id": "host-remote",
+      "workspace_key": "worktree:fb2a9411-f3cb-46d4-94f7-067f40719b71::/srv/worktrees/mlk-01",
+      "kind": "git-worktree",
+      "path": null,
+      "receipt_ref": "artifact:openspec/runs/change/run/artifacts/remote-placement.json"
+    }
+  },
+  "child_worktree": {
+    "role": "implementation",
+    "requested": {"lane": "fast", "agent": null, "model": null, "effort": "low"},
+    "resolved": {"agent": "codex", "model": "model-luna", "effort": "low"},
+    "fallback_reason": null,
+    "placement_request": {
+      "kind": "create-child-worktree",
+      "execution_host_id": "host-local",
+      "parent_workspace_key": "folder:folder-local-01",
+      "name_hint": "api-worker"
+    },
+    "resolved_placement": {
+      "execution_host_id": "host-local",
+      "workspace_key": "worktree:fb2a9411-f3cb-46d4-94f7-067f40719b71::/home/badmuriss/.orca/worktrees/api-worker",
+      "kind": "git-worktree",
+      "path": "/home/badmuriss/.orca/worktrees/api-worker",
+      "receipt_ref": "artifact:openspec/runs/change/run/artifacts/child-placement.json"
+    }
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "host_run": {
+    "schema_version": 1,
+    "repository_id": "host-run-11111111-1111-4111-8111-111111111111",
+    "canonical_root": "/home/badmuriss/Documents/my-llm-kit",
+    "execution_host": {"id": "local", "boundary": "local"},
+    "orchestration_home": {
+      "execution_host_id": "local",
+      "workspace_key": "folder:host-run-11111111-1111-4111-8111-111111111111",
+      "kind": "folder",
+      "path": "/home/badmuriss/Documents/my-llm-kit"
+    },
+    "execution_workspace": {
+      "execution_host_id": "local",
+      "workspace_key": "folder:host-run-11111111-1111-4111-8111-111111111111",
+      "kind": "folder",
+      "path": "/home/badmuriss/Documents/my-llm-kit"
+    },
+    "base_revision": "0123456789abcdef0123456789abcdef01234567",
+    "dirty_paths": ["skills/agent-graph/scripts/graph_core.py"],
+    "authority": {
+      "kind": "host-run",
+      "scope": "run",
+      "issued_for_run_id": "run-mlk-01"
+    }
+  },
+  "orca_remote": {
+    "schema_version": 1,
+    "repository_id": "fb2a9411-f3cb-46d4-94f7-067f40719b71",
+    "canonical_root": "/home/badmuriss/Documents/my-llm-kit",
+    "execution_host": {"id": "ssh:build-host-01", "boundary": "remote"},
+    "orchestration_home": {
+      "execution_host_id": "runtime:orca-local-01",
+      "workspace_key": "folder:folder-local-01",
+      "kind": "folder",
+      "path": "/home/badmuriss/Documents/my-llm-kit"
+    },
+    "execution_workspace": {
+      "execution_host_id": "ssh:build-host-01",
+      "workspace_key": "worktree:fb2a9411-f3cb-46d4-94f7-067f40719b71::/srv/worktrees/mlk-01",
+      "kind": "git-worktree",
+      "path": "/srv/worktrees/mlk-01",
+      "worktree_path": "/srv/worktrees/mlk-01"
+    },
+    "base_revision": "fedcba9876543210fedcba9876543210fedcba98",
+    "dirty_paths": ["remote/source.py"],
+    "authority": {
+      "kind": "orca",
+      "scope": "run",
+      "issued_for_run_id": "run-mlk-01-remote"
+    }
+  }
+}

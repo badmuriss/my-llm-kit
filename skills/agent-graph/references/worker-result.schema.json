@@ -4,16 +4,17 @@
   "title": "Agent graph worker result",
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "task_id",
-    "attempt_id",
-    "outcome",
-    "summary",
-    "files_changed",
-    "checks_run",
-    "evidence_refs",
-    "questions",
-    "external_refs"
+  "required": ["task_id", "attempt_id", "outcome", "summary", "files_changed", "checks_run", "evidence_refs", "questions", "external_refs"],
+  "allOf": [
+    {
+      "if": {
+        "properties": {"files_changed": {"minItems": 1}},
+        "required": ["files_changed"]
+      },
+      "then": {
+        "properties": {"checks_run": {"minItems": 1}}
+      }
+    }
   ],
   "properties": {
     "task_id": {"type": "string", "pattern": "^[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*$"},
@@ -43,6 +44,12 @@
     "questions": {"type": "array", "items": {"type": "object"}},
     "external_refs": {
       "type": "object",
+      "propertyNames": {
+        "allOf": [
+          {"minLength": 1},
+          {"not": {"enum": ["accessibility_tree", "authorization", "authorization_data", "cookie", "cookies", "dom", "frame", "frames", "html", "live_frame", "screenshot", "screenshot_bytes", "storage"]}}
+        ]
+      },
       "additionalProperties": {"type": ["string", "integer", "boolean", "null"]}
     }
   }

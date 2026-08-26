@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/badmuriss/my-llm-kit/schemas/routing-policy-v1.json",
+  "title": "RoutingPolicy v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "policy_id", "metadata", "role_defaults", "risk_minimums", "check_minimums", "tool_minimums", "context_bands", "candidate_order"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "policy_id": {"type": "string", "minLength": 1},
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "default_refresh_interval_days", "early_refresh_reasons"],
+      "properties": {
+        "source": {"type": "string", "minLength": 1},
+        "default_refresh_interval_days": {"const": 14},
+        "early_refresh_reasons": {"type": "array", "uniqueItems": true, "items": {"enum": ["provider_removal", "catalog_incompatibility", "known_price_or_quota_change", "route_failure", "owner_request"]}}
+      }
+    },
+    "role_defaults": {"$ref": "#/$defs/requirementsByRole"},
+    "risk_minimums": {"$ref": "#/$defs/requirementsByRisk"},
+    "check_minimums": {"$ref": "#/$defs/requirementsByCheck"},
+    "tool_minimums": {"type": "object", "additionalProperties": {"$ref": "#/$defs/requirement"}},
+    "context_bands": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["min_tokens", "lane", "effort"], "properties": {"min_tokens": {"type": "integer", "minimum": 0}, "lane": {"enum": ["fast", "balanced", "strong"]}, "effort": {"$ref": "#/$defs/effort"}}}},
+    "candidate_order": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["provider", "agent", "model", "effort"], "properties": {"provider": {"type": "string", "minLength": 1}, "agent": {"type": "string", "minLength": 1}, "model": {"type": "string", "minLength": 1}, "effort": {"$ref": "#/$defs/effort"}}}}
+  },
+  "$defs": {
+    "effort": {"enum": ["low", "medium", "high", "xhigh"]},
+    "requirement": {"type": "object", "additionalProperties": false, "required": ["lane", "effort"], "properties": {"lane": {"enum": ["fast", "balanced", "strong"]}, "effort": {"$ref": "#/$defs/effort"}}},
+    "requirementsByRole": {"type": "object", "additionalProperties": false, "required": ["coordinator", "research", "documentation", "implementation", "review", "verification", "integration"], "properties": {"coordinator": {"$ref": "#/$defs/requirement"}, "research": {"$ref": "#/$defs/requirement"}, "documentation": {"$ref": "#/$defs/requirement"}, "implementation": {"$ref": "#/$defs/requirement"}, "review": {"$ref": "#/$defs/requirement"}, "verification": {"$ref": "#/$defs/requirement"}, "integration": {"$ref": "#/$defs/requirement"}}},
+    "requirementsByRisk": {"type": "object", "additionalProperties": false, "required": ["routine", "material", "high"], "properties": {"routine": {"$ref": "#/$defs/requirement"}, "material": {"$ref": "#/$defs/requirement"}, "high": {"$ref": "#/$defs/requirement"}}},
+    "requirementsByCheck": {"type": "object", "additionalProperties": false, "required": ["decisive", "partial", "none"], "properties": {"decisive": {"$ref": "#/$defs/requirement"}, "partial": {"$ref": "#/$defs/requirement"}, "none": {"$ref": "#/$defs/requirement"}}}
+  }
+}

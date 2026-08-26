@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/badmuriss/my-llm-kit/schemas/browser-surface-request-v1.json",
+  "title": "BrowserSurfaceRequest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "request_id", "task_id", "attempt_id", "idempotency_key", "mode", "retention", "execution_host_id", "workspace_key", "page_binding", "binding", "viewport", "source_revision"],
+  "properties": {
+    "schema_version": {"const": 1}, "request_id": {"$ref": "#/$defs/id"}, "task_id": {"$ref": "#/$defs/id"}, "attempt_id": {"$ref": "#/$defs/id"}, "idempotency_key": {"$ref": "#/$defs/id"}, "mode": {"enum": ["visible", "offscreen"]}, "retention": {"enum": ["release", "retain"]}, "execution_host_id": {"$ref": "#/$defs/id"}, "workspace_key": {"$ref": "#/$defs/id"}, "page_binding": {"oneOf": [{"$ref": "#/$defs/pageBinding"}, {"type": "null"}]}, "binding": {"$ref": "#/$defs/binding"}, "viewport": {"$ref": "#/$defs/viewport"}, "source_revision": {"$ref": "#/$defs/id"}
+  },
+  "$defs": {
+    "id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "pageBinding": {"type": "object", "additionalProperties": false, "required": ["browser_page_id", "browser_profile_id"], "properties": {"browser_page_id": {"$ref": "#/$defs/id"}, "browser_profile_id": {"$ref": "#/$defs/id"}}},
+    "binding": {"oneOf": [{"type": "object", "additionalProperties": false, "required": ["kind", "value"], "properties": {"kind": {"const": "initial_url"}, "value": {"$ref": "#/$defs/id"}}}, {"type": "object", "additionalProperties": false, "required": ["kind", "value"], "properties": {"kind": {"const": "artifact_route"}, "value": {"$ref": "#/$defs/artifactRoute"}}}]},
+    "artifactRoute": {"type": "string", "minLength": 1, "maxLength": 256, "pattern": "^(?!/)(?![A-Za-z]:)(?!.*[\\\\?#])(?!.*//)(?!.*(?:^|/)\\.{1,2}(?:/|$)).+$"},
+    "viewport": {"type": "object", "additionalProperties": false, "required": ["width", "height"], "properties": {"width": {"type": "integer", "minimum": 1, "maximum": 8192}, "height": {"type": "integer", "minimum": 1, "maximum": 8192}}}
+  }
+}

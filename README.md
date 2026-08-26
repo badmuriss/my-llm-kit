@@ -54,21 +54,25 @@ Set-ExecutionPolicy -Scope Process Bypass
 
 ## How the harness works
 
-The harness separates decisions from code. It researches uncertain facts, writes an explicit plan, implements approved tasks, and keeps evidence for the result.
+The harness separates process choice from execution. Adaptive intake inspects the request and repository, then chooses the smallest mode that can produce trustworthy evidence.
 
 ```text
-research, when facts are uncertain
-        ↓
-$spec: proposal.md + design.md + tasks.md
-        ↓
-$impl: code + checks + evidence grades
+adaptive intake
+  ├─ direct: one bounded change and check
+  ├─ verified_single: one hypothesis and check loop
+  ├─ light_spec: one amendable Markdown decision
+  └─ graph: OpenSpec tasks, journal, coordinator, and adapters
 ```
+
+OpenSpec is optional for the first three modes. Graph mode requires an approved
+OpenSpec task graph and a saved `process-decision.json` whose packet contracts
+match the tasks.
 
 | Skill | Job | Output |
 |---|---|---|
-| `research` | Routes each query to the narrowest provider, adjudicates sources per claim, and optionally runs one bounded council. | An audited finding under `research/` with credit budget, source snapshots (`collect_sources.py`) and semantic audit. |
-| `spec` | Resolves decisions and writes an executable plan. A `--council` flag adds one bounded review. | `proposal.md`, `design.md`, `tasks.md`, and an optional council report. |
-| `impl` | Transfers to a fresh coordinator, schedules a durable task graph, and grades recorded checks. | Code, checks, evidence grades, and a replayable run journal. |
+| `research` | Routes each query to the narrowest provider, adjudicates sources per claim, and optionally runs one bounded council. | An audited finding under `research/` with credit usage, source snapshots (`collect_sources.py`) and semantic audit. |
+| `spec` | Runs adaptive intake and records only the planning depth the evidence requires. A `--council` flag adds one bounded review. | A direct decision, lightweight record, or OpenSpec graph. |
+| `impl` | Executes the selected mode. Graph mode transfers to a fresh coordinator and grades every recorded check. | Code and evidence, plus a replayable journal only for graph work. |
 | `writing` | Keeps docs, commits, PR descriptions, and errors short and concrete. | A clear record of what changed, why, and how it was checked. |
 
 Start a change:
@@ -85,7 +89,23 @@ Use $impl <slug> to implement the OpenSpec change. Execute every task check and 
 
 Claude Code also has `/spec` and `/impl` wrappers for the same workflow. Council review is opt-in with `$spec --council <change>`. It challenges the completed draft once and remains advisory; executable checks decide acceptance.
 
-### What `impl` records
+### Portable core and adapters
+
+The portable core owns process decisions, task contracts, execution profiles,
+`AgentGraphView`, generic delegation, checks, evidence grades, and cleanup
+semantics. It does not require OpenSpec for non-graph work, a Canvas, terminal
+handles, or an Orca process.
+
+The Host adapter is the baseline conformance path. It writes bounded repository
+capsules and can use a host-native worker or one local execution. Orca is the
+current rich adapter: it adds supervised workers, durable terminal receipts,
+worktree placement, browser surfaces, and Maestro Canvas state when those
+capabilities are verified. Orca is not a prerequisite. A future adapter can
+implement the same capability receipt and driver contracts without changing
+task truth or evidence grades. Unsupported capabilities block or downgrade only
+the operation that requested them.
+
+### What graph-mode `impl` records
 
 Every run stores an append-only journal and rebuilt projection under `openspec/runs/<change>/<run-id>/`. A resumed coordinator reads task, attempt, driver, evidence, question, and cleanup state without loading terminal transcripts.
 
@@ -97,15 +117,27 @@ Frontend tasks pair a reasoned `Visual-Scope:` with `Visual:` contracts for each
 
 Tasks declare dependencies, read or write mode, repository path prefixes, and isolation. A task becomes ready only after every dependency has grade `pass`. Concurrent writes require non-overlapping path prefixes. Provider completion creates a report, never a passing grade.
 
-Orca and host-native execution share the same graph. Orca prefers supervised workers and records tracked-terminal degradation. Host mode uses bounded repository capsules. Auto mode records one choice. Maestri is a reserved future driver boundary.
+Orca and host-native execution share the same graph semantics. Auto mode records one adapter choice and its reason for the full run.
 
 The loop stops when no verified, unchecked, in-scope task remains and every cleanup obligation has a receipt.
 
-After normal completion, `learning.py` can snapshot those observed checks and compile recurring support or opposition into `openspec/impl-learning/DRAFT_CANDIDATES.md`. This shadow-mode file is never loaded by `impl`, never creates a rule or skill, and never blocks completion. Activation requires a reviewed change or a validated executable gate; paired `memory_off` and `memory_on` states can be compared without an automatic verdict. See the [trajectory-learning audit](research/2026-08-10-agent-trajectory-learning-audit.md).
+After normal completion, `skills/impl/scripts/learning.py` can snapshot observed process facts and compile recurring support or opposition into `openspec/impl-learning/DRAFT_CANDIDATES.md`. Missing provider usage, cache, or timing data is recorded as `unavailable`, never as zero or an estimate. Learning is shadow-only: it never changes the completed run, routing, capability receipt, evidence grade, rule, or skill. Activation requires a reviewed change or a validated executable gate. See the [trajectory-learning audit](research/2026-08-10-agent-trajectory-learning-audit.md).
 
-### Codex model routing
+### Runtime-aware orchestration
 
-`impl` keeps one localized task in the current context. It uses Luna for independent mechanical work, Terra for ambiguous integration, and Sol for architecture, security, or unresolved high-risk failures. Effort rises after observed failure or increased risk; `xhigh` is not a default lane.
+Graph-mode `impl` freezes an immutable control runtime and hands off to one
+fresh visible coordinator using the profile selected by the task-local decision
+and verified adapter capabilities. The coordinator derives only the roles and smallest useful wave that
+ready work requires. Workers resolve the cheapest sufficient catalog profile
+for their role, risk, tools, context, and check, persisting requested/resolved
+model and effort independently with rationale, fallback, and cost rank. Concrete
+provider names are catalog data, not scheduler policy.
+
+Orca and Host-native execution share the same capsules, placement identity,
+evidence rules, and cleanup semantics. Canvas actions, checkboxes, provider
+completion, and process exit never grade work. Learning snapshots are bounded
+canonical graph facts and exclude prompts, reports, terminal output, notes, and
+conversation transcripts.
 
 ## What's included
 

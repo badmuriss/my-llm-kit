@@ -20,7 +20,7 @@ def audit_fixture(name: str) -> tuple[list[str], list[str]]:
 
 
 class TestPassingFinding:
-    def test_accepts_complete_finding(self):
+    def test_accepts_complete_finding_without_budget(self):
         errors, warnings = audit_fixture("2026-08-21-good.md")
         assert errors == []
         assert warnings == []
@@ -42,7 +42,6 @@ class TestSemanticErrors:
             ("bad-example-com.md", "example.com"),
             ("bad-high-risk-no-council.md", "Risk: high requires a council run"),
             ("bad-ledger-url-missing.md", "missing from Sources consulted"),
-            ("bad-budget-text.md", "Budget must be numeric"),
         ],
     )
     def test_rejects_known_bad_finding(self, fixture: str, fragment: str):

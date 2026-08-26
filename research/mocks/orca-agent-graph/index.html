@@ -1,0 +1,3497 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Protótipo funcional do Orca Maestro: canvas infinito, notas de contexto, terminais e delegação tipada por worktree."
+    />
+    <link rel="icon" href="data:," />
+    <title>Orca Maestro · functional mock</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --background: #17181a;
+        --foreground: #f2f2ef;
+        --card: #232427;
+        --card-foreground: #f2f2ef;
+        --popover: #2b2c30;
+        --popover-foreground: #f2f2ef;
+        --secondary: #313237;
+        --secondary-foreground: #ececea;
+        --muted: #28292d;
+        --muted-foreground: #8d9097;
+        --accent: #303136;
+        --accent-foreground: #f4f4f2;
+        --border: rgba(255, 255, 255, 0.09);
+        --border-strong: rgba(255, 255, 255, 0.16);
+        --input: #1d1e21;
+        --ring: #9aa8bd;
+        --sidebar: #202124;
+        --sidebar-foreground: #e9e9e6;
+        --sidebar-accent: #2b2c30;
+        --sidebar-border: rgba(255, 255, 255, 0.075);
+        --editor-surface: #121316;
+        --working: #7fb695;
+        --waiting: #c8a667;
+        --done: #7f9cb8;
+        --danger: #cb7773;
+        --context: #aa91c6;
+        --dependency: #9ba2aa;
+        --spawned: #6e9fc0;
+        --produced: #86a67d;
+        --note: #b29a6c;
+        --radius: 10px;
+        --sidebar-width: 254px;
+        --inspector-width: 326px;
+        --titlebar-height: 42px;
+        --statusbar-height: 24px;
+        --font-ui: Geist, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        --font-mono: "Geist Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+        --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      [hidden] {
+        display: none !important;
+      }
+
+      html,
+      body {
+        min-width: 1080px;
+        min-height: 650px;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        background: var(--background);
+        color: var(--foreground);
+        font-family: var(--font-ui);
+        font-size: 13px;
+        letter-spacing: 0.01em;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      button,
+      input,
+      select,
+      textarea {
+        font: inherit;
+      }
+
+      button {
+        color: inherit;
+      }
+
+      button:focus-visible,
+      input:focus-visible,
+      select:focus-visible,
+      textarea:focus-visible,
+      [tabindex]:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: 2px;
+      }
+
+      svg {
+        display: block;
+      }
+
+      .app-shell {
+        display: grid;
+        width: 100vw;
+        height: 100dvh;
+        grid-template-columns: var(--sidebar-width) minmax(0, 1fr) var(--inspector-width);
+        grid-template-rows: var(--titlebar-height) minmax(0, 1fr) var(--statusbar-height);
+        overflow: hidden;
+        background: var(--background);
+      }
+
+      .app-shell.is-embedded {
+        grid-template-columns: minmax(0, 1fr) var(--inspector-width);
+        grid-template-rows: minmax(0, 1fr);
+      }
+
+      .app-shell.is-embedded > .titlebar,
+      .app-shell.is-embedded > .sidebar,
+      .app-shell.is-embedded > .statusbar,
+      .app-shell.is-embedded > .tab-create-menu {
+        display: none;
+      }
+
+      .app-shell.is-embedded > .main-surface {
+        grid-column: 1;
+        grid-row: 1;
+      }
+
+      .app-shell.is-embedded > .inspector {
+        grid-column: 2;
+        grid-row: 1;
+      }
+
+      .titlebar {
+        z-index: 30;
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: var(--sidebar-width) minmax(0, 1fr) auto;
+        min-width: 0;
+        border-bottom: 1px solid var(--border);
+        background: #26272a;
+        user-select: none;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 0 11px;
+        border-right: 1px solid var(--sidebar-border);
+      }
+
+      .orca-mark {
+        display: grid;
+        width: 23px;
+        height: 23px;
+        place-items: center;
+        border: 1px solid var(--border-strong);
+        border-radius: 7px;
+        color: #d9d9d5;
+        font-size: 10px;
+        font-weight: 750;
+        letter-spacing: -0.04em;
+      }
+
+      .brand-copy {
+        min-width: 0;
+      }
+
+      .brand-copy strong {
+        display: block;
+        color: #dededb;
+        font-size: 12px;
+        font-weight: 650;
+        line-height: 1.1;
+      }
+
+      .brand-copy span {
+        display: block;
+        overflow: hidden;
+        color: var(--muted-foreground);
+        font-family: var(--font-mono);
+        font-size: 9px;
+        line-height: 1.2;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .tab-rail {
+        display: flex;
+        min-width: 0;
+        align-items: stretch;
+        overflow: hidden;
+      }
+
+      .history-controls,
+      .window-actions {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        padding: 0 6px;
+      }
+
+      .history-controls {
+        border-right: 1px solid var(--border);
+      }
+
+      .window-actions {
+        padding-right: 10px;
+      }
+
+      .icon-button,
+      .toolbar-button,
+      .node-button,
+      .plain-button {
+        display: inline-grid;
+        place-items: center;
+        border: 0;
+        background: transparent;
+        color: var(--muted-foreground);
+        cursor: pointer;
+        transition: background-color 130ms var(--ease), color 130ms var(--ease), transform 100ms var(--ease);
+      }
+
+      .icon-button {
+        width: 29px;
+        height: 29px;
+        border-radius: 7px;
+      }
+
+      .icon-button:hover,
+      .toolbar-button:hover,
+      .node-button:hover,
+      .plain-button:hover {
+        background: var(--accent);
+        color: var(--accent-foreground);
+      }
+
+      button:active {
+        transform: scale(0.975);
+      }
+
+      .tab-list {
+        display: flex;
+        min-width: 0;
+        align-items: stretch;
+        overflow: hidden;
+      }
+
+      .workspace-tab {
+        position: relative;
+        display: flex;
+        min-width: 130px;
+        max-width: 230px;
+        align-items: center;
+        gap: 8px;
+        padding: 0 12px;
+        overflow: hidden;
+        border: 0;
+        border-right: 1px solid var(--border);
+        background: transparent;
+        color: #aaaab0;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .workspace-tab.is-active {
+        background: #303136;
+        color: var(--foreground);
+      }
+
+      .workspace-tab.is-active::after {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        height: 1px;
+        background: #aab2bd;
+        content: "";
+      }
+
+      .workspace-tab svg {
+        flex: 0 0 auto;
+        width: 14px;
+        height: 14px;
+        color: var(--muted-foreground);
+      }
+
+      .workspace-tab.is-active svg {
+        color: #d9dde2;
+      }
+
+      .tab-label {
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .new-tab-wrap {
+        position: relative;
+        display: flex;
+        align-items: center;
+        padding: 0 5px;
+      }
+
+      .tab-create-menu,
+      .context-menu {
+        position: fixed;
+        z-index: 100;
+        min-width: 248px;
+        padding: 6px;
+        border: 1px solid var(--border-strong);
+        border-radius: 10px;
+        background: var(--popover);
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+        color: var(--popover-foreground);
+      }
+
+      .tab-create-menu {
+        top: 38px;
+        left: calc(var(--sidebar-width) + 370px);
+      }
+
+      .menu-heading {
+        padding: 5px 8px 6px;
+        color: var(--muted-foreground);
+        font-size: 10px;
+        font-weight: 650;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .menu-item {
+        display: grid;
+        width: 100%;
+        min-height: 38px;
+        grid-template-columns: 28px minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 8px;
+        padding: 5px 8px;
+        border: 0;
+        border-radius: 7px;
+        background: transparent;
+        color: inherit;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .menu-item:hover,
+      .menu-item.is-highlighted {
+        background: color-mix(in srgb, var(--foreground) 10%, var(--popover));
+        box-shadow: inset 0 0 0 1px var(--border);
+      }
+
+      .menu-item svg {
+        width: 15px;
+        height: 15px;
+        color: var(--muted-foreground);
+      }
+
+      .menu-item-copy strong,
+      .menu-item-copy span {
+        display: block;
+      }
+
+      .menu-item-copy strong {
+        font-size: 12px;
+        font-weight: 620;
+      }
+
+      .menu-item-copy span {
+        margin-top: 1px;
+        color: var(--muted-foreground);
+        font-size: 10px;
+      }
+
+      .menu-shortcut {
+        color: var(--muted-foreground);
+        font-family: var(--font-mono);
+        font-size: 10px;
+      }
+
+      .menu-separator {
+        height: 1px;
+        margin: 5px 4px;
+        background: var(--border);
+      }
+
+      .sidebar {
+        grid-column: 1;
+        grid-row: 2;
+        display: flex;
+        min-height: 0;
+        flex-direction: column;
+        overflow: hidden;
+        border-right: 1px solid var(--sidebar-border);
+        background: var(--sidebar);
+        color: var(--sidebar-foreground);
+      }
+
+      .sidebar-header {
+        padding: 14px 13px 12px;
+        border-bottom: 1px solid var(--sidebar-border);
+      }
+
+      .sidebar-title-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .sidebar-title-row strong {
+        font-size: 12px;
+        font-weight: 650;
+      }
+
+      .scope-lock {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        margin-top: 7px;
+        color: var(--muted-foreground);
+        font-family: var(--font-mono);
+        font-size: 9px;
+      }
+
+      .scope-lock svg {
+        width: 11px;
+        height: 11px;
+      }
+
+      .sidebar-scroll {
+        min-height: 0;
+        flex: 1;
+        overflow: auto;
+        padding: 10px 8px 18px;
+      }
+
+      .sidebar-section + .sidebar-section {
+        margin-top: 17px;
+      }
+
+      .sidebar-section-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 8px 6px;
+        color: var(--muted-foreground);
+        font-size: 10px;
+        font-weight: 650;
+        letter-spacing: 0.055em;
+        text-transform: uppercase;
+      }
+
+      .sidebar-row {
+        display: grid;
+        width: 100%;
+        grid-template-columns: 20px minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 7px;
+        min-height: 32px;
+        padding: 5px 8px;
+        border: 0;
+        border-radius: 7px;
+        background: transparent;
+        color: #bfc0c3;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .sidebar-row:hover,
+      .sidebar-row.is-current {
+        background: var(--sidebar-accent);
+        color: var(--sidebar-foreground);
+      }
+
+      .sidebar-row svg {
+        width: 14px;
+        height: 14px;
+        color: var(--muted-foreground);
+      }
+
+      .sidebar-row-copy {
+        min-width: 0;
+      }
+
+      .sidebar-row-copy strong,
+      .sidebar-row-copy span {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .sidebar-row-copy strong {
+        font-size: 12px;
+        font-weight: 560;
+      }
+
+      .sidebar-row-copy span {
+        color: var(--muted-foreground);
+        font-family: var(--font-mono);
+        font-size: 9px;
+      }
+
+      .count-badge,
+      .tiny-badge,
+      .edge-pill,
+      .prototype-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.025);
+        color: var(--muted-foreground);
+        font-size: 9px;
+        font-weight: 650;
+        white-space: nowrap;
+      }
+
+      .count-badge {
+        min-width: 21px;
+        height: 18px;
+        padding: 0 6px;
+      }
+
+      .run-card {
+        margin: 0 3px;
+        padding: 10px;
+        border: 1px solid var(--sidebar-border);
+        border-radius: 9px;
+        background: rgba(255, 255, 255, 0.018);
+      }
+
+      .run-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .run-card-header strong {
+        overflow: hidden;
+        font-size: 11px;
+        font-weight: 600;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .run-progress {
+        height: 3px;
+        margin: 9px 0 7px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.07);
+      }
+
+      .run-progress span {
+        display: block;
+        width: 58%;
+        height: 100%;
+        background: #8f9aa7;
+      }
+
+      .run-meta {
+        display: flex;
+        justify-content: space-between;
+        color: var(--muted-foreground);
+        font-family: var(--font-mono);
+        font-size: 9px;
+      }
+
+      .main-surface {
+        position: relative;
+        grid-column: 2;
+        grid-row: 2;
+        min-width: 0;
+        min-height: 0;
+        overflow: hidden;
+        background: var(--background);
+      }
+
+      .canvas-toolbar {
+        position: absolute;
+        z-index: 20;
+        top: 0;
+        right: 0;
+        left: 0;
+        display: flex;
+        height: 58px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 0 12px 0 16px;
+        border-bottom: 1px solid var(--border);
+        background: color-mix(in srgb, var(--background) 94%, transparent);
+        backdrop-filter: blur(12px);
+      }
+
+      .canvas-heading {
+        min-width: 0;
+      }
+
+      .canvas-heading h1 {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0;
+        font-size: 13px;
+        font-weight: 650;
+      }
+
+      .canvas-heading p {
+        margin: 3px 0 0;
+        overflow: hidden;
+        color: var(--muted-foreground);
+        font-family: var(--font-mono);
+        font-size: 9px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .toolbar-actions {
+        display: flex;
+        flex: 0 0 auto;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .toolbar-divider {
+        width: 1px;
+        height: 24px;
+        margin: 0 2px;
+        background: var(--border);
+      }
+
+      .toolbar-button {
+        display: inline-flex;
+        height: 30px;
+        grid-auto-flow: column;
+        align-items: center;
+        gap: 6px;
+        padding: 0 9px;
+        border: 1px solid transparent;
+        border-radius: 7px;
+        font-size: 11px;
+        font-weight: 560;
+      }
+
+      .toolbar-button svg {
+        width: 14px;
+        height: 14px;
+      }
+
+      .toolbar-button.is-active {
+        border-color: var(--border-strong);
+        background: var(--secondary);
+        color: var(--foreground);
+      }
+
+      .toolbar-button.is-primary {
+        border-color: var(--border-strong);
+        background: #d8d9d8;
+        color: #17181a;
+      }
+
+      .toolbar-button.is-primary:hover {
+        background: #f0f0ed;
+        color: #111214;
+      }
+
+      .edge-type-select {
+        height: 30px;
+        padding: 0 24px 0 8px;
+        border: 1px solid var(--border);
+        border-radius: 7px;
+        background: var(--input);
+        color: #c6c7ca;
+        font-size: 10px;
+      }
+
+      .canvas-viewport {
+        position: absolute;
+        inset: 58px 0 0;
+        overflow: hidden;
+        background:
+          linear-gradient(rgba(255, 255, 255, 0.014) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.014) 1px, transparent 1px),
+          var(--background);
+        background-position: -1px -1px;
+        background-size: 96px 96px;
+        cursor: grab;
+        touch-action: none;
+      }
+
+      .canvas-viewport.is-panning {
+        cursor: grabbing;
+      }
+
+      .canvas-viewport.is-linking {
+        cursor: crosshair;
+      }
+
+      .canvas-scene {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 1px;
+        height: 1px;
+        transform-origin: 0 0;
+        will-change: transform;
+      }
+
+      .edge-layer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 5200px;
+        height: 3600px;
+        overflow: visible;
+        pointer-events: none;
+      }
+
+      .edge-visible,
+      .edge-preview {
+        fill: none;
+        stroke-width: 1.6;
+        vector-effect: non-scaling-stroke;
+      }
+
+      .edge-hit {
+        fill: none;
+        stroke: transparent;
+        stroke-width: 14;
+        pointer-events: stroke;
+        cursor: pointer;
+        vector-effect: non-scaling-stroke;
+      }
+
+      .edge-group[data-type="context"] .edge-visible {
+        stroke: color-mix(in srgb, var(--context) 72%, transparent);
+      }
+
+      .edge-group[data-type="depends_on"] .edge-visible {
+        stroke: color-mix(in srgb, var(--dependency) 70%, transparent);
+        stroke-dasharray: 5 5;
+      }
+
+      .edge-group[data-type="spawned"] .edge-visible {
+        stroke: color-mix(in srgb, var(--spawned) 75%, transparent);
+      }
+
+      .edge-group[data-type="produced"] .edge-visible {
+        stroke: color-mix(in srgb, var(--produced) 72%, transparent);
+        stroke-dasharray: 2 4;
+      }
+
+      .edge-group.is-selected .edge-visible {
+        stroke-width: 2.5;
+        filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.23));
+      }
+
+      .edge-preview {
+        stroke: var(--ring);
+        stroke-dasharray: 5 5;
+      }
+
+      .edge-label rect {
+        fill: #222327;
+        stroke: var(--border-strong);
+        stroke-width: 1;
+        vector-effect: non-scaling-stroke;
+      }
+
+      .edge-label text {
+        fill: #aeb0b5;
+        font-family: var(--font-ui);
+        font-size: 9px;
+        font-weight: 620;
+        letter-spacing: 0.02em;
+        text-anchor: middle;
+      }
+
+      .canvas-world {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 1px;
+        height: 1px;
+      }
+
+      .canvas-node {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        overflow: visible;
+        border: 1px solid var(--border-strong);
+        border-radius: 11px;
+        background: var(--card);
+        box-shadow: 0 7px 18px rgba(0, 0, 0, 0.16);
+        color: var(--card-foreground);
+        transform-origin: center;
+        transition: border-color 120ms ease, box-shadow 120ms ease, opacity 160ms ease;
+        user-select: none;
+      }
+
+      .canvas-node:hover {
+        border-color: rgba(255, 255, 255, 0.22);
+      }
+
+      .canvas-node.is-selected {
+        border-color: #9ba8b9;
+        box-shadow: 0 0 0 2px rgba(155, 168, 185, 0.22), 0 12px 24px rgba(0, 0, 0, 0.25);
+      }
+
+      .canvas-node.is-link-source {
+        box-shadow: 0 0 0 2px color-mix(in srgb, var(--spawned) 45%, transparent);
+      }
+
+      .canvas-node.is-released {
+        opacity: 0.62;
+      }
+
+      .node-drag {
+        display: flex;
+        min-height: 43px;
+        align-items: center;
+        gap: 9px;
+        padding: 7px 9px;
+        border-bottom: 1px solid var(--border);
+        cursor: grab;
+      }
+
+      .node-drag:active {
+        cursor: grabbing;
+      }
+
+      .node-kind-icon {
+        display: grid;
+        flex: 0 0 auto;
+        width: 26px;
+        height: 26px;
+        place-items: center;
+        border: 1px solid var(--border);
+        border-radius: 7px;
+        background: rgba(255, 255, 255, 0.035);
+        color: #d5d6d6;
+      }
+
+      .node-kind-icon svg {
+        width: 14px;
+        height: 14px;
+      }
+
+      .node-title {
+        min-width: 0;
+        flex: 1;
+      }
+
+      .node-title strong,
+      .node-title span {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .node-title strong {
+        font-size: 11px;
+        font-weight: 650;
+      }
+
+      .node-title span {
+        margin-top: 1px;
+        color: var(--muted-foreground);
+        font-size: 8.5px;
+      }
+
+      .agent-node {
+        background: #222428;
+      }
+
+      .agent-node .node-drag {
+        min-height: 48px;
+        gap: 10px;
+        padding: 8px 10px;
+        background: #25272b;
+        border-radius: 10px 10px 0 0;
+      }
+
+      .provider-mark {
+        display: grid;
+        flex: 0 0 auto;
+        width: 22px;
+        height: 22px;
+        place-items: center;
+        color: #d8dadd;
+      }
+
+      .provider-mark svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      .provider-mark[data-provider="claude"] {
+        color: #d97757;
+      }
+
+      .provider-mark[data-provider="gemini"] svg {
+        width: 19px;
+        height: 19px;
+      }
+
+      .agent-state {
+        display: inline-flex;
+        flex: 0 0 auto;
+        align-items: center;
+        gap: 5px;
+        color: var(--muted-foreground);
+        font-size: 8.5px;
+        font-weight: 560;
+        white-space: nowrap;
+      }
+
+      .agent-state svg {
+        width: 11px;
+        height: 11px;
+      }
+
+      .agent-state[data-status="working"],
+      .agent-state[data-status="starting"] {
+        color: var(--working);
+      }
+
+      .agent-state[data-status="waiting"] {
+        color: var(--waiting);
+      }
+
+      .agent-state[data-status="done"],
+      .agent-state[data-status="ready"],
+      .agent-state[data-status="released"] {
+        color: var(--done);
+      }
+
+      .agent-taskbar {
+        display: flex;
+        min-height: 28px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 0 10px;
+        border-bottom: 1px solid var(--border);
+        background: #202226;
+        color: #9b9ea4;
+        font-size: 8.5px;
+      }
+
+      .agent-taskbar span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .agent-taskbar span:first-child {
+        color: #c2c5ca;
+        font-weight: 560;
+      }
+
+      .agent-taskbar span:last-child {
+        flex: 0 0 auto;
+        font-family: var(--font-mono);
+        color: #777b82;
+      }
+
+      .terminal-preview {
+        min-height: 104px;
+        flex: 1;
+        padding: 6px 0;
+        overflow: hidden;
+        background: #1d1f22;
+        color: #b6bac0;
+        font-family: var(--font-mono);
+        font-size: 9px;
+        line-height: 1.45;
+      }
+
+      .terminal-step {
+        display: grid;
+        min-height: 20px;
+        grid-template-columns: 14px minmax(0, 1fr);
+        align-items: center;
+        gap: 5px;
+        padding: 2px 10px;
+      }
+
+      .terminal-step.is-current {
+        background: #272a2f;
+        color: #e0e2e5;
+      }
+
+      .terminal-step.needs-input {
+        background: color-mix(in srgb, var(--waiting) 8%, #1d1f22);
+      }
+
+      .terminal-step-icon {
+        display: grid;
+        width: 14px;
+        height: 14px;
+        place-items: center;
+        color: #60656d;
+      }
+
+      .terminal-step-icon svg {
+        width: 11px;
+        height: 11px;
+      }
+
+      .terminal-step.is-complete .terminal-step-icon {
+        color: #82aa8e;
+      }
+
+      .terminal-step.is-current .terminal-step-icon {
+        color: #8795a5;
+      }
+
+      .terminal-step.needs-input .terminal-step-icon {
+        color: var(--waiting);
+      }
+
+      .terminal-step-copy {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .node-footer {
+        display: flex;
+        min-height: 32px;
+        align-items: center;
+        gap: 8px;
+        padding: 5px 8px;
+        border-top: 1px solid var(--border);
+        color: var(--muted-foreground);
+        font-family: var(--font-mono);
+        font-size: 8.5px;
+      }
+
+      .node-footer > span:first-child {
+        overflow: hidden;
+        flex: 1;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .agent-node .node-footer {
+        min-height: 34px;
+        padding: 5px 9px 5px 10px;
+        background: #222428;
+        font-family: var(--font-ui);
+      }
+
+      .agent-metrics {
+        display: flex;
+        min-width: 0;
+        flex: 1;
+        align-items: center;
+        gap: 7px;
+        color: #7f838a;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .agent-metrics i {
+        width: 1px;
+        height: 10px;
+        background: var(--border);
+      }
+
+      .agent-node .node-button {
+        color: #b7bbc0;
+      }
+
+      .node-button {
+        display: inline-flex;
+        height: 22px;
+        align-items: center;
+        gap: 4px;
+        padding: 0 6px;
+        border-radius: 5px;
+        font-family: var(--font-ui);
+        font-size: 9px;
+      }
+
+      .node-button svg {
+        width: 11px;
+        height: 11px;
+      }
+
+      .node-port {
+        position: absolute;
+        z-index: 3;
+        top: 50%;
+        right: -6px;
+        width: 12px;
+        height: 12px;
+        padding: 0;
+        border: 2px solid var(--card);
+        border-radius: 50%;
+        background: #777d86;
+        box-shadow: 0 0 0 1px var(--border-strong);
+        cursor: crosshair;
+        transform: translateY(-50%);
+      }
+
+      .canvas-node:hover .node-port,
+      .canvas-node.is-link-source .node-port,
+      .canvas-viewport.is-linking .node-port {
+        background: #b0bac7;
+      }
+
+      .note-node {
+        background: #292822;
+        border-color: rgba(178, 154, 108, 0.28);
+      }
+
+      .note-node .node-drag {
+        border-bottom-color: rgba(178, 154, 108, 0.18);
+      }
+
+      .note-node .node-kind-icon {
+        color: #c7b17f;
+      }
+
+      .note-editor {
+        width: 100%;
+        min-height: 126px;
+        flex: 1;
+        resize: none;
+        padding: 10px 11px;
+        border: 0;
+        outline: 0;
+        background: transparent;
+        color: #ded9cb;
+        font-family: var(--font-ui);
+        font-size: 10.5px;
+        line-height: 1.55;
+        user-select: text;
+      }
+
+      .note-node .node-footer {
+        border-top-color: rgba(178, 154, 108, 0.18);
+      }
+
+      .task-body,
+      .portal-body,
+      .artifact-body {
+        display: flex;
+        min-height: 92px;
+        flex: 1;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 9px;
+        padding: 10px;
+        color: #c6c7ca;
+        font-size: 10.5px;
+        line-height: 1.45;
+      }
+
+      .task-checks {
+        display: grid;
+        gap: 6px;
+      }
+
+      .task-check {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        color: #aeb0b5;
+        font-size: 9.5px;
+      }
+
+      .task-check i {
+        display: grid;
+        width: 13px;
+        height: 13px;
+        place-items: center;
+        border: 1px solid var(--border-strong);
+        border-radius: 4px;
+        color: var(--working);
+        font-style: normal;
+        font-size: 9px;
+      }
+
+      .task-progress {
+        height: 3px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.07);
+      }
+
+      .task-progress span {
+        display: block;
+        height: 100%;
+        background: #8795a5;
+      }
+
+      .portal-node {
+        background: #22272a;
+      }
+
+      .portal-node .node-kind-icon {
+        color: #87a6b4;
+      }
+
+      .portal-path,
+      .artifact-path {
+        padding: 7px 8px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: rgba(0, 0, 0, 0.13);
+        color: #a8adb3;
+        font-family: var(--font-mono);
+        font-size: 8.5px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .canvas-controls,
+      .edge-legend,
+      .prototype-note,
+      .canvas-instruction {
+        position: absolute;
+        z-index: 22;
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        background: color-mix(in srgb, var(--popover) 94%, transparent);
+        box-shadow: 0 7px 18px rgba(0, 0, 0, 0.17);
+        backdrop-filter: blur(10px);
+      }
+
+      .canvas-controls {
+        right: 12px;
+        bottom: 12px;
+        display: flex;
+        align-items: center;
+        padding: 3px;
+      }
+
+      .zoom-value {
+        min-width: 43px;
+        color: #b8bbc0;
+        font-family: var(--font-mono);
+        font-size: 9px;
+        text-align: center;
+      }
+
+      .edge-legend {
+        bottom: 12px;
+        left: 12px;
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        padding: 7px 9px;
+        color: var(--muted-foreground);
+        font-size: 8.5px;
+      }
+
+      .legend-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .legend-line {
+        width: 17px;
+        height: 0;
+        border-top: 1.5px solid currentColor;
+      }
+
+      .legend-item.context { color: var(--context); }
+      .legend-item.spawned { color: var(--spawned); }
+      .legend-item.depends { color: var(--dependency); }
+      .legend-item.depends .legend-line { border-top-style: dashed; }
+      .legend-item.produced { color: var(--produced); }
+
+      .prototype-note {
+        top: 70px;
+        left: 12px;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 6px 8px;
+        color: #aeb0b5;
+        font-size: 9px;
+        pointer-events: none;
+      }
+
+      .prototype-pill {
+        height: 18px;
+        padding: 0 6px;
+        color: var(--waiting);
+      }
+
+      .canvas-instruction {
+        top: 70px;
+        left: 50%;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 9px;
+        color: #c9cacf;
+        font-size: 10px;
+        transform: translateX(-50%);
+      }
+
+      .canvas-instruction kbd {
+        padding: 2px 5px;
+        border: 1px solid var(--border-strong);
+        border-radius: 4px;
+        background: rgba(0, 0, 0, 0.15);
+        color: var(--muted-foreground);
+        font-family: var(--font-mono);
+        font-size: 8px;
+      }
+
+      .inspector {
+        grid-column: 3;
+        grid-row: 2;
+        display: flex;
+        min-height: 0;
+        flex-direction: column;
+        overflow: hidden;
+        border-left: 1px solid var(--border);
+        background: #202124;
+      }
+
+      .inspector-header {
+        display: flex;
+        min-height: 58px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 0 13px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .inspector-header strong {
+        display: block;
+        font-size: 11px;
+        font-weight: 650;
+      }
+
+      .inspector-header span {
+        display: block;
+        margin-top: 2px;
+        color: var(--muted-foreground);
+        font-size: 9px;
+      }
+
+      .inspector-scroll {
+        min-height: 0;
+        flex: 1;
+        overflow: auto;
+        padding: 13px;
+      }
+
+      .inspector-empty {
+        display: grid;
+        min-height: 100%;
+        place-items: center;
+        color: var(--muted-foreground);
+        text-align: center;
+      }
+
+      .inspector-empty svg {
+        width: 24px;
+        height: 24px;
+        margin: 0 auto 8px;
+        opacity: 0.7;
+      }
+
+      .inspector-empty p {
+        max-width: 210px;
+        margin: 0;
+        font-size: 10px;
+        line-height: 1.5;
+      }
+
+      .inspector-identity {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding-bottom: 13px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .inspector-identity .provider-mark,
+      .inspector-identity .node-kind-icon {
+        width: 32px;
+        height: 32px;
+      }
+
+      .inspector-identity .provider-mark svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      .inspector-identity-copy {
+        min-width: 0;
+        flex: 1;
+      }
+
+      .inspector-identity-copy strong,
+      .inspector-identity-copy span {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .inspector-identity-copy strong {
+        font-size: 12px;
+        font-weight: 650;
+      }
+
+      .inspector-identity-copy span {
+        margin-top: 2px;
+        color: var(--muted-foreground);
+        font-family: var(--font-mono);
+        font-size: 8.5px;
+      }
+
+      .inspector-section {
+        padding: 13px 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .inspector-section:last-child {
+        border-bottom: 0;
+      }
+
+      .inspector-section-title {
+        margin: 0 0 9px;
+        color: var(--muted-foreground);
+        font-size: 9px;
+        font-weight: 650;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .property-list {
+        display: grid;
+        gap: 8px;
+        margin: 0;
+      }
+
+      .property-row {
+        display: grid;
+        grid-template-columns: 88px minmax(0, 1fr);
+        align-items: start;
+        gap: 8px;
+        font-size: 9.5px;
+      }
+
+      .property-row dt {
+        color: var(--muted-foreground);
+      }
+
+      .property-row dd {
+        min-width: 0;
+        margin: 0;
+        overflow-wrap: anywhere;
+        color: #c8c9cc;
+        font-family: var(--font-mono);
+        text-align: right;
+      }
+
+      .resource-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 6px;
+      }
+
+      .resource-cell {
+        padding: 8px 6px;
+        border: 1px solid var(--border);
+        border-radius: 7px;
+        background: rgba(255, 255, 255, 0.018);
+        text-align: center;
+      }
+
+      .resource-cell strong,
+      .resource-cell span {
+        display: block;
+      }
+
+      .resource-cell strong {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        font-weight: 600;
+      }
+
+      .resource-cell span {
+        margin-top: 3px;
+        color: var(--muted-foreground);
+        font-size: 8px;
+        text-transform: uppercase;
+      }
+
+      .context-summary {
+        padding: 9px;
+        border: 1px solid var(--border);
+        border-radius: 7px;
+        background: rgba(255, 255, 255, 0.018);
+        color: #bfc1c5;
+        font-size: 9.5px;
+        line-height: 1.5;
+      }
+
+      .inspector-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px;
+      }
+
+      .action-button,
+      .primary-button,
+      .secondary-button,
+      .danger-button {
+        display: inline-flex;
+        min-height: 30px;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 0 9px;
+        border: 1px solid var(--border-strong);
+        border-radius: 7px;
+        cursor: pointer;
+        font-size: 10px;
+        font-weight: 580;
+      }
+
+      .action-button,
+      .secondary-button {
+        background: var(--secondary);
+        color: var(--secondary-foreground);
+      }
+
+      .primary-button {
+        background: #dedfdd;
+        color: #17181a;
+      }
+
+      .danger-button {
+        background: color-mix(in srgb, var(--danger) 12%, var(--secondary));
+        color: #d99a96;
+      }
+
+      .action-button:hover,
+      .secondary-button:hover {
+        background: #3a3b40;
+      }
+
+      .primary-button:hover {
+        background: #f2f2ef;
+      }
+
+      .action-button svg,
+      .primary-button svg,
+      .secondary-button svg,
+      .danger-button svg {
+        width: 13px;
+        height: 13px;
+      }
+
+      .action-button:disabled,
+      .secondary-button:disabled,
+      .danger-button:disabled {
+        opacity: 0.45;
+        cursor: default;
+      }
+
+      .statusbar {
+        z-index: 35;
+        grid-column: 1 / -1;
+        grid-row: 3;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 9px;
+        border-top: 1px solid var(--border);
+        background: #25262a;
+        color: var(--muted-foreground);
+        font-size: 9px;
+        user-select: none;
+      }
+
+      .statusbar-group {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .statusbar-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .statusbar-item svg {
+        width: 11px;
+        height: 11px;
+      }
+
+      .status-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--working);
+      }
+
+      .context-menu {
+        top: 180px;
+        left: 420px;
+      }
+
+      .context-menu .menu-item {
+        min-height: 34px;
+        grid-template-columns: 24px minmax(0, 1fr) auto;
+      }
+
+      .context-menu-copy {
+        display: flex;
+        min-width: 0;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .context-menu-copy strong {
+        font-size: 11px;
+        font-weight: 590;
+      }
+
+      .context-menu-copy span {
+        color: var(--muted-foreground);
+        font-size: 8.5px;
+      }
+
+      dialog {
+        max-width: calc(100vw - 40px);
+        max-height: calc(100vh - 40px);
+        padding: 0;
+        overflow: hidden;
+        border: 1px solid var(--border-strong);
+        border-radius: 13px;
+        background: #242529;
+        box-shadow: 0 18px 60px rgba(0, 0, 0, 0.48);
+        color: var(--foreground);
+      }
+
+      dialog::backdrop {
+        background: rgba(8, 9, 11, 0.62);
+        backdrop-filter: blur(2px);
+      }
+
+      .delegate-dialog {
+        width: min(780px, calc(100vw - 48px));
+      }
+
+      .dialog-header {
+        display: flex;
+        min-height: 60px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 0 15px 0 17px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .dialog-header h2 {
+        margin: 0;
+        font-size: 13px;
+        font-weight: 650;
+      }
+
+      .dialog-header p {
+        margin: 3px 0 0;
+        color: var(--muted-foreground);
+        font-size: 9.5px;
+      }
+
+      .delegate-layout {
+        display: grid;
+        grid-template-columns: 210px minmax(0, 1fr);
+        min-height: 440px;
+      }
+
+      .agent-picker {
+        padding: 12px 9px;
+        border-right: 1px solid var(--border);
+        background: #202125;
+      }
+
+      .agent-option {
+        display: grid;
+        width: 100%;
+        grid-template-columns: 28px minmax(0, 1fr);
+        align-items: center;
+        gap: 8px;
+        padding: 7px;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        background: transparent;
+        color: inherit;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .agent-option:hover {
+        background: var(--accent);
+      }
+
+      .agent-option.is-selected {
+        border-color: var(--border-strong);
+        background: var(--secondary);
+      }
+
+      .agent-option:disabled {
+        opacity: 0.45;
+        cursor: default;
+      }
+
+      .agent-option .provider-mark {
+        width: 28px;
+        height: 28px;
+      }
+
+      .agent-option-copy strong,
+      .agent-option-copy span {
+        display: block;
+      }
+
+      .agent-option-copy strong {
+        font-size: 10.5px;
+        font-weight: 620;
+      }
+
+      .agent-option-copy span {
+        margin-top: 2px;
+        color: var(--muted-foreground);
+        font-size: 8.5px;
+      }
+
+      .installed-label {
+        margin: 15px 7px 6px;
+        color: var(--muted-foreground);
+        font-size: 8px;
+        font-weight: 650;
+        letter-spacing: 0.055em;
+        text-transform: uppercase;
+      }
+
+      .delegate-form {
+        display: flex;
+        min-width: 0;
+        flex-direction: column;
+      }
+
+      .form-scroll {
+        min-height: 0;
+        flex: 1;
+        overflow: auto;
+        padding: 15px 17px;
+      }
+
+      .form-field + .form-field {
+        margin-top: 14px;
+      }
+
+      .field-label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 6px;
+        color: #c5c6c9;
+        font-size: 9.5px;
+        font-weight: 600;
+      }
+
+      .field-label small {
+        color: var(--muted-foreground);
+        font-size: 8px;
+        font-weight: 450;
+      }
+
+      .text-input,
+      .text-area,
+      .select-input {
+        width: 100%;
+        border: 1px solid var(--border-strong);
+        border-radius: 7px;
+        background: var(--input);
+        color: #dedfdf;
+      }
+
+      .text-input,
+      .select-input {
+        height: 32px;
+        padding: 0 9px;
+      }
+
+      .text-area {
+        min-height: 68px;
+        resize: vertical;
+        padding: 8px 9px;
+        line-height: 1.45;
+      }
+
+      .option-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 6px;
+      }
+
+      .choice-card {
+        display: block;
+        min-width: 0;
+        padding: 8px;
+        border: 1px solid var(--border);
+        border-radius: 7px;
+        background: rgba(255, 255, 255, 0.015);
+        color: #bfc0c4;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .choice-card:hover {
+        background: var(--accent);
+      }
+
+      .choice-card.is-selected {
+        border-color: #8e9baa;
+        background: color-mix(in srgb, #8e9baa 11%, var(--secondary));
+        color: var(--foreground);
+      }
+
+      .choice-card strong,
+      .choice-card span {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .choice-card strong {
+        font-family: var(--font-mono);
+        font-size: 9px;
+        font-weight: 600;
+      }
+
+      .choice-card span {
+        margin-top: 3px;
+        color: var(--muted-foreground);
+        font-size: 8px;
+      }
+
+      .placement-grid .choice-card strong {
+        font-family: var(--font-ui);
+        font-size: 9.5px;
+      }
+
+      .command-preview {
+        padding: 9px 10px;
+        overflow: auto;
+        border: 1px solid var(--border);
+        border-radius: 7px;
+        background: var(--editor-surface);
+        color: #aeb5be;
+        font-family: var(--font-mono);
+        font-size: 8.5px;
+        line-height: 1.55;
+        white-space: pre-wrap;
+      }
+
+      .command-preview .proposed {
+        color: var(--waiting);
+      }
+
+      .scope-callout {
+        display: flex;
+        align-items: flex-start;
+        gap: 7px;
+        margin-top: 7px;
+        color: var(--muted-foreground);
+        font-size: 8.5px;
+        line-height: 1.4;
+      }
+
+      .scope-callout svg {
+        flex: 0 0 auto;
+        width: 12px;
+        height: 12px;
+        margin-top: 1px;
+      }
+
+      .dialog-footer {
+        display: flex;
+        min-height: 54px;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 7px;
+        padding: 0 15px;
+        border-top: 1px solid var(--border);
+      }
+
+      .dialog-footer-note {
+        margin-right: auto;
+        color: var(--muted-foreground);
+        font-size: 8.5px;
+      }
+
+      .terminal-dialog {
+        width: min(900px, calc(100vw - 48px));
+        height: min(650px, calc(100vh - 48px));
+      }
+
+      .terminal-dialog-shell {
+        display: grid;
+        height: calc(100% - 60px);
+        grid-template-columns: minmax(0, 1fr) 230px;
+      }
+
+      .terminal-live {
+        display: flex;
+        min-width: 0;
+        min-height: 0;
+        flex-direction: column;
+        border-right: 1px solid var(--border);
+        background: #101114;
+      }
+
+      .terminal-output {
+        min-height: 0;
+        flex: 1;
+        overflow: auto;
+        padding: 13px;
+        color: #c1c4c9;
+        font-family: var(--font-mono);
+        font-size: 10px;
+        line-height: 1.6;
+        white-space: pre-wrap;
+      }
+
+      .terminal-input-row {
+        display: flex;
+        gap: 7px;
+        padding: 9px;
+        border-top: 1px solid var(--border);
+        background: #17181b;
+      }
+
+      .terminal-input-row .text-input {
+        min-width: 0;
+        flex: 1;
+      }
+
+      .terminal-sidecar {
+        padding: 12px;
+        overflow: auto;
+      }
+
+      .terminal-sidecar .property-row {
+        grid-template-columns: 74px minmax(0, 1fr);
+      }
+
+      .toast {
+        position: fixed;
+        z-index: 200;
+        right: 18px;
+        bottom: 38px;
+        display: flex;
+        max-width: 360px;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 12px;
+        border: 1px solid var(--border-strong);
+        border-radius: 9px;
+        background: var(--popover);
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+        color: #d9dadd;
+        font-size: 10px;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(8px);
+        transition: opacity 150ms ease, transform 150ms var(--ease);
+      }
+
+      .toast.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .toast-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--working);
+      }
+
+      @media (max-width: 1450px) {
+        :root {
+          --sidebar-width: 226px;
+          --inspector-width: 292px;
+        }
+
+        .toolbar-button .optional-label,
+        .edge-legend .legend-item:nth-child(4) {
+          display: none;
+        }
+
+        .canvas-toolbar {
+          padding-left: 12px;
+        }
+
+        .property-row {
+          grid-template-columns: 76px minmax(0, 1fr);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-shell is-embedded">
+      <header class="titlebar">
+        <div class="brand">
+          <span class="orca-mark">OR</span>
+          <div class="brand-copy"><strong>Orca</strong><span>my-llm-kit / main</span></div>
+        </div>
+        <div class="tab-rail">
+          <div class="history-controls">
+            <button class="icon-button" type="button" aria-label="Back" data-icon-button="chevron-left"></button>
+            <button class="icon-button" type="button" aria-label="Forward" data-icon-button="chevron-right"></button>
+          </div>
+          <div class="tab-list">
+            <button class="workspace-tab" type="button"><span data-icon="terminal"></span><span class="tab-label">impl coordinator</span></button>
+            <button class="workspace-tab" type="button"><span data-icon="terminal"></span><span class="tab-label">runtime audit</span></button>
+            <button class="workspace-tab is-active" type="button"><span data-icon="workflow"></span><span class="tab-label">Maestro</span></button>
+          </div>
+          <div class="new-tab-wrap">
+            <button class="icon-button" id="new-tab-button" type="button" aria-label="New tab" aria-expanded="false" data-icon-button="plus"></button>
+          </div>
+        </div>
+        <div class="window-actions">
+          <button class="icon-button" type="button" aria-label="Search" data-icon-button="search"></button>
+          <button class="icon-button" type="button" aria-label="Layout" data-icon-button="layout"></button>
+          <button class="icon-button" type="button" aria-label="Settings" data-icon-button="settings"></button>
+        </div>
+      </header>
+
+      <div class="tab-create-menu" id="tab-create-menu" role="menu" hidden>
+        <div class="menu-heading">Open in this worktree</div>
+        <button class="menu-item" type="button" role="menuitem" data-tab-action="terminal"><span data-icon="terminal"></span><span class="menu-item-copy"><strong>New terminal</strong><span>Shell or installed coding agent</span></span><span class="menu-shortcut">Ctrl+Shift+T</span></button>
+        <button class="menu-item is-highlighted" type="button" role="menuitem" data-tab-action="maestro"><span data-icon="workflow"></span><span class="menu-item-copy"><strong>Maestro canvas</strong><span>Agents, context and evidence for this worktree</span></span><span class="menu-shortcut">M</span></button>
+        <button class="menu-item" type="button" role="menuitem" data-tab-action="browser"><span data-icon="globe"></span><span class="menu-item-copy"><strong>New browser tab</strong><span>Managed by this workspace</span></span><span></span></button>
+        <div class="menu-separator"></div>
+        <button class="menu-item" type="button" role="menuitem" data-tab-action="note"><span data-icon="note"></span><span class="menu-item-copy"><strong>Context note</strong><span>Add a Markdown node to Maestro</span></span><span></span></button>
+      </div>
+
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-title-row"><strong>my-llm-kit</strong><button class="icon-button" type="button" aria-label="Repository menu" data-icon-button="more"></button></div>
+          <div class="scope-lock"><span data-icon="lock"></span><span>repo_4f2::/Documents/my-llm-kit</span></div>
+        </div>
+        <div class="sidebar-scroll">
+          <section class="sidebar-section">
+            <div class="sidebar-section-title"><span>Worktrees</span><span>3</span></div>
+            <button class="sidebar-row is-current" type="button">
+              <span data-icon="git-branch"></span>
+              <span class="sidebar-row-copy"><strong>main</strong><span>my-llm-kit/main</span></span>
+              <span class="count-badge" id="sidebar-agent-count">4</span>
+            </button>
+            <button class="sidebar-row" type="button">
+              <span data-icon="git-branch"></span>
+              <span class="sidebar-row-copy"><strong>canvas-runtime</strong><span>child · local</span></span>
+              <span class="count-badge">1</span>
+            </button>
+            <button class="sidebar-row" type="button">
+              <span data-icon="cloud"></span>
+              <span class="sidebar-row-copy"><strong>remote-validation</strong><span>cloud-mac · unverifiable</span></span>
+              <span class="count-badge">?</span>
+            </button>
+          </section>
+
+          <section class="sidebar-section">
+            <div class="sidebar-section-title"><span>Active run</span><span class="status-dot"></span></div>
+            <div class="run-card">
+              <div class="run-card-header"><strong>impl-portable-agent-graph</strong><span class="tiny-badge">active</span></div>
+              <div class="run-progress"><span></span></div>
+              <div class="run-meta"><span>4 / 7 tasks</span><span>3 workers</span></div>
+            </div>
+          </section>
+
+          <section class="sidebar-section">
+            <div class="sidebar-section-title"><span>Surfaces</span></div>
+            <button class="sidebar-row is-current" type="button"><span data-icon="workflow"></span><span class="sidebar-row-copy"><strong>Maestro</strong><span>worktree canvas</span></span><span></span></button>
+            <button class="sidebar-row" type="button"><span data-icon="terminal"></span><span class="sidebar-row-copy"><strong>Terminals</strong><span>4 attached · 1 released</span></span><span></span></button>
+            <button class="sidebar-row" type="button"><span data-icon="file"></span><span class="sidebar-row-copy"><strong>Artifacts</strong><span>6 durable files</span></span><span></span></button>
+            <button class="sidebar-row" type="button"><span data-icon="activity"></span><span class="sidebar-row-copy"><strong>Resources</strong><span>ownership and cleanup</span></span><span></span></button>
+          </section>
+        </div>
+      </aside>
+
+      <main class="main-surface">
+        <div class="canvas-toolbar">
+          <div class="canvas-heading">
+            <h1><span data-icon="workflow"></span> Maestro <span class="tiny-badge">worktree scoped</span></h1>
+            <p>my-llm-kit/main · journal is authoritative · canvas is a durable projection</p>
+          </div>
+          <div class="toolbar-actions">
+            <select class="edge-type-select" id="edge-type-select" aria-label="Connection type">
+              <option value="context">context</option>
+              <option value="depends_on">depends on</option>
+              <option value="spawned">spawned</option>
+              <option value="produced">produced</option>
+            </select>
+            <button class="toolbar-button" id="link-mode-button" type="button" aria-label="Connect nodes"><span data-icon="link"></span><span class="optional-label">Connect</span></button>
+            <button class="toolbar-button" id="add-note-button" type="button" aria-label="Add context note"><span data-icon="note"></span><span class="optional-label">Note</span></button>
+            <button class="toolbar-button" id="reset-button" type="button" aria-label="Reset demo canvas"><span data-icon="rotate"></span><span class="optional-label">Reset demo</span></button>
+            <span class="toolbar-divider"></span>
+            <button class="toolbar-button is-primary" id="delegate-button" type="button"><span data-icon="user-plus"></span>Delegate agent</button>
+          </div>
+        </div>
+
+        <div class="canvas-viewport" id="canvas-viewport" tabindex="0" aria-label="Infinite Maestro canvas. Drag blank space to pan, scroll to zoom and right click to create nodes.">
+          <div class="canvas-scene" id="canvas-scene">
+            <svg class="edge-layer" id="edge-layer" viewBox="0 0 5200 3600" aria-label="Typed canvas connections">
+              <defs>
+                <marker id="arrow-context" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--context)" /></marker>
+                <marker id="arrow-depends_on" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--dependency)" /></marker>
+                <marker id="arrow-spawned" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--spawned)" /></marker>
+                <marker id="arrow-produced" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L8 4L0 8Z" fill="var(--produced)" /></marker>
+              </defs>
+            </svg>
+            <div class="canvas-world" id="canvas-world"></div>
+          </div>
+        </div>
+
+        <div class="prototype-note"><span class="prototype-pill">FUNCTIONAL MOCK</span><span>Runtime actions and metrics are simulated</span></div>
+        <div class="canvas-instruction" id="canvas-instruction" hidden><span id="instruction-copy">Choose a source node</span><kbd>Esc</kbd></div>
+        <div class="edge-legend" aria-label="Connection legend">
+          <span class="legend-item context"><i class="legend-line"></i>context</span>
+          <span class="legend-item spawned"><i class="legend-line"></i>spawned</span>
+          <span class="legend-item depends"><i class="legend-line"></i>depends on</span>
+          <span class="legend-item produced"><i class="legend-line"></i>produced</span>
+        </div>
+        <div class="canvas-controls">
+          <button class="icon-button" id="zoom-out" type="button" aria-label="Zoom out" data-icon-button="minus"></button>
+          <span class="zoom-value" id="zoom-value">100%</span>
+          <button class="icon-button" id="zoom-in" type="button" aria-label="Zoom in" data-icon-button="plus"></button>
+          <button class="icon-button" id="fit-button" type="button" aria-label="Fit canvas" data-icon-button="maximize"></button>
+        </div>
+      </main>
+
+      <aside class="inspector">
+        <div class="inspector-header"><div><strong>Inspector</strong><span id="inspector-kind">Nothing selected</span></div><button class="icon-button" id="inspector-close" type="button" aria-label="Clear selection" data-icon-button="x"></button></div>
+        <div class="inspector-scroll" id="inspector-content"></div>
+      </aside>
+
+      <footer class="statusbar">
+        <div class="statusbar-group">
+          <span class="statusbar-item"><i class="status-dot"></i>Runtime connected</span>
+          <span class="statusbar-item"><span data-icon="git-branch"></span>main</span>
+          <span class="statusbar-item"><span data-icon="lock"></span>worktree isolation</span>
+        </div>
+        <div class="statusbar-group">
+          <span class="statusbar-item" id="resource-status"><span data-icon="activity"></span>4 owned · 612 MB simulated</span>
+          <span class="statusbar-item"><span data-icon="server"></span>local</span>
+        </div>
+      </footer>
+    </div>
+
+    <div class="context-menu" id="context-menu" role="menu" hidden>
+      <div class="menu-heading" id="context-menu-heading">Create at cursor</div>
+      <button class="menu-item" type="button" role="menuitem" data-create="agent"><span data-icon="user-plus"></span><span class="context-menu-copy"><strong>Agent terminal</strong><span>agent · model · effort</span></span><span></span></button>
+      <button class="menu-item" type="button" role="menuitem" data-create="note"><span data-icon="note"></span><span class="context-menu-copy"><strong>Context note</strong><span>Markdown, on demand</span></span><span></span></button>
+      <button class="menu-item" type="button" role="menuitem" data-create="task"><span data-icon="check"></span><span class="context-menu-copy"><strong>Task or gate</strong><span>journal backed</span></span><span></span></button>
+      <div class="menu-separator"></div>
+      <button class="menu-item" type="button" role="menuitem" data-create="artifact"><span data-icon="file"></span><span class="context-menu-copy"><strong>Artifact</strong><span>file, report or PR</span></span><span></span></button>
+      <button class="menu-item" type="button" role="menuitem" data-create="portal"><span data-icon="external"></span><span class="context-menu-copy"><strong>Child canvas portal</strong><span>another worktree</span></span><span></span></button>
+    </div>
+
+    <dialog class="delegate-dialog" id="delegate-dialog">
+      <div class="dialog-header">
+        <div><h2>Delegate to a fresh agent</h2><p id="delegate-subtitle">Creates a supervised terminal and projects it onto this canvas.</p></div>
+        <button class="icon-button" type="button" aria-label="Close delegation" data-close-dialog="delegate" data-icon-button="x"></button>
+      </div>
+      <div class="delegate-layout">
+        <aside class="agent-picker">
+          <div class="menu-heading">Installed agents</div>
+          <button class="agent-option is-selected" type="button" data-agent="codex"><span class="provider-mark" data-provider="codex" data-provider-icon="codex"></span><span class="agent-option-copy"><strong>Codex</strong><span>OpenAI coding agent</span></span></button>
+          <button class="agent-option" type="button" data-agent="claude"><span class="provider-mark" data-provider="claude" data-provider-icon="claude"></span><span class="agent-option-copy"><strong>Claude Code</strong><span>Anthropic coding agent</span></span></button>
+          <div class="installed-label">Detected but unavailable</div>
+          <button class="agent-option" type="button" disabled><span class="provider-mark" data-provider="opencode" data-provider-icon="opencode"></span><span class="agent-option-copy"><strong>OpenCode</strong><span>CLI not detected</span></span></button>
+          <button class="agent-option" type="button" disabled><span class="provider-mark" data-provider="gemini" data-provider-icon="gemini"></span><span class="agent-option-copy"><strong>Gemini CLI</strong><span>CLI not detected</span></span></button>
+        </aside>
+        <form class="delegate-form" id="delegate-form">
+          <div class="form-scroll">
+            <div class="form-field">
+              <label class="field-label" for="task-prompt"><span>Task brief</span><small>bounded context capsule</small></label>
+              <textarea class="text-area" id="task-prompt" required>Audit the runtime lifecycle boundary and return evidence with exact file references.</textarea>
+            </div>
+            <div class="form-field">
+              <div class="field-label"><span>Model</span><small>passed to the selected provider</small></div>
+              <div class="option-grid" id="model-options"></div>
+            </div>
+            <div class="form-field">
+              <div class="field-label"><span>Reasoning effort</span><small>requires an explicit model</small></div>
+              <div class="option-grid" id="effort-options">
+                <button class="choice-card" type="button" data-effort="medium"><strong>medium</strong><span>balanced</span></button>
+                <button class="choice-card is-selected" type="button" data-effort="high"><strong>high</strong><span>deep pass</span></button>
+                <button class="choice-card" type="button" data-effort="xhigh"><strong>xhigh</strong><span>maximum audit</span></button>
+              </div>
+            </div>
+            <div class="form-field">
+              <div class="field-label"><span>Execution boundary</span><small>one canvas per worktree</small></div>
+              <div class="option-grid placement-grid" id="placement-options">
+                <button class="choice-card is-selected" type="button" data-placement="current"><strong>This worktree</strong><span>new terminal here</span></button>
+                <button class="choice-card" type="button" data-placement="new-child"><strong>Child worktree</strong><span>new canvas + portal</span></button>
+                <button class="choice-card" type="button" data-placement="cloud"><strong>Cloud host</strong><span>remote canvas + portal</span></button>
+              </div>
+            </div>
+            <div class="form-field">
+              <label class="field-label" for="parent-select"><span>Delegated by</span><small>automatic spawned edge</small></label>
+              <select class="select-input" id="parent-select"></select>
+            </div>
+            <div class="form-field">
+              <div class="field-label"><span>Runtime transaction</span><small>first line exists today; projection is proposed</small></div>
+              <div class="command-preview" id="command-preview"></div>
+              <div class="scope-callout"><span data-icon="lock"></span><span id="scope-copy">The worker shares this checkout. Context notes are referenced, not copied into the coordinator transcript.</span></div>
+            </div>
+          </div>
+          <footer class="dialog-footer"><span class="dialog-footer-note">Mock only. No process will start.</span><button class="secondary-button" type="button" data-close-dialog="delegate">Cancel</button><button class="primary-button" type="submit"><span data-icon="play"></span><span id="delegate-submit-copy">Start supervised worker</span></button></footer>
+        </form>
+      </div>
+    </dialog>
+
+    <dialog class="terminal-dialog" id="terminal-dialog">
+      <div class="dialog-header">
+        <div><h2 id="terminal-dialog-title">Agent terminal</h2><p id="terminal-dialog-subtitle">Simulated terminal stream</p></div>
+        <button class="icon-button" type="button" aria-label="Close terminal" data-close-dialog="terminal" data-icon-button="x"></button>
+      </div>
+      <div class="terminal-dialog-shell">
+        <section class="terminal-live">
+          <div class="terminal-output" id="terminal-output"></div>
+          <div class="terminal-input-row"><input class="text-input" id="terminal-input" type="text" placeholder="Send input to this agent…" /><button class="primary-button" id="terminal-send" type="button">Send</button></div>
+        </section>
+        <aside class="terminal-sidecar" id="terminal-sidecar"></aside>
+      </div>
+    </dialog>
+
+    <div class="toast" id="toast" role="status"><i class="toast-dot"></i><span id="toast-copy">Canvas updated</span></div>
+
+    <script>
+      const ICONS = {
+        "activity": '<path d="M3 12h3l2-7 4 14 2-7h7"/>',
+        "alert": '<circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>',
+        "archive": '<rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8M10 12h4"/>',
+        "check": '<path d="m5 12 4 4L19 6"/>',
+        "chevron-left": '<path d="m15 18-6-6 6-6"/>',
+        "chevron-right": '<path d="m9 18 6-6-6-6"/>',
+        "clock": '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+        "cloud": '<path d="M17.5 19H7a5 5 0 1 1 1.2-9.85A7 7 0 0 1 21 12a4 4 0 0 1-3.5 7Z"/>',
+        "external": '<path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>',
+        "file": '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/>',
+        "fit": '<path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"/>',
+        "git-branch": '<line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/>',
+        "globe": '<circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/>',
+        "layout": '<rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18M9 9h12"/>',
+        "link": '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+        "lock": '<rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+        "maximize": '<path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"/>',
+        "minus": '<path d="M5 12h14"/>',
+        "more": '<circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>',
+        "note": '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h9l5-5V8Z"/><path d="M14 2v6h6M8 13h8M8 17h5"/>',
+        "play": '<path d="m5 3 14 9-14 9Z"/>',
+        "plus": '<path d="M12 5v14M5 12h14"/>',
+        "rotate": '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>',
+        "search": '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+        "server": '<rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/><path d="M6 6h.01M6 18h.01"/>',
+        "settings": '<path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V21h-4v-.08a1.7 1.7 0 0 0-1.03-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.56-1.03H3v-4h.08A1.7 1.7 0 0 0 4.64 9a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.63h.01A1.7 1.7 0 0 0 10.04 3.1V3h4v.08A1.7 1.7 0 0 0 15.07 4.64a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.44 9v.01A1.7 1.7 0 0 0 21 10.04V10h.01v4H21a1.7 1.7 0 0 0-1.56 1.03Z"/>',
+        "terminal": '<polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/>',
+        "user-plus": '<path d="M15 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/>',
+        "workflow": '<rect width="6" height="6" x="3" y="3" rx="1"/><rect width="6" height="6" x="15" y="15" rx="1"/><path d="M6 9v4a2 2 0 0 0 2 2h7M15 6h-4"/>',
+        "x": '<path d="M18 6 6 18M6 6l12 12"/>'
+      };
+
+      function icon(name, className = "") {
+        const paths = ICONS[name] || ICONS.file;
+        return `<svg class="${className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths}</svg>`;
+      }
+
+      let providerIconCount = 0;
+
+      function providerIcon(name) {
+        if (name === "codex") {
+          return '<svg viewBox="0 0 24 24" fill="currentColor" fill-rule="evenodd" aria-hidden="true"><path d="M9.205 8.658v-2.26c0-.19.072-.333.238-.428l4.543-2.616c.619-.357 1.356-.523 2.117-.523 2.854 0 4.662 2.212 4.662 4.566 0 .167 0 .357-.024.547l-4.71-2.759a.797.797 0 0 0-.856 0l-5.97 3.473Zm10.609 8.8V12.06c0-.333-.143-.57-.429-.737l-5.97-3.473 1.95-1.118a.433.433 0 0 1 .476 0l4.543 2.617c1.309.76 2.189 2.378 2.189 3.948 0 1.808-1.07 3.473-2.76 4.163ZM7.802 12.703l-1.95-1.142c-.167-.095-.239-.238-.239-.428V5.899c0-2.545 1.95-4.472 4.591-4.472 1 0 1.927.333 2.712.928L8.23 5.067c-.285.166-.428.404-.428.737v6.898ZM12 15.128l-2.795-1.57v-3.33L12 8.658l2.795 1.57v3.33L12 15.128Zm1.796 7.23c-1 0-1.927-.332-2.712-.927l4.686-2.712c.285-.166.428-.404.428-.737v-6.898l1.974 1.142c.167.095.238.238.238.428v5.233c0 2.545-1.974 4.472-4.614 4.472Zm-5.637-5.303-4.544-2.617c-1.308-.761-2.188-2.378-2.188-3.948A4.482 4.482 0 0 1 4.21 6.327v5.423c0 .333.143.571.428.738l5.947 3.449-1.95 1.118a.432.432 0 0 1-.476 0Zm-.262 3.9c-2.688 0-4.662-2.021-4.662-4.519 0-.19.024-.38.047-.57l4.686 2.71c.286.167.571.167.856 0l5.97-3.448v2.26c0 .19-.07.333-.237.428l-4.543 2.616c-.619.357-1.356.523-2.117.523Zm5.899 2.83a5.947 5.947 0 0 0 5.827-4.756C22.287 18.339 24 15.84 24 13.296c0-1.665-.713-3.282-1.998-4.448.119-.5.19-.999.19-1.498 0-3.401-2.759-5.947-5.946-5.947-.642 0-1.26.095-1.88.31A5.962 5.962 0 0 0 10.205 0a5.947 5.947 0 0 0-5.827 4.757C1.713 5.447 0 7.945 0 10.49c0 1.666.713 3.283 1.998 4.448-.119.5-.19 1-.19 1.499 0 3.401 2.759 5.946 5.946 5.946.642 0 1.26-.095 1.88-.309a5.96 5.96 0 0 0 4.162 1.713Z"/></svg>';
+        }
+        if (name === "claude") {
+          return '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.709 15.955l4.72-2.647.08-.23-.08-.128H9.2l-.79-.048-2.698-.073-2.339-.097-2.266-.122-.571-.121L0 11.784l.055-.352.48-.321.686.06 1.52.103 2.278.158 1.652.097 2.449.255h.389l.055-.157-.134-.098-.103-.097-2.358-1.596-2.552-1.688-1.336-.972-.724-.491-.364-.462-.158-1.008.656-.722.881.06.225.061.893.686 1.908 1.476 2.491 1.833.365.304.145-.103.019-.073-.164-.274-1.355-2.446-1.446-2.49-.644-1.032-.17-.619a2.97 2.97 0 0 1-.104-.729L6.283.134 6.696 0l.996.134.42.364.62 1.414 1.002 2.229 1.555 3.03.456.898.243.832.091.255h.158V9.01l.128-1.706.237-2.095.23-2.695.08-.76.376-.91.747-.492.584.28.48.685-.067.444-.286 1.851-.559 2.903-.364 1.942h.212l.243-.242.985-1.306 1.652-2.064.73-.82.85-.904.547-.431h1.033l.76 1.129-.34 1.166-1.064 1.347-.881 1.142-1.264 1.7-.79 1.36.073.11.188-.02 2.856-.606 1.543-.28 1.841-.315.833.388.091.395-.328.807-1.969.486-2.309.462-3.439.813-.042.03.049.061 1.549.146.662.036h1.622l3.02.225.79.522.474.638-.079.485-1.215.62-1.64-.389-3.829-.91-1.312-.329h-.182v.11l1.093 1.068 2.006 1.81 2.509 2.33.127.578-.322.455-.34-.049-2.205-1.657-.851-.747-1.926-1.62h-.128v.17l.444.649 2.345 3.521.122 1.08-.17.353-.608.213-.668-.122-1.374-1.925-1.415-2.167-1.143-1.943-.14.08-.674 7.254-.316.37-.729.28-.607-.461-.322-.747.322-1.476.389-1.924.315-1.53.286-1.9.17-.632-.012-.042-.14.018-1.434 1.967-2.18 2.945-1.726 1.845-.414.164-.717-.37.067-.662.401-.589 2.388-3.036 1.44-1.882.93-1.086-.006-.158h-.055L4.132 18.56l-1.13.146-.487-.456.061-.746.231-.243 1.908-1.312-.006.006Z"/></svg>';
+        }
+        if (name === "opencode") {
+          return '<svg viewBox="0 0 512 512" fill="none" aria-hidden="true"><path d="M320 224V352H192V224H320Z" fill="currentColor" fill-opacity=".28"/><path fill-rule="evenodd" clip-rule="evenodd" d="M384 416H128V96H384V416ZM320 160H192V352H320V160Z" fill="currentColor"/></svg>';
+        }
+        if (name === "gemini") {
+          const uid = `gemini-${++providerIconCount}`;
+          return `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><defs><linearGradient id="${uid}" x1="4" y1="20" x2="20" y2="4" gradientUnits="userSpaceOnUse"><stop stop-color="#34A853"/><stop offset=".45" stop-color="#4285F4"/><stop offset="1" stop-color="#A142F4"/></linearGradient></defs><path d="M12 2c.55 5.45 4.55 9.45 10 10-5.45.55-9.45 4.55-10 10-.55-5.45-4.55-9.45-10-10 5.45-.55 9.45-4.55 10-10Z" fill="url(#${uid})"/></svg>`;
+        }
+        return icon("terminal");
+      }
+
+      document.querySelectorAll("[data-icon]").forEach((slot) => { slot.innerHTML = icon(slot.dataset.icon); });
+      document.querySelectorAll("[data-icon-button]").forEach((button) => { button.innerHTML = icon(button.dataset.iconButton); });
+      document.querySelectorAll("[data-provider-icon]").forEach((slot) => { slot.innerHTML = providerIcon(slot.dataset.providerIcon); });
+
+      const STATIC = new URLSearchParams(location.search).get("static") === "1";
+      if (STATIC) document.body.classList.add("is-static");
+
+      const STORAGE_KEY = "orca-maestro:repo_4f2:main:v4";
+      const WORKTREE_ID = "repo_4f2::/home/badmuriss/Documents/my-llm-kit";
+      const NODE_ICONS = { note: "note", task: "check", portal: "external", artifact: "file" };
+      const MODEL_OPTIONS = {
+        codex: [
+          { id: "gpt-5.6-luna", label: "Luna", note: "fast worker" },
+          { id: "gpt-5.6-terra", label: "Terra", note: "balanced" },
+          { id: "gpt-5.6-sol", label: "Sol", note: "frontier" }
+        ],
+        claude: [
+          { id: "claude-sonnet-4-6", label: "Sonnet", note: "balanced" },
+          { id: "claude-opus-4-6", label: "Opus", note: "deep worker" },
+          { id: "default", label: "Default", note: "account choice" }
+        ]
+      };
+
+      const DEMO_STATE = {
+        version: 4,
+        viewport: { x: 48, y: 54, scale: 0.76 },
+        nodes: [
+          {
+            id: "note-contract",
+            type: "note",
+            x: 120,
+            y: 150,
+            w: 300,
+            h: 226,
+            title: "Implementation contract",
+            body: "# Maestro context\n\n- One canvas per worktree\n- Journal remains authoritative\n- Read notes on demand\n- Never infer exited from disconnect",
+            contextPolicy: "on-demand · 1.2 KB"
+          },
+          {
+            id: "agent-coordinator",
+            type: "agent",
+            x: 540,
+            y: 140,
+            w: 360,
+            h: 238,
+            title: "Impl coordinator",
+            cli: "codex",
+            model: "gpt-5.6-sol",
+            effort: "xhigh",
+            status: "working",
+            task: "RUN impl-portable-agent-graph",
+            handle: "term_coord_3f1",
+            dispatch: "dispatch_coord_01",
+            host: "local",
+            owner: "coordinator-owned",
+            terminalState: "active",
+            cpu: "7.8%",
+            rss: "214 MB",
+            uptime: "18m 42s",
+            context: "Run journal, task graph and linked contract note. Terminal tail is bounded to the newest lines.",
+            output: [
+              "orca orchestration worker-list --run run_impl --json",
+              "✓ 3 supervised workers reconciled",
+              "reading bounded result from dispatch_runtime",
+              "waiting for evidence grade…"
+            ]
+          },
+          {
+            id: "agent-runtime",
+            type: "agent",
+            x: 1050,
+            y: 78,
+            w: 348,
+            h: 226,
+            title: "Runtime lifecycle audit",
+            cli: "codex",
+            model: "gpt-5.6-terra",
+            effort: "high",
+            status: "working",
+            task: "TASK AG-04 · lifecycle",
+            handle: "term_runtime_811",
+            dispatch: "dispatch_runtime_04",
+            host: "local",
+            owner: "coordinator-owned",
+            terminalState: "active",
+            cpu: "4.1%",
+            rss: "168 MB",
+            uptime: "11m 06s",
+            context: "Only task AG-04, linked lifecycle note and exact source paths.",
+            output: [
+              "rg worker-release src/main/runtime",
+              "read daemon ownership invariants",
+              "✓ found archive-before-release contract",
+              "checking remote unverifiable branch…"
+            ]
+          },
+          {
+            id: "task-gate",
+            type: "task",
+            x: 1040,
+            y: 430,
+            w: 304,
+            h: 188,
+            title: "Lifecycle evidence gate",
+            subtitle: "AG-04 · journal-backed task",
+            body: "Release only coordinator-owned, settled workers after preserving an inspectable archive.",
+            progress: 66,
+            checks: ["Process owner proven", "Archive persisted", "Remote verdict pending"]
+          },
+          {
+            id: "agent-ui",
+            type: "agent",
+            x: 1515,
+            y: 160,
+            w: 350,
+            h: 226,
+            title: "Canvas interaction build",
+            cli: "claude",
+            model: "claude-sonnet-4-6",
+            effort: "high",
+            status: "waiting",
+            task: "TASK UI-02 · visual validation",
+            handle: "term_ui_22a",
+            dispatch: "dispatch_ui_02",
+            host: "local",
+            owner: "coordinator-owned",
+            terminalState: "active",
+            cpu: "0.6%",
+            rss: "146 MB",
+            uptime: "07m 33s",
+            context: "Canvas behavior, Orca style guide and screenshot manifest only.",
+            output: [
+              "rendered desktop overview",
+              "rendered notebook context menu",
+              "agent waiting for visual decision",
+              "? approve connector density"
+            ]
+          },
+          {
+            id: "artifact-report",
+            type: "artifact",
+            x: 1518,
+            y: 490,
+            w: 314,
+            h: 166,
+            title: "Lifecycle findings",
+            subtitle: "durable evidence · Markdown",
+            body: "Primary-source audit with issue, PR and local source citations. Survives terminal release.",
+            path: "research/2026-08-20-orca-maestro-integration.md"
+          },
+          {
+            id: "agent-review",
+            type: "agent",
+            x: 540,
+            y: 610,
+            w: 350,
+            h: 224,
+            title: "Completed source review",
+            cli: "codex",
+            model: "gpt-5.6-luna",
+            effort: "high",
+            status: "done",
+            task: "TASK AG-03 · source map",
+            handle: "term_review_19c",
+            dispatch: "dispatch_review_03",
+            host: "local",
+            owner: "coordinator-owned",
+            terminalState: "reclaimable",
+            cpu: "0.0%",
+            rss: "84 MB",
+            uptime: "24m 09s",
+            context: "Result archived. Terminal may now be released without losing evidence.",
+            output: [
+              "✓ source map recorded",
+              "✓ checks passed",
+              "✓ evidence graded pass",
+              "process settled; terminal reclaimable"
+            ]
+          },
+          {
+            id: "portal-child",
+            type: "portal",
+            x: 1020,
+            y: 748,
+            w: 318,
+            h: 164,
+            title: "canvas-runtime",
+            subtitle: "child worktree canvas · local",
+            body: "The child checkout keeps its own notes, terminals and projection. This node is only a portal.",
+            path: "repo_4f2::…/canvas-runtime"
+          }
+        ],
+        edges: [
+          { id: "edge-context-coord", source: "note-contract", target: "agent-coordinator", type: "context" },
+          { id: "edge-spawn-runtime", source: "agent-coordinator", target: "agent-runtime", type: "spawned" },
+          { id: "edge-runtime-gate", source: "task-gate", target: "agent-runtime", type: "depends_on" },
+          { id: "edge-spawn-ui", source: "agent-coordinator", target: "agent-ui", type: "spawned" },
+          { id: "edge-ui-report", source: "agent-ui", target: "artifact-report", type: "produced" },
+          { id: "edge-spawn-review", source: "agent-coordinator", target: "agent-review", type: "spawned" },
+          { id: "edge-child", source: "agent-coordinator", target: "portal-child", type: "spawned" }
+        ]
+      };
+
+      function cloneDemo() {
+        return JSON.parse(JSON.stringify(DEMO_STATE));
+      }
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return cloneDemo();
+          const parsed = JSON.parse(raw);
+          return parsed.version === DEMO_STATE.version ? parsed : cloneDemo();
+        } catch {
+          return cloneDemo();
+        }
+      }
+
+      let state = loadState();
+      let selectedNodeId = "agent-runtime";
+      let selectedEdgeId = null;
+      let linkMode = false;
+      let linkSourceId = null;
+      let pointerWorld = { x: 0, y: 0 };
+      let creationPoint = { x: 920, y: 340 };
+      let activeTerminalId = null;
+      let selectedAgent = "codex";
+      let selectedModel = "gpt-5.6-terra";
+      let selectedEffort = "high";
+      let selectedPlacement = "current";
+      let toastTimer = null;
+
+      const viewport = document.querySelector("#canvas-viewport");
+      const scene = document.querySelector("#canvas-scene");
+      const world = document.querySelector("#canvas-world");
+      const edgeLayer = document.querySelector("#edge-layer");
+      const contextMenu = document.querySelector("#context-menu");
+      const tabCreateMenu = document.querySelector("#tab-create-menu");
+      const delegateDialog = document.querySelector("#delegate-dialog");
+      const terminalDialog = document.querySelector("#terminal-dialog");
+      const inspectorContent = document.querySelector("#inspector-content");
+
+      function saveState() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }
+
+      function escapeHtml(value) {
+        return String(value ?? "").replace(/[&<>'"]/g, (character) => ({
+          "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"
+        })[character]);
+      }
+
+      function nodeById(id) {
+        return state.nodes.find((node) => node.id === id) || null;
+      }
+
+      function agentNodes() {
+        return state.nodes.filter((node) => node.type === "agent");
+      }
+
+      function updateSceneTransform() {
+        const { x, y, scale } = state.viewport;
+        scene.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+        document.querySelector("#zoom-value").textContent = `${Math.round(scale * 100)}%`;
+      }
+
+      function edgeGeometry(edge, endOverride = null) {
+        const source = nodeById(edge.source);
+        const target = endOverride || nodeById(edge.target);
+        if (!source || !target) return null;
+        const sourceCenter = { x: source.x + source.w / 2, y: source.y + source.h / 2 };
+        const targetCenter = endOverride ? target : { x: target.x + target.w / 2, y: target.y + target.h / 2 };
+        const goesRight = targetCenter.x >= sourceCenter.x;
+        const sx = source.x + (goesRight ? source.w : 0);
+        const sy = sourceCenter.y;
+        const tx = endOverride ? target.x : target.x + (goesRight ? 0 : target.w);
+        const ty = endOverride ? target.y : targetCenter.y;
+        const curve = Math.max(70, Math.min(220, Math.abs(tx - sx) * 0.48));
+        const c1x = sx + (goesRight ? curve : -curve);
+        const c2x = tx - (goesRight ? curve : -curve);
+        return {
+          path: `M ${sx} ${sy} C ${c1x} ${sy}, ${c2x} ${ty}, ${tx} ${ty}`,
+          labelX: (sx + tx) / 2,
+          labelY: (sy + ty) / 2 - 8
+        };
+      }
+
+      function renderEdges() {
+        edgeLayer.querySelectorAll(".edge-group,.edge-preview-group").forEach((element) => element.remove());
+        state.edges.forEach((edge) => {
+          const geometry = edgeGeometry(edge);
+          if (!geometry) return;
+          const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+          group.setAttribute("class", `edge-group${selectedEdgeId === edge.id ? " is-selected" : ""}`);
+          group.dataset.edgeId = edge.id;
+          group.dataset.type = edge.type;
+          group.innerHTML = `
+            <path class="edge-visible" d="${geometry.path}" marker-end="url(#arrow-${edge.type})"></path>
+            <path class="edge-hit" d="${geometry.path}"></path>
+            <g class="edge-label" transform="translate(${geometry.labelX} ${geometry.labelY})">
+              <rect x="-31" y="-8" width="62" height="16" rx="8"></rect>
+              <text y="3">${escapeHtml(edge.type.replace("_", " "))}</text>
+            </g>`;
+          group.querySelector(".edge-hit").addEventListener("pointerdown", (event) => {
+            event.stopPropagation();
+            selectedNodeId = null;
+            selectedEdgeId = edge.id;
+            renderAll();
+          });
+          edgeLayer.appendChild(group);
+        });
+
+        if (linkMode && linkSourceId) {
+          const geometry = edgeGeometry({ source: linkSourceId }, pointerWorld);
+          if (geometry) {
+            const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+            group.setAttribute("class", "edge-preview-group");
+            group.innerHTML = `<path class="edge-preview" d="${geometry.path}"></path>`;
+            edgeLayer.appendChild(group);
+          }
+        }
+      }
+
+      function agentState(node) {
+        const status = node.terminalState === "released"
+          ? "released"
+          : node.terminalState === "reclaimable"
+            ? "ready"
+            : node.terminalState === "retained"
+              ? "retained"
+              : node.status;
+        const presentations = {
+          working: { label: "Running", icon: "activity" },
+          starting: { label: "Starting", icon: "clock" },
+          waiting: { label: "Input required", icon: "alert" },
+          done: { label: "Complete", icon: "check" },
+          ready: { label: "Ready to release", icon: "archive" },
+          retained: { label: "Retained", icon: "lock" },
+          released: { label: "Archived", icon: "archive" }
+        };
+        return { key: status, ...(presentations[status] || { label: status, icon: "activity" }) };
+      }
+
+      function providerLabel(cli) {
+        return { codex: "Codex", claude: "Claude Code", opencode: "OpenCode", gemini: "Gemini CLI" }[cli] || cli;
+      }
+
+      function modelLabel(cli, model) {
+        return MODEL_OPTIONS[cli]?.find((option) => option.id === model)?.label || model;
+      }
+
+      function agentNodeHtml(node) {
+        const stateView = agentState(node);
+        const visibleOutput = node.output.slice(-4);
+        const lines = visibleOutput.map((line, index) => {
+          const complete = line.startsWith("✓");
+          const current = index === visibleOutput.length - 1 && ["working", "starting", "waiting"].includes(stateView.key);
+          const needsInput = current && stateView.key === "waiting";
+          const stepIcon = complete ? "check" : needsInput ? "alert" : current ? "chevron-right" : "minus";
+          const classes = ["terminal-step", complete && "is-complete", current && "is-current", needsInput && "needs-input"].filter(Boolean).join(" ");
+          return `<div class="${classes}"><span class="terminal-step-icon">${icon(stepIcon)}</span><span class="terminal-step-copy">${escapeHtml(line.replace(/^[✓?]\s*/, ""))}</span></div>`;
+        }).join("");
+        return `
+          <div class="node-drag">
+            <span class="provider-mark" data-provider="${escapeHtml(node.cli)}">${providerIcon(node.cli)}</span>
+            <span class="node-title"><strong>${escapeHtml(node.title)}</strong><span>${escapeHtml(providerLabel(node.cli))} · ${escapeHtml(modelLabel(node.cli, node.model))} · ${escapeHtml(node.effort)} effort</span></span>
+            <span class="agent-state" data-status="${escapeHtml(stateView.key)}">${icon(stateView.icon)}${escapeHtml(stateView.label)}</span>
+          </div>
+          <div class="agent-taskbar"><span>${escapeHtml(node.task)}</span><span>${escapeHtml(node.handle)}</span></div>
+          <div class="terminal-preview">${lines}</div>
+          <footer class="node-footer"><div class="agent-metrics"><span>${escapeHtml(node.rss)}</span><i></i><span>${escapeHtml(node.uptime)}</span><i></i><span>${escapeHtml(node.host)}</span></div><button class="node-button" type="button" data-node-action="terminal">${icon("maximize")}Focus</button></footer>
+          <button class="node-port" type="button" aria-label="Connect ${escapeHtml(node.title)}" data-port></button>`;
+      }
+
+      function noteNodeHtml(node) {
+        return `
+          <div class="node-drag">
+            <span class="node-kind-icon">${icon("note")}</span>
+            <span class="node-title"><strong>${escapeHtml(node.title)}</strong><span>Markdown context · editable</span></span>
+            <span class="tiny-badge">on demand</span>
+          </div>
+          <textarea class="note-editor" aria-label="Edit ${escapeHtml(node.title)}" spellcheck="false">${escapeHtml(node.body)}</textarea>
+          <footer class="node-footer"><span>${escapeHtml(node.contextPolicy || "on-demand")}</span><button class="node-button" type="button" data-node-action="link">${icon("link")}Link</button></footer>
+          <button class="node-port" type="button" aria-label="Connect ${escapeHtml(node.title)}" data-port></button>`;
+      }
+
+      function taskNodeHtml(node) {
+        const checks = (node.checks || []).map((check, index) => `<div class="task-check"><i>${index < 2 ? "✓" : ""}</i><span>${escapeHtml(check)}</span></div>`).join("");
+        return `
+          <div class="node-drag"><span class="node-kind-icon">${icon("check")}</span><span class="node-title"><strong>${escapeHtml(node.title)}</strong><span>${escapeHtml(node.subtitle)}</span></span><span class="tiny-badge">${node.progress}%</span></div>
+          <div class="task-body"><div>${escapeHtml(node.body)}</div><div class="task-checks">${checks}</div><div class="task-progress"><span style="width:${node.progress}%"></span></div></div>
+          <button class="node-port" type="button" aria-label="Connect ${escapeHtml(node.title)}" data-port></button>`;
+      }
+
+      function portalNodeHtml(node) {
+        return `
+          <div class="node-drag"><span class="node-kind-icon">${icon("external")}</span><span class="node-title"><strong>${escapeHtml(node.title)}</strong><span>${escapeHtml(node.subtitle)}</span></span><span class="tiny-badge">portal</span></div>
+          <div class="portal-body"><div>${escapeHtml(node.body)}</div><div class="portal-path">${escapeHtml(node.path)}</div></div>
+          <footer class="node-footer"><span>separate projection</span><button class="node-button" type="button" data-node-action="portal">${icon("external")}Open canvas</button></footer>
+          <button class="node-port" type="button" aria-label="Connect ${escapeHtml(node.title)}" data-port></button>`;
+      }
+
+      function artifactNodeHtml(node) {
+        return `
+          <div class="node-drag"><span class="node-kind-icon">${icon("file")}</span><span class="node-title"><strong>${escapeHtml(node.title)}</strong><span>${escapeHtml(node.subtitle)}</span></span><span class="tiny-badge">durable</span></div>
+          <div class="artifact-body"><div>${escapeHtml(node.body)}</div><div class="artifact-path">${escapeHtml(node.path)}</div></div>
+          <footer class="node-footer"><span>survives worker release</span><button class="node-button" type="button" data-node-action="artifact">${icon("file")}Inspect</button></footer>
+          <button class="node-port" type="button" aria-label="Connect ${escapeHtml(node.title)}" data-port></button>`;
+      }
+
+      function renderNodes() {
+        world.replaceChildren();
+        state.nodes.forEach((node) => {
+          const element = document.createElement("article");
+          element.className = `canvas-node ${node.type}-node${selectedNodeId === node.id ? " is-selected" : ""}${linkSourceId === node.id ? " is-link-source" : ""}${node.terminalState === "released" ? " is-released" : ""}`;
+          element.dataset.nodeId = node.id;
+          element.style.left = `${node.x}px`;
+          element.style.top = `${node.y}px`;
+          element.style.width = `${node.w}px`;
+          element.style.height = `${node.h}px`;
+          element.innerHTML = node.type === "agent" ? agentNodeHtml(node) : node.type === "note" ? noteNodeHtml(node) : node.type === "task" ? taskNodeHtml(node) : node.type === "portal" ? portalNodeHtml(node) : artifactNodeHtml(node);
+          world.appendChild(element);
+
+          element.addEventListener("pointerdown", (event) => {
+            if (event.target.closest("button,textarea,input,select")) return;
+            event.stopPropagation();
+            selectNode(node.id);
+          });
+
+          const dragHandle = element.querySelector(".node-drag");
+          dragHandle.addEventListener("pointerdown", (event) => startNodeDrag(event, node.id));
+
+          const port = element.querySelector("[data-port]");
+          port.addEventListener("pointerdown", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            handlePort(node.id);
+          });
+
+          element.querySelectorAll("[data-node-action]").forEach((button) => {
+            button.addEventListener("click", (event) => {
+              event.stopPropagation();
+              const action = button.dataset.nodeAction;
+              selectNode(node.id);
+              if (action === "terminal") openTerminal(node.id);
+              if (action === "link") startLinkFrom(node.id);
+              if (action === "portal") showToast("A real build would activate the child worktree and its own Maestro tab");
+              if (action === "artifact") showToast("Artifact remains inspectable after worker release");
+            });
+          });
+
+          const noteEditor = element.querySelector(".note-editor");
+          if (noteEditor) {
+            noteEditor.addEventListener("pointerdown", (event) => event.stopPropagation());
+            noteEditor.addEventListener("input", () => {
+              node.body = noteEditor.value;
+              saveState();
+              if (selectedNodeId === node.id) renderInspector();
+            });
+          }
+        });
+      }
+
+      function selectNode(id) {
+        if (linkMode && linkSourceId && linkSourceId !== id) {
+          createEdge(linkSourceId, id, document.querySelector("#edge-type-select").value);
+          return;
+        }
+        selectedNodeId = id;
+        selectedEdgeId = null;
+        renderAll();
+      }
+
+      function selectEdge(id) {
+        selectedEdgeId = id;
+        selectedNodeId = null;
+        renderAll();
+      }
+
+      function emptyInspector() {
+        return `<div class="inspector-empty"><div>${icon("workflow")}<p>Select a node or connection. Right-click blank canvas to create, drag to move, and scroll to zoom.</p></div></div>`;
+      }
+
+      function nodeIdentity(node) {
+        if (node.type === "agent") return `<span class="provider-mark" data-provider="${escapeHtml(node.cli)}">${providerIcon(node.cli)}</span>`;
+        return `<span class="node-kind-icon">${icon(NODE_ICONS[node.type] || "file")}</span>`;
+      }
+
+      function renderInspector() {
+        const kindLabel = document.querySelector("#inspector-kind");
+        if (selectedEdgeId) {
+          const edge = state.edges.find((item) => item.id === selectedEdgeId);
+          if (!edge) {
+            selectedEdgeId = null;
+            renderInspector();
+            return;
+          }
+          const source = nodeById(edge.source);
+          const target = nodeById(edge.target);
+          kindLabel.textContent = "Typed connection";
+          inspectorContent.innerHTML = `
+            <div class="inspector-identity"><span class="node-kind-icon">${icon("link")}</span><span class="inspector-identity-copy"><strong>${escapeHtml(edge.type.replace("_", " "))}</strong><span>${escapeHtml(edge.id)}</span></span></div>
+            <section class="inspector-section"><h3 class="inspector-section-title">Semantics</h3><div class="context-summary">Canvas arrows are typed. Only <strong>depends on</strong> changes execution order; context, spawned and produced remain projections of runtime facts.</div></section>
+            <section class="inspector-section"><h3 class="inspector-section-title">Endpoints</h3><dl class="property-list"><div class="property-row"><dt>Source</dt><dd>${escapeHtml(source?.title || edge.source)}</dd></div><div class="property-row"><dt>Target</dt><dd>${escapeHtml(target?.title || edge.target)}</dd></div><div class="property-row"><dt>Scope</dt><dd>this worktree</dd></div></dl></section>
+            <section class="inspector-section"><div class="inspector-actions"><button class="danger-button" type="button" id="delete-edge">${icon("x")}Delete link</button></div></section>`;
+          inspectorContent.querySelector("#delete-edge").addEventListener("click", () => {
+            state.edges = state.edges.filter((item) => item.id !== edge.id);
+            selectedEdgeId = null;
+            saveState();
+            renderAll();
+            showToast("Connection removed from this canvas");
+          });
+          return;
+        }
+
+        const node = nodeById(selectedNodeId);
+        if (!node) {
+          kindLabel.textContent = "Nothing selected";
+          inspectorContent.innerHTML = emptyInspector();
+          return;
+        }
+
+        kindLabel.textContent = node.type === "agent" ? "Supervised terminal" : `${node.type} node`;
+        const subtitle = node.type === "agent" ? `${node.cli} · ${node.model}` : node.subtitle || node.contextPolicy || "canvas projection";
+        let html = `<div class="inspector-identity">${nodeIdentity(node)}<span class="inspector-identity-copy"><strong>${escapeHtml(node.title)}</strong><span>${escapeHtml(subtitle)}</span></span></div>`;
+
+        if (node.type === "agent") {
+          html += `
+            <section class="inspector-section"><h3 class="inspector-section-title">Runtime identity</h3><dl class="property-list">
+              <div class="property-row"><dt>Dispatch</dt><dd>${escapeHtml(node.dispatch)}</dd></div>
+              <div class="property-row"><dt>Terminal</dt><dd>${escapeHtml(node.handle)}</dd></div>
+              <div class="property-row"><dt>Worktree</dt><dd>${escapeHtml(WORKTREE_ID)}</dd></div>
+              <div class="property-row"><dt>Host</dt><dd>${escapeHtml(node.host)} · ${node.host === "local" ? "live" : "unverifiable"}</dd></div>
+              <div class="property-row"><dt>Ownership</dt><dd>${escapeHtml(node.owner)}</dd></div>
+              <div class="property-row"><dt>Terminal state</dt><dd>${escapeHtml(node.terminalState)}</dd></div>
+            </dl></section>
+            <section class="inspector-section"><h3 class="inspector-section-title">Resources · simulated</h3><div class="resource-grid"><div class="resource-cell"><strong>${escapeHtml(node.cpu)}</strong><span>CPU</span></div><div class="resource-cell"><strong>${escapeHtml(node.rss)}</strong><span>RSS</span></div><div class="resource-cell"><strong>${escapeHtml(node.uptime)}</strong><span>uptime</span></div></div></section>
+            <section class="inspector-section"><h3 class="inspector-section-title">Context capsule</h3><div class="context-summary">${escapeHtml(node.context)}</div></section>
+            <section class="inspector-section"><h3 class="inspector-section-title">Actions</h3><div class="inspector-actions">
+              <button class="action-button" type="button" id="open-terminal-action">${icon("terminal")}Open terminal</button>
+              <button class="action-button" type="button" id="delegate-from-action">${icon("user-plus")}Recruit</button>
+              ${node.terminalState === "reclaimable" ? `<button class="action-button" type="button" id="retain-worker-action">${icon("lock")}Retain</button><button class="danger-button" type="button" id="release-worker-action">${icon("x")}Release</button>` : ""}
+              ${node.terminalState === "released" ? `<button class="action-button" type="button" disabled>${icon("check")}Archived</button>` : ""}
+            </div></section>`;
+        } else if (node.type === "note") {
+          const connected = state.edges.filter((edge) => edge.source === node.id || edge.target === node.id).length;
+          html += `
+            <section class="inspector-section"><h3 class="inspector-section-title">Context behavior</h3><dl class="property-list"><div class="property-row"><dt>Policy</dt><dd>on demand</dd></div><div class="property-row"><dt>Connections</dt><dd>${connected}</dd></div><div class="property-row"><dt>Scope</dt><dd>this worktree</dd></div><div class="property-row"><dt>Persistence</dt><dd>Markdown file</dd></div></dl></section>
+            <section class="inspector-section"><h3 class="inspector-section-title">Preview</h3><div class="context-summary">${escapeHtml(node.body.slice(0, 360))}</div></section>
+            <section class="inspector-section"><div class="inspector-actions"><button class="action-button" id="link-note-action" type="button">${icon("link")}Connect note</button><button class="danger-button" id="delete-node-action" type="button">${icon("x")}Delete</button></div></section>`;
+        } else {
+          html += `
+            <section class="inspector-section"><h3 class="inspector-section-title">Projection</h3><div class="context-summary">${escapeHtml(node.body || "A durable canvas node scoped to this worktree.")}</div></section>
+            <section class="inspector-section"><dl class="property-list"><div class="property-row"><dt>Node id</dt><dd>${escapeHtml(node.id)}</dd></div><div class="property-row"><dt>Scope</dt><dd>this worktree</dd></div>${node.path ? `<div class="property-row"><dt>Target</dt><dd>${escapeHtml(node.path)}</dd></div>` : ""}</dl></section>
+            <section class="inspector-section"><div class="inspector-actions"><button class="action-button" id="link-generic-action" type="button">${icon("link")}Connect</button><button class="danger-button" id="delete-node-action" type="button">${icon("x")}Delete</button></div></section>`;
+        }
+
+        inspectorContent.innerHTML = html;
+        inspectorContent.querySelector("#open-terminal-action")?.addEventListener("click", () => openTerminal(node.id));
+        inspectorContent.querySelector("#delegate-from-action")?.addEventListener("click", () => openDelegate(node.id));
+        inspectorContent.querySelector("#link-note-action")?.addEventListener("click", () => startLinkFrom(node.id));
+        inspectorContent.querySelector("#link-generic-action")?.addEventListener("click", () => startLinkFrom(node.id));
+        inspectorContent.querySelector("#delete-node-action")?.addEventListener("click", () => deleteNode(node.id));
+        inspectorContent.querySelector("#retain-worker-action")?.addEventListener("click", () => {
+          node.terminalState = "retained";
+          node.context = "User-requested retention is durable. Explicit release clears it later.";
+          saveState(); renderAll(); showToast("Worker marked retained; no process action simulated");
+        });
+        inspectorContent.querySelector("#release-worker-action")?.addEventListener("click", () => releaseWorker(node.id));
+      }
+
+      function renderCounts() {
+        const agents = agentNodes();
+        const owned = agents.filter((node) => node.terminalState !== "released").length;
+        const rss = agents.filter((node) => node.terminalState !== "released").reduce((sum, node) => sum + Number.parseFloat(node.rss) || sum, 0);
+        document.querySelector("#sidebar-agent-count").textContent = String(owned);
+        document.querySelector("#resource-status").innerHTML = `${icon("activity")} ${owned} owned · ${Math.round(rss)} MB simulated`;
+      }
+
+      function renderAll() {
+        updateSceneTransform();
+        renderNodes();
+        renderEdges();
+        renderInspector();
+        renderCounts();
+      }
+
+      function screenToWorld(clientX, clientY) {
+        const rect = viewport.getBoundingClientRect();
+        return {
+          x: (clientX - rect.left - state.viewport.x) / state.viewport.scale,
+          y: (clientY - rect.top - state.viewport.y) / state.viewport.scale
+        };
+      }
+
+      function startNodeDrag(event, nodeId) {
+        if (event.button !== 0) return;
+        event.preventDefault();
+        event.stopPropagation();
+        const node = nodeById(nodeId);
+        if (!node) return;
+        selectedNodeId = nodeId;
+        selectedEdgeId = null;
+        world.querySelectorAll(".canvas-node").forEach((candidate) => {
+          candidate.classList.toggle("is-selected", candidate.dataset.nodeId === nodeId);
+        });
+        renderEdges();
+        renderInspector();
+        const start = { x: event.clientX, y: event.clientY, nodeX: node.x, nodeY: node.y };
+        const handle = event.currentTarget;
+        handle.setPointerCapture(event.pointerId);
+        const move = (moveEvent) => {
+          node.x = Math.round(start.nodeX + (moveEvent.clientX - start.x) / state.viewport.scale);
+          node.y = Math.round(start.nodeY + (moveEvent.clientY - start.y) / state.viewport.scale);
+          const element = world.querySelector(`[data-node-id="${CSS.escape(nodeId)}"]`);
+          if (element) {
+            element.style.left = `${node.x}px`;
+            element.style.top = `${node.y}px`;
+          }
+          renderEdges();
+        };
+        const up = () => {
+          handle.removeEventListener("pointermove", move);
+          handle.removeEventListener("pointerup", up);
+          handle.removeEventListener("pointercancel", up);
+          saveState();
+        };
+        handle.addEventListener("pointermove", move);
+        handle.addEventListener("pointerup", up);
+        handle.addEventListener("pointercancel", up);
+      }
+
+      function startPan(event) {
+        if (event.button !== 0 || event.target.closest(".canvas-node,.canvas-controls,.edge-legend,.prototype-note,.canvas-instruction")) return;
+        contextMenu.hidden = true;
+        selectedNodeId = null;
+        selectedEdgeId = null;
+        renderInspector();
+        const start = { x: event.clientX, y: event.clientY, viewX: state.viewport.x, viewY: state.viewport.y };
+        viewport.classList.add("is-panning");
+        viewport.setPointerCapture(event.pointerId);
+        const move = (moveEvent) => {
+          state.viewport.x = start.viewX + moveEvent.clientX - start.x;
+          state.viewport.y = start.viewY + moveEvent.clientY - start.y;
+          updateSceneTransform();
+        };
+        const up = () => {
+          viewport.classList.remove("is-panning");
+          viewport.removeEventListener("pointermove", move);
+          viewport.removeEventListener("pointerup", up);
+          viewport.removeEventListener("pointercancel", up);
+          saveState();
+          renderNodes();
+          renderEdges();
+        };
+        viewport.addEventListener("pointermove", move);
+        viewport.addEventListener("pointerup", up);
+        viewport.addEventListener("pointercancel", up);
+      }
+
+      function zoomAt(clientX, clientY, factor) {
+        const rect = viewport.getBoundingClientRect();
+        const localX = clientX - rect.left;
+        const localY = clientY - rect.top;
+        const worldX = (localX - state.viewport.x) / state.viewport.scale;
+        const worldY = (localY - state.viewport.y) / state.viewport.scale;
+        const nextScale = Math.min(1.65, Math.max(0.34, state.viewport.scale * factor));
+        state.viewport.x = localX - worldX * nextScale;
+        state.viewport.y = localY - worldY * nextScale;
+        state.viewport.scale = nextScale;
+        updateSceneTransform();
+        saveState();
+      }
+
+      function fitCanvas() {
+        if (!state.nodes.length) return;
+        const rect = viewport.getBoundingClientRect();
+        const minX = Math.min(...state.nodes.map((node) => node.x));
+        const minY = Math.min(...state.nodes.map((node) => node.y));
+        const maxX = Math.max(...state.nodes.map((node) => node.x + node.w));
+        const maxY = Math.max(...state.nodes.map((node) => node.y + node.h));
+        const boundsW = maxX - minX;
+        const boundsH = maxY - minY;
+        const scale = Math.min(1, Math.max(0.34, Math.min((rect.width - 110) / boundsW, (rect.height - 105) / boundsH)));
+        state.viewport.scale = scale;
+        state.viewport.x = (rect.width - boundsW * scale) / 2 - minX * scale;
+        state.viewport.y = (rect.height - boundsH * scale) / 2 - minY * scale;
+        updateSceneTransform();
+        saveState();
+      }
+
+      function frameNodes(nodeIds, preferredScale = 0.62) {
+        const nodes = nodeIds.map(nodeById).filter(Boolean);
+        if (!nodes.length) return;
+        const rect = viewport.getBoundingClientRect();
+        const minX = Math.min(...nodes.map((node) => node.x));
+        const minY = Math.min(...nodes.map((node) => node.y));
+        const maxX = Math.max(...nodes.map((node) => node.x + node.w));
+        const maxY = Math.max(...nodes.map((node) => node.y + node.h));
+        const boundsW = maxX - minX;
+        const boundsH = maxY - minY;
+        const scale = Math.min(
+          preferredScale,
+          Math.max(0.48, Math.min((rect.width - 42) / boundsW, (rect.height - 110) / boundsH))
+        );
+        state.viewport.scale = scale;
+        state.viewport.x = (rect.width - boundsW * scale) / 2 - minX * scale;
+        state.viewport.y = (rect.height - boundsH * scale) / 2 - minY * scale - 28;
+        updateSceneTransform();
+        saveState();
+      }
+
+      function frameCore() {
+        frameNodes(["note-contract", "agent-coordinator", "agent-runtime", "task-gate"], 0.67);
+      }
+
+      function frameNode(nodeId, preferredScale = 0.76) {
+        const node = nodeById(nodeId);
+        if (!node) return;
+        const rect = viewport.getBoundingClientRect();
+        state.viewport.scale = preferredScale;
+        state.viewport.x = rect.width / 2 - (node.x + node.w / 2) * preferredScale;
+        state.viewport.y = rect.height / 2 - (node.y + node.h / 2) * preferredScale - 18;
+        updateSceneTransform();
+        saveState();
+      }
+
+      function setLinkMode(enabled) {
+        linkMode = enabled;
+        if (!enabled) linkSourceId = null;
+        viewport.classList.toggle("is-linking", enabled);
+        document.querySelector("#link-mode-button").classList.toggle("is-active", enabled);
+        const instruction = document.querySelector("#canvas-instruction");
+        instruction.hidden = !enabled;
+        document.querySelector("#instruction-copy").textContent = linkSourceId ? "Choose a destination node" : "Choose a source node";
+        renderNodes();
+        renderEdges();
+      }
+
+      function startLinkFrom(nodeId) {
+        linkMode = true;
+        linkSourceId = nodeId;
+        selectedNodeId = nodeId;
+        selectedEdgeId = null;
+        setLinkMode(true);
+        showToast("Choose a destination; the link type is in the toolbar");
+      }
+
+      function handlePort(nodeId) {
+        if (!linkMode || !linkSourceId) {
+          startLinkFrom(nodeId);
+          return;
+        }
+        if (linkSourceId === nodeId) {
+          showToast("Choose a different destination node");
+          return;
+        }
+        createEdge(linkSourceId, nodeId, document.querySelector("#edge-type-select").value);
+      }
+
+      function createEdge(source, target, type) {
+        if (state.edges.some((edge) => edge.source === source && edge.target === target && edge.type === type)) {
+          showToast("This typed connection already exists");
+          setLinkMode(false);
+          return;
+        }
+        state.edges.push({ id: `edge_${type}_${Date.now()}`, source, target, type });
+        saveState();
+        setLinkMode(false);
+        selectedNodeId = target;
+        renderAll();
+        showToast(`${type.replace("_", " ")} connection created`);
+      }
+
+      function nextOpenPosition(offset = 0) {
+        const rect = viewport.getBoundingClientRect();
+        const center = screenToWorld(rect.left + rect.width * 0.53, rect.top + rect.height * 0.5);
+        return { x: Math.round(center.x - 150 + offset), y: Math.round(center.y - 95 + offset) };
+      }
+
+      function createSimpleNode(type, point = creationPoint) {
+        const id = `${type}_${Date.now()}`;
+        const definitions = {
+          note: { w: 300, h: 220, title: "New context note", body: "# Context\n\nWrite the facts this agent may retrieve on demand.", contextPolicy: "on-demand · unsaved" },
+          task: { w: 304, h: 184, title: "New task gate", subtitle: "draft · journal mutation proposed", body: "Describe the observable condition that unlocks downstream work.", progress: 0, checks: ["Contract defined", "Check executable", "Evidence pending"] },
+          artifact: { w: 314, h: 164, title: "New artifact", subtitle: "durable reference", body: "Attach a report, file, PR or screenshot evidence.", path: "choose a local artifact…" },
+          portal: { w: 318, h: 164, title: "Child worktree", subtitle: "separate Maestro canvas", body: "A portal keeps worktree state isolated while preserving orchestration lineage.", path: "worktree selector pending" }
+        };
+        const definition = definitions[type];
+        state.nodes.push({ id, type, x: Math.round(point.x), y: Math.round(point.y), ...definition });
+        if (selectedNodeId && nodeById(selectedNodeId)?.type === "agent") {
+          state.edges.push({ id: `edge_context_${Date.now()}`, source: type === "note" ? id : selectedNodeId, target: type === "note" ? selectedNodeId : id, type: type === "artifact" ? "produced" : type === "portal" ? "spawned" : "context" });
+        }
+        selectedNodeId = id;
+        selectedEdgeId = null;
+        saveState();
+        renderAll();
+        showToast(`${type} node created on this worktree canvas`);
+        if (type === "note") requestAnimationFrame(() => world.querySelector(`[data-node-id="${CSS.escape(id)}"] .note-editor`)?.focus());
+      }
+
+      function deleteNode(id) {
+        const node = nodeById(id);
+        if (!node) return;
+        if (node.type === "agent" && node.terminalState !== "released") {
+          showToast("Active process nodes require an explicit runtime stop or release first");
+          return;
+        }
+        state.nodes = state.nodes.filter((item) => item.id !== id);
+        state.edges = state.edges.filter((edge) => edge.source !== id && edge.target !== id);
+        selectedNodeId = null;
+        saveState();
+        renderAll();
+        showToast("Canvas node deleted; runtime evidence was not changed");
+      }
+
+      function releaseWorker(id) {
+        const node = nodeById(id);
+        if (!node || node.type !== "agent") return;
+        if (node.terminalState !== "reclaimable" && node.terminalState !== "retained") {
+          showToast("Only a settled, owned worker can be released");
+          return;
+        }
+        node.terminalState = "released";
+        node.status = "done";
+        node.cpu = "0.0%";
+        node.rss = "0 MB";
+        node.context = "Terminal released after output archive. Evidence and this projection remain inspectable.";
+        node.output.push("✓ output archived", "✓ exact owned terminal released");
+        saveState();
+        renderAll();
+        showToast("Simulated release archived output and closed only the owned terminal");
+      }
+
+      function renderModelOptions() {
+        const container = document.querySelector("#model-options");
+        const models = MODEL_OPTIONS[selectedAgent];
+        if (!models.some((model) => model.id === selectedModel)) selectedModel = models[0].id;
+        container.innerHTML = models.map((model) => `<button class="choice-card${selectedModel === model.id ? " is-selected" : ""}" type="button" data-model="${escapeHtml(model.id)}"><strong>${escapeHtml(model.label)}</strong><span>${escapeHtml(model.id)}</span></button>`).join("");
+        container.querySelectorAll("[data-model]").forEach((button) => button.addEventListener("click", () => {
+          selectedModel = button.dataset.model;
+          renderModelOptions();
+          updateCommandPreview();
+        }));
+      }
+
+      function renderParentOptions(preferredId = null) {
+        const select = document.querySelector("#parent-select");
+        const current = preferredId || (nodeById(selectedNodeId)?.type === "agent" ? selectedNodeId : "agent-coordinator");
+        select.innerHTML = agentNodes().filter((node) => node.terminalState !== "released").map((node) => `<option value="${escapeHtml(node.id)}"${node.id === current ? " selected" : ""}>${escapeHtml(node.title)} · ${escapeHtml(node.handle)}</option>`).join("");
+      }
+
+      function updateCommandPreview() {
+        const taskId = "TASK_ID";
+        const worktree = selectedPlacement === "cloud" ? "new-top-level" : selectedPlacement;
+        const host = selectedPlacement === "cloud" ? " --on cloud-mac" : "";
+        const modelPart = selectedModel === "default" ? "" : ` --model ${selectedModel}`;
+        const effortPart = selectedModel === "default" ? "" : ` --effort ${selectedEffort}`;
+        const command = `orca orchestration worker-start --task ${taskId}${host} --worktree ${worktree} --agent ${selectedAgent}${modelPart}${effortPart} --json`;
+        const projection = selectedPlacement === "current" ? "orca maestro node project --dispatch <dispatch_id> --connect spawned,context" : "orca maestro portal project --worktree <new_worktree_id> --connect spawned";
+        document.querySelector("#command-preview").innerHTML = `<span>$ ${escapeHtml(command)}</span>\n<span class="proposed">↳ proposed: ${escapeHtml(projection)}</span>`;
+        const scopeCopy = document.querySelector("#scope-copy");
+        const submitCopy = document.querySelector("#delegate-submit-copy");
+        if (selectedPlacement === "current") {
+          scopeCopy.textContent = "The worker shares this checkout. Notes are linked by reference and loaded on demand, not copied into the coordinator transcript.";
+          submitCopy.textContent = "Start supervised worker";
+        } else if (selectedPlacement === "new-child") {
+          scopeCopy.textContent = "Orca creates an isolated child checkout and its own Maestro projection. This canvas keeps only a lineage portal.";
+          submitCopy.textContent = "Create child worker";
+        } else {
+          scopeCopy.textContent = "The execution host owns processes and artifacts. A disconnect becomes unverifiable, never exited, until the host confirms state.";
+          submitCopy.textContent = "Create cloud worker";
+        }
+      }
+
+      function openDelegate(parentId = null, point = null) {
+        creationPoint = point || nextOpenPosition(24);
+        if (parentId) selectedNodeId = parentId;
+        renderParentOptions(parentId);
+        renderModelOptions();
+        updateCommandPreview();
+        delegateDialog.showModal();
+        requestAnimationFrame(() => document.querySelector("#task-prompt").focus());
+      }
+
+      function createDelegatedAgent() {
+        const parentId = document.querySelector("#parent-select").value || "agent-coordinator";
+        const prompt = document.querySelector("#task-prompt").value.trim();
+        const parent = nodeById(parentId);
+        const label = prompt.split(/\s+/).slice(0, 6).join(" ") || "Fresh delegated task";
+        if (selectedPlacement !== "current") {
+          const id = `portal_${Date.now()}`;
+          const child = selectedPlacement === "cloud";
+          state.nodes.push({
+            id,
+            type: "portal",
+            x: Math.round(creationPoint.x),
+            y: Math.round(creationPoint.y),
+            w: 318,
+            h: 164,
+            title: label,
+            subtitle: child ? "cloud worktree · unverifiable until host ack" : "child worktree · local",
+            body: `${selectedAgent} · ${selectedModel} · ${selectedEffort}. This portal links to a separate worktree-scoped Maestro canvas.`,
+            path: child ? "cloud-mac::new-top-level" : "repo_4f2::child-worktree"
+          });
+          state.edges.push({ id: `edge_spawned_${Date.now()}`, source: parentId, target: id, type: "spawned" });
+          selectedNodeId = id;
+          saveState();
+          delegateDialog.close();
+          renderAll();
+          showToast(`${child ? "Cloud" : "Child"} canvas portal created; no process started in this mock`);
+          return;
+        }
+
+        const id = `agent_${Date.now()}`;
+        const offset = state.nodes.filter((node) => node.type === "agent").length % 3;
+        state.nodes.push({
+          id,
+          type: "agent",
+          x: Math.round(creationPoint.x + offset * 14),
+          y: Math.round(creationPoint.y + offset * 14),
+          w: 352,
+          h: 226,
+          title: label,
+          cli: selectedAgent,
+          model: selectedModel,
+          effort: selectedEffort,
+          status: "starting",
+          task: "TASK pending runtime id",
+          handle: `term_mock_${String(Date.now()).slice(-4)}`,
+          dispatch: `dispatch_mock_${String(Date.now()).slice(-4)}`,
+          host: "local",
+          owner: "coordinator-owned",
+          terminalState: "active",
+          cpu: "0.2%",
+          rss: "42 MB",
+          uptime: "00m 02s",
+          context: `Bounded task capsule from ${parent?.title || "coordinator"}. Linked notes remain references until explicitly read.`,
+          output: [
+            `launch ${selectedAgent} --model ${selectedModel}`,
+            `bind exact worktree ${WORKTREE_ID}`,
+            "project dispatch identity onto canvas",
+            "reading bounded task brief…"
+          ]
+        });
+        state.edges.push({ id: `edge_spawned_${Date.now()}`, source: parentId, target: id, type: "spawned" });
+        const contractNote = nodeById("note-contract");
+        if (contractNote) state.edges.push({ id: `edge_context_${Date.now() + 1}`, source: contractNote.id, target: id, type: "context" });
+        selectedNodeId = id;
+        saveState();
+        delegateDialog.close();
+        renderAll();
+        showToast(`${selectedModel} worker projected with spawned and context links`);
+
+        if (!STATIC) {
+          window.setTimeout(() => {
+            const agent = nodeById(id);
+            if (!agent) return;
+            agent.status = "working";
+            agent.rss = "118 MB";
+            agent.uptime = "00m 11s";
+            agent.output.push("✓ agent ready; task accepted");
+            saveState();
+            renderAll();
+          }, 1200);
+        }
+      }
+
+      function openTerminal(id) {
+        const node = nodeById(id);
+        if (!node || node.type !== "agent") return;
+        activeTerminalId = id;
+        document.querySelector("#terminal-dialog-title").textContent = node.title;
+        document.querySelector("#terminal-dialog-subtitle").textContent = `${node.handle} · simulated bounded stream`;
+        renderTerminalDialog();
+        terminalDialog.showModal();
+      }
+
+      function renderTerminalDialog() {
+        const node = nodeById(activeTerminalId);
+        if (!node) return;
+        const output = document.querySelector("#terminal-output");
+        output.textContent = [
+          `$ ${node.cli} --model ${node.model}`,
+          `[maestro] bound ${node.dispatch} to ${WORKTREE_ID}`,
+          `[maestro] ownership: ${node.owner}`,
+          "",
+          ...node.output,
+          "",
+          node.terminalState === "released" ? "[archive] terminal released; transcript preserved" : `[stream] ${node.status}`
+        ].join("\n");
+        output.scrollTop = output.scrollHeight;
+        document.querySelector("#terminal-sidecar").innerHTML = `
+          <h3 class="inspector-section-title">Exact identity</h3>
+          <dl class="property-list"><div class="property-row"><dt>Dispatch</dt><dd>${escapeHtml(node.dispatch)}</dd></div><div class="property-row"><dt>Terminal</dt><dd>${escapeHtml(node.handle)}</dd></div><div class="property-row"><dt>Host</dt><dd>${escapeHtml(node.host)}</dd></div><div class="property-row"><dt>Owner</dt><dd>${escapeHtml(node.owner)}</dd></div><div class="property-row"><dt>State</dt><dd>${escapeHtml(node.terminalState)}</dd></div></dl>
+          <section class="inspector-section"><h3 class="inspector-section-title">Resource policy</h3><div class="context-summary">Cancellation terminates the owned process tree. Uncertain remote state is reported as unverifiable; it is never silently swept.</div></section>
+          <section class="inspector-section"><h3 class="inspector-section-title">Stream policy</h3><div class="context-summary">Canvas cards receive bounded tails. The full terminal renderer mounts only in this focused dialog.</div></section>`;
+        document.querySelector("#terminal-input").disabled = node.terminalState === "released";
+        document.querySelector("#terminal-send").disabled = node.terminalState === "released";
+      }
+
+      function sendTerminalInput() {
+        const input = document.querySelector("#terminal-input");
+        const value = input.value.trim();
+        const node = nodeById(activeTerminalId);
+        if (!value || !node || node.terminalState === "released") return;
+        node.output.push(`you › ${value}`, "agent › Input received in the simulated terminal stream.");
+        input.value = "";
+        saveState();
+        renderTerminalDialog();
+        renderAll();
+      }
+
+      function showToast(message) {
+        const toast = document.querySelector("#toast");
+        document.querySelector("#toast-copy").textContent = message;
+        toast.classList.add("is-visible");
+        window.clearTimeout(toastTimer);
+        toastTimer = window.setTimeout(() => toast.classList.remove("is-visible"), STATIC ? 3200 : 2400);
+      }
+
+      viewport.addEventListener("pointerdown", startPan);
+      viewport.addEventListener("pointermove", (event) => {
+        pointerWorld = screenToWorld(event.clientX, event.clientY);
+        if (linkMode && linkSourceId) renderEdges();
+      });
+      viewport.addEventListener("wheel", (event) => {
+        event.preventDefault();
+        zoomAt(event.clientX, event.clientY, Math.exp(-event.deltaY * 0.0011));
+      }, { passive: false });
+      viewport.addEventListener("contextmenu", (event) => {
+        if (event.target.closest(".canvas-node")) return;
+        event.preventDefault();
+        creationPoint = screenToWorld(event.clientX, event.clientY);
+        contextMenu.style.left = `${Math.min(event.clientX, innerWidth - 270)}px`;
+        contextMenu.style.top = `${Math.min(event.clientY, innerHeight - 260)}px`;
+        contextMenu.hidden = false;
+        tabCreateMenu.hidden = true;
+      });
+
+      document.addEventListener("pointerdown", (event) => {
+        if (!event.target.closest("#context-menu,#new-tab-button,#tab-create-menu")) {
+          contextMenu.hidden = true;
+          tabCreateMenu.hidden = true;
+          document.querySelector("#new-tab-button").setAttribute("aria-expanded", "false");
+        }
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && linkMode) {
+          setLinkMode(false);
+          showToast("Connection cancelled");
+        }
+      });
+
+      document.querySelector("#new-tab-button").addEventListener("click", (event) => {
+        event.stopPropagation();
+        tabCreateMenu.hidden = !tabCreateMenu.hidden;
+        contextMenu.hidden = true;
+        event.currentTarget.setAttribute("aria-expanded", String(!tabCreateMenu.hidden));
+      });
+
+      document.querySelectorAll("[data-tab-action]").forEach((button) => button.addEventListener("click", () => {
+        tabCreateMenu.hidden = true;
+        if (button.dataset.tabAction === "note") createSimpleNode("note", nextOpenPosition());
+        else if (button.dataset.tabAction === "maestro") showToast("Maestro is already the active tab for this worktree");
+        else showToast(`${button.dataset.tabAction} creation is represented by Orca's existing tab surface`);
+      }));
+
+      document.querySelectorAll("[data-create]").forEach((button) => button.addEventListener("click", () => {
+        const type = button.dataset.create;
+        contextMenu.hidden = true;
+        if (type === "agent") openDelegate(null, creationPoint);
+        else createSimpleNode(type, creationPoint);
+      }));
+
+      document.querySelector("#link-mode-button").addEventListener("click", () => setLinkMode(!linkMode));
+      document.querySelector("#add-note-button").addEventListener("click", () => createSimpleNode("note", nextOpenPosition(18)));
+      document.querySelector("#delegate-button").addEventListener("click", () => openDelegate(nodeById(selectedNodeId)?.type === "agent" ? selectedNodeId : null));
+      document.querySelector("#reset-button").addEventListener("click", () => {
+        state = cloneDemo();
+        selectedNodeId = "agent-runtime";
+        selectedEdgeId = null;
+        setLinkMode(false);
+        saveState();
+        renderAll();
+        fitCanvas();
+        showToast("Demo canvas restored for this worktree");
+      });
+      document.querySelector("#inspector-close").addEventListener("click", () => {
+        selectedNodeId = null;
+        selectedEdgeId = null;
+        renderAll();
+      });
+      document.querySelector("#zoom-in").addEventListener("click", () => {
+        const rect = viewport.getBoundingClientRect();
+        zoomAt(rect.left + rect.width / 2, rect.top + rect.height / 2, 1.18);
+      });
+      document.querySelector("#zoom-out").addEventListener("click", () => {
+        const rect = viewport.getBoundingClientRect();
+        zoomAt(rect.left + rect.width / 2, rect.top + rect.height / 2, 0.84);
+      });
+      document.querySelector("#fit-button").addEventListener("click", fitCanvas);
+
+      document.querySelectorAll("[data-agent]").forEach((button) => button.addEventListener("click", () => {
+        selectedAgent = button.dataset.agent;
+        document.querySelectorAll("[data-agent]").forEach((candidate) => candidate.classList.toggle("is-selected", candidate === button));
+        selectedModel = MODEL_OPTIONS[selectedAgent][0].id;
+        renderModelOptions();
+        updateCommandPreview();
+      }));
+      document.querySelectorAll("[data-effort]").forEach((button) => button.addEventListener("click", () => {
+        selectedEffort = button.dataset.effort;
+        document.querySelectorAll("[data-effort]").forEach((candidate) => candidate.classList.toggle("is-selected", candidate === button));
+        updateCommandPreview();
+      }));
+      document.querySelectorAll("[data-placement]").forEach((button) => button.addEventListener("click", () => {
+        selectedPlacement = button.dataset.placement;
+        document.querySelectorAll("[data-placement]").forEach((candidate) => candidate.classList.toggle("is-selected", candidate === button));
+        updateCommandPreview();
+      }));
+      document.querySelector("#delegate-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        createDelegatedAgent();
+      });
+      document.querySelectorAll("[data-close-dialog]").forEach((button) => button.addEventListener("click", () => {
+        (button.dataset.closeDialog === "delegate" ? delegateDialog : terminalDialog).close();
+      }));
+      document.querySelector("#terminal-send").addEventListener("click", sendTerminalInput);
+      document.querySelector("#terminal-input").addEventListener("keydown", (event) => {
+        if (event.key === "Enter") sendTerminalInput();
+      });
+
+      const requestedState = new URLSearchParams(location.search).get("state") || "overview";
+      const requestedModel = new URLSearchParams(location.search).get("model");
+      if (requestedModel && MODEL_OPTIONS.codex.some((model) => model.id === requestedModel)) selectedModel = requestedModel;
+
+      renderAll();
+      requestAnimationFrame(() => {
+        if (requestedState === "overview") frameCore();
+        if (requestedState === "plus") {
+          frameCore();
+          tabCreateMenu.hidden = false;
+          document.querySelector("#new-tab-button").setAttribute("aria-expanded", "true");
+        }
+        if (requestedState === "menu") {
+          frameCore();
+          creationPoint = nextOpenPosition();
+          const rect = viewport.getBoundingClientRect();
+          contextMenu.style.left = `${Math.round(rect.left + rect.width * 0.44)}px`;
+          contextMenu.style.top = `${Math.round(rect.top + rect.height * 0.28)}px`;
+          contextMenu.hidden = false;
+        }
+        if (requestedState === "delegate") {
+          frameCore();
+          openDelegate("agent-coordinator", nextOpenPosition(24));
+        }
+        if (requestedState === "link") {
+          frameCore();
+          startLinkFrom("note-contract");
+          pointerWorld = { x: 500, y: 265 };
+          renderEdges();
+        }
+        if (requestedState === "terminal") {
+          frameCore();
+          openTerminal(new URLSearchParams(location.search).get("terminal") || "agent-runtime");
+        }
+        if (requestedState === "cleanup") {
+          selectedNodeId = "agent-review";
+          frameNodes(["agent-review", "task-gate", "portal-child"], 0.68);
+          renderAll();
+        }
+      });
+    </script>
+  </body>
+</html>

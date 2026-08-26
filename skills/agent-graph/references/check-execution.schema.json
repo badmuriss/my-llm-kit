@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/badmuriss/my-llm-kit/schemas/agent-graph-check-execution.json",
+  "title": "Agent graph durable Check execution",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "execution_id", "command_digest", "source_snapshot_digest", "execution_policy_digest", "timeout_seconds", "output_cap_bytes", "owner_generation", "lifecycle", "artifact_ref", "consumer_refs", "cleanup_ref", "cleanup_id", "process_root", "process_group", "process_start_identity", "cleanup_authority", "cleanup_authority_id"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "execution_id": {"type": "string", "pattern": "^check-[0-9a-f]{24}$"},
+    "command_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "source_snapshot_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "execution_policy_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "timeout_seconds": {"type": "number", "exclusiveMinimum": 0, "maximum": 3600},
+    "output_cap_bytes": {"type": "integer", "minimum": 1, "maximum": 1048576},
+    "owner_generation": {"type": "integer", "minimum": 1},
+    "lifecycle": {"enum": ["running", "passed", "failed", "failed_verified", "blocked"]},
+    "artifact_ref": {"type": "string", "minLength": 1},
+    "consumer_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "cleanup_ref": {"type": "string", "minLength": 1},
+    "cleanup_id": {"type": "string", "minLength": 1},
+    "owner_pid": {"type": "integer", "minimum": 1},
+    "process_root": {"type": ["integer", "null"], "minimum": 1},
+    "process_group": {"type": ["integer", "null"], "minimum": 1},
+    "process_start_identity": {"type": ["string", "null"], "minLength": 1},
+    "cleanup_authority": {"enum": ["process_group", "job_object"]},
+    "cleanup_authority_id": {"type": ["string", "null"]},
+    "recovery_stage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "identity_digest"],
+      "properties": {
+        "status": {"enum": ["prepared", "committed"]},
+        "identity_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+      }
+    }
+  }
+}

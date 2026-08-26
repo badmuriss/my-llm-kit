@@ -6,6 +6,8 @@ from __future__ import annotations
 import argparse
 import os
 import re
+import shlex
+import subprocess
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -124,3 +126,12 @@ def runtime_from_arguments(arguments: argparse.Namespace) -> RuntimeConfig:
         project_directory=getattr(arguments, "repo", None),
         env_file=getattr(arguments, "env_file", None),
     )
+
+
+def format_command(arguments: list[str], *, operating_system: str | None = None) -> str:
+    """Format an exact, copyable command for the active operating system."""
+
+    selected = operating_system or detected_operating_system()
+    if selected == "windows":
+        return subprocess.list2cmdline(arguments)
+    return shlex.join(arguments)

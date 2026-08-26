@@ -1,0 +1,20 @@
+{
+  "artifact_version": 2,
+  "flow": "portable-host-control-plane",
+  "golden_summary": {
+    "route": {
+      "requested": {"agent": null, "effort": "high", "lane": "balanced", "model": null},
+      "resolved": {"agent": "host-agent", "effort": "high", "model": "host-balanced"},
+      "fallback": null
+    },
+    "context": {"revisions": ["r1", "r2"], "replay_rejected": true},
+    "watch": {"from_cursor": 53, "final_cursor": 56, "current_revision": 56, "update_count": 1, "fields": ["kind", "cursor", "event", "changes", "progress"], "transcript_free": true},
+    "delegation": {"lifecycle": ["started", "reported", "released"], "spawned_by": "attempt-root-01-002", "recursive_fence": "invalid_graph"},
+    "child_route": {"requested": {"agent": null, "effort": "low", "lane": "fast", "model": null}, "resolved": {"agent": "host-agent", "effort": "low", "model": "host-fast"}, "fallback": null},
+    "checks": {"failed_then_passed": ["failed", "passed"], "same_command": true, "failed_evidence_retained": true},
+    "quarantine": {"content_addressed": true, "cleanup_gate": "cleanup_pending", "pending_rejection_immutable": true, "receipt_status": "verified", "fresh_retry": true},
+    "takeover": {"generation": 3, "stale_calls_rejected": ["coordinator", "worker", "canvas"], "stale_intent_rejection": "invalid_graph"},
+    "cleanup": {"statuses": ["verified"], "pending": 0, "unverifiable": 0, "descendant_pids_gone": true, "exact_descendant_receipt": true, "registered_via_public_api": true, "released_by_verified_process_cleanup": true, "terminal_observation": "unobserved"}
+  },
+  "transcript_free": true
+}

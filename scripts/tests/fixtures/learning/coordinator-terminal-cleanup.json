@@ -1,0 +1,71 @@
+{
+  "workspace_scope": {
+    "execution_workspace": {
+      "execution_host_id": "local",
+      "workspace_key": "folder:host-run-e9048eb9-75a1-446d-b6ef-86d51c2d4452"
+    }
+  },
+  "coordinator": {"generation": 3},
+  "attempts": {},
+  "delegations": {},
+  "cleanup": {
+    "cleanup-coordinator-generation-2-terminal": {
+      "kind": "terminal",
+      "owner": {
+        "coordinator_generation": 2,
+        "execution_host_id": "local",
+        "incarnation_id": "d2c0efd4-971f-40d2-ab00-f90deac839ec",
+        "process_root": null,
+        "provenance": "host-supplied:fresh-coordinator-session:replacement-run",
+        "terminal_id": "term_ed0436e0-0340-4101-b914-3f6305956d95",
+        "workspace_key": "folder:host-run-e9048eb9-75a1-446d-b6ef-86d51c2d4452"
+      },
+      "receipt": {
+        "incarnation_id": "d2c0efd4-971f-40d2-ab00-f90deac839ec",
+        "kind": "terminal",
+        "owner": {
+          "coordinator_generation": 2,
+          "execution_host_id": "local",
+          "incarnation_id": "d2c0efd4-971f-40d2-ab00-f90deac839ec",
+          "process_root": null,
+          "provenance": "host-supplied:fresh-coordinator-session:replacement-run",
+          "terminal_id": "term_ed0436e0-0340-4101-b914-3f6305956d95",
+          "workspace_key": "folder:host-run-e9048eb9-75a1-446d-b6ef-86d51c2d4452"
+        },
+        "status": "verified",
+        "terminal_id": "term_ed0436e0-0340-4101-b914-3f6305956d95"
+      },
+      "status": "verified",
+      "target": "term_ed0436e0-0340-4101-b914-3f6305956d95"
+    },
+    "cleanup-coordinator-generation-3-terminal": {
+      "kind": "terminal",
+      "owner": {
+        "coordinator_generation": 3,
+        "execution_host_id": "local",
+        "incarnation_id": "33974737-e7fe-48c7-bbfc-003fcab10dcc",
+        "process_root": null,
+        "provenance": "host-supplied:fresh-coordinator-takeover",
+        "terminal_id": "term_6f3661e4-e26e-44a0-9257-4694ffd3a4c6",
+        "workspace_key": "folder:host-run-e9048eb9-75a1-446d-b6ef-86d51c2d4452"
+      },
+      "receipt": {
+        "incarnation_id": "33974737-e7fe-48c7-bbfc-003fcab10dcc",
+        "kind": "terminal-retention",
+        "owner": {
+          "coordinator_generation": 3,
+          "execution_host_id": "local",
+          "incarnation_id": "33974737-e7fe-48c7-bbfc-003fcab10dcc",
+          "process_root": null,
+          "provenance": "host-supplied:fresh-coordinator-takeover",
+          "terminal_id": "term_6f3661e4-e26e-44a0-9257-4694ffd3a4c6",
+          "workspace_key": "folder:host-run-e9048eb9-75a1-446d-b6ef-86d51c2d4452"
+        },
+        "status": "retained",
+        "terminal_id": "term_6f3661e4-e26e-44a0-9257-4694ffd3a4c6"
+      },
+      "status": "retained",
+      "target": "term_6f3661e4-e26e-44a0-9257-4694ffd3a4c6"
+    }
+  }
+}

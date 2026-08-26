@@ -1,0 +1,130 @@
+{
+  "capabilities": {
+    "agents": [
+      "codex"
+    ],
+    "efforts": [
+      "high",
+      "low",
+      "xhigh"
+    ],
+    "placement_kinds": [
+      "create-child-worktree",
+      "current-workspace",
+      "existing-workspace"
+    ],
+    "watch_deltas": true
+  },
+  "change": "maestro-harness-orchestration",
+  "coordinator": {
+    "generation": 3,
+    "id": "coordinator-3"
+  },
+  "cursor": {
+    "revision": 13,
+    "sequence": 13,
+    "stream_id": "run-mlk-01"
+  },
+  "edges": [],
+  "from_cursor": {
+    "revision": 12,
+    "sequence": 12,
+    "stream_id": "run-mlk-01"
+  },
+  "kind": "delta",
+  "nodes": [
+    {
+      "id": "task-mlk-01",
+      "status": "reported",
+      "summary": "The bounded worker reported.",
+      "task_id": "MLK-01",
+      "type": "task"
+    }
+  ],
+  "progress": {
+    "blockers": [],
+    "cleanup": {
+      "failed": {
+        "count": 0,
+        "ids": [],
+        "truncated": false
+      },
+      "pending": {
+        "count": 0,
+        "ids": [],
+        "truncated": false
+      },
+      "retained": {
+        "count": 0,
+        "ids": [],
+        "truncated": false
+      },
+      "unverifiable": {
+        "count": 0,
+        "ids": [],
+        "truncated": false
+      }
+    },
+    "current_tasks": [
+      {
+        "attempt_id": "attempt-mlk-01",
+        "status": "running",
+        "task_id": "MLK-01"
+      }
+    ],
+    "last_activity": {
+      "sequence": 13,
+      "timestamp": "2026-08-22T09:04:02Z",
+      "type": "task_ready"
+    },
+    "material_findings": [],
+    "next_tasks": [],
+    "progress_percent": 0,
+    "schema_version": 1,
+    "state": "active",
+    "task_counts": {
+      "approved": 0,
+      "blocked": 0,
+      "failed": 0,
+      "input_required": 0,
+      "pending": 0,
+      "running": 1
+    }
+  },
+  "protocol": "agent-graph-view/v1",
+  "removed_edge_ids": [],
+  "removed_node_ids": [],
+  "reset_required": false,
+  "revision": 13,
+  "run_id": "run-mlk-01",
+  "schema_version": 1,
+  "workspace_scope": {
+    "base_revision": "0123456789abcdef0123456789abcdef01234567",
+    "binding_receipt_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "binding_receipt_ref": "artifact:openspec/runs/maestro/run-mlk-01/artifacts/workspace-bootstrap-receipt-v1.json",
+    "canonical_root": "/home/badmuriss/Documents/my-llm-kit",
+    "coordinator_generation": 3,
+    "dirty_paths": [
+      "skills/agent-graph/scripts/graph_core.py"
+    ],
+    "execution_host": {
+      "boundary": "local",
+      "id": "host-local"
+    },
+    "execution_workspace": {
+      "execution_host_id": "host-local",
+      "kind": "folder",
+      "path": "/home/badmuriss/Documents/my-llm-kit",
+      "workspace_key": "folder:folder-local-01"
+    },
+    "orchestration_home": {
+      "execution_host_id": "host-local",
+      "kind": "folder",
+      "path": "/home/badmuriss/Documents/my-llm-kit",
+      "workspace_key": "folder:folder-local-01"
+    },
+    "repository_id": "fb2a9411-f3cb-46d4-94f7-067f40719b71",
+    "run_id": "run-mlk-01",
+    "schema_version": 1
+  }
+}

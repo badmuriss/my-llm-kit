@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/badmuriss/my-llm-kit/schemas/maestro-compatibility-manifest-v1.json",
+  "title": "Maestro compatibility manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "producer", "required_capabilities", "receipts"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "producer": {"$ref": "#/$defs/producer"},
+    "required_capabilities": {"type": "array", "minItems": 8, "maxItems": 8, "uniqueItems": true, "items": {"$ref": "#/$defs/requiredCapability"}},
+    "receipts": {"type": "array", "minItems": 8, "maxItems": 8, "uniqueItems": true, "items": {"$ref": "#/$defs/receipt"}}
+  },
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "executionHost": {"type": "object", "additionalProperties": false, "required": ["boundary", "id"], "properties": {"boundary": {"type": "string", "minLength": 1}, "id": {"type": "string", "minLength": 1}}},
+    "workspace": {"type": "object", "additionalProperties": false, "required": ["execution_host_id", "kind", "path", "workspace_key"], "properties": {"execution_host_id": {"type": "string", "minLength": 1}, "kind": {"type": "string", "minLength": 1}, "path": {"type": "string", "minLength": 1}, "workspace_key": {"type": "string", "minLength": 1}}},
+    "workspaceScope": {"type": "object", "additionalProperties": false, "required": ["schema_version", "repository_id", "run_id", "base_revision", "binding_receipt_ref", "binding_receipt_hash", "canonical_root", "coordinator_generation", "dirty_paths", "execution_host", "execution_workspace", "orchestration_home"], "properties": {"schema_version": {"const": 1}, "repository_id": {"type": "string", "minLength": 1}, "run_id": {"type": "string", "minLength": 1}, "base_revision": {"type": "string", "minLength": 1}, "binding_receipt_ref": {"type": "string", "minLength": 1}, "binding_receipt_hash": {"$ref": "#/$defs/digest"}, "canonical_root": {"type": "string", "minLength": 1}, "coordinator_generation": {"type": "integer", "minimum": 1}, "dirty_paths": {"type": "array", "items": {"type": "string"}}, "execution_host": {"$ref": "#/$defs/executionHost"}, "execution_workspace": {"$ref": "#/$defs/workspace"}, "orchestration_home": {"$ref": "#/$defs/workspace"}}},
+    "producer": {"type": "object", "additionalProperties": false, "required": ["run_id", "change", "journal_digest", "state_digest", "control_runtime_reference_digest", "control_runtime_directory_digest", "workspace_scope"], "properties": {"run_id": {"type": "string", "minLength": 1}, "change": {"type": "string", "minLength": 1}, "journal_digest": {"$ref": "#/$defs/digest"}, "state_digest": {"$ref": "#/$defs/digest"}, "control_runtime_reference_digest": {"$ref": "#/$defs/digest"}, "control_runtime_directory_digest": {"$ref": "#/$defs/digest"}, "workspace_scope": {"$ref": "#/$defs/workspaceScope"}}},
+    "capability": {"type": "object", "additionalProperties": false, "required": ["name", "version"], "properties": {"name": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"}, "version": {"type": "integer", "minimum": 1}}},
+    "requiredCapability": {"type": "object", "additionalProperties": false, "required": ["task_id", "name", "version"], "properties": {"task_id": {"type": "string", "pattern": "^MLK-[0-9]+[A-Z]*$"}, "name": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"}, "version": {"type": "integer", "minimum": 1}}},
+    "receipt": {"type": "object", "additionalProperties": false, "required": ["task_id", "capability", "path", "digest"], "properties": {"task_id": {"type": "string", "pattern": "^MLK-[0-9]+[A-Z]*$"}, "capability": {"$ref": "#/$defs/capability"}, "path": {"type": "string", "pattern": "^receipts/[A-Za-z0-9._-]+\\.json$"}, "digest": {"$ref": "#/$defs/digest"}}}
+  }
+}

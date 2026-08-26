@@ -1,0 +1,181 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/badmuriss/my-llm-kit/schemas/capability-receipt-v1.json",
+  "title": "Portable adapter capability receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "receipt_id",
+    "adapter",
+    "capabilities",
+    "requested_capabilities",
+    "missing_capabilities",
+    "degradation",
+    "extensions"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "receipt_id": {"$ref": "#/$defs/identifier"},
+    "adapter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "version"],
+      "properties": {
+        "kind": {"$ref": "#/$defs/identifier"},
+        "version": {"type": ["string", "null"], "minLength": 1, "maxLength": 128}
+      }
+    },
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "local_checks",
+        "user_questions",
+        "process_tree_cleanup",
+        "isolated_workspace",
+        "visible_worker_dispatch",
+        "durable_worker_handle",
+        "browser_surface",
+        "usage_metrics",
+        "cache_metrics"
+      ],
+      "properties": {
+        "local_checks": {"$ref": "#/$defs/capability"},
+        "user_questions": {"$ref": "#/$defs/capability"},
+        "process_tree_cleanup": {"$ref": "#/$defs/capability"},
+        "isolated_workspace": {"$ref": "#/$defs/capability"},
+        "visible_worker_dispatch": {"$ref": "#/$defs/capability"},
+        "durable_worker_handle": {"$ref": "#/$defs/capability"},
+        "browser_surface": {"$ref": "#/$defs/capability"},
+        "usage_metrics": {"$ref": "#/$defs/capability"},
+        "cache_metrics": {"$ref": "#/$defs/capability"}
+      }
+    },
+    "requested_capabilities": {"$ref": "#/$defs/capabilityNames"},
+    "missing_capabilities": {"$ref": "#/$defs/capabilityNames"},
+    "degradation": {"$ref": "#/$defs/degradation"},
+    "extensions": {
+      "type": "object",
+      "maxProperties": 64,
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+        "maxLength": 128
+      },
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*$"
+    },
+    "capabilityName": {
+      "enum": [
+        "local_checks",
+        "user_questions",
+        "process_tree_cleanup",
+        "isolated_workspace",
+        "visible_worker_dispatch",
+        "durable_worker_handle",
+        "browser_surface",
+        "usage_metrics",
+        "cache_metrics"
+      ]
+    },
+    "capabilityNames": {
+      "type": "array",
+      "maxItems": 9,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/capabilityName"}
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method", "evidence"],
+      "properties": {
+        "method": {"enum": ["observed", "probe", "provider_reported", "configuration"]},
+        "evidence": {"type": "string", "minLength": 1, "maxLength": 4096}
+      }
+    },
+    "capability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "verification", "reason"],
+      "properties": {
+        "status": {"enum": ["supported", "unsupported", "unavailable"]},
+        "verification": {
+          "oneOf": [
+            {"$ref": "#/$defs/verification"},
+            {"type": "null"}
+          ]
+        },
+        "reason": {"type": ["string", "null"], "minLength": 1, "maxLength": 2048}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"status": {"const": "supported"}}},
+          "then": {
+            "properties": {
+              "verification": {"$ref": "#/$defs/verification"},
+              "reason": {"type": "null"}
+            }
+          },
+          "else": {
+            "properties": {
+              "verification": {"oneOf": [{"$ref": "#/$defs/verification"}, {"type": "null"}]},
+              "reason": {"type": "string", "minLength": 1, "maxLength": 2048}
+            }
+          }
+        }
+      ]
+    },
+    "degradation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["outcome", "operation", "missing_capabilities", "selected_alternative", "reason"],
+      "properties": {
+        "outcome": {"enum": ["none", "downgraded", "blocked"]},
+        "operation": {"type": ["string", "null"], "minLength": 1, "maxLength": 256},
+        "missing_capabilities": {"$ref": "#/$defs/capabilityNames"},
+        "selected_alternative": {"type": ["string", "null"], "minLength": 1, "maxLength": 256},
+        "reason": {"type": ["string", "null"], "minLength": 1, "maxLength": 2048}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"outcome": {"const": "none"}}},
+          "then": {
+            "properties": {
+              "operation": {"type": "null"},
+              "missing_capabilities": {"maxItems": 0},
+              "selected_alternative": {"type": "null"},
+              "reason": {"type": "null"}
+            }
+          }
+        },
+        {
+          "if": {"properties": {"outcome": {"const": "downgraded"}}},
+          "then": {
+            "properties": {
+              "operation": {"type": "string", "minLength": 1},
+              "missing_capabilities": {"minItems": 1},
+              "selected_alternative": {"type": "string", "minLength": 1},
+              "reason": {"type": "string", "minLength": 1}
+            }
+          }
+        },
+        {
+          "if": {"properties": {"outcome": {"const": "blocked"}}},
+          "then": {
+            "properties": {
+              "operation": {"type": "string", "minLength": 1},
+              "missing_capabilities": {"minItems": 1},
+              "selected_alternative": {"type": "null"},
+              "reason": {"type": "string", "minLength": 1}
+            }
+          }
+        }
+      ]
+    }
+  }
+}

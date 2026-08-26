@@ -3,3 +3,7 @@ __pycache__/
 .env
 .firecrawl/
 .visual-evidence/
+.claude/
+openspec/runs/
+openspec/impl-learning/
+research/sources/

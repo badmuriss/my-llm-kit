@@ -46,6 +46,14 @@ Require the collector to return only source URLs, access dates, local converted
 paths, provider trail rows, and verification status. Do not accept conclusions or
 paraphrased claims from the collector. Open the converted source before using it.
 
+Collectors are bounded read-only roles in the graph. The coordinator chooses
+the smallest useful set of independent collectors and the cheapest compatible
+catalog profiles; it does not treat a collector's process exit or provider
+completion as evidence. The main researcher remains the sole adjudicator and
+must record the source-level claim ledger, disagreements, and final conclusion.
+This works through either Orca or the native Host path with the same capsule,
+evidence, and cleanup semantics.
+
 ## Station 1: protocol and risk
 
 Write these fields before searching:
@@ -54,14 +62,17 @@ Write these fields before searching:
 - decision criterion
 - falsifier
 - risk: `routine`, `material`, or `high`
-- budget: `Budget: N credits`, by risk: routine 25, material 75, high 200
 
 Use `high` for medical, legal, financial, safety, security, or other decisions
 where a wrong answer can cause material harm. Use `material` when the answer can
 drive meaningful cost, architecture, or public claims. Otherwise use `routine`.
 
 Run `skills/scrapingdog/scripts/account_summary.sh` before Station 2 and again
-before Station 6; the difference fills `Credits used`. Stop paid calls at the budget.
+before Station 6; the difference fills `Credits used`. A credit budget is optional.
+When the user gives an explicit cap, record it and stop paid calls at that cap.
+Otherwise, do not pause or ask only to invent a budget: prefer reused, local, free,
+and dedicated low-cost sources, and use expensive endpoints only when the question
+justifies them.
 
 ## Station 2: route and discover
 

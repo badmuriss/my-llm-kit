@@ -1,0 +1,51 @@
+{
+  "folder_local": {
+    "schema_version": 1,
+    "repository_id": "fb2a9411-f3cb-46d4-94f7-067f40719b71",
+    "canonical_root": "/home/badmuriss/Documents/my-llm-kit",
+    "execution_host": {"id": "host-local", "boundary": "local"},
+    "orchestration_home": {
+      "execution_host_id": "host-local",
+      "workspace_key": "folder:folder-local-01",
+      "kind": "folder",
+      "path": "/home/badmuriss/Documents/my-llm-kit"
+    },
+    "execution_workspace": {
+      "execution_host_id": "host-local",
+      "workspace_key": "folder:folder-local-01",
+      "kind": "folder",
+      "path": "/home/badmuriss/Documents/my-llm-kit"
+    },
+    "base_revision": "0123456789abcdef0123456789abcdef01234567",
+    "dirty_paths": ["skills/agent-graph/scripts/graph_core.py"],
+    "run_id": "run-mlk-01",
+    "coordinator_generation": 3,
+    "binding_receipt_ref": "artifact:openspec/runs/maestro/run-mlk-01/artifacts/workspace-bootstrap-receipt-v1.json",
+    "binding_receipt_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "worktree_remote": {
+    "schema_version": 1,
+    "repository_id": "fb2a9411-f3cb-46d4-94f7-067f40719b71",
+    "canonical_root": "/srv/repos/my-llm-kit",
+    "execution_host": {"id": "host-remote", "boundary": "remote"},
+    "orchestration_home": {
+      "execution_host_id": "host-local",
+      "workspace_key": "folder:folder-remote-01",
+      "kind": "folder",
+      "path": "/srv/repos/my-llm-kit"
+    },
+    "execution_workspace": {
+      "execution_host_id": "host-remote",
+      "workspace_key": "worktree:fb2a9411-f3cb-46d4-94f7-067f40719b71::/srv/worktrees/mlk-01",
+      "kind": "git-worktree",
+      "path": "/srv/worktrees/mlk-01",
+      "worktree_path": "/srv/worktrees/mlk-01"
+    },
+    "base_revision": "0123456789abcdef0123456789abcdef01234567",
+    "dirty_paths": [],
+    "run_id": "run-mlk-01-remote",
+    "coordinator_generation": 7,
+    "binding_receipt_ref": "artifact:openspec/runs/maestro/run-mlk-01-remote/artifacts/workspace-bootstrap-receipt-v1.json",
+    "binding_receipt_hash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  }
+}

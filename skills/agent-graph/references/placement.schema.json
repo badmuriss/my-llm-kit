@@ -1,0 +1,218 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/badmuriss/my-llm-kit/schemas/agent-graph-placement.json",
+  "title": "Agent Graph workspace and placement contracts",
+  "oneOf": [
+    {"$ref": "#/$defs/workspaceBootstrapReceipt"},
+    {"$ref": "#/$defs/workspaceScope"},
+    {"$ref": "#/$defs/placementRequest"},
+    {"$ref": "#/$defs/resolvedPlacement"}
+  ],
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*$"
+    },
+    "opaqueWorkspaceKey": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096,
+      "pattern": "^[^\\u0000-\\u001F]+$"
+    },
+    "opaqueHostId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096,
+      "pattern": "^[^\\u0000-\\u001F]+$"
+    },
+    "absolutePath": {
+      "type": "string",
+      "pattern": "^(?:/|[A-Za-z]:[\\\\/]).+"
+    },
+    "executionHost": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "boundary"],
+      "properties": {
+        "id": {"$ref": "#/$defs/opaqueHostId"},
+        "boundary": {"enum": ["local", "remote"]}
+      }
+    },
+    "workspaceIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["execution_host_id", "workspace_key", "kind", "path"],
+      "properties": {
+        "execution_host_id": {"$ref": "#/$defs/opaqueHostId"},
+        "workspace_key": {"$ref": "#/$defs/opaqueWorkspaceKey"},
+        "kind": {"enum": ["folder", "git-worktree"]},
+        "path": {"$ref": "#/$defs/absolutePath"},
+        "worktree_path": {"$ref": "#/$defs/absolutePath"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"kind": {"const": "git-worktree"}}, "required": ["kind"]},
+          "then": {"required": ["worktree_path"]},
+          "else": {"not": {"required": ["worktree_path"]}}
+        }
+      ]
+    },
+    "workspaceBootstrapReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "repository_id",
+        "canonical_root",
+        "execution_host",
+        "orchestration_home",
+        "execution_workspace",
+        "base_revision",
+        "dirty_paths",
+        "authority"
+      ],
+      "properties": {
+        "schema_version": {"const": 1},
+        "repository_id": {"$ref": "#/$defs/identifier"},
+        "canonical_root": {"$ref": "#/$defs/absolutePath"},
+        "execution_host": {"$ref": "#/$defs/executionHost"},
+        "orchestration_home": {"$ref": "#/$defs/workspaceIdentity"},
+        "execution_workspace": {"$ref": "#/$defs/workspaceIdentity"},
+        "base_revision": {"type": "string", "minLength": 1},
+        "dirty_paths": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "authority": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "scope", "issued_for_run_id"],
+          "properties": {
+            "kind": {"enum": ["host-run", "orca"]},
+            "scope": {"const": "run"},
+            "issued_for_run_id": {"$ref": "#/$defs/identifier"}
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "authority": {
+                "properties": {"kind": {"const": "host-run"}},
+                "required": ["kind"]
+              }
+            },
+            "required": ["authority"]
+          },
+          "then": {
+            "properties": {
+              "repository_id": {
+                "pattern": "^host-run-[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "execution_host": {
+                "properties": {"boundary": {"const": "local"}}
+              },
+              "orchestration_home": {
+                "properties": {
+                  "workspace_key": {
+                    "pattern": "^folder:host-run-[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                  },
+                  "kind": {"const": "folder"}
+                }
+              },
+              "execution_workspace": {
+                "properties": {
+                  "workspace_key": {
+                    "pattern": "^folder:host-run-[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                  },
+                  "kind": {"const": "folder"}
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "workspaceScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "repository_id",
+        "canonical_root",
+        "execution_host",
+        "orchestration_home",
+        "execution_workspace",
+        "base_revision",
+        "dirty_paths",
+        "run_id",
+        "coordinator_generation",
+        "binding_receipt_ref",
+        "binding_receipt_hash"
+      ],
+      "properties": {
+        "schema_version": {"const": 1},
+        "repository_id": {"$ref": "#/$defs/identifier"},
+        "canonical_root": {"$ref": "#/$defs/absolutePath"},
+        "execution_host": {"$ref": "#/$defs/executionHost"},
+        "orchestration_home": {"$ref": "#/$defs/workspaceIdentity"},
+        "execution_workspace": {"$ref": "#/$defs/workspaceIdentity"},
+        "base_revision": {"type": "string", "minLength": 1},
+        "dirty_paths": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "run_id": {"$ref": "#/$defs/identifier"},
+        "coordinator_generation": {"type": "integer", "minimum": 1},
+        "binding_receipt_ref": {"type": "string", "pattern": "^artifact:.+"},
+        "binding_receipt_hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+      }
+    },
+    "placementRequest": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind"],
+          "properties": {"kind": {"const": "current-workspace"}}
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "execution_host_id", "workspace_key"],
+          "properties": {
+            "kind": {"const": "existing-workspace"},
+            "execution_host_id": {"$ref": "#/$defs/opaqueHostId"},
+            "workspace_key": {"$ref": "#/$defs/opaqueWorkspaceKey"}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "execution_host_id", "parent_workspace_key", "name_hint"],
+          "properties": {
+            "kind": {"const": "create-child-worktree"},
+            "execution_host_id": {"$ref": "#/$defs/opaqueHostId"},
+            "parent_workspace_key": {"$ref": "#/$defs/opaqueWorkspaceKey"},
+            "name_hint": {"$ref": "#/$defs/identifier"}
+          }
+        }
+      ]
+    },
+    "resolvedPlacement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["execution_host_id", "workspace_key", "kind", "path", "receipt_ref"],
+      "properties": {
+        "execution_host_id": {"$ref": "#/$defs/opaqueHostId"},
+        "workspace_key": {"$ref": "#/$defs/opaqueWorkspaceKey"},
+        "kind": {"enum": ["folder", "git-worktree"]},
+        "path": {"oneOf": [{"$ref": "#/$defs/absolutePath"}, {"type": "null"}]},
+        "receipt_ref": {"type": "string", "pattern": "^artifact:.+"}
+      }
+    }
+  }
+}

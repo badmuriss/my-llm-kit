@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/badmuriss/my-llm-kit/schemas/run-progress-summary-v1.json",
+  "title": "RunProgressSummary v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "state", "progress_percent", "task_counts", "current_tasks", "next_tasks", "cleanup", "last_activity", "blockers", "material_findings"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "state": {"enum": ["active", "input_required", "blocked", "partial", "complete", "failed", "outcome_unknown"]},
+    "progress_percent": {"type": "integer", "minimum": 0, "maximum": 100},
+    "task_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["approved", "running", "input_required", "blocked", "pending", "failed"],
+      "properties": {
+        "approved": {"type": "integer", "minimum": 0},
+        "running": {"type": "integer", "minimum": 0},
+        "input_required": {"type": "integer", "minimum": 0},
+        "blocked": {"type": "integer", "minimum": 0},
+        "pending": {"type": "integer", "minimum": 0},
+        "failed": {"type": "integer", "minimum": 0}
+      }
+    },
+    "current_tasks": {"type": "array", "maxItems": 3, "items": {"$ref": "#/$defs/taskRef"}},
+    "next_tasks": {"type": "array", "maxItems": 3, "items": {"$ref": "#/$defs/taskRef"}},
+    "cleanup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pending", "unverifiable", "failed", "retained"],
+      "properties": {
+        "pending": {"$ref": "#/$defs/cleanupGroup"},
+        "unverifiable": {"$ref": "#/$defs/cleanupGroup"},
+        "failed": {"$ref": "#/$defs/cleanupGroup"},
+        "retained": {"$ref": "#/$defs/cleanupGroup"}
+      }
+    },
+    "last_activity": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/activity"}]},
+    "blockers": {"type": "array", "maxItems": 5, "items": {"$ref": "#/$defs/identityRef"}},
+    "material_findings": {"type": "array", "maxItems": 5, "items": {"$ref": "#/$defs/identityRef"}},
+    "coordination": {"$ref": "#/$defs/coordination"}
+  },
+  "$defs": {
+    "taskRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task_id", "attempt_id", "status"],
+      "properties": {"task_id": {"type": "string"}, "attempt_id": {"type": ["string", "null"]}, "status": {"enum": ["running", "input_required", "blocked", "pending", "failed"]}}
+    },
+    "identityRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task_id", "attempt_id", "finding_ref", "cleanup_id"],
+      "properties": {"task_id": {"type": ["string", "null"]}, "attempt_id": {"type": ["string", "null"]}, "finding_ref": {"type": ["string", "null"]}, "cleanup_id": {"type": ["string", "null"]}}
+    },
+    "cleanupGroup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["count", "ids", "truncated"],
+      "properties": {"count": {"type": "integer", "minimum": 0}, "ids": {"type": "array", "maxItems": 5, "items": {"type": "string"}}, "truncated": {"type": "boolean"}}
+    },
+    "coordination": {
+      "type": "object", "additionalProperties": false,
+      "required": ["execution_mode", "latest_transition_reason", "implementation_wall_time_ms", "check_wall_time_ms", "coordinator_wait_for_worker_wall_time_ms", "audit_wall_time_ms", "dispatch_count", "operational_start_failures", "technical_attempts", "token_input", "token_output", "token_cache", "approved_tasks", "blocking_findings", "carry_forward_findings", "durations_diagnostic"],
+      "properties": {
+        "execution_mode": {"enum": ["single_writer", "parallel"]},
+        "latest_transition_reason": {"type": ["string", "null"]},
+        "implementation_wall_time_ms": {"oneOf": [{"const": "unavailable"}, {"type": "integer", "minimum": 0}]}, "check_wall_time_ms": {"oneOf": [{"const": "unavailable"}, {"type": "integer", "minimum": 0}]}, "coordinator_wait_for_worker_wall_time_ms": {"oneOf": [{"const": "unavailable"}, {"type": "integer", "minimum": 0}]}, "audit_wall_time_ms": {"oneOf": [{"const": "unavailable"}, {"type": "integer", "minimum": 0}]},
+        "dispatch_count": {"type": "integer", "minimum": 0}, "operational_start_failures": {"type": "integer", "minimum": 0}, "technical_attempts": {"type": "integer", "minimum": 0},
+        "token_input": {"const": "unavailable"}, "token_output": {"const": "unavailable"}, "token_cache": {"const": "unavailable"},
+        "approved_tasks": {"type": "integer", "minimum": 0}, "blocking_findings": {"type": "integer", "minimum": 0}, "carry_forward_findings": {"type": "integer", "minimum": 0}, "durations_diagnostic": {"const": true}
+      }
+    },
+    "activity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sequence", "timestamp", "type"],
+      "properties": {"sequence": {"type": "integer", "minimum": 1}, "timestamp": {"type": "string"}, "type": {"type": "string"}}
+    }
+  }
+}

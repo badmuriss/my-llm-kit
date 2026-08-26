@@ -1,0 +1,135 @@
+{
+  "decision": {
+    "amendments": [],
+    "assumptions": [
+      {
+        "assumption_id": "portable-graph-reference-contract",
+        "basis": "repository",
+        "evidence_ref": "file:openspec/changes/portable-agent-graph-orchestration/tasks.md",
+        "statement": "This source change is the shipped eight-task graph reference and must remain executable under the current public validator."
+      }
+    ],
+    "budget": {
+      "limits": [
+        {
+          "rationale": "AGR-02 and AGR-03 have disjoint Paths after the serial graph foundation.",
+          "resource": "workers",
+          "unit": "concurrent_workers",
+          "value": 2
+        },
+        {
+          "rationale": "Two distinct evidence-backed repair hypotheses are the task-local ceiling.",
+          "resource": "attempts",
+          "unit": "attempts_per_task",
+          "value": 2
+        },
+        {
+          "rationale": "Completion requires zero unresolved owned lifecycle records.",
+          "resource": "cleanup",
+          "unit": "unresolved_owned_resources",
+          "value": 0.1
+        }
+      ],
+      "policy": "task_local",
+      "stop_conditions": [
+        "The selected check passes.",
+        "No new verifiable hypothesis remains."
+      ]
+    },
+    "decision_id": "decision-a7522c0a74b653ea",
+    "initial_mode": "graph",
+    "material_questions": [],
+    "mode": "graph",
+    "observations": {
+      "architecture_uncertainty": "known",
+      "blast_radius": "multi_surface",
+      "cohesion": "independent",
+      "context_pressure": "high",
+      "external_effects": "reversible",
+      "independent_packets": [
+        {
+          "check": {
+            "command": "python3 -m unittest discover -s skills/agent-graph/tests -p test_orca_driver.py",
+            "oracle": "The Orca driver lifecycle and fallback contract passes."
+          },
+          "packet_id": "AGR-02",
+          "paths": [
+            "skills/agent-graph/scripts/drivers/__init__.py",
+            "skills/agent-graph/scripts/drivers/base.py",
+            "skills/agent-graph/scripts/drivers/orca.py",
+            "skills/agent-graph/tests/test_orca_driver.py"
+          ]
+        },
+        {
+          "check": {
+            "command": "python3 -m unittest discover -s skills/agent-graph/tests -p test_host_driver.py",
+            "oracle": "The portable Host driver and bounded capsule contract passes."
+          },
+          "packet_id": "AGR-03",
+          "paths": [
+            "skills/agent-graph/scripts/drivers/host.py",
+            "skills/agent-graph/tests/test_host_driver.py"
+          ]
+        }
+      ],
+      "oracle_strength": "strong",
+      "reversibility": "reversible",
+      "shared_write_coupling": false,
+      "unattended_execution": true
+    },
+    "repository_scope": [
+      "."
+    ],
+    "request_digest": "sha256:a7522c0a74b653ea0e4603dd08b8d9f26a776e45de287dc7d99263e593b36220",
+    "revision": 1,
+    "schema_version": 1,
+    "selected_check": {
+      "command": "python3 skills/agent-graph/scripts/agent_graph.py validate --repo . --change portable-agent-graph-orchestration",
+      "oracle": "The shipped portable graph validates under the current process-decision contract without starting workers."
+    },
+    "triggers": {
+      "deescalate": [
+        "Evidence proves the work is cohesive and one writer preserves context."
+      ],
+      "escalate": [
+        "New evidence changes scope, risk, acceptance, or independent ownership."
+      ],
+      "stop": [
+        "The selected check passes.",
+        "No new verifiable hypothesis remains."
+      ]
+    }
+  },
+  "graph_contract": {
+    "cleanup_plan": "Register every owned terminal, Codex process tree, PTY root, browser surface, and temporary artifact before side effects; the terminal, Codex tree, and PTY-root registrations must exist before capsule delivery; verify or explicitly retain each resource before retry or completion.",
+    "decision_revision": 1,
+    "integrator": "fresh-portable-agent-graph-coordinator",
+    "packets": [
+      {
+        "check": {
+          "command": "python3 -m unittest discover -s skills/agent-graph/tests -p test_orca_driver.py",
+          "oracle": "The Orca driver lifecycle and fallback contract passes."
+        },
+        "packet_id": "AGR-02",
+        "paths": [
+          "skills/agent-graph/scripts/drivers/__init__.py",
+          "skills/agent-graph/scripts/drivers/base.py",
+          "skills/agent-graph/scripts/drivers/orca.py",
+          "skills/agent-graph/tests/test_orca_driver.py"
+        ]
+      },
+      {
+        "check": {
+          "command": "python3 -m unittest discover -s skills/agent-graph/tests -p test_host_driver.py",
+          "oracle": "The portable Host driver and bounded capsule contract passes."
+        },
+        "packet_id": "AGR-03",
+        "paths": [
+          "skills/agent-graph/scripts/drivers/host.py",
+          "skills/agent-graph/tests/test_host_driver.py"
+        ]
+      }
+    ],
+    "permission_observed": true
+  }
+}

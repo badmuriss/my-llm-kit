@@ -1,27 +1,10 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/badmuriss/my-llm-kit/schemas/agent-graph-run-state.json",
-  "title": "Agent graph run projection",
+  "title": "Agent graph run projection v1",
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "schema_version",
-    "change",
-    "run_id",
-    "status",
-    "outcome",
-    "base_commit",
-    "dirty_paths",
-    "coordinator",
-    "driver",
-    "driver_reservation",
-    "tasks",
-    "attempts",
-    "questions",
-    "cleanup",
-    "degradations",
-    "last_sequence"
-  ],
+  "required": ["schema_version", "change", "run_id", "status", "outcome", "base_commit", "dirty_paths", "workspace_scope", "control_runtime", "coordinator", "driver", "driver_reservation", "process_decision", "graph_contract", "reduction", "tasks", "attempts", "delegations", "graph_amendments", "questions", "cleanup", "browser_surfaces", "check_executions", "degradations", "last_sequence"],
   "properties": {
     "schema_version": {"const": 1},
     "change": {"type": ["string", "null"]},
@@ -30,38 +13,399 @@
     "outcome": {"enum": ["pass", "partial", "blocked", null]},
     "base_commit": {"type": ["string", "null"]},
     "dirty_paths": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "workspace_scope": {"$ref": "https://github.com/badmuriss/my-llm-kit/schemas/agent-graph-placement.json#/$defs/workspaceScope"},
+    "control_runtime": {"oneOf": [{"$ref": "https://github.com/badmuriss/my-llm-kit/schemas/control-runtime-ref.json"}, {"type": "null"}]},
     "coordinator": {
       "type": "object",
       "additionalProperties": false,
       "required": ["id", "generation"],
-      "properties": {
-        "id": {"type": ["string", "null"]},
-        "generation": {"type": "integer", "minimum": 0}
-      }
+      "properties": {"id": {"type": ["string", "null"]}, "generation": {"type": "integer", "minimum": 0}}
     },
     "driver": {"enum": ["host", "orca", null]},
     "driver_reservation": {"type": ["object", "null"]},
+    "process_decision": {"type": ["object", "null"]},
+    "graph_contract": {"type": ["object", "null"]},
+    "reduction": {"type": ["object", "null"]},
+    "execution_mode": {"enum": ["single_writer", "parallel"]},
     "tasks": {"type": "object", "additionalProperties": {"$ref": "#/$defs/task"}},
-    "attempts": {"type": "object", "additionalProperties": {"type": "object"}},
-    "questions": {"type": "object", "additionalProperties": {"type": "object"}},
-    "cleanup": {"type": "object", "additionalProperties": {"type": "object"}},
+    "attempts": {"type": "object", "additionalProperties": {"$ref": "#/$defs/attempt"}},
+    "delegations": {"type": "object", "additionalProperties": {"$ref": "#/$defs/delegation"}},
+    "graph_amendments": {"type": "object", "additionalProperties": {"$ref": "#/$defs/graphAmendment"}},
+    "questions": {"type": "object", "additionalProperties": {"$ref": "#/$defs/question"}},
+    "cleanup": {"type": "object", "additionalProperties": {"$ref": "#/$defs/cleanup"}},
+    "browser_surfaces": {"type": "object", "additionalProperties": {"$ref": "#/$defs/browserSurface"}},
+    "check_executions": {"type": "object", "additionalProperties": {"$ref": "#/$defs/checkExecution"}},
+    "findings": {"type": "object", "additionalProperties": {"$ref": "#/$defs/finding"}},
+    "coordinator_decisions": {"type": "object", "additionalProperties": {"$ref": "#/$defs/coordinatorDecision"}},
     "degradations": {"type": "array", "items": {"type": "object"}},
     "last_sequence": {"type": "integer", "minimum": 0}
   },
   "$defs": {
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "finding_id", "classification", "task_id", "attempt_id", "acceptance_reference", "evidence_ref", "affected", "reproduction", "smallest_repair_hypothesis", "why_current_check_does_not_detect"],
+      "properties": {
+        "schema_version": {"const": 1},
+        "finding_id": {"type": "string", "minLength": 1},
+        "classification": {"enum": ["acceptance_violation", "reproducible_regression", "security_or_integrity", "hardening", "advisory"]},
+        "task_id": {"type": "string", "minLength": 1},
+        "attempt_id": {"type": "string", "minLength": 1},
+        "acceptance_reference": {"type": "string", "minLength": 1},
+        "evidence_ref": {"type": "string", "pattern": "^file:.+"},
+        "affected": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["file", "identity"], "properties": {"file": {"type": "string", "minLength": 1}, "identity": {"type": "string", "minLength": 1}}}},
+        "reproduction": {"type": "object", "additionalProperties": false, "required": ["steps", "observed", "expected"], "properties": {"steps": {"type": "array", "items": {"type": "string", "minLength": 1}}, "observed": {"type": "string", "minLength": 1}, "expected": {"type": "string", "minLength": 1}}},
+        "smallest_repair_hypothesis": {"type": "string", "minLength": 1},
+        "why_current_check_does_not_detect": {"type": "string", "minLength": 1}
+      }
+    },
+    "coordinatorDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision_id", "task_id", "action", "note"],
+      "properties": {"decision_id": {"type": "string", "minLength": 1}, "task_id": {"type": "string", "minLength": 1}, "action": {"enum": ["amend_acceptance", "amend_paths", "regroup", "accept_check", "input_required", "blocked"]}, "note": {"type": "string", "minLength": 1}}
+    },
+    "checkExecution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["execution_id", "command_digest", "source_snapshot_digest", "execution_policy_digest", "timeout_seconds", "output_cap_bytes", "owner_generation", "lifecycle", "artifact_ref", "consumer_refs", "cleanup_ref", "cleanup_id", "process_root", "process_group", "process_start_identity", "cleanup_authority", "cleanup_authority_id"],
+      "properties": {
+        "execution_id": {"type": "string", "pattern": "^check-[0-9a-f]{24}$"},
+        "command_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "source_snapshot_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "execution_policy_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "timeout_seconds": {"type": "number", "exclusiveMinimum": 0, "maximum": 3600},
+        "output_cap_bytes": {"type": "integer", "minimum": 1, "maximum": 1048576},
+        "owner_generation": {"type": "integer", "minimum": 1},
+        "lifecycle": {"enum": ["running", "passed", "failed", "failed_verified", "blocked"]},
+        "artifact_ref": {"type": "string", "minLength": 1},
+        "consumer_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "cleanup_ref": {"type": "string", "minLength": 1},
+        "cleanup_id": {"type": "string", "minLength": 1},
+        "process_root": {"type": "integer", "minimum": 1},
+        "process_group": {"type": ["integer", "null"], "minimum": 1},
+        "process_start_identity": {"type": ["string", "null"], "minLength": 1},
+        "cleanup_authority": {"enum": ["process_group", "job_object"]},
+        "cleanup_authority_id": {"type": ["string", "null"]}
+      }
+    },
+    "browserSurface": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["request", "status", "receipts"],
+      "properties": {
+        "request": {"$ref": "https://github.com/badmuriss/my-llm-kit/schemas/browser-surface-request-v1.json"},
+        "status": {"enum": ["requested", "reserved", "bound", "captured", "released", "retained", "unsupported", "unavailable", "outcome_unknown", "unverifiable"]},
+        "receipts": {"type": "object", "additionalProperties": {"$ref": "https://github.com/badmuriss/my-llm-kit/schemas/browser-surface-receipt-v1.json"}}
+      }
+    },
+    "identifier": {"type": "string", "pattern": "^[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*$"},
+    "actorEnvelope": {"$ref": "https://github.com/badmuriss/my-llm-kit/schemas/maestro-mutation-v1.json#/$defs/actorEnvelope"},
+    "attemptCleanupOwner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["execution_host_id", "workspace_key", "attempt_id", "terminal_id", "incarnation_id", "process_root", "provenance"],
+      "properties": {
+        "execution_host_id": {"$ref": "https://github.com/badmuriss/my-llm-kit/schemas/agent-graph-placement.json#/$defs/opaqueHostId"},
+        "workspace_key": {"$ref": "https://github.com/badmuriss/my-llm-kit/schemas/agent-graph-placement.json#/$defs/opaqueWorkspaceKey"},
+        "attempt_id": {"$ref": "#/$defs/identifier"},
+        "terminal_id": {"oneOf": [{"$ref": "#/$defs/identifier"}, {"type": "null"}]},
+        "incarnation_id": {"oneOf": [{"$ref": "#/$defs/identifier"}, {"type": "null"}]},
+        "process_root": {"type": ["integer", "null"], "minimum": 1},
+        "provenance": {"type": "string", "minLength": 1}
+      }
+    },
+    "coordinatorCleanupOwner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["execution_host_id", "workspace_key", "coordinator_generation", "terminal_id", "incarnation_id", "process_root", "provenance"],
+      "properties": {
+        "execution_host_id": {"$ref": "https://github.com/badmuriss/my-llm-kit/schemas/agent-graph-placement.json#/$defs/opaqueHostId"},
+        "workspace_key": {"$ref": "https://github.com/badmuriss/my-llm-kit/schemas/agent-graph-placement.json#/$defs/opaqueWorkspaceKey"},
+        "coordinator_generation": {"type": "integer", "minimum": 1},
+        "terminal_id": {"oneOf": [{"$ref": "#/$defs/identifier"}, {"type": "null"}]},
+        "incarnation_id": {"oneOf": [{"$ref": "#/$defs/identifier"}, {"type": "null"}]},
+        "process_root": {"type": ["integer", "null"], "minimum": 1},
+        "provenance": {"type": "string", "minLength": 1}
+      }
+    },
+    "cleanupOwner": {
+      "oneOf": [
+        {"$ref": "#/$defs/attemptCleanupOwner"},
+        {"$ref": "#/$defs/coordinatorCleanupOwner"}
+      ]
+    },
+    "processCleanupTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "root_pid"],
+      "properties": {
+        "kind": {"const": "process"},
+        "root_pid": {"type": "integer", "minimum": 1}
+      }
+    },
+    "cursor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stream_id", "sequence", "revision"],
+      "properties": {"stream_id": {"$ref": "#/$defs/identifier"}, "sequence": {"type": "integer", "minimum": 0}, "revision": {"type": "integer", "minimum": 0}}
+    },
     "task": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["contract", "status", "grade", "attempt_ids", "check", "hypotheses", "evidence_refs", "note"],
+      "required": ["contract", "status", "grade", "attempt_ids", "check", "hypotheses", "evidence_refs", "note", "import_receipt"],
       "properties": {
         "contract": {"type": "object"},
-        "status": {"enum": ["pending", "ready", "reserved", "running", "interrupted", "abandoned", "reported", "pass", "fail", "unobserved", "blocked"]},
+        "status": {"enum": ["pending", "ready", "reserved", "running", "interrupted", "abandoned", "reported", "cancelled", "pass", "fail", "unobserved", "blocked"]},
         "grade": {"enum": ["pass", "fail", "unobserved", "blocked", null]},
-        "attempt_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
-        "check": {"type": ["object", "null"]},
+        "attempt_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/identifier"}},
+        "check": {"oneOf": [{"$ref": "#/$defs/checkRecord"}, {"type": "null"}]},
         "hypotheses": {"type": "array", "maxItems": 2, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
         "evidence_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
-        "note": {"type": "string"}
+        "note": {"type": "string"},
+        "import_receipt": {"oneOf": [{"$ref": "#/$defs/importReceipt"}, {"type": "null"}]},
+        "coordinator_decision": {"oneOf": [{"$ref": "#/$defs/coordinatorDecision"}, {"type": "null"}]},
+        "decision_consumed": {"type": "boolean"}
+      }
+    },
+    "checkRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task_id", "command", "status", "exit_code"],
+      "properties": {
+        "task_id": {"$ref": "#/$defs/identifier"},
+        "attempt_id": {"$ref": "#/$defs/identifier"},
+        "command": {"type": "string", "minLength": 1},
+        "status": {"enum": ["passed", "failed"]},
+        "exit_code": {"type": "integer", "minimum": 0},
+        "evidence_ref": {"type": "string", "pattern": "^file:.+"},
+        "artifact": {"type": "string", "minLength": 1},
+        "duration_ms": {"type": "integer", "minimum": 0},
+        "attempts": {"type": "integer", "minimum": 1},
+        "total_duration_ms": {"type": "integer", "minimum": 0},
+        "timed_out": {"type": "boolean"},
+        "residue_unverifiable": {"type": "boolean"},
+        "execution_id": {"type": "string", "pattern": "^check-[0-9a-f]{24}$"},
+        "command_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "source_snapshot_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "execution_policy_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "timeout_seconds": {"type": "number", "exclusiveMinimum": 0},
+        "output_cap_bytes": {"type": "integer", "minimum": 1},
+        "owner_generation": {"type": "integer", "minimum": 1},
+        "cleanup_ref": {"type": "string", "minLength": 1}
+      }
+    },
+    "attemptCheckRecord": {
+      "allOf": [
+        {"$ref": "#/$defs/checkRecord"},
+        {"type": "object", "required": ["attempt_id"]}
+      ]
+    },
+    "importReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task_id", "import_id", "source_checked", "check_command", "evidence_ref"],
+      "properties": {
+        "task_id": {"$ref": "#/$defs/identifier"},
+        "import_id": {"$ref": "#/$defs/identifier"},
+        "source_checked": {"const": true},
+        "check_command": {"type": "string", "minLength": 1},
+        "evidence_ref": {"type": "string", "pattern": "^file:.+"}
+      }
+    },
+    "attempt": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["task_id", "attempt_id", "status", "workspace_scope", "execution_profile", "effective_scope", "scope_frozen"],
+      "properties": {
+        "task_id": {"$ref": "#/$defs/identifier"},
+        "attempt_id": {"$ref": "#/$defs/identifier"},
+        "status": {"enum": ["reserved", "running", "interrupted", "abandoned", "reported", "superseded", "check-rejected", "audit-rejected", "audit-exhausted"]},
+        "workspace_scope": {"$ref": "https://github.com/badmuriss/my-llm-kit/schemas/agent-graph-placement.json#/$defs/workspaceScope"},
+        "execution_profile": {"$ref": "https://github.com/badmuriss/my-llm-kit/schemas/agent-graph-execution-profile.json"},
+        "effective_scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["attempt_id", "parent_task_id", "paths", "amendment_ids", "digest"],
+          "properties": {
+            "attempt_id": {"$ref": "#/$defs/identifier"},
+            "parent_task_id": {"$ref": "#/$defs/identifier"},
+            "paths": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+            "amendment_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/identifier"}},
+            "digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+          }
+        },
+        "scope_frozen": {"type": "boolean"},
+        "resource_owner": {"$ref": "#/$defs/cleanupOwner"},
+        "cursor": {"oneOf": [{"$ref": "#/$defs/cursor"}, {"type": "string", "minLength": 1}, {"type": "null"}]},
+        "last_poll_receipt": {"type": ["string", "null"]},
+        "report": {"type": "object"},
+        "check": {"$ref": "#/$defs/attemptCheckRecord"},
+        "check_rejection": {"$ref": "#/$defs/checkRejection"},
+        "audit_rejection": {"$ref": "#/$defs/auditRejection"},
+        "audit_exhaustion": {"$ref": "#/$defs/auditRejection"},
+        "result_quarantine": {"$ref": "#/$defs/resultQuarantine"},
+        "transport_failure": {"type": "boolean"}
+      }
+    },
+    "resultQuarantine": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task_id", "attempt_id", "idempotency_key", "original_path", "quarantine_path", "sha256", "byte_length", "validation_error_code", "generation", "revision", "receipt_path"],
+      "properties": {
+        "task_id": {"$ref": "#/$defs/identifier"},
+        "attempt_id": {"$ref": "#/$defs/identifier"},
+        "idempotency_key": {"$ref": "#/$defs/identifier"},
+        "original_path": {"type": "string", "pattern": "^openspec/runs/[^/]+/[^/]+/results/[^/]+\\.json$"},
+        "quarantine_path": {"type": "string", "pattern": "^openspec/runs/[^/]+/[^/]+/artifacts/result-quarantine/sha256/[0-9a-f]{64}\\.json$"},
+        "sha256": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "byte_length": {"type": "integer", "minimum": 1},
+        "validation_error_code": {"type": "string", "pattern": "^[a-z][a-z0-9_]{0,63}$"},
+        "generation": {"type": "integer", "minimum": 1},
+        "revision": {"type": "integer", "minimum": 1},
+        "receipt_path": {"type": "string", "pattern": "^openspec/runs/[^/]+/[^/]+/artifacts/result-quarantine/receipts/[^/]+\\.json$"}
+      }
+    },
+    "lifecycleReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["receipt_id", "receipt_path", "sha256", "byte_length"],
+      "properties": {
+        "receipt_id": {"$ref": "#/$defs/identifier"},
+        "receipt_path": {"type": "string", "pattern": "^openspec/runs/[^/]+/[^/]+/artifacts/.+"},
+        "sha256": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "byte_length": {"type": "integer", "minimum": 1}
+      }
+    },
+    "delegationLifecycle": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "started": {"$ref": "#/$defs/lifecycleReceipt"},
+        "reported": {"$ref": "#/$defs/lifecycleReceipt"},
+        "released": {"$ref": "#/$defs/lifecycleReceipt"}
+      }
+    },
+    "delegation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["delegation_id", "parent_task_id", "parent_attempt_id", "intent", "status"],
+      "properties": {
+        "delegation_id": {"$ref": "#/$defs/identifier"},
+        "parent_task_id": {"$ref": "#/$defs/identifier"},
+        "parent_attempt_id": {"$ref": "#/$defs/identifier"},
+        "child_attempt_id": {"$ref": "#/$defs/identifier"},
+        "status": {"enum": ["requested", "approved", "rejected", "started", "reported", "released"]},
+        "paths": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "context_refs": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/identifier"}},
+        "context_revision": {"type": "string", "minLength": 1},
+        "execution_profile": {"$ref": "https://github.com/badmuriss/my-llm-kit/schemas/agent-graph-execution-profile.json"},
+        "resource_owner": {"$ref": "#/$defs/cleanupOwner"},
+        "spawned_by": {"$ref": "#/$defs/identifier"},
+        "amendment_id": {"$ref": "#/$defs/identifier"},
+        "cleanup_id": {"$ref": "#/$defs/identifier"},
+        "reason": {"type": "string", "minLength": 1},
+        "intent": {"$ref": "https://github.com/badmuriss/my-llm-kit/schemas/delegation-intent-v1.json"},
+        "report": {"$ref": "https://github.com/badmuriss/my-llm-kit/schemas/agent-graph-worker-result.json"},
+        "lifecycle_receipts": {"$ref": "#/$defs/delegationLifecycle"}
+      },
+      "allOf": [
+        {"if": {"properties": {"status": {"enum": ["approved", "started", "reported", "released"]}}}, "then": {"required": ["paths", "context_refs", "context_revision", "execution_profile"]}},
+        {"if": {"properties": {"status": {"enum": ["started", "reported", "released"]}}}, "then": {"required": ["child_attempt_id", "resource_owner", "spawned_by", "lifecycle_receipts"], "properties": {"lifecycle_receipts": {"required": ["started"]}}}},
+        {"if": {"properties": {"status": {"enum": ["reported", "released"]}}}, "then": {"required": ["report"], "properties": {"lifecycle_receipts": {"required": ["started", "reported"]}}}},
+        {"if": {"properties": {"status": {"const": "released"}}}, "then": {"required": ["cleanup_id"], "properties": {"lifecycle_receipts": {"required": ["started", "reported", "released"]}}}},
+        {"if": {"properties": {"status": {"const": "rejected"}}}, "then": {"required": ["reason"]}}
+      ]
+    },
+    "graphAmendment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["amendment_id", "parent_task_id", "parent_attempt_id", "paths", "reason", "coordinator_id", "coordinator_generation"],
+      "properties": {
+        "amendment_id": {"$ref": "#/$defs/identifier"},
+        "parent_task_id": {"$ref": "#/$defs/identifier"},
+        "parent_attempt_id": {"$ref": "#/$defs/identifier"},
+        "paths": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "reason": {"type": "string", "minLength": 1},
+        "coordinator_id": {"$ref": "#/$defs/identifier"},
+        "coordinator_generation": {"type": "integer", "minimum": 1}
+      }
+    },
+    "auditRejection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rejection_id", "finding_refs", "hypothesis"],
+      "properties": {
+        "rejection_id": {"$ref": "#/$defs/identifier"},
+        "finding_refs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^(?:file:[^/].*|commit:(?:[0-9a-f]{40}|[0-9a-f]{64}))$"
+          }
+        },
+        "hypothesis": {"type": "string", "minLength": 1}
+      }
+    },
+    "checkRejection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hypothesis"],
+      "properties": {
+        "hypothesis": {"type": "string", "minLength": 1}
+      }
+    },
+    "question": {
+      "oneOf": [
+        {"$ref": "#/$defs/versionedQuestion"},
+        {"$ref": "#/$defs/legacyQuestion"}
+      ]
+    },
+    "versionedQuestion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["question_id", "attempt_id", "prompt", "actor", "status"],
+      "properties": {
+        "question_id": {"$ref": "#/$defs/identifier"},
+        "attempt_id": {"$ref": "#/$defs/identifier"},
+        "prompt": {"type": "string", "minLength": 1, "maxLength": 4096},
+        "actor": {"$ref": "#/$defs/actorEnvelope"},
+        "receipt_path": {"type": "string", "minLength": 1},
+        "delivery_id": {"type": "string", "minLength": 1},
+        "status": {"enum": ["open", "answered"]},
+        "answer": {"type": ["string", "null"], "maxLength": 4096}
+      }
+    },
+    "legacyQuestion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["question_id", "attempt_id", "body", "receipt_path", "status"],
+      "properties": {
+        "question_id": {"$ref": "#/$defs/identifier"},
+        "attempt_id": {"$ref": "#/$defs/identifier"},
+        "body": {"type": "string", "minLength": 1, "maxLength": 4096},
+        "receipt_path": {"type": "string", "minLength": 1},
+        "delivery_id": {"type": ["string", "null"], "minLength": 1},
+        "status": {"enum": ["open", "answered"]},
+        "answer": {"type": ["string", "null"], "maxLength": 4096}
+      }
+    },
+    "cleanup": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["cleanup_id", "owner", "status"],
+      "properties": {
+        "cleanup_id": {"$ref": "#/$defs/identifier"},
+        "delegation_id": {"$ref": "#/$defs/identifier"},
+        "attempt_id": {"$ref": "#/$defs/identifier"},
+        "owner": {"oneOf": [{"$ref": "#/$defs/cleanupOwner"}, {"type": "string", "minLength": 1}]},
+        "kind": {"type": "string", "minLength": 1},
+        "target": {"oneOf": [{"type": "string", "minLength": 1}, {"$ref": "#/$defs/processCleanupTarget"}]},
+        "identity_version": {"const": 1},
+        "status": {"enum": ["pending", "in-progress", "done", "verified", "unverifiable", "failed", "retained"]},
+        "receipt": {"type": ["object", "string", "null"]}
       }
     }
   }

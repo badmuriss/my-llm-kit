@@ -13,6 +13,10 @@ ROOT = Path(__file__).parents[3]
 CLI = Path(__file__).parents[1] / "scripts" / "agent_graph.py"
 LEARNING = ROOT / "skills" / "impl" / "scripts" / "learning.py"
 EXPECTATION = "home-mobile | / | mobile | 390x664 | populated"
+sys.path.insert(0, str(CLI.parent))
+
+import adaptive_intake  # noqa: E402
+import agent_graph as runtime  # noqa: E402
 
 
 def png_bytes(width: int, height: int) -> bytes:
@@ -48,17 +52,48 @@ class ImplEvidenceBehavior(unittest.TestCase):
   Mode: write
   Isolation: auto
   Acceptance: The visible state is evidence-reviewed.
-  Check: "{sys.executable}" -c "raise SystemExit(0)"
+  Check: "{sys.executable}" -c "import pathlib; raise SystemExit(1 if pathlib.Path('.repair-fixture-fail').is_file() else 0)"
   Visual-Scope: / | populated | mobile | This fixture supports only the declared mobile surface.
   Visual: {EXPECTATION}
+
+- [ ] AUX-02 Verify an independent evidence packet
+  Depends: []
+  Paths: [src/aux.py]
+  Mode: read
+  Isolation: auto
+  Acceptance: The auxiliary packet passes its bounded check.
+  Check: "{sys.executable}" -c "raise SystemExit(0)"
 ''',
             encoding="utf-8",
         )
+        self.graph = runtime.parse_task_graph(change / "tasks.md")
+        transition = adaptive_intake.decide_process(
+            self.repository,
+            request="Verify independent evidence packets.",
+            check_command=self.graph.tasks[0].check,
+            signals={
+                "known_scope": True,
+                "graph_requested": True,
+                "cohesion": "independent",
+                "independent_packets": [
+                    {"packet_id": task.id, "paths": list(task.paths), "check": {"command": task.check, "oracle": f"{task.id} passes."}}
+                    for task in self.graph.tasks
+                ],
+                "integrator": "coordinator-1",
+                "permission_observed": True,
+                "budget_limits": [{"resource": "workers", "value": 2, "unit": "workers", "rationale": "Two independent fixture packets."}],
+                "cleanup_plan": "Verify all evidence and owned resources before completion.",
+            },
+        )
+        (change / "process-decision.json").write_text(json.dumps(transition), encoding="utf-8")
         subprocess.run(["git", "init", "-q", str(self.repository)], check=True)
         subprocess.run(["git", "-C", str(self.repository), "config", "user.email", "test@example.com"], check=True)
         subprocess.run(["git", "-C", str(self.repository), "config", "user.name", "Test"], check=True)
         subprocess.run(["git", "-C", str(self.repository), "add", "."], check=True)
         subprocess.run(["git", "-C", str(self.repository), "commit", "-qm", "fixture"], check=True)
+        unrelated_frontend = self.repository / "research/mocks/preexisting.html"
+        unrelated_frontend.parent.mkdir(parents=True)
+        unrelated_frontend.write_text("<p>preexisting untracked mock</p>\n", encoding="utf-8")
         self.bootstrap()
 
     def tearDown(self) -> None:
@@ -74,7 +109,11 @@ class ImplEvidenceBehavior(unittest.TestCase):
 
     def result(self, completed: subprocess.CompletedProcess[str]):
         self.assertEqual(completed.returncode, 0, completed.stderr)
-        return json.loads(completed.stdout)["result"]
+        result = json.loads(completed.stdout)["result"]
+        state_path = self.repository / "openspec/runs/evidence/run-1/state.json"
+        if "state" not in result and state_path.is_file():
+            result["state"] = json.loads(state_path.read_text(encoding="utf-8"))
+        return result
 
     def common(self) -> tuple[str, ...]:
         return ("--change", "evidence", "--run-id", "run-1", "--generation", "2")
@@ -101,7 +140,7 @@ class ImplEvidenceBehavior(unittest.TestCase):
             "outcome": "reported",
             "summary": "Verified the bounded UI change.",
             "files_changed": ["src/ui.py"],
-            "checks_run": [],
+            "checks_run": [next(task.check for task in self.graph.tasks if task.id == "UI-01")],
             "evidence_refs": [],
             "questions": [],
             "external_refs": {},
@@ -113,6 +152,24 @@ class ImplEvidenceBehavior(unittest.TestCase):
             )
         )
         self.result(self.run_cli("run-check", *self.common(), "--task", "UI-01"))
+
+    def finish_auxiliary_task(self) -> None:
+        dispatched = self.result(self.run_cli("dispatch", *self.common(), "--task", "AUX-02", "--local"))
+        check = next(task.check for task in self.graph.tasks if task.id == "AUX-02")
+        report = {
+            "task_id": "AUX-02",
+            "attempt_id": dispatched["attempt_id"],
+            "outcome": "reported",
+            "summary": "Verified the auxiliary evidence packet.",
+            "files_changed": [],
+            "checks_run": [check],
+            "evidence_refs": [],
+            "questions": [],
+            "external_refs": {},
+        }
+        self.result(self.run_cli("record-result", *self.common(), "--attempt", dispatched["attempt_id"], "--result-json", json.dumps(report)))
+        self.result(self.run_cli("run-check", *self.common(), "--task", "AUX-02"))
+        self.result(self.run_cli("grade", *self.common(), "--task", "AUX-02", "--grade", "pass", "--note", "The auxiliary check passed."))
 
     def write_manifest(self) -> str:
         directory = self.repository / ".visual-evidence" / "evidence"
@@ -167,13 +224,59 @@ class ImplEvidenceBehavior(unittest.TestCase):
         self.assertEqual(passed["state"]["tasks"]["UI-01"]["evidence_refs"], [f"file:{manifest}"])
 
     def test_caps_distinct_repair_hypotheses(self) -> None:
+        (self.repository / ".repair-fixture-fail").touch()
+        check = next(task.check for task in self.graph.tasks if task.id == "UI-01")
         for value in ("The first implementation missed the contract.", "The repair preserved the wrong invariant."):
-            self.result(
-                self.run_cli(
-                    "record-repair", *self.common(), "--task", "UI-01", "--hypothesis", value,
-                )
-            )
+            dispatched = self.result(self.run_cli("dispatch", *self.common(), "--task", "UI-01", "--local"))
+            report = {
+                "task_id": "UI-01",
+                "attempt_id": dispatched["attempt_id"],
+                "outcome": "reported",
+                "summary": "The bounded repair attempt was reported for evidence review.",
+                "files_changed": [],
+                "checks_run": [check],
+                "evidence_refs": [],
+                "questions": [],
+                "external_refs": {},
+            }
+            self.result(self.run_cli(
+                "record-result", *self.common(), "--attempt", dispatched["attempt_id"],
+                "--result-json", json.dumps(report),
+            ))
+            failed = self.run_cli("run-check", *self.common(), "--task", "UI-01")
+            self.assertNotEqual(failed.returncode, 0)
+            self.assertEqual(json.loads(failed.stderr)["error"]["code"], "check_failed")
+            self.result(self.run_cli(
+                "record-repair", *self.common(), "--task", "UI-01", "--hypothesis", value,
+            ))
 
+        fenced = self.run_cli("dispatch", *self.common(), "--task", "UI-01", "--local")
+        self.assertNotEqual(fenced.returncode, 0)
+        self.assertEqual(json.loads(fenced.stderr)["error"]["code"], "task_not_ready")
+        self.result(self.run_cli(
+            "record-decision", *self.common(), "--task", "UI-01",
+            "--decision-id", "ui-repair-amendment", "--action", "amend_acceptance",
+            "--note", "Authorize one bounded third attempt after two technical failures.",
+        ))
+        dispatched = self.result(self.run_cli("dispatch", *self.common(), "--task", "UI-01", "--local"))
+        report = {
+            "task_id": "UI-01",
+            "attempt_id": dispatched["attempt_id"],
+            "outcome": "reported",
+            "summary": "The bounded repair attempt was reported for evidence review.",
+            "files_changed": [],
+            "checks_run": [check],
+            "evidence_refs": [],
+            "questions": [],
+            "external_refs": {},
+        }
+        self.result(self.run_cli(
+            "record-result", *self.common(), "--attempt", dispatched["attempt_id"],
+            "--result-json", json.dumps(report),
+        ))
+        failed = self.run_cli("run-check", *self.common(), "--task", "UI-01")
+        self.assertNotEqual(failed.returncode, 0)
+        self.assertEqual(json.loads(failed.stderr)["error"]["code"], "check_failed")
         capped = self.run_cli(
             "record-repair", *self.common(), "--task", "UI-01",
             "--hypothesis", "A third independent repair would exceed the cap.",
@@ -190,6 +293,7 @@ class ImplEvidenceBehavior(unittest.TestCase):
                 "--note", "All recorded evidence passed.", "--evidence-ref", f"file:{manifest}",
             )
         )
+        self.finish_auxiliary_task()
         self.result(self.run_cli("complete", *self.common(), "--outcome", "pass"))
 
         snapshot = subprocess.run(
@@ -201,8 +305,9 @@ class ImplEvidenceBehavior(unittest.TestCase):
 
         self.assertEqual(snapshot.returncode, 0, snapshot.stderr)
         record = json.loads((self.repository / "openspec/impl-learning/runs/run-1.json").read_text())
-        self.assertEqual(record["facts"][0]["status"], "pass")
-        self.assertEqual(record["facts"][0]["visual_expectations"], [EXPECTATION])
+        ui_fact = next(fact for fact in record["facts"] if fact["task_id"] == "UI-01")
+        self.assertEqual(ui_fact["status"], "pass")
+        self.assertEqual(ui_fact["visual_expectations"], [EXPECTATION])
         self.assertNotIn("transcript", json.dumps(record).casefold())
 
     def test_removes_the_obsolete_flat_runtime(self) -> None:

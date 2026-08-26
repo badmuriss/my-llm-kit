@@ -6,7 +6,6 @@
 - Decision criterion: official pricing page states the number
 - Falsifier: docs state a different value
 - Risk: routine
-- Budget: 25 credits
 - Credits used: 1
 
 ## Provider trail

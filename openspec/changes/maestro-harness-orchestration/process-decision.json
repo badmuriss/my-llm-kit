@@ -1,0 +1,781 @@
+{
+  "decision": {
+    "amendments": [
+      {
+        "amendment_id": "owner-approved-durable-graph",
+        "from_revision": 1,
+        "to_revision": 2,
+        "from_mode": "light_spec",
+        "to_mode": "graph",
+        "changed_evidence": [
+          "The owner explicitly requested continued worker orchestration under a single durable coordinator.",
+          "The approved OpenSpec contains independently owned MLK-02 routing and MLK-03 context-capsule packets after the serial MLK-00 and MLK-01 foundation."
+        ],
+        "reason": "The implementation spans runtime identity, routing, lifecycle, public contracts, CLI streaming, browser surfaces, documentation, and end-to-end evidence. A durable graph is justified, while the first foundation remains intentionally serial.",
+        "replacement_check": {
+          "command": "python3 skills/agent-graph/scripts/agent_graph.py validate --repo /home/badmuriss/Documents/my-llm-kit --change maestro-harness-orchestration",
+          "oracle": "The approved Harness source graph parses with all dependencies, Paths, Checks, and Visual contracts intact."
+        }
+      },
+      {
+        "amendment_id": "owner-approved-proportional-launch-profiles",
+        "from_revision": 2,
+        "to_revision": 3,
+        "from_mode": "graph",
+        "to_mode": "graph",
+        "changed_evidence": [
+          "The owner requires one fresh strong coordinator and explicitly reserves Sol/xhigh for that coordinator rather than routine workers.",
+          "The owner requires Codex sessions to launch with --yolo and Claude sessions to launch with --dangerously-skip-permissions instead of an automatic permission mode."
+        ],
+        "reason": "Keep durable orchestration for the remaining lifecycle and integration repairs while making model, effort, and permission routing explicit and proportional to task risk.",
+        "replacement_check": {
+          "command": "python3 skills/agent-graph/scripts/agent_graph.py validate --repo /home/badmuriss/Documents/my-llm-kit --change maestro-harness-orchestration",
+          "oracle": "The approved Harness source graph and amended execution decision parse with proportional routing and explicit launcher contracts intact."
+        }
+      },
+      {
+        "amendment_id": "owner-approved-mlk-06-schema-result-retry",
+        "from_revision": 3,
+        "to_revision": 4,
+        "from_mode": "graph",
+        "to_mode": "graph",
+        "changed_evidence": [
+          "MLK-06 attempt-mlk-06-001 completed the declared Check but emitted an invalid WorkerResult outcome; the exact candidate was quarantined content-addressably as a transport failure and never became canonical result evidence.",
+          "MLK-06 attempt-mlk-06-002 was abandoned during a late cost reroute before any capsule, prompt, or useful work reached its Terra/high terminal."
+        ],
+        "reason": "Authorize exactly one third dispatch for MLK-06 only. It must use Luna/low solely to emit a schema-valid WorkerResult from the already-passing implementation evidence, must not edit source or reopen an implementation hypothesis, and does not increase the two-attempt limit for any other task.",
+        "replacement_check": {
+          "command": "python3 -m unittest discover -s skills/agent-graph/tests -p test_resource_lifecycle.py",
+          "oracle": "The unchanged MLK-06 lifecycle implementation still passes its declared behavioral suite before the schema-only retry is graded."
+        }
+      },
+      {
+        "amendment_id": "owner-approved-mlk-09-terminal-receipt-retry",
+        "from_revision": 4,
+        "to_revision": 5,
+        "from_mode": "graph",
+        "to_mode": "graph",
+        "changed_evidence": [
+          "MLK-09 attempt-mlk-09-001 passed its declared Check and was audit-rejected because it replaced the required pre-bootstrap dirty frontend path with a legacy path.",
+          "MLK-09 attempt-mlk-09-002 passed its declared Check after restoring frontend provenance and cleanup-gated quarantine, then was audit-rejected because the no-Orca fixture still emitted a verified receipt for nonexistent terminal-child-1."
+        ],
+        "reason": "Authorize exactly one third dispatch for MLK-09 only. It must use Codex Luna/low to remove the invented terminal status from the fixture, preserve real process-tree cleanup evidence and explicit unobserved capability states, and must not change production runtime code or increase the two-attempt limit for any other task.",
+        "replacement_check": {
+          "command": "python3 -m unittest discover -s skills/agent-graph/tests -p test_end_to_end.py",
+          "oracle": "The portable Host E2E passes without inventing terminal, Orca, browser, guard, or progress evidence and retains verified cleanup for every real owned process."
+        }
+      },
+      {
+        "amendment_id": "owner-approved-mlk-09r-host-delegation-cleanup",
+        "from_revision": 5,
+        "to_revision": 6,
+        "from_mode": "graph",
+        "to_mode": "graph",
+        "changed_evidence": [
+          "Run maestro-harness-20260822T134605Z attempt-mlk-09-003 proved that Host can verify an owned process tree while the delegation release contract still requires fabricated terminal verification.",
+          "The approved graph now contains MLK-09R as the focused public cleanup-contract repair and keeps MLK-09 dependent on it."
+        ],
+        "reason": "Authorize MLK-09R before MLK-09 so Host delegation release can rely on genuinely observed process cleanup without promoting an unavailable terminal observation to verified.",
+        "replacement_check": {
+          "command": "python3 -m unittest discover -s skills/agent-graph/tests -p test_resource_lifecycle.py && python3 -m unittest discover -s skills/agent-graph/tests -p test_end_to_end.py",
+          "oracle": "The lifecycle and portable Host E2E suites pass with exact verified process-tree cleanup, explicit unobserved terminal capability, and no fabricated terminal receipt."
+        }
+      },
+      {
+        "amendment_id": "owner-approved-mlk-09r-direct-check",
+        "from_revision": 6,
+        "to_revision": 7,
+        "from_mode": "graph",
+        "to_mode": "graph",
+        "changed_evidence": [
+          "The pinned direct-command parser rejects the shell operator in the revision 6 MLK-09R check before execution.",
+          "Python unittest accepts both lifecycle test files as direct path arguments without shell composition."
+        ],
+        "reason": "Keep both MLK-09R oracles while expressing them as one portable direct command accepted by the pinned bounded runner.",
+        "replacement_check": {
+          "command": "python3 -m unittest skills/agent-graph/tests/test_resource_lifecycle.py skills/agent-graph/tests/test_end_to_end.py",
+          "oracle": "The lifecycle and portable Host E2E suites pass in one direct bounded command with exact verified process-tree cleanup, explicit unobserved terminal capability, and no fabricated terminal receipt."
+        }
+      },
+      {
+        "amendment_id": "owner-approved-mlk-09l-retained-terminal-release-boundary",
+        "from_revision": 7,
+        "to_revision": 8,
+        "from_mode": "graph",
+        "to_mode": "graph",
+        "changed_evidence": [
+          "The generation-3 read-only audit reproduced `delegation_released` transitioning to released while its only terminal cleanup remained retained and unobserved.",
+          "The completed MLK-09R positive Host path and cross-delegation process test do not reject direct retained-terminal release or prove immutable public replay of that rejection.",
+          "The owner requires the current run to close partial and a fresh run to execute only the focused MLK-09L delta."
+        ],
+        "reason": "Carry the HIGH lifecycle authority finding into one fresh focused repair. Retained terminal evidence is never cleanup authority; release requires exact verified terminal cleanup or a separately linked verified owned process cleanup.",
+        "replacement_check": {
+          "command": "python3 -m unittest skills/agent-graph/tests/test_resource_lifecycle.py skills/agent-graph/tests/test_end_to_end.py",
+          "oracle": "Public lifecycle replay rejects direct retained-terminal release without mutation while exact verified terminal and linked verified process release paths remain green."
+        }
+      },
+      {
+        "amendment_id": "owner-approved-mlk-10-coordinator-cleanup-learning",
+        "from_revision": 8,
+        "to_revision": 9,
+        "from_mode": "graph",
+        "to_mode": "graph",
+        "changed_evidence": [
+          "The public learning snapshot for partial run maestro-harness-20260822T155952Z failed on verified typed cleanup cleanup-aborted-import-process-1368425 because its coordinator owner correctly has no attempt_id.",
+          "The real cleanup owner belongs to historical coordinator generation 2 and remains canonical after generation-3 takeover, so learning cannot require current-generation ownership or synthesize task attribution.",
+          "MLK-10 learning Paths do not overlap MLK-09L lifecycle reducer Paths, allowing independent proportional workers while preserving the one-visible-worker host limit."
+        ],
+        "reason": "Treat coordinator-owned cleanup as bounded run-level lifecycle evidence. Preserve exact owner and receipt semantics without mutating the graph journal or pretending the cleanup belongs to a task.",
+        "replacement_check": {
+          "command": "python3 -m unittest skills/agent-graph/tests/test_resource_lifecycle.py skills/agent-graph/tests/test_end_to_end.py scripts/tests/test_learning.py",
+          "oracle": "Retained-terminal release is rejected immutably and learning snapshots normalize real coordinator-owned typed cleanup without fabricated task ownership."
+        }
+      },
+      {
+        "amendment_id": "owner-approved-mlk-10r-terminal-cleanup-and-mlk-11-repair-fixture",
+        "from_revision": 9,
+        "to_revision": 10,
+        "from_mode": "graph",
+        "to_mode": "graph",
+        "changed_evidence": [
+          "After all revision-9 tasks passed, direct normalization of canonical run maestro-harness-20260822T171834Z still rejected cleanup-coordinator-generation-2-terminal because coordinator terminal cleanup legitimately has owner.process_root null and a string terminal target.",
+          "The completed historical run maestro-harness-20260822T155952Z contains both verified and retained coordinator-owned terminal receipts, proving that learning must preserve terminal and terminal-retention semantics rather than route every coordinator cleanup through a process-only contract.",
+          "Repository-wide Agent Graph discovery has one remaining failure in test_caps_distinct_repair_hypotheses because its legacy fixture calls record-repair before the reported-attempt and attempt-bound failed-check preconditions introduced by MLK-04C.",
+          "The frozen revision-9 run correctly rejected audit-reject-attempt for already graded MLK-10, so it closed partial at revision 116 with zero pending cleanup and the repairs require a fresh source graph."
+        ],
+        "reason": "Add two focused serial repairs without weakening runtime truth: a strict process-versus-terminal run-lifecycle union for learning, followed by a public-CLI repair-cap fixture aligned with MLK-04C. The fresh run must prove the real historical snapshot and full Agent Graph discovery before pass.",
+        "replacement_check": {
+          "command": "python3 -m unittest discover -s skills/agent-graph/tests -p test_*.py",
+          "oracle": "All Agent Graph tests pass after the repair-cap fixture follows the reported-attempt contract, and the public learning snapshot succeeds for the real completed historical run without changing its journal or state."
+        }
+      },
+      {
+        "amendment_id": "review-proven-mlk-10r-runtime-schema-parity",
+        "from_revision": 10,
+        "to_revision": 11,
+        "from_mode": "graph",
+        "to_mode": "graph",
+        "changed_evidence": [
+          "Run maestro-harness-20260822T185306Z passed 289 Agent Graph tests and all 26 frozen tasks, but the mandatory read-only maintainability review directly proved that learning.validate_record() accepts a fabricated terminal lifecycle status rejected by learning-run.schema.json.",
+          "The third MLK-10R attempt was already graded and its two legal audit hypotheses were consumed, so audit-reject-attempt correctly failed with task_already_graded and the frozen run closed partial at revision 76 with zero pending cleanup.",
+          "MLK-11 independently satisfied its public-CLI repair-cap contract and may remain checked; only the MLK-10R runtime/schema parity acceptance is reopened in the next fresh graph."
+        ],
+        "reason": "Reopen the existing MLK-10R source task in a fresh run and make direct persisted-record validation enforce the same process-versus-terminal status union as normalization and the public schema. Do not authorize a fourth attempt in the completed frozen run.",
+        "replacement_check": {
+          "command": "python3 -m unittest scripts.tests.test_learning scripts.tests.test_harness_contracts",
+          "oracle": "Direct Python validation and JSON Schema validation reject the same fabricated coordinator process and terminal lifecycle statuses while real historical verified and retained receipts still normalize and validate."
+        }
+      },
+      {
+        "amendment_id": "runtime-observed-check-singleflight",
+        "from_revision": 11,
+        "to_revision": 12,
+        "from_mode": "graph",
+        "to_mode": "graph",
+        "changed_evidence": [
+          "Fresh run maestro-harness-20260822T193956Z launched the same checked-task Check twice after the first public CLI caller outlived its command-output window; the newer exact process group had to be terminated while the original continued serially.",
+          "The same coordinator later started a second complete Agent Graph discovery only to capture an exit artifact even though the first discovery had already completed with OK.",
+          "The existing interprocess journal lock serialized event appends but did not provide an execution lease, concurrent join semantics, or completed-Check reuse keyed by an exact source snapshot."
+        ],
+        "reason": "Make Check subprocess ownership durable and idempotent across public CLI processes. A caller timeout or missing output must never create a second expensive process tree, while exact completed evidence may be reused only against the same command and source snapshot.",
+        "replacement_check": {
+          "command": "python3 -m unittest skills/agent-graph/tests/test_check_singleflight.py",
+          "oracle": "Concurrent public Check and checked-import callers spawn one counted child, join or reuse one immutable artifact for an identical source snapshot, invalidate on source mutation, and recover only after exact process cleanup."
+        }
+      },
+      {
+        "amendment_id": "orca-observed-authoritative-compatibility-producer",
+        "from_revision": 12,
+        "to_revision": 13,
+        "from_mode": "graph",
+        "to_mode": "graph",
+        "changed_evidence": [
+          "Fresh Orca run maestro-worktree-canvas-20260822T202019Z produced a self-consistent local manifest and seven receipt wrappers, but every authority label, execution identity, timestamp, and receipt byte was authored inside Orca rather than exported by Harness.",
+          "The ORC-00H executable Check passed against those local fixtures, demonstrating that consumer-side schema and digest checks alone cannot prove producer provenance.",
+          "The Orca coordinator audit-rejected and blocked ORC-00H, preserved the malformed-result quarantine and canonical report, settled all owned cleanup, and closed the run blocked rather than releasing downstream runtime tasks."
+        ],
+        "reason": "Add the missing Harness producer boundary. One small public exporter must derive a byte-stable, content-addressed compatibility bundle from a completed pass run and its real evidence before Orca can pin those capabilities.",
+        "replacement_check": {
+          "command": "python3 -m unittest skills/agent-graph/tests/test_maestro_compatibility_export.py",
+          "oracle": "A completed pass run exports one deterministic authoritative manifest plus seven exact capability receipts, while tampering, partial outcomes, unresolved cleanup, missing evidence, identity mismatch, and output collisions fail closed."
+        }
+      },
+      {
+        "amendment_id": "runtime-observed-source-validation-and-quarantine-parity",
+        "from_revision": 13,
+        "to_revision": 14,
+        "from_mode": "graph",
+        "to_mode": "graph",
+        "changed_evidence": [
+          "Public validate accepted assumption.basis=observed in revision 13, but the next bootstrap rejected that same frozen source because bootstrap's canonical schema permits only request, repository, owner, and safe_default; the failed bootstrap correctly left no run artifacts.",
+          "Fresh Orca attempt attempt-orc-00h-001 durably quarantined malformed result bytes and then accepted a schema-valid worker_reported event for the same attempt, despite MLK-06Q/06QR specifying cleanup-gated abandonment followed by a fresh retry."
+        ],
+        "reason": "Turn both runtime observations into executable parity contracts. Source validation must predict bootstrap source acceptance, and quarantine must terminate the result slot for its attempt.",
+        "replacement_check": {
+          "command": "python3 -m unittest skills/agent-graph/tests/test_agent_graph_cli.py skills/agent-graph/tests/test_graph_core.py skills/agent-graph/tests/test_result_quarantine.py",
+          "oracle": "Validate and bootstrap reject the same malformed process-decision sources before artifacts, and a quarantined attempt cannot later report or grade before cleanup-gated abandonment and a fresh attempt."
+        }
+      },
+      {
+        "amendment_id": "orca-observed-worker-result-audit-parity",
+        "from_revision": 14,
+        "to_revision": 15,
+        "from_mode": "graph",
+        "to_mode": "graph",
+        "changed_evidence": [
+          "Orca attempt attempt-orc-06a-003 was correctly quarantined because command: is not an accepted evidence reference.",
+          "Attempt attempt-orc-06a-004 made no changes and reported a source-contract blocker, but sync rejected its empty checks_run even though worker-result.schema.json permits it.",
+          "Attempt attempt-orc-06a-005 required a ceremonial validate command plus outcome and external_refs shape repairs before the same no-change finding became canonical."
+        ],
+        "reason": "Add MLK-16 to make the public schema, imperative validator, Host sync, resume, and quarantine share one no-change audit contract. Do not fabricate a Check to transport a blocker and do not let WorkerResult grade its task.",
+        "replacement_check": {
+          "command": "python3 -m unittest skills/agent-graph/tests/test_graph_core.py skills/agent-graph/tests/test_agent_graph_cli.py skills/agent-graph/tests/test_result_quarantine.py skills/agent-graph/tests/test_end_to_end.py",
+          "oracle": "No-change audits report exact evidence without a fabricated Check, changed-file results still name a real worker check, and only coordinator evidence can grade the task."
+        }
+      },
+      {
+        "amendment_id": "completed-run-observed-ordinary-check-artifact-shape",
+        "from_revision": 15,
+        "to_revision": 16,
+        "from_mode": "graph",
+        "to_mode": "graph",
+        "changed_evidence": [
+          "Completed pass run maestro-harness-20260823T072820Z retained exact zero-exit MLK-15 Check evidence and zero unresolved cleanup, but the first public MLK-13 export failed closed because the ordinary run-check artifact does not duplicate status: passed.",
+          "The MLK-15 pass status is authoritative and mutually consistent in the immutable check_recorded event and state projection; its artifact binds command, task, attempt, exit code, timeout, and bounded output.",
+          "The existing MLK-13 regression synthesized MLK-15 by copying a checked-import artifact, so it accidentally required a field that ordinary public Check artifacts do not publish."
+        ],
+        "reason": "Repair only the exporter evidence parser and its false-positive fixture. Preserve journal/state pass authority, require exact ordinary artifact identity and outcome fields, and keep malformed or forged status fail-closed.",
+        "replacement_check": {
+          "command": "python3 -m unittest skills/agent-graph/tests/test_maestro_compatibility_export.py",
+          "oracle": "A public-CLI-created completed run exports from both checked-import and ordinary Check evidence, while forged status, identity, exit, timeout, bytes, and producer state fail closed."
+        }
+      },
+      {
+        "amendment_id": "fresh-run-observed-portable-process-decision-gap",
+        "from_revision": 16,
+        "to_revision": 17,
+        "from_mode": "graph",
+        "to_mode": "graph",
+        "changed_evidence": [
+          "Fresh run maestro-harness-20260823T093217Z stopped its public MLK-08 checked import at immutable artifact check-2e2dcc8b5d0996d7d0bbfff2 because portable-agent-graph-orchestration had no process-decision.json.",
+          "MLK-14 intentionally requires a current process decision for every graph source, and weakening that fail-closed boundary would make validate disagree with bootstrap again.",
+          "The shipped contract test promises that the eight-task portable graph validates without starting workers, so the source example itself must carry a canonical graph-mode decision."
+        ],
+        "reason": "Reopen MLK-08 in a fresh source graph and add the missing decision artifact to its declared Paths. Preserve the partial run and its failed Check rather than retrying or rewriting frozen evidence.",
+        "replacement_check": {
+          "command": "python3 -m unittest scripts.tests.test_harness_contracts",
+          "oracle": "The shipped eight-task portable graph validates under the current process-decision contract without creating a run or starting workers."
+        }
+      },
+      {
+        "amendment_id": "fresh-run-observed-abandoned-quarantine-resume-gap",
+        "from_revision": 17,
+        "to_revision": 18,
+        "from_mode": "graph",
+        "to_mode": "graph",
+        "changed_evidence": [
+          "Fresh run maestro-harness-20260823T095018Z stopped at MLK-09 artifact check-720c5198d27c287773c90013 after Host resume returned result_slot_quarantined for abandoned historical attempt-root-01-001.",
+          "That attempt had already passed exact process cleanup and public abandon-attempt, and a fresh ROOT-01 successor was active, so the quarantine receipt remained immutable history rather than active result-slot authority.",
+          "The MLK-15 focused suite did not call resume or sync after abandonment, while the MLK-09 E2E did; MLK-09 now depends on the repaired MLK-15 contract before checked import."
+        ],
+        "reason": "Reopen MLK-15 in a fresh source graph. Keep active quarantined attempts fail-closed, but fence Host resume and sync to active attempt states so an abandoned historical receipt cannot block its legitimate successor.",
+        "replacement_check": {
+          "command": "python3 -m unittest skills/agent-graph/tests/test_result_quarantine.py skills/agent-graph/tests/test_end_to_end.py",
+          "oracle": "Active result quarantine remains fail-closed while cleanup-gated abandoned quarantine is preserved as history and no longer blocks resume, sync, or a valid fresh successor."
+        }
+      },
+      {
+        "amendment_id": "fresh-run-observed-mlk-09r-dependency-gap",
+        "from_revision": 18,
+        "to_revision": 19,
+        "from_mode": "graph",
+        "to_mode": "graph",
+        "changed_evidence": [
+          "Fresh run maestro-harness-20260823T100831Z passed MLK-08, then stopped at immutable MLK-09R Check execution check-a4a71b8e940d9ae541bc8b63 with the same abandoned-quarantine resume failure owned by MLK-15.",
+          "MLK-09R depended only on MLK-08, while MLK-15 was still blocked by MLK-11 and MLK-16, so the source graph permitted the E2E oracle to run before its required lifecycle repair.",
+          "The run closed partial at revision 84 with 20 pass tasks, 11 pending tasks, all 12 cleanup records verified, and no Check retry."
+        ],
+        "reason": "Make the oracle ordering executable: MLK-09R now depends on MLK-15, so no coordinator or checked import can run its combined lifecycle/E2E Check before abandoned historical quarantine is repaired and graded pass.",
+        "replacement_check": {
+          "command": "python3 skills/agent-graph/scripts/agent_graph.py validate --repo /home/badmuriss/Documents/my-llm-kit --change maestro-harness-orchestration",
+          "oracle": "The source graph is acyclic and MLK-09R is fenced behind MLK-15 before its combined lifecycle and E2E Check can execute."
+        }
+      },
+      {
+        "amendment_id": "fresh-run-observed-mlk-16-hidden-check-cycle",
+        "from_revision": 19,
+        "to_revision": 20,
+        "from_mode": "graph",
+        "to_mode": "graph",
+        "changed_evidence": [
+          "Fresh run maestro-harness-20260823T104034Z imported 25 checked tasks, then MLK-16 failed immutable Check execution check-c91a067026dcc92d9319fc87 because its command executed MLK-15's still-red abandoned-quarantine resume regression.",
+          "MLK-15 depends on MLK-16, so including MLK-15-owned test_end_to_end.py in MLK-16's checked import creates a hidden validation cycle that dependency validation cannot see.",
+          "The run stopped without retry or worker launch and closed partial at revision 68 with 25 pass tasks, 6 pending tasks, and all five coordinator cleanup records verified."
+        ],
+        "reason": "Keep MLK-16 as the checked WorkerResult parity predecessor, but restrict its Check to graph-core, public-CLI, and result-quarantine suites. MLK-15 exclusively owns the downstream end-to-end resume regression and executes only after MLK-16 passes.",
+        "replacement_check": {
+          "command": "python3 -m unittest skills/agent-graph/tests/test_graph_core.py skills/agent-graph/tests/test_agent_graph_cli.py skills/agent-graph/tests/test_result_quarantine.py",
+          "oracle": "WorkerResult schema/runtime/CLI parity passes without executing the downstream MLK-15 end-to-end resume regression."
+        }
+      },
+      {
+        "amendment_id": "fresh-run-observed-mlk-15-active-state-filter",
+        "from_revision": 20,
+        "to_revision": 21,
+        "from_mode": "graph",
+        "to_mode": "graph",
+        "changed_evidence": [
+          "Fresh run maestro-harness-20260823T110556Z passed all 26 predecessor imports, including the focused MLK-16 Check, before dispatching MLK-15 attempt attempt-mlk-15-001 to a visible Terra medium YOLO worker.",
+          "The worker's declared Check failed test_executes_a_deterministic_no_orca_lifecycle because resume returned result_slot_quarantined for cleanup-gated abandoned attempt-root-01-001; the repair had changed the inner reconciliation branch but not the earlier unfiltered Host quarantine scan in resume and sync.",
+          "No Check retry or WorkerResult was accepted. The attempt was abandoned, all five worker and five coordinator cleanup records were verified, and the frozen run closed partial at revision 84 with 26 pass tasks."
+        ],
+        "reason": "Execute one fresh MLK-15 hypothesis that applies a shared explicit active-attempt predicate to every Host quarantine scan. Reserved, running, interrupted, reported, and audit-rejected slots remain fail-closed; abandoned history remains immutable but cannot gate its fresh successor.",
+        "replacement_check": {
+          "command": "python3 -m unittest skills/agent-graph/tests/test_result_quarantine.py skills/agent-graph/tests/test_end_to_end.py",
+          "oracle": "Active quarantines remain fail-closed while cleanup-gated abandoned quarantine is preserved as history and no longer blocks Host resume, sync, or a valid fresh successor."
+        }
+      },
+      {
+        "amendment_id": "fresh-run-observed-mlk-15-predecessor-regression",
+        "from_revision": 21,
+        "to_revision": 22,
+        "from_mode": "graph",
+        "to_mode": "graph",
+        "changed_evidence": [
+          "Fresh run maestro-harness-20260823T113841Z imported five checked predecessors, then MLK-04 immutable Check check-fa6ee1037d3f290420af8040 failed four public-CLI quarantine regressions against the unfinished MLK-15 source.",
+          "The partial repair shadowed crash replay, candidate collision, disappearing evidence, and unowned cleanup behavior with an earlier generic result_slot_quarantined error or skipped canonical abandonment.",
+          "No worker started. The frozen run closed partial at revision 27 with all five coordinator cleanup records verified and all coordinator process identities absent."
+        ],
+        "reason": "Finish MLK-15 as one localized source repair before bootstrapping another graph, and include the public-CLI quarantine regressions in its selected Check so downstream lifecycle changes cannot invalidate checked predecessors invisibly.",
+        "replacement_check": {
+          "command": "python3 -m unittest skills/agent-graph/tests/test_agent_graph_cli.py skills/agent-graph/tests/test_result_quarantine.py skills/agent-graph/tests/test_end_to_end.py",
+          "oracle": "Active quarantine, cleanup-gated abandonment, crash replay, collision ordering, evidence preservation, resume, sync, and the portable Host E2E all pass under one attempt-local finality contract."
+        }
+      },
+      {
+        "amendment_id": "localized-repair-observed-optional-legacy-evidence",
+        "from_revision": 22,
+        "to_revision": 23,
+        "from_mode": "graph",
+        "to_mode": "graph",
+        "changed_evidence": [
+          "Visible Terra-medium YOLO repair terminal term_5f904612-81d8-4690-8229-8bd3d20cbbc4 executed the expanded MLK-15 Check exactly once after one centralized active-quarantine hypothesis.",
+          "The Check ran 56 tests in 271.273 seconds and ended with four failures and three errors because optional legacy evidence lookup raised quarantine_path_missing in ordinary flows and crash replay reused journal revision 9 after appending revision 10.",
+          "No second hypothesis or Check ran in that terminal. Its PTY, Codex roots, code-mode host, Check process, and observed descendants were verified absent after closure."
+        ],
+        "reason": "Authorize one distinct second localized hypothesis before a fresh graph: optional unreferenced legacy evidence must not become a gate, referenced evidence remains integrity-checked, and every replay append must advance the local projection before later mutation.",
+        "replacement_check": {
+          "command": "python3 -m unittest skills/agent-graph/tests/test_agent_graph_cli.py skills/agent-graph/tests/test_result_quarantine.py skills/agent-graph/tests/test_end_to_end.py",
+          "oracle": "Active quarantine, optional legacy evidence, referenced-evidence integrity, crash replay, ordinary abandon/delegation, resume, sync, and the portable Host E2E pass together without stale projection writes."
+        }
+      },
+      {
+        "amendment_id": "owner-authorized-mlk-15-final-bounded-repair",
+        "from_revision": 23,
+        "to_revision": 24,
+        "from_mode": "graph",
+        "to_mode": "graph",
+        "changed_evidence": [
+          "The owner explicitly instructed the coordinator not to let failed work merely stop and to incorporate observed Orca and Harness weaknesses into the source spec before continuing.",
+          "The first graph attempt and first localized repair are both closed, their process trees are absent, and their immutable or session-native failure evidence identifies a new bounded implementation error rather than an unexplained retry.",
+          "The remaining hypothesis is exact: optional legacy evidence lookup must be non-mutating when absent, while replay must carry forward the projection returned by each append."
+        ],
+        "reason": "Authorize exactly one final MLK-15 repair dispatch despite the default two-hypothesis cap. It must use Terra medium, reuse the current source without reopening earlier hypotheses, run the selected Check once, and stop on any failure. This exception does not change the attempt cap for any other task.",
+        "replacement_check": {
+          "command": "python3 -m unittest skills/agent-graph/tests/test_agent_graph_cli.py skills/agent-graph/tests/test_result_quarantine.py skills/agent-graph/tests/test_end_to_end.py",
+          "oracle": "Active quarantine, optional legacy evidence, referenced-evidence integrity, crash replay, ordinary abandon/delegation, resume, sync, and the portable Host E2E pass together without stale projection writes."
+        }
+      },
+      {
+        "amendment_id": "final-repair-observed-journal-owner-fence",
+        "from_revision": 24,
+        "to_revision": 25,
+        "from_mode": "graph",
+        "to_mode": "graph",
+        "changed_evidence": [
+          "Visible final repair terminal term_78243a2a-b17c-46f5-b0f4-7f1972031e82 reduced the selected Check from seven failures/errors to three errors in one 56-test, 281.726-second execution.",
+          "The first invalid canonical candidate no longer produced false quarantine_path_missing, but it also did not materialize the legacy evidence path that the public disappearing-evidence contract removes and verifies.",
+          "The nested public quarantine command appended revision 10 through a distinct EventJournal. The caller copied its projection but left its own journal expected revision at 9, so both provider rejection and abandonment raised StaleRevisionError. The worker and all observed descendants were verified absent."
+        ],
+        "reason": "Freeze further worker retries. Carry forward the exact journal-owner and legacy-evidence defects as source acceptance. Any later implementation run must begin fresh and may not claim MLK-15 or Harness compatibility complete from the current dirty source.",
+        "replacement_check": {
+          "command": "python3 -m unittest skills/agent-graph/tests/test_agent_graph_cli.py skills/agent-graph/tests/test_result_quarantine.py skills/agent-graph/tests/test_end_to_end.py",
+          "oracle": "One journal authority owns the complete replay mutation sequence, exact legacy evidence remains available for integrity checks, and all 56 public quarantine and Host E2E tests pass."
+        }
+      },
+      {
+        "amendment_id": "coordinator-integrated-mlk-15-pass",
+        "from_revision": 25,
+        "to_revision": 26,
+        "from_mode": "graph",
+        "to_mode": "graph",
+        "changed_evidence": [
+          "The coordinator persisted exact legacy malformed bytes before canonical relocation and refreshed the caller-owned EventJournal through verify_projection after the nested public quarantine append.",
+          "The selected MLK-15 Check ran exactly once after that integration correction and passed all 56 tests in 155.922 seconds.",
+          "MLK-15 is now source-checked. MLK-13 is the only remaining unchecked task and still requires a fresh completed pass run as producer evidence."
+        ],
+        "reason": "Close MLK-15 and focus the next fresh Harness graph on importing all checked tasks, completing the run, and executing the authoritative MLK-13 compatibility export without reopening lifecycle implementation.",
+        "replacement_check": {
+          "command": "python3 -m unittest skills/agent-graph/tests/test_maestro_compatibility_export.py",
+          "oracle": "A completed pass Harness run exports one deterministic authoritative Maestro compatibility manifest and seven capability receipts from its real immutable evidence."
+        }
+      },
+      {
+        "amendment_id": "live-export-legacy-cleanup-reducer-semantics",
+        "from_revision": 26,
+        "to_revision": 27,
+        "from_mode": "graph",
+        "to_mode": "graph",
+        "changed_evidence": [
+          "Completed run maestro-harness-20260823T121943Z passed all 31 frozen tasks and settled all 23 cleanup records without mutating its frozen source graph.",
+          "The real public compatibility export rejected cleanup-mlk13-incarnation-dbbfeb42 because its reducer-valid lifecycle status is done while its exact cleanup_finished receipt records observation status verified; two sibling terminal-incarnation records have the same shape.",
+          "The exporter currently equates the receipt status enum with the projected cleanup lifecycle enum before applying the reducer's legacy string-owner branch."
+        ],
+        "reason": "Keep the completed run immutable and repair MLK-13 in a fresh graph. Compatibility verification must replay the canonical discriminated cleanup transition and compare exact receipt evidence, not normalize or equate two different status domains.",
+        "replacement_check": {
+          "command": "python3 -m unittest skills/agent-graph/tests/test_maestro_compatibility_export.py",
+          "oracle": "The real completed producer exports deterministically when legacy cleanup is reducer-valid and settled, while any forged registration, finish receipt, projected lifecycle, or unresolved cleanup fails closed."
+        }
+      },
+      {
+        "amendment_id": "live-export-singleflight-check-artifact-authority",
+        "from_revision": 27,
+        "to_revision": 28,
+        "from_mode": "graph",
+        "to_mode": "graph",
+        "changed_evidence": [
+          "Fresh run maestro-harness-20260823T131416Z imported all 30 checked predecessors and passed the MLK-13 Check before executing the required live producer probe.",
+          "The public export of frozen run maestro-harness-20260823T121943Z failed at MLK-05 because its checked import references a shared CheckExecution v1 artifact without legacy raw command, status, task, or attempt fields.",
+          "The same run state contains the exact passed check_executions entry, artifact ref, command digest, source snapshot digest, and checked-import consumer binding; canonical replay is the authority that joins those records.",
+          "The repair run closed partial at revision 94 with all 31 tasks approved and all ten owned cleanup records verified. Its frozen journal and result remain unchanged."
+        ],
+        "reason": "Reopen only MLK-13 in a fresh graph. Verify the current shared CheckExecution artifact through its durable projection and consumer binding while retaining the legacy ordinary-artifact path; never require or synthesize fields that the version does not publish.",
+        "replacement_check": {
+          "command": "python3 -m unittest skills/agent-graph/tests/test_maestro_compatibility_export.py",
+          "oracle": "Both the real legacy ordinary producer and the current single-flight checked-import producer export deterministically, while any projection, consumer, digest, artifact, or cleanup mismatch fails closed."
+        }
+      },
+      {
+        "amendment_id": "runtime-observed-checked-import-readiness-timeout-recovery",
+        "from_revision": 28,
+        "to_revision": 29,
+        "from_mode": "graph",
+        "to_mode": "graph",
+        "changed_evidence": [
+          "Fresh run maestro-harness-20260823T140739Z-r28 called public import-checked-task for MLK-15 while declared predecessor MLK-16 was still pending; the command launched the Check instead of returning task_not_ready.",
+          "Execution check-dc0e1897beddf5411cb850fa reached the fixed 300-second timeout with exit 124 and residue_unverifiable true, then remained terminal failed for the unchanged command and source snapshot.",
+          "The public checked-import command exposes no timeout policy and the frozen runtime exposes no recovery command or persisted exact Check process identity that can verify cleanup before another execution.",
+          "The owner rejected artifact surgery, imported MLK-16 only, verified all five coordinator resources, and closed the immutable run partial at revision 75 with 29 pass tasks."
+        ],
+        "reason": "Reopen MLK-12 before MLK-15 and MLK-13. Enforce dependency readiness before any Check side effect, include normalized bounds in execution identity, and allow a new policy only after a public exact cleanup recovery settles prior blocked residue.",
+        "replacement_check": {
+          "command": "python3 -m unittest skills/agent-graph/tests/test_check_singleflight.py",
+          "oracle": "Checked imports reject unmet dependencies without side effects, one execution is shared per command, source, and policy, and a timed-out tree can retry under a new bounded policy only after exact public cleanup recovery."
+        }
+      },
+      {
+        "amendment_id": "audit-rejected-check-recovery-lifecycle",
+        "from_revision": 29,
+        "to_revision": 30,
+        "from_mode": "graph",
+        "to_mode": "graph",
+        "changed_evidence": [
+          "Fresh run maestro-harness-20260823T144151Z-r29 used one visible Codex Terra/high YOLO worker and its two-case MLK-12 Check exited zero.",
+          "Independent audit rejected the attempt because failed_verified was written only to the filesystem record while an existing journal projection remained blocked.",
+          "The recovery path checked only the root PID, so a surviving persisted process group could be reported absent; the running lifecycle and owner-bound cleanup were also not published before waiting.",
+          "The run preserved the four HIGH findings, verified all four owned cleanups, and closed partial at revision 66 without grading MLK-12."
+        ],
+        "reason": "Keep MLK-12 open in a fresh run. Make running ownership and cleanup public before waiting, recover through one fenced append-only journal transition, prove the complete process authority absent, and execute every material public-CLI acceptance branch.",
+        "replacement_check": {
+          "command": "python3 -m unittest skills/agent-graph/tests/test_check_singleflight.py",
+          "oracle": "The public suite proves running registration, exact process-authority cleanup, journal-consistent recovery, dependency-side-effect fencing, immutable policy and snapshot identity, and retry only after verified recovery."
+        }
+      },
+      {
+        "amendment_id": "bootstrap-check-evidence-policy-schema-drift",
+        "from_revision": 30,
+        "to_revision": 31,
+        "from_mode": "graph",
+        "to_mode": "graph",
+        "changed_evidence": [
+          "Fresh run maestro-harness-20260823T151343Z-r30 executed MLK-00 exactly once and persisted passed Check execution check-276ef477d595582f86d75791.",
+          "The same pinned runtime then rejected execution_policy_digest, timeout_seconds, and output_cap_bytes as unknown checked-import evidence fields, so checked_task_imported was never appended.",
+          "MLK-12 remained not ready; no capsule was delivered, every observed process and terminal cleanup was verified, and the run closed partial at revision 15."
+        ],
+        "reason": "Perform one minimal bootstrap repair before another graph run: the checked-import evidence parser must accept and validate the exact versioned fields emitted by the Check producer, with a public bootstrap-to-import regression.",
+        "replacement_check": {
+          "command": "python3 -m unittest skills/agent-graph/tests/test_check_singleflight.py",
+          "oracle": "A fresh public bootstrap can import its first checked predecessor from the exact policy-addressed CheckExecution v1 artifact, while malformed or divergent policy evidence fails closed."
+        }
+      },
+      {
+        "amendment_id": "bootstrap-ordinary-check-projection-regression",
+        "from_revision": 31,
+        "to_revision": 32,
+        "from_mode": "graph",
+        "to_mode": "graph",
+        "changed_evidence": [
+          "Fresh run maestro-harness-20260823T152728Z-r31 proved the policy-evidence repair by importing MLK-00 once and approving nine checked predecessors.",
+          "The first MLK-06 import then failed immutable execution check-76e515bcb92669a0af3d167b because an expected timeout-blocked run-check raised its recovery error while state.tasks.ROOT-01.check was still null.",
+          "No retry or worker followed; both coordinator cleanups were verified and the run closed partial at revision 29."
+        ],
+        "reason": "Restore the existing attempt-bound task Check projection before another graph bootstrap, without expanding the bootstrap exception into the remaining recovery-lifecycle implementation.",
+        "replacement_check": {
+          "command": "python3 -m unittest skills/agent-graph/tests/test_check_singleflight.py skills/agent-graph/tests/test_resource_lifecycle.py",
+          "oracle": "Policy-addressed checked import remains fail-closed and a timeout-blocked attempt records one compact canonical task Check before returning its recovery error."
+        }
+      },
+      {
+        "amendment_id": "owner-approved-cohesive-adaptive-execution",
+        "from_revision": 32,
+        "to_revision": 33,
+        "from_mode": "graph",
+        "to_mode": "graph",
+        "changed_evidence": [
+          "Canvas run maestro-worktree-canvas-20260823T005934Z reached 228 events, 20 task dispatches, 18 Checks, and three ORC-06B attempts for 11 approved tasks; its final green Check was followed by an unstructured audit-exhaustion finding.",
+          "Harness run maestro-harness-20260823T155446Z-r32 reached 104 events and three MLK-12 attempts even though its final declared Check passed, while later audit rounds continued expanding lifecycle hypotheses.",
+          "The owner requires every planned Canvas and Harness capability to remain in the same roadmap while execution collapses cohesive work to one reusable writer session, limits blocking audit categories, and makes a third technical attempt an explicit decision."
+        ],
+        "reason": "Keep the durable graph because the current runtime cannot safely reduce without cancelling pending work, but make its fresh implementation serial by default. Add MLK-17 through MLK-19 as one cohesive adaptive-execution package before the compatibility export; no product task or lifecycle guarantee is removed.",
+        "replacement_check": {
+          "command": "python3 -m unittest skills/agent-graph/tests/test_check_singleflight.py skills/agent-graph/tests/test_resource_lifecycle.py",
+          "oracle": "The current lifecycle repair remains the first serial write boundary while the source graph validates the later cohesive-session, finding-policy, reversible-reduction, and overhead-telemetry tasks."
+        }
+      }
+    ],
+    "assumptions": [
+      {
+        "assumption_id": "proportional-routing-and-serial-foundation",
+        "statement": "Run repository-first intake before graph bootstrap. For this graph use one fresh proportionally routed coordinator and at most one writer at a time across each cohesive session. Route every worker to the cheapest sufficient model and effort, reserve xhigh for an explicitly justified exceptional decision, and never relaunch automatically with a more expensive profile. Launch Codex with --yolo and Claude with --dangerously-skip-permissions; never use an automatic permission mode as the Claude launcher contract.",
+        "basis": "owner",
+        "evidence_ref": "file:openspec/changes/maestro-harness-orchestration/tasks.md"
+      },
+      {
+        "assumption_id": "mlk-06-third-attempt-schema-only",
+        "statement": "Only MLK-06 may receive one third dispatch, using Codex Luna/low, because attempt-mlk-06-002 received no capsule, prompt, or useful work. The dispatch may emit a schema-valid WorkerResult only and must not change source or reopen implementation.",
+        "basis": "owner",
+        "evidence_ref": "file:openspec/runs/maestro-harness-orchestration/maestro-harness-20260822T134605Z/artifacts/result-quarantine/receipts/quarantine-mlk-06-attempt-001-invalid-outcome.json"
+      },
+      {
+        "assumption_id": "mlk-09-third-attempt-fixture-only",
+        "statement": "Only MLK-09 may receive one third dispatch, using Codex Luna/low, to replace the invented terminal cleanup receipt with evidence derived from the real owned process tree. The dispatch must remain inside the existing fixture and evidence paths and must not edit production runtime code.",
+        "basis": "owner",
+        "evidence_ref": "file:openspec/runs/maestro-harness-orchestration/maestro-harness-20260822T134605Z/artifacts/checks/MLK-09-002.json"
+      },
+      {
+        "assumption_id": "mlk-09r-before-mlk-09",
+        "statement": "Dispatch MLK-09R first with Codex Luna/low for the localized Host delegation cleanup contract. MLK-09 remains dependent on MLK-09R and may start only after MLK-09R has its own passing check and coordinator grade.",
+        "basis": "owner",
+        "evidence_ref": "file:openspec/changes/maestro-harness-orchestration/tasks.md"
+      },
+      {
+        "assumption_id": "mlk-09l-fresh-delta-after-partial",
+        "statement": "Close run maestro-harness-20260822T155952Z as partial, then use a fresh run to import all completed source tasks and execute only MLK-09L with one localized worker.",
+        "basis": "owner",
+        "evidence_ref": "file:openspec/changes/maestro-harness-orchestration/tasks.md"
+      },
+      {
+        "assumption_id": "mlk-09l-and-mlk-10-fresh-independent-deltas",
+        "statement": "The revision-9 fresh run imports completed source tasks, then executes MLK-09L and MLK-10 as independent deltas with proportional workers and no overlapping visible worker terminals.",
+        "basis": "owner",
+        "evidence_ref": "file:openspec/changes/maestro-harness-orchestration/tasks.md"
+      },
+      {
+        "assumption_id": "mlk-10r-and-mlk-11-fresh-serial-repairs",
+        "statement": "Close revision-9 run maestro-harness-20260822T171834Z as partial, then use one fresh coordinator and at most one proportionally routed worker at a time. Execute MLK-10R before MLK-11, prove the real historical snapshot, and finish with repository-wide Agent Graph discovery.",
+        "basis": "owner",
+        "evidence_ref": "file:openspec/changes/maestro-harness-orchestration/tasks.md"
+      },
+      {
+        "assumption_id": "mlk-12-fresh-singleflight-follow-up",
+        "statement": "Run maestro-harness-20260822T193956Z remains frozen and complete. MLK-12 is a new source-graph follow-up for a later fresh Harness run; until it passes, coordinators must treat a timed-out caller as potentially still running, inspect the exact process identity, and never relaunch an identical Check merely to capture output.",
+        "basis": "repository",
+        "evidence_ref": "file:openspec/runs/maestro-harness-orchestration/maestro-harness-20260822T193956Z/events.jsonl"
+      },
+      {
+        "assumption_id": "mlk-13-before-orca-retry",
+        "statement": "Execute MLK-13 first in one fresh Harness run with one Terra/medium worker. Export the completed run's real compatibility bundle before starting another Orca Canvas run. MLK-12 remains an independent later delta and must not delay this cross-repository unblock.",
+        "basis": "repository",
+        "evidence_ref": "file:/home/badmuriss/Documents/orca/openspec/runs/maestro-worktree-canvas/maestro-worktree-canvas-20260822T202019Z/artifacts/findings/ORC-00H-authoritative-harness-receipts-unavailable.json"
+      },
+      {
+        "assumption_id": "mlk-16-before-result-finality-and-export",
+        "statement": "Keep existing runs frozen. Execute MLK-16 in a fresh Harness run with Luna low or Terra low because it is a bounded schema/runtime parity repair. MLK-15 and MLK-13 remain dependent on it; no Sol or xhigh worker is justified.",
+        "basis": "repository",
+        "evidence_ref": "file:/home/badmuriss/Documents/orca/openspec/runs/maestro-worktree-canvas/maestro-worktree-canvas-20260822T215848Z/results/attempt-orc-06a-005.json"
+      }
+    ],
+    "budget": {
+      "limits": [
+        {
+          "rationale": "The dirty shared worktree and foundational runtime changes require one writer and no overlapping checks.",
+          "resource": "workers",
+          "unit": "concurrent_workers",
+          "value": 1
+        },
+        {
+          "rationale": "After two distinct failed repair hypotheses the task must become truthfully blocked.",
+          "resource": "attempts",
+          "unit": "attempts_per_task",
+          "value": 2
+        },
+        {
+          "rationale": "Completion requires zero unresolved owned lifecycle records; the positive schema value represents a strict below-one ceiling.",
+          "resource": "cleanup",
+          "unit": "unresolved_owned_resources",
+          "value": 0.1
+        }
+      ],
+      "policy": "task_local",
+      "stop_conditions": [
+        "The selected check passes.",
+        "No new verifiable hypothesis remains."
+      ]
+    },
+    "decision_id": "decision-bda2712a2aeb2ce7",
+    "initial_mode": "light_spec",
+    "material_questions": [],
+    "mode": "graph",
+    "observations": {
+      "architecture_uncertainty": "material",
+      "blast_radius": "multi_surface",
+      "cohesion": "independent",
+      "context_pressure": "high",
+      "external_effects": "reversible",
+      "independent_packets": [
+        {
+          "check": {
+            "command": "python3 -m unittest skills/agent-graph/tests/test_maestro_compatibility_export.py",
+            "oracle": "The public exporter derives and verifies a deterministic content-addressed compatibility bundle from a completed Harness run."
+          },
+          "packet_id": "MLK-13",
+          "paths": [
+            "skills/agent-graph/scripts/export_maestro_compatibility.py",
+            "skills/agent-graph/references/maestro-compatibility-manifest.schema.json",
+            "skills/agent-graph/references/maestro-capability-receipt.schema.json",
+            "skills/agent-graph/tests/test_maestro_compatibility_export.py",
+            "skills/agent-graph/references/task-graph.md"
+          ]
+        },
+        {
+          "check": {
+            "command": "python3 -m unittest skills/agent-graph/tests/test_check_singleflight.py skills/agent-graph/tests/test_resource_lifecycle.py",
+            "oracle": "Policy-addressed checked import remains fail-closed and a timeout-blocked attempt records one compact canonical task Check before returning its recovery error."
+          },
+          "packet_id": "MLK-12",
+          "paths": [
+            "skills/agent-graph/scripts/agent_graph.py",
+            "skills/agent-graph/scripts/graph_core.py",
+            "skills/agent-graph/scripts/validation.py",
+            "skills/agent-graph/references/run-state.schema.json",
+            "skills/agent-graph/references/check-execution.schema.json",
+            "skills/agent-graph/tests/test_check_singleflight.py",
+            "skills/agent-graph/tests/test_resource_lifecycle.py"
+          ]
+        },
+        {
+          "check": {
+            "command": "python3 -m unittest skills/agent-graph/tests/test_graph_core.py skills/agent-graph/tests/test_agent_graph_cli.py skills/agent-graph/tests/test_result_quarantine.py",
+            "oracle": "No-change WorkerResult audits are schema-valid without a fabricated Check, while changed-file reports retain a real check and no worker result can grade a task."
+          },
+          "packet_id": "MLK-16",
+          "paths": [
+            "skills/agent-graph/references/worker-result.schema.json",
+            "skills/agent-graph/references/task-graph.md",
+            "skills/agent-graph/scripts/graph_core.py",
+            "skills/agent-graph/scripts/agent_graph.py",
+            "skills/agent-graph/scripts/drivers/host.py",
+            "skills/agent-graph/tests/test_graph_core.py",
+            "skills/agent-graph/tests/test_agent_graph_cli.py",
+            "skills/agent-graph/tests/test_result_quarantine.py",
+            "skills/agent-graph/tests/test_end_to_end.py"
+          ]
+        }
+      ],
+      "oracle_strength": "strong",
+      "reversibility": "costly",
+      "shared_write_coupling": false,
+      "unattended_execution": true
+    },
+    "repository_scope": [
+      "."
+    ],
+    "request_digest": "sha256:bda2712a2aeb2ce7af173c9569e0b718f1cc449b9f1bd100feb17f5072e7d335",
+    "revision": 33,
+    "schema_version": 1,
+    "selected_check": {
+      "command": "python3 -m unittest skills/agent-graph/tests/test_check_singleflight.py skills/agent-graph/tests/test_resource_lifecycle.py",
+      "oracle": "The current lifecycle repair remains the first serial write boundary while the source graph validates the later cohesive-session, finding-policy, reversible-reduction, and overhead-telemetry tasks."
+    },
+    "triggers": {
+      "deescalate": [
+        "Only one write packet is ready or remaining work shares decisions, Paths, serial dependencies, or repeated context.",
+        "Audit activity exceeds concrete reproducible failures and the current writer can finish the cohesive package."
+      ],
+      "escalate": [
+        "At least two ready packets prove disjoint write ownership and individual integration checks.",
+        "Security, lifecycle, data-integrity, or cross-cutting integration evidence requires a stronger worker profile."
+      ],
+      "stop": [
+        "The selected check passes.",
+        "No new verifiable hypothesis remains."
+      ]
+    }
+  },
+  "graph_contract": {
+    "cleanup_plan": "Register every owned terminal, browser surface, child worktree, process tree, and temporary artifact before side effects; verify or explicitly retain each one before retry or completion.",
+    "decision_revision": 33,
+    "integrator": "fresh-maestro-harness-coordinator",
+    "packets": [
+      {
+        "check": {
+          "command": "python3 -m unittest skills/agent-graph/tests/test_maestro_compatibility_export.py",
+          "oracle": "The public exporter derives and verifies a deterministic content-addressed compatibility bundle from a completed Harness run."
+        },
+        "packet_id": "MLK-13",
+        "paths": [
+          "skills/agent-graph/scripts/export_maestro_compatibility.py",
+          "skills/agent-graph/references/maestro-compatibility-manifest.schema.json",
+          "skills/agent-graph/references/maestro-capability-receipt.schema.json",
+          "skills/agent-graph/tests/test_maestro_compatibility_export.py",
+          "skills/agent-graph/references/task-graph.md"
+        ]
+      },
+      {
+        "check": {
+          "command": "python3 -m unittest skills/agent-graph/tests/test_check_singleflight.py skills/agent-graph/tests/test_resource_lifecycle.py",
+          "oracle": "Policy-addressed checked import remains fail-closed and a timeout-blocked attempt records one compact canonical task Check before returning its recovery error."
+        },
+        "packet_id": "MLK-12",
+        "paths": [
+          "skills/agent-graph/scripts/agent_graph.py",
+          "skills/agent-graph/scripts/graph_core.py",
+          "skills/agent-graph/scripts/validation.py",
+          "skills/agent-graph/references/run-state.schema.json",
+          "skills/agent-graph/references/check-execution.schema.json",
+          "skills/agent-graph/tests/test_check_singleflight.py",
+          "skills/agent-graph/tests/test_resource_lifecycle.py"
+          ]
+        },
+        {
+          "check": {
+            "command": "python3 -m unittest skills/agent-graph/tests/test_graph_core.py skills/agent-graph/tests/test_agent_graph_cli.py skills/agent-graph/tests/test_result_quarantine.py",
+            "oracle": "No-change WorkerResult audits are schema-valid without a fabricated Check, while changed-file reports retain a real check and no worker result can grade a task."
+          },
+          "packet_id": "MLK-16",
+          "paths": [
+            "skills/agent-graph/references/worker-result.schema.json",
+            "skills/agent-graph/references/task-graph.md",
+            "skills/agent-graph/scripts/graph_core.py",
+            "skills/agent-graph/scripts/agent_graph.py",
+            "skills/agent-graph/scripts/drivers/host.py",
+            "skills/agent-graph/tests/test_graph_core.py",
+            "skills/agent-graph/tests/test_agent_graph_cli.py",
+            "skills/agent-graph/tests/test_result_quarantine.py",
+            "skills/agent-graph/tests/test_end_to_end.py"
+          ]
+        }
+      ],
+    "permission_observed": true
+  }
+}

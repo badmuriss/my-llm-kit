@@ -1,0 +1,32 @@
+{
+  "capture": {
+    "artifact_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "artifact_ref": "artifact:.visual-evidence/browser-surface.png",
+    "capture_mode": "browser-surface",
+    "device_scale": 1,
+    "height": 720,
+    "route_or_component": "Preview",
+    "source_revision": "commit-123",
+    "state": "populated",
+    "theme": "light",
+    "vision_outcome": "pending",
+    "vision_review_ref": "artifact:.visual-evidence/browser-surface-review.json",
+    "width": 1280
+  },
+  "request": {
+    "attempt_id": "attempt-1",
+    "binding": {"kind": "initial_url", "value": "https://example.test/preview"},
+    "execution_host_id": "host-local",
+    "idempotency_key": "surface-key-1",
+    "mode": "visible",
+    "page_binding": null,
+    "request_id": "surface-request-1",
+    "retention": "release",
+    "schema_version": 1,
+    "source_revision": "commit-123",
+    "task_id": "MLK-07B",
+    "viewport": {"height": 720, "width": 1280},
+    "workspace_key": "folder:workspace-1"
+  },
+  "resume": {"capture_receipt_id": "receipt-capture-1", "idempotent": true, "release_receipt_id": "receipt-release-1"}
+}

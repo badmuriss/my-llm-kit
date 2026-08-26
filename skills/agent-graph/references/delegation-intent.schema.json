@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/badmuriss/my-llm-kit/schemas/delegation-intent-v1.json",
+  "title": "Coordinator-fenced DelegationIntent v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "protocol",
+    "intent_id",
+    "workspace",
+    "actor",
+    "coordinator_generation",
+    "expected_revision",
+    "parent_task_id",
+    "parent_attempt_id",
+    "purpose",
+    "role",
+    "requested",
+    "placement_request",
+    "context_refs",
+    "paths",
+    "check"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "protocol": {"const": "delegation-intent/v1"},
+    "intent_id": {"$ref": "#/$defs/identifier"},
+    "workspace": {"$ref": "#/$defs/workspaceAnchor"},
+    "actor": {"$ref": "#/$defs/actorEnvelope"},
+    "coordinator_generation": {"type": "integer", "minimum": 1},
+    "expected_revision": {"type": "integer", "minimum": 0},
+    "parent_task_id": {"$ref": "#/$defs/identifier"},
+    "parent_attempt_id": {"$ref": "#/$defs/identifier"},
+    "purpose": {"type": "string", "minLength": 1, "maxLength": 2048},
+    "role": {"$ref": "#/$defs/identifier"},
+    "requested": {"$ref": "https://github.com/badmuriss/my-llm-kit/schemas/agent-graph-execution-profile.json#/$defs/requested"},
+    "placement_request": {"$ref": "https://github.com/badmuriss/my-llm-kit/schemas/agent-graph-placement.json#/$defs/placementRequest"},
+    "context_refs": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 256,
+      "items": {"$ref": "#/$defs/identifier"}
+    },
+    "paths": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1, "maxLength": 4096}
+    },
+    "check": {"type": "string", "minLength": 1, "maxLength": 8192}
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*$"
+    },
+    "workspaceAnchor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository_id", "execution_host_id", "workspace_key", "run_id"],
+      "properties": {
+        "repository_id": {"$ref": "#/$defs/identifier"},
+        "execution_host_id": {"$ref": "https://github.com/badmuriss/my-llm-kit/schemas/agent-graph-placement.json#/$defs/opaqueHostId"},
+        "workspace_key": {"$ref": "https://github.com/badmuriss/my-llm-kit/schemas/agent-graph-placement.json#/$defs/opaqueWorkspaceKey"},
+        "run_id": {"$ref": "#/$defs/identifier"}
+      }
+    },
+    "actorEnvelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actor_id", "kind", "authenticated", "session_id"],
+      "properties": {
+        "actor_id": {"$ref": "#/$defs/identifier"},
+        "kind": {"enum": ["user", "coordinator", "worker", "system"]},
+        "authenticated": {"const": true},
+        "session_id": {"$ref": "#/$defs/identifier"}
+      }
+    }
+  }
+}

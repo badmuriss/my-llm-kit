@@ -1,0 +1,19 @@
+{
+  "blockers": [],
+  "cleanup": {
+    "failed": {"count": 0, "ids": [], "truncated": false},
+    "pending": {"count": 0, "ids": [], "truncated": false},
+    "retained": {"count": 0, "ids": [], "truncated": false},
+    "unverifiable": {"count": 0, "ids": [], "truncated": false}
+  },
+  "current_tasks": [
+    {"attempt_id": "attempt-mlk-01", "status": "running", "task_id": "MLK-01"}
+  ],
+  "last_activity": {"sequence": 12, "timestamp": "2026-08-22T09:04:01Z", "type": "attempt_started"},
+  "material_findings": [],
+  "next_tasks": [],
+  "progress_percent": 0,
+  "schema_version": 1,
+  "state": "active",
+  "task_counts": {"approved": 0, "blocked": 0, "failed": 0, "input_required": 0, "pending": 0, "running": 1}
+}

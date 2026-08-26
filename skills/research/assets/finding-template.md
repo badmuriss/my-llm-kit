@@ -6,7 +6,6 @@
 - Decision criterion:
 - Falsifier:
 - Risk: routine
-- Budget: 25 credits
 - Credits used: 0
 
 ## Provider trail
