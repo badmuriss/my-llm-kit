@@ -3,6 +3,20 @@ Shared instructions for any coding agent (Claude Code, Codex, OpenCode, Gemini C
 ## Skills
 Reusable skills live in `~/.agents/skills/`, the cross-agent convention. Each is a directory holding a `SKILL.md` (YAML frontmatter: `name`, `description`) plus optional reference files. When a task matches a skill's description, read that `SKILL.md` and follow it.
 
+## OpenCode delegation
+Subagents are defined globally in `~/.config/opencode/agent/*.md` with an explicit `model` + `variant` (reasoning effort). Pick by cost tier, strongest model only where it pays:
+
+| Agent | Model | Effort | Use for |
+|---|---|---|---|
+| `deep-reasoner` | `opencode-go/deepseek-v4-pro` | high | architecture, hard debugging, tradeoff analysis |
+| `builder` | `opencode-go/deepseek-v4-pro` | high | multi-file features, tricky migrations |
+| `frontend-expert` | `opencode-go/kimi-k3` | high | UI/frontend polish only (K3 tops Frontend Code Arena; also the priciest model on the provider) |
+| `fast-worker` | `opencode-go/deepseek-v4-flash` | low | boilerplate, tests, mechanical edits |
+| `cheap-worker` | `opencode-go/glm-5.3-flash` | — | fan-out grunt work, throwaway scripts |
+
+Effort is set via custom variants in `~/.config/opencode/opencode.json` (`provider.opencode-go.models.<id>.variants`). Do not delegate a premium model to mechanical work.
+
+
 ## Git workflow
 - Never name the agent in a commit message (no "Claude Code", no "Codex", no co-author trailer)
 - Use conventional commits (be brief and descriptive)
