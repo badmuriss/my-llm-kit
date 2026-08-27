@@ -36,7 +36,7 @@ Act as the architect. Select the minimum process and produce only its required a
 6. Load `frontend-visual-validation` for rendered graph work. Add one reasoned `Visual-Scope:` and one `Visual:` entry per supported platform and state.
 7. In graph mode, run `python3 skills/agent-graph/scripts/agent_graph.py validate --change <slug> --json`. Use `py` on Windows. Validation must pass before handoff and never starts workers. Bootstrap separately verifies that the saved decision revision, packets, checks, permission, budget, integration owner, and cleanup plan still match the graph.
 8. Run `$spec-council --phase verdict <slug>` only when `--council` is present. Record accepted and rejected findings.
-9. Before handoff, inspect the diff for standing-rule sources (`AGENTS.md`, skill instructions, ADRs, or process docs). If one changed, run `rule-curator` once over that corpus and apply only evidence-backed duplicate/staleness edits; otherwise record that curation was skipped because the rule corpus did not change.
+9. Before handoff, inspect standing-rule changes directly. Run `rule-curator` only when the approved scope is a whole-corpus rule audit; do not invoke it for an individual rule edit.
 10. Tell the user to use the `$impl` skill with the decision or approved graph slug.
 
 Checks and external evidence decide acceptance. Council advice does not.

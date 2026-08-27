@@ -82,6 +82,25 @@ downgrade one operation or block it. They never choose the process mode.
 
 Review source changes by cohesive package and material risk. The reviewer is read-only. Verify material findings and rerun affected checks.
 
-Then run the read-only `thermo-nuclear-code-quality-review` skill. If the change touched standing-rule sources, run `rule-curator` once as the matching final curation gate; skip it when the rule corpus is unchanged. Verify findings, rerun affected checks, then run `digest`, finish all cleanup, and run `complete --outcome <pass|partial|blocked>`. Report files, checks, grades, repair hypotheses, driver degradation, cleanup receipts, review findings, and unproven behavior.
+When the repository configures a cyclomatic-complexity rule, run that project-native
+gate after the task check and before the final review. A configured gate must pass
+before completion. Do not raise its ceiling, disable the rule, or add an inline
+suppression to pass an ordinary implementation. A policy change requires explicit
+task scope.
+
+Treat complexity as a repair trigger, not proof of poor design. Inspect each new or
+worsened violation and ask whether the change deleted decisions, converted them to
+data, or moved them behind a cohesive private boundary. Preserve a small public
+interface when splitting a deep module. For behavior-preserving refactors, record
+the maximum-function score, module decision total when the tool exposes it,
+production line delta, helper or public-symbol delta, and branches deleted versus
+moved. The behavior check remains authoritative.
+
+In graph mode, record a complete blocking finding and use `audit-reject-attempt`
+when changed code introduces or worsens a configured violation. Other modes repair
+the same diff before reporting completion. Generated evidence and frozen runtime
+snapshots stay outside source audits when the repository marks them as generated.
+
+Then run the read-only `thermo-nuclear-code-quality-review` skill. Run `rule-curator` only when the approved scope is a whole-corpus rule audit; review individual rule edits directly. Verify findings, rerun affected checks, then run `digest`, finish all cleanup, and run `complete --outcome <pass|partial|blocked>`. Report files, checks, grades, repair hypotheses, driver degradation, cleanup receipts, review findings, and unproven behavior.
 
 After normal completion, `python3 skills/impl/scripts/learning.py snapshot --change <slug> --run-id <run-id>` may record shadow learning. It records mode, result, retries, observed time, rework, coordination overhead, resolved profiles, and provider usage or cache fields only when exposed. Missing telemetry is `unavailable`, never zero or estimated. The snapshot never changes the run, routing, capability receipt, evidence grade, rule, or skill.

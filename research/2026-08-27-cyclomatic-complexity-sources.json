@@ -1,0 +1,27 @@
+[
+  {
+    "slug": "hunk-pr-857",
+    "url": "https://github.com/modem-dev/hunk/pull/857",
+    "dynamic": false
+  },
+  {
+    "slug": "hunk-pr-861",
+    "url": "https://github.com/modem-dev/hunk/pull/861",
+    "dynamic": false
+  },
+  {
+    "slug": "oxc-complexity-rule",
+    "url": "https://oxc.rs/docs/guide/usage/linter/rules/eslint/complexity",
+    "dynamic": false
+  },
+  {
+    "slug": "ruff-complex-structure",
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure/",
+    "dynamic": false
+  },
+  {
+    "slug": "ruff-mccabe-setting",
+    "url": "https://docs.astral.sh/ruff/settings/#lint_mccabe_max-complexity",
+    "dynamic": false
+  }
+]

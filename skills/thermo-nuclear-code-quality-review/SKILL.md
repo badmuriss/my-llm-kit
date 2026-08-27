@@ -1,6 +1,6 @@
 ---
 name: thermo-nuclear-code-quality-review
-description: Perform a strict, read-only maintainability review of a completed implementation diff. Use after impl, before PR preparation, or when asked for a thermonuclear, harsh, deep code-quality, architecture, spaghetti, abstraction, or large-file review. Report evidence-backed findings; never edit code or turn subjective preferences into automatic blockers.
+description: Perform a strict, read-only maintainability review of a completed implementation diff, including complexity audits and test economy. Use after impl, before PR preparation, or when asked for a thermonuclear, harsh, deep code-quality, cyclomatic-complexity, concise-tests, redundant-tests, architecture, spaghetti, abstraction, or large-file review. Report evidence-backed findings; never edit code or turn subjective preferences into automatic blockers.
 ---
 
 # Thermo-Nuclear Code Quality Review
@@ -29,6 +29,42 @@ Review in this order:
 7. Thin wrappers, premature generalization, magic behavior, and legibility problems with material maintenance cost.
 
 Correctness, security, repository contracts, and delivered scope outrank aesthetic simplification. Never recommend a broad refactor without showing that it preserves behavior and reduces concrete complexity.
+
+## Complexity audit
+
+When the repository configures a cyclomatic-complexity rule, run its project-native
+read-only command. Inspect new and worsened violations in changed functions. A high
+score triggers review; it is not a finding by itself.
+
+For a behavior-preserving refactor, compare the maximum-function score before and
+after. Also compare the touched module's decision total when the tool exposes it,
+production line count, helper and public-symbol count, and branches deleted versus
+moved. Reject metric gaming that only scatters the same decisions across thin
+wrappers. Prefer cohesive private boundaries that preserve a small public
+interface.
+
+Treat a configured gate failure, a new suppression, or a ceiling increase as a
+material finding unless the approved task explicitly changes policy. Do not ask to
+install a new analyzer or add a new repository policy during an unrelated review.
+Exclude generated evidence and frozen runtime snapshots only when the repository
+identifies them as generated.
+
+## Test economy audit
+
+Inspect changed tests for maintenance cost as well as coverage. Flag a test only
+when the diff provides concrete evidence that it adds no distinct failure signal
+or couples the suite to an implementation detail.
+
+Look for tests that only pin a constant, default, configuration toggle, removed
+behavior, trivial passthrough, type-system guarantee, or another test's behavior.
+Also inspect repeated setup and case matrices whose boundaries cannot fail in a
+different way. Before calling a case redundant, name the realistic defect it fails
+to distinguish.
+
+Preserve focused regressions for reproducible defects, non-trivial branching,
+invariants, security, data integrity, and public contracts. Prefer the smallest
+existing check that detects the risk. Do not ask for fewer tests when separate
+cases exercise separate behavior.
 
 ## Evidence bar
 

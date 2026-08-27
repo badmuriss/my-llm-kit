@@ -52,6 +52,16 @@ Set-ExecutionPolicy -Scope Process Bypass
 .\setup.ps1
 ```
 
+## Development checks
+
+Install the pinned development tools with `python3 -m pip install -r requirements-dev.txt`
+on macOS or Linux, or `py -m pip install -r requirements-dev.txt` on Windows. Run
+the complexity gate with:
+
+```bash
+ruff check .
+```
+
 ## How the harness works
 
 The harness separates process choice from execution. Adaptive intake inspects the request and repository, then chooses the smallest mode that can produce trustworthy evidence.
@@ -113,10 +123,9 @@ Each OpenSpec task carries one `Check:` command. The state records its result, e
 
 Validation is proportional to risk. The harness defaults to `minimal-by-default-v1`: reuse the smallest relevant check and existing artifact, add at most one focused regression per reproducible defect, and do not create a regression for behavior deliberately removed or out of scope. It does not add tests merely to pin constants, defaults, toggles, deletions, trivial passthroughs or guarantees already enforced by the type system, and it does not create status Markdown or duplicate plans as evidence. MVP changes prefer a clean rewrite over compatibility layers unless the repository shows an active external contract.
 
-`rule-curator` is a maintenance pass, not another worker: `spec` runs it at
-handoff only when standing-rule sources changed, and `impl` pairs the same
-conditional gate with the final `thermo-nuclear-code-quality-review`. It is not
-run on every ordinary product task.
+`rule-curator` is a whole-corpus human maintenance pass, not a per-change gate.
+`spec` or `impl` invokes it only when the approved scope audits the full standing
+rule set. Individual rule changes receive direct diff review.
 
 Frontend tasks pair a reasoned `Visual-Scope:` with `Visual:` contracts for each changed route and state. General responsive UI covers desktop, notebook, tablet and mobile; platform-specific UI covers only its declared targets. `impl` requires PNG screenshots inspected by a vision-capable tool and a validated manifest before the task can pass. A final guard detects frontend file changes and blocks a successful run when the plan omitted visual expectations entirely. The `frontend-visual-validation` skill defines the capture and review workflow.
 
@@ -161,7 +170,7 @@ conversation transcripts.
 | `grill-with-docs` | Decision interview that also updates context and ADRs. |
 | `scrapingdog` | Paid public-web data provider. Requires `SCRAPINGDOG_API_KEY`. |
 | `readme-pass` | Concise, scannable README with agent-first installation. |
-| `thermo-nuclear-code-quality-review` | Read-only maintainability review of a finished implementation diff. |
+| `thermo-nuclear-code-quality-review` | Read-only maintainability, complexity, and test-economy review of a finished implementation diff. |
 | `trim-code-comments` | Removes comments that only narrate visible code. |
 | `remove-ai-marks` | Inspects and removes supported Unicode, C2PA, EXIF/XMP, and container metadata from text, images, and documents. |
 | `rule-curator` | Bulk audit and pruning of an agent's whole standing rule set. |
@@ -267,7 +276,7 @@ Direct reads with `Get-Content`, including `-Raw`, variables and ordinary parsin
 
 `agent-resource-guard` is an optional Linux-only enhancement for machines that regularly run many concurrent agents or overlapping heavy commands. Its implementation reads Linux `/proc` and cgroups and terminates processes with POSIX signals, so `setup.ps1` intentionally does not install it; invoking the CLI on Windows now exits with an explicit unsupported-platform message. Install it explicitly with `./setup.sh --with-resource-guard`. When present, the harness can use it for machine-wide admission and stale-workload cleanup. Normal Linux installs, macOS and native Windows use their host's process controls instead; a missing guard never blocks work.
 
-`rule-curator` has no monitoring hook, daemon, or scheduler on any operating system. It is an on-demand human curation skill. `spec` invokes it at handoff only when standing-rule sources changed, and `impl` pairs that conditional pass with the final thermo-nuclear review; ordinary product tasks do not pay that cost.
+`rule-curator` has no monitoring hook, daemon, or scheduler on any operating system. It is an on-demand human curation skill for an approved whole-corpus audit. Individual rule changes use direct diff review and do not pay that cost.
 
 `Pipelock` scans agent actions at supported host boundaries. The Codex installer wraps existing MCP servers with `pipelock mcp proxy`. The Claude installer adds its action hooks. Run setup again after adding a Codex MCP server so Pipelock can wrap the new entry.
 

@@ -1,0 +1,7 @@
+extend-exclude = ["openspec/runs/**/control-runtime/**"]
+
+[lint]
+select = ["C901"]
+
+[lint.mccabe]
+max-complexity = 50

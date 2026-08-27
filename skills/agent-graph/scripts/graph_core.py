@@ -2142,7 +2142,21 @@ def apply_event(projection: Mapping[str, Any], event: Mapping[str, Any]) -> dict
         }
     elif state["status"] == "new":
         raise JournalError("run_started must be the first event")
-    elif event_type == "coordinator_claimed":
+    else:
+        reducer = _EVENT_REDUCERS.get(event_type)
+        if reducer is not None:
+            reducer(state, event_type, data, event)
+    state["last_sequence"] = event["sequence"]
+    return state
+
+
+def _apply_control_event(
+    state: dict[str, Any],
+    event_type: str,
+    data: Mapping[str, Any],
+    event: Mapping[str, Any],
+) -> None:
+    if event_type == "coordinator_claimed":
         state["coordinator"]["id"] = _nonempty_string(
             data.get("coordinator_id"), "coordinator_claimed coordinator_id"
         )
@@ -2184,7 +2198,15 @@ def apply_event(projection: Mapping[str, Any], event: Mapping[str, Any]) -> dict
         task_id = _known_task(state, data.get("task_id"))
         if state["tasks"][task_id]["grade"] is None:
             state["tasks"][task_id]["status"] = "ready"
-    elif event_type == "delegation_requested":
+
+
+def _apply_graph_event(
+    state: dict[str, Any],
+    event_type: str,
+    data: Mapping[str, Any],
+    event: Mapping[str, Any],
+) -> None:
+    if event_type == "delegation_requested":
         if state["workspace_scope"] is None:
             raise JournalError("delegation_requested requires a pinned workspace scope")
         try:
@@ -2328,7 +2350,15 @@ def apply_event(projection: Mapping[str, Any], event: Mapping[str, Any]) -> dict
             if isinstance(graph_contract, Mapping)
             else None
         )
-    elif event_type == "delegation_approved":
+
+
+def _apply_delegation_event(
+    state: dict[str, Any],
+    event_type: str,
+    data: Mapping[str, Any],
+    event: Mapping[str, Any],
+) -> None:
+    if event_type == "delegation_approved":
         approval = _exact_fields(
             data,
             {"delegation_id", "paths", "context_refs", "context_revision", "execution_profile"},
@@ -2488,7 +2518,15 @@ def apply_event(projection: Mapping[str, Any], event: Mapping[str, Any]) -> dict
             "cleanup_id": cleanup_id,
             "lifecycle_receipts": {**delegation["lifecycle_receipts"], "released": receipt},
         })
-    elif event_type == "attempt_reserved":
+
+
+def _apply_attempt_reservation_event(
+    state: dict[str, Any],
+    event_type: str,
+    data: Mapping[str, Any],
+    event: Mapping[str, Any],
+) -> None:
+    if event_type == "attempt_reserved":
         task_id = _known_task(state, data.get("task_id"))
         attempt_id = _nonempty_string(data.get("attempt_id"), "attempt_reserved attempt_id")
         if attempt_id in state["attempts"]:
@@ -2526,7 +2564,15 @@ def apply_event(projection: Mapping[str, Any], event: Mapping[str, Any]) -> dict
         if data.get("effective_scope") != expected_scope or attempt.get("effective_scope") != expected_scope:
             raise JournalError("attempt_scope_frozen effective_scope diverges from the exact amendment union")
         attempt["scope_frozen"] = True
-    elif event_type == "attempt_started":
+
+
+def _apply_attempt_start_event(
+    state: dict[str, Any],
+    event_type: str,
+    data: Mapping[str, Any],
+    event: Mapping[str, Any],
+) -> None:
+    if event_type == "attempt_started":
         task_id = _known_task(state, data.get("task_id"))
         attempt_id = _nonempty_string(data.get("attempt_id"), "attempt_started attempt_id")
         existing = state["attempts"].get(attempt_id)
@@ -2742,7 +2788,15 @@ def apply_event(projection: Mapping[str, Any], event: Mapping[str, Any]) -> dict
             }
         attempt["status"] = "interrupted" if event_type == "attempt_start_failed" else "abandoned"
         state["tasks"][attempt["task_id"]]["status"] = attempt["status"]
-    elif event_type == "attempt_provider_result_rejected":
+
+
+def _apply_attempt_result_event(
+    state: dict[str, Any],
+    event_type: str,
+    data: Mapping[str, Any],
+    event: Mapping[str, Any],
+) -> None:
+    if event_type == "attempt_provider_result_rejected":
         try:
             rejection = _exact_fields(
                 data,
@@ -2929,7 +2983,15 @@ def apply_event(projection: Mapping[str, Any], event: Mapping[str, Any]) -> dict
         state["attempts"][attempt_id]["last_poll_receipt"] = data.get("receipt_path")
     elif event_type == "driver_degraded":
         state["degradations"].append(json.loads(json.dumps(dict(data), sort_keys=True)))
-    elif event_type == "question_opened":
+
+
+def _apply_interaction_event(
+    state: dict[str, Any],
+    event_type: str,
+    data: Mapping[str, Any],
+    event: Mapping[str, Any],
+) -> None:
+    if event_type == "question_opened":
         attempt_id = _nonempty_string(data.get("attempt_id"), "question_opened attempt_id")
         if attempt_id not in state["attempts"]:
             raise JournalError(f"question references unknown attempt: {attempt_id}")
@@ -2993,7 +3055,15 @@ def apply_event(projection: Mapping[str, Any], event: Mapping[str, Any]) -> dict
         decision = state["tasks"][task_id].get("coordinator_decision")
         if isinstance(decision, Mapping) and decision.get("action") in {"amend_acceptance", "amend_paths", "regroup"}:
             state["tasks"][task_id]["decision_consumed"] = True
-    elif event_type == "attempt_check_rejected":
+
+
+def _apply_finding_event(
+    state: dict[str, Any],
+    event_type: str,
+    data: Mapping[str, Any],
+    event: Mapping[str, Any],
+) -> None:
+    if event_type == "attempt_check_rejected":
         rejection = _exact_fields(
             data,
             {"task_id", "attempt_id", "hypothesis"},
@@ -3122,7 +3192,15 @@ def apply_event(projection: Mapping[str, Any], event: Mapping[str, Any]) -> dict
             task["status"] = "pending"
         task["coordinator_decision"] = dict(decision)
         state["coordinator_decisions"][decision_id] = dict(decision)
-    elif event_type == "attempt_audit_rejected":
+
+
+def _apply_attempt_audit_event(
+    state: dict[str, Any],
+    event_type: str,
+    data: Mapping[str, Any],
+    event: Mapping[str, Any],
+) -> None:
+    if event_type == "attempt_audit_rejected":
         try:
             rejection = _exact_fields(
                 data,
@@ -3290,7 +3368,15 @@ def apply_event(projection: Mapping[str, Any], event: Mapping[str, Any]) -> dict
         task["status"] = "blocked"
         task["grade"] = "blocked"
         task["note"] = "Audit repair hypotheses are exhausted."
-    elif event_type == "check_execution_recorded":
+
+
+def _apply_check_execution_event(
+    state: dict[str, Any],
+    event_type: str,
+    data: Mapping[str, Any],
+    event: Mapping[str, Any],
+) -> None:
+    if event_type == "check_execution_recorded":
         required = {
             "execution_id", "command_digest", "source_snapshot_digest",
             "execution_policy_digest", "timeout_seconds", "output_cap_bytes",
@@ -3475,7 +3561,15 @@ def apply_event(projection: Mapping[str, Any], event: Mapping[str, Any]) -> dict
         task["status"] = "pass"
         task["note"] = note
         task["evidence_refs"] = [evidence_ref]
-    elif event_type == "check_recorded":
+
+
+def _apply_task_result_event(
+    state: dict[str, Any],
+    event_type: str,
+    data: Mapping[str, Any],
+    event: Mapping[str, Any],
+) -> None:
+    if event_type == "check_recorded":
         task_id = _known_task(state, data.get("task_id"))
         attempt_id = _nonempty_string(data.get("attempt_id"), "check_recorded attempt_id")
         attempt = state["attempts"].get(attempt_id)
@@ -3580,7 +3674,15 @@ def apply_event(projection: Mapping[str, Any], event: Mapping[str, Any]) -> dict
         task["evidence_refs"] = list(evidence_refs)
         if grade == "pass" and task["attempt_ids"]:
             _carry_forward_hardening(state, task_id, task["attempt_ids"][-1])
-    elif event_type == "cleanup_registered":
+
+
+def _apply_cleanup_registration_event(
+    state: dict[str, Any],
+    event_type: str,
+    data: Mapping[str, Any],
+    event: Mapping[str, Any],
+) -> None:
+    if event_type == "cleanup_registered":
         cleanup_id = _nonempty_string(data.get("cleanup_id"), "cleanup_registered cleanup_id")
         if cleanup_id in state["cleanup"]:
             raise JournalError(f"duplicate cleanup ID: {cleanup_id}")
@@ -3731,7 +3833,15 @@ def apply_event(projection: Mapping[str, Any], event: Mapping[str, Any]) -> dict
                             raise JournalError("delegation child already has a cleanup record")
                         delegation["cleanup_id"] = cleanup_id
                     break
-    elif event_type == "cleanup_finished":
+
+
+def _apply_cleanup_finish_event(
+    state: dict[str, Any],
+    event_type: str,
+    data: Mapping[str, Any],
+    event: Mapping[str, Any],
+) -> None:
+    if event_type == "cleanup_finished":
         cleanup_id = _nonempty_string(data.get("cleanup_id"), "cleanup_finished cleanup_id")
         if cleanup_id not in state["cleanup"]:
             raise JournalError(f"unknown cleanup ID: {cleanup_id}")
@@ -3829,7 +3939,15 @@ def apply_event(projection: Mapping[str, Any], event: Mapping[str, Any]) -> dict
         else:
             cleanup["status"] = "done"
         cleanup["receipt"] = receipt
-    elif event_type == "cleanup_unverifiable":
+
+
+def _apply_cleanup_settlement_event(
+    state: dict[str, Any],
+    event_type: str,
+    data: Mapping[str, Any],
+    event: Mapping[str, Any],
+) -> None:
+    if event_type == "cleanup_unverifiable":
         cleanup_id = _nonempty_string(
             data.get("cleanup_id"), "cleanup_unverifiable cleanup_id"
         )
@@ -3897,7 +4015,15 @@ def apply_event(projection: Mapping[str, Any], event: Mapping[str, Any]) -> dict
                 raise JournalError("legacy cleanup retention requires a distinct replacement cleanup")
         cleanup["status"] = "retained"
         cleanup["receipt"] = retained["receipt"]
-    elif event_type == "journal_repaired":
+
+
+def _apply_terminal_event(
+    state: dict[str, Any],
+    event_type: str,
+    data: Mapping[str, Any],
+    event: Mapping[str, Any],
+) -> None:
+    if event_type == "journal_repaired":
         _nonempty_string(data.get("artifact"), "journal_repaired artifact")
     elif event_type == "browser_surface_requested":
         try:
@@ -3961,8 +4087,133 @@ def apply_event(projection: Mapping[str, Any], event: Mapping[str, Any]) -> dict
             )
         state["status"] = "complete"
         state["outcome"] = outcome
-    state["last_sequence"] = event["sequence"]
-    return state
+
+
+_EVENT_REDUCER_GROUPS = (
+    (
+        frozenset(
+            {
+                "coordinator_claimed",
+                "coordinator_transferred",
+                "coordinator_taken_over",
+                "driver_selected",
+                "driver_selection_reserved",
+                "driver_selection_failed",
+                "task_ready",
+            }
+        ),
+        _apply_control_event,
+    ),
+    (
+        frozenset(
+            {
+                "delegation_requested",
+                "graph_amended",
+                "process_decision_amended",
+            }
+        ),
+        _apply_graph_event,
+    ),
+    (
+        frozenset(
+            {
+                "delegation_approved",
+                "delegation_rejected",
+                "delegation_started",
+                "delegation_reported",
+                "delegation_released",
+            }
+        ),
+        _apply_delegation_event,
+    ),
+    (
+        frozenset(
+            {
+                "attempt_reserved",
+                "attempt_scope_frozen",
+            }
+        ),
+        _apply_attempt_reservation_event,
+    ),
+    (
+        frozenset({"attempt_started", "attempt_start_failed", "attempt_abandoned"}),
+        _apply_attempt_start_event,
+    ),
+    (
+        frozenset(
+            {
+                "attempt_provider_result_rejected",
+                "attempt_result_quarantined",
+                "attempt_observed",
+                "driver_degraded",
+            }
+        ),
+        _apply_attempt_result_event,
+    ),
+    (
+        frozenset({"question_opened", "question_answered", "worker_reported"}),
+        _apply_interaction_event,
+    ),
+    (
+        frozenset(
+            {
+                "attempt_check_rejected",
+                "finding_recorded",
+                "coordinator_decision_recorded",
+            }
+        ),
+        _apply_finding_event,
+    ),
+    (
+        frozenset({"attempt_audit_rejected", "attempt_audit_exhausted"}),
+        _apply_attempt_audit_event,
+    ),
+    (
+        frozenset(
+            {
+                "check_execution_recorded",
+                "check_execution_recovered",
+                "checked_task_imported",
+            }
+        ),
+        _apply_check_execution_event,
+    ),
+    (
+        frozenset({"check_recorded", "repair_recorded", "task_graded"}),
+        _apply_task_result_event,
+    ),
+    (frozenset({"cleanup_registered"}), _apply_cleanup_registration_event),
+    (frozenset({"cleanup_finished"}), _apply_cleanup_finish_event),
+    (
+        frozenset({"cleanup_unverifiable", "cleanup_retained"}),
+        _apply_cleanup_settlement_event,
+    ),
+    (
+        frozenset(
+            {
+                "journal_repaired",
+                "browser_surface_requested",
+                "browser_surface_receipt",
+                "browser_surface_observed",
+                "browser_surface_captured",
+                "browser_surface_released",
+                "run_completed",
+            }
+        ),
+        _apply_terminal_event,
+    ),
+)
+_EVENT_REDUCERS = {
+    event_type: reducer
+    for event_types, reducer in _EVENT_REDUCER_GROUPS
+    for event_type in event_types
+}
+if (
+    sum(len(event_types) for event_types, _ in _EVENT_REDUCER_GROUPS)
+    != len(_EVENT_REDUCERS)
+    or frozenset(_EVENT_REDUCERS) != CORE_EVENT_TYPES - {"run_started"}
+):
+    raise RuntimeError("event reducer registry must cover each core event exactly once")
 
 
 def validate_event(event: Mapping[str, Any], expected_sequence: int) -> None:
