@@ -26,7 +26,7 @@
     "candidate_order": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["provider", "agent", "model", "effort"], "properties": {"provider": {"type": "string", "minLength": 1}, "agent": {"type": "string", "minLength": 1}, "model": {"type": "string", "minLength": 1}, "effort": {"$ref": "#/$defs/effort"}}}}
   },
   "$defs": {
-    "effort": {"enum": ["low", "medium", "high", "xhigh"]},
+    "effort": {"enum": ["low", "medium", "high", "xhigh", "max"]},
     "requirement": {"type": "object", "additionalProperties": false, "required": ["lane", "effort"], "properties": {"lane": {"enum": ["fast", "balanced", "strong"]}, "effort": {"$ref": "#/$defs/effort"}}},
     "requirementsByRole": {"type": "object", "additionalProperties": false, "required": ["coordinator", "research", "documentation", "implementation", "review", "verification", "integration"], "properties": {"coordinator": {"$ref": "#/$defs/requirement"}, "research": {"$ref": "#/$defs/requirement"}, "documentation": {"$ref": "#/$defs/requirement"}, "implementation": {"$ref": "#/$defs/requirement"}, "review": {"$ref": "#/$defs/requirement"}, "verification": {"$ref": "#/$defs/requirement"}, "integration": {"$ref": "#/$defs/requirement"}}},
     "requirementsByRisk": {"type": "object", "additionalProperties": false, "required": ["routine", "material", "high"], "properties": {"routine": {"$ref": "#/$defs/requirement"}, "material": {"$ref": "#/$defs/requirement"}, "high": {"$ref": "#/$defs/requirement"}}},

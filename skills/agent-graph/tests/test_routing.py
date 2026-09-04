@@ -308,6 +308,36 @@ class RoleRoutingBehavior(unittest.TestCase):
             "Lifecycle migration requires exceptional validation effort.",
         )
 
+    def test_blocks_max_without_reason_and_accepts_explicit_reason(self) -> None:
+        catalog = {
+            "profiles": [
+                {
+                    "agent": "frontier-worker",
+                    "model": "gpt-6-astra",
+                    "lane": "balanced",
+                    "efforts": ["high", "xhigh", "max"],
+                    "tools": ["files", "shell"],
+                }
+            ]
+        }
+        overrides = {"lane": "balanced", "model": "gpt-6-astra", "effort": "max"}
+
+        blocked = routing.plan_route(catalog, role="implementation", overrides=overrides)
+        resolved = routing.plan_route(
+            catalog,
+            role="implementation",
+            overrides=overrides,
+            escalation_reason="Cross-cutting security analysis requires frontier effort.",
+        )
+
+        self.assertEqual(blocked.outcome, "blocked")
+        self.assertIn("explicit exceptional escalation reason", blocked.blocked_reason)
+        self.assertEqual(resolved.resolved["effort"], "max")
+        self.assertEqual(
+            resolved.escalation_reason,
+            "Cross-cutting security analysis requires frontier effort.",
+        )
+
 
 class OverrideAndFallbackBehavior(unittest.TestCase):
     def test_honors_supported_user_overrides(self) -> None:

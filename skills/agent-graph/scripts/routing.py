@@ -10,7 +10,8 @@ from typing import Any, Mapping, Sequence
 
 
 LANES = ("fast", "balanced", "strong")
-EFFORTS = ("low", "medium", "high", "xhigh")
+EFFORTS = ("low", "medium", "high", "xhigh", "max")
+EXCEPTIONAL_EFFORTS = frozenset({"xhigh", "max"})
 ROLES = (
     "coordinator",
     "research",
@@ -595,7 +596,8 @@ def route(
         candidates = [
             candidate
             for candidate in candidates
-            if candidate.capability.lane != "strong" and candidate.effort != "xhigh"
+            if candidate.capability.lane != "strong"
+            and candidate.effort not in EXCEPTIONAL_EFFORTS
         ]
 
     if candidates:
@@ -615,14 +617,15 @@ def route(
         request.role != "coordinator"
         and not exceptional_escalation
         and any(
-            candidate.capability.lane == "strong" or candidate.effort == "xhigh"
+            candidate.capability.lane == "strong"
+            or candidate.effort in EXCEPTIONAL_EFFORTS
             for candidate in all_candidates
         )
     ):
         return _blocked(
             request,
             requested,
-            "Worker strong/xhigh resolution requires an explicit exceptional escalation reason.",
+            "Worker strong or exceptional-effort routing requires an explicit exceptional escalation reason.",
         )
 
     if request.role == "coordinator":

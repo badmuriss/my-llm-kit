@@ -16,6 +16,18 @@ Subagents are defined globally in `~/.config/opencode/agent/*.md` with an explic
 
 Effort is set via custom variants in `~/.config/opencode/opencode.json` (`provider.opencode-go.models.<id>.variants`). Do not delegate a premium model to mechanical work.
 
+## Codex delegation
+Use the smallest model and effort that safely fit the task. The default ladder is:
+
+| Model | Preferred effort | Use for |
+|---|---|---|
+| `gpt-5.6-luna` | high, xhigh | mechanical edits, narrow checks, high-volume work |
+| `gpt-5.6-terra` | medium, high | everyday implementation, multi-file work |
+| `gpt-5.6-sol` | high, xhigh | demanding implementation, review, risky analysis |
+| `gpt-6-astra` | high, xhigh | frontier coordination, architecture, hardest end-to-end work |
+
+Do not place Astra `max` in default routing because its reasoning budget is too costly for routine use. Keep it available only as a bounded exceptional override with an explicit reason. Do not raise effort merely because a newer model exists. When migrating an existing workload to Astra, preserve its effective effort, then use the table above for new work. Source: [official model comparison](https://developers.openai.com/api/docs/models/compare) and [Astra migration guide](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-6-astra), accessed 2026-09-04.
+
 
 ## Git workflow
 - Never name the agent in a commit message (no "Claude Code", no "Codex", no co-author trailer)

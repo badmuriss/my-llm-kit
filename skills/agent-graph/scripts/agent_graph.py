@@ -447,11 +447,11 @@ def _routing_for_task(
                 None,
             )
             if (
-                resolved["effort"] == "xhigh"
+                resolved["effort"] in {"xhigh", "max"}
                 or capability is None
                 or capability.lane == "strong"
             ) and not decision.escalation_reason:
-                raise RoutingError("worker strong/xhigh routing requires an exceptional escalation reason")
+                raise RoutingError("worker strong or exceptional-effort routing requires an exceptional escalation reason")
         except RoutingError as error:
             raise AgentGraphCliError(
                 f"cannot resolve the persisted Orca execution profile: {error}",

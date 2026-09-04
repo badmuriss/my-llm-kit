@@ -30,7 +30,7 @@
       "properties": {
         "agents": {"type": "array", "uniqueItems": true, "maxItems": 32, "items": {"type": "string", "minLength": 1}},
         "models": {"type": "array", "uniqueItems": true, "maxItems": 128, "items": {"type": "string", "minLength": 1}},
-        "efforts": {"type": "array", "uniqueItems": true, "maxItems": 4, "items": {"enum": ["low", "medium", "high", "xhigh"]}},
+        "efforts": {"type": "array", "uniqueItems": true, "maxItems": 5, "items": {"enum": ["low", "medium", "high", "xhigh", "max"]}},
         "placement_kinds": {"type": "array", "uniqueItems": true, "maxItems": 3, "items": {"enum": ["current-workspace", "existing-workspace", "create-child-worktree"]}},
         "execution_hosts": {"type": "array", "uniqueItems": true, "maxItems": 64, "items": {"$ref": "https://github.com/badmuriss/my-llm-kit/schemas/agent-graph-placement.json#/$defs/opaqueHostId"}}
       }
@@ -42,7 +42,7 @@
       "properties": {
         "agent": {"type": ["string", "null"], "minLength": 1},
         "model": {"type": ["string", "null"], "minLength": 1},
-        "effort": {"oneOf": [{"enum": ["low", "medium", "high", "xhigh"]}, {"type": "null"}]},
+        "effort": {"oneOf": [{"enum": ["low", "medium", "high", "xhigh", "max"]}, {"type": "null"}]},
         "placement_request": {"oneOf": [{"$ref": "https://github.com/badmuriss/my-llm-kit/schemas/agent-graph-placement.json#/$defs/placementRequest"}, {"type": "null"}]}
       }
     }

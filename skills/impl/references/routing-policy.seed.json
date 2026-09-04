@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "policy_id": "canvas-routing-v1",
+  "policy_id": "canvas-routing-v2",
   "metadata": {
-    "source": "owner-approved Canvas routing seed",
+    "source": "Owner-approved routing seed based on https://developers.openai.com/api/docs/models/compare and https://developers.openai.com/api/docs/guides/latest-model?model=gpt-6-astra, accessed 2026-09-04",
     "default_refresh_interval_days": 14,
     "early_refresh_reasons": ["provider_removal", "catalog_incompatibility", "known_price_or_quota_change", "route_failure", "owner_request"]
   },
@@ -35,9 +35,9 @@
     {"provider": "openai", "agent": "codex", "model": "gpt-5.6-luna", "effort": "xhigh"},
     {"provider": "openai", "agent": "codex", "model": "gpt-5.6-terra", "effort": "medium"},
     {"provider": "openai", "agent": "codex", "model": "gpt-5.6-terra", "effort": "high"},
-    {"provider": "openai", "agent": "codex", "model": "gpt-5.6-terra", "effort": "xhigh"},
-    {"provider": "openai", "agent": "codex", "model": "gpt-5.6-sol", "effort": "medium"},
     {"provider": "openai", "agent": "codex", "model": "gpt-5.6-sol", "effort": "high"},
-    {"provider": "openai", "agent": "codex", "model": "gpt-5.6-sol", "effort": "xhigh"}
+    {"provider": "openai", "agent": "codex", "model": "gpt-5.6-sol", "effort": "xhigh"},
+    {"provider": "openai", "agent": "codex", "model": "gpt-6-astra", "effort": "high"},
+    {"provider": "openai", "agent": "codex", "model": "gpt-6-astra", "effort": "xhigh"}
   ]
 }

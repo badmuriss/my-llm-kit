@@ -106,7 +106,7 @@ CORE_EVENT_TYPES = frozenset(
         "browser_surface_released",
     }
 )
-EFFORTS = frozenset({"low", "medium", "high", "xhigh"})
+EFFORTS = frozenset({"low", "medium", "high", "xhigh", "max"})
 PLACEMENT_KINDS = frozenset(
     {"current-workspace", "existing-workspace", "create-child-worktree"}
 )
@@ -1279,7 +1279,7 @@ def validate_agent_graph_view(view: Mapping[str, Any]) -> dict[str, Any]:
     placements = _validate_string_list(
         capabilities["placement_kinds"], "agent graph view placement_kinds"
     )
-    if len(agents) > 32 or len(efforts) > 4 or len(placements) > 3:
+    if len(agents) > 32 or len(efforts) > 5 or len(placements) > 3:
         raise GraphValidationError("agent graph view capabilities exceed their bounds")
     if not set(efforts) <= EFFORTS or not set(placements) <= PLACEMENT_KINDS:
         raise GraphValidationError("agent graph view capabilities contain unsupported values")

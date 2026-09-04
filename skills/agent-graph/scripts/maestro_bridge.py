@@ -96,10 +96,10 @@ def negotiate_capabilities(local: Mapping[str, Any], remote: Mapping[str, Any]) 
             raise MaestroBridgeError(f"capability advertisements must include {field}", code="invalid_capability")
         if any(not isinstance(item, str) or not item for item in left + right):
             raise MaestroBridgeError(f"capability advertisements {field} must contain non-empty strings", code="invalid_capability")
-        max_items = {"agents": 32, "efforts": 4, "placement_kinds": 3}[field]
+        max_items = {"agents": 32, "efforts": 5, "placement_kinds": 3}[field]
         if len(left) > max_items or len(right) > max_items or len(set(left)) != len(left) or len(set(right)) != len(right):
             raise MaestroBridgeError(f"capability advertisements {field} are duplicated or oversized", code="invalid_capability")
-        if field == "efforts" and any(item not in {"low", "medium", "high", "xhigh"} for item in left + right):
+        if field == "efforts" and any(item not in {"low", "medium", "high", "xhigh", "max"} for item in left + right):
             raise MaestroBridgeError("capability advertisements contain an invalid effort", code="invalid_capability")
         if field == "placement_kinds" and any(item not in {"current-workspace", "existing-workspace", "create-child-worktree"} for item in left + right):
             raise MaestroBridgeError("capability advertisements contain an invalid placement", code="invalid_capability")

@@ -45,7 +45,7 @@
       "required": ["agents", "efforts", "placement_kinds", "watch_deltas"],
       "properties": {
         "agents": {"type": "array", "uniqueItems": true, "maxItems": 32, "items": {"type": "string", "minLength": 1}},
-        "efforts": {"type": "array", "uniqueItems": true, "maxItems": 4, "items": {"enum": ["low", "medium", "high", "xhigh"]}},
+        "efforts": {"type": "array", "uniqueItems": true, "maxItems": 5, "items": {"enum": ["low", "medium", "high", "xhigh", "max"]}},
         "placement_kinds": {"type": "array", "uniqueItems": true, "maxItems": 3, "items": {"enum": ["current-workspace", "existing-workspace", "create-child-worktree"]}},
         "watch_deltas": {"type": "boolean"}
       }

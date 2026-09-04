@@ -895,6 +895,17 @@ class OrchestrationContractBehavior(unittest.TestCase):
             ),
         )
 
+    def test_accepts_max_effort_in_an_execution_profile(self) -> None:
+        profile = copy.deepcopy(EXECUTION_PROFILES["current_folder"])
+        profile["requested"]["effort"] = "max"
+        profile["resolved"]["effort"] = "max"
+
+        graph_core.validate_execution_profile(profile, WORKSPACE_SCOPES["folder_local"])
+        Draft202012Validator(
+            load_json(REFERENCES / "execution-profile.schema.json"),
+            registry=SchemaBehavior.registry(),
+        ).validate(profile)
+
     def test_rejects_cross_workspace_placement_and_hidden_fallback(self) -> None:
         mismatch = copy.deepcopy(EXECUTION_PROFILES["current_folder"])
         mismatch["resolved_placement"]["workspace_key"] = (

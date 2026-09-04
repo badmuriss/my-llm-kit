@@ -21,7 +21,7 @@
     "resolved_placement": {"$ref": "https://github.com/badmuriss/my-llm-kit/schemas/agent-graph-placement.json#/$defs/resolvedPlacement"}
   },
   "$defs": {
-    "effort": {"enum": ["low", "medium", "high", "xhigh"]},
+    "effort": {"enum": ["low", "medium", "high", "xhigh", "max"]},
     "requested": {
       "type": "object",
       "additionalProperties": false,

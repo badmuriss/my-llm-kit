@@ -360,6 +360,11 @@ class MaestroBridgeTests(unittest.TestCase):
         remote = {"protocol_majors": [2], "agents": ["codex"], "efforts": ["high"], "placement_kinds": ["current-workspace"], "watch_deltas": True}
         capabilities = negotiate_capabilities(local, remote)
         self.assertEqual(capabilities["protocol_major"], 2)
+        max_capabilities = negotiate_capabilities(
+            {**local, "efforts": ["low", "medium", "high", "xhigh", "max"]},
+            {**remote, "efforts": ["max"]},
+        )
+        self.assertEqual(max_capabilities["efforts"], ["max"])
         empty = negotiate_capabilities({**local, "agents": []}, {**remote, "agents": ["codex"]})
         self.assertEqual(empty["agents"], [])
         with tempfile.TemporaryDirectory() as directory:

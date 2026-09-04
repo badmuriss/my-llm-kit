@@ -2,7 +2,7 @@
 
 Use for architecture, complex debugging, algorithms, risky migrations, and trade-off analysis. Choose the strongest available coding subagent with a clean context.
 
-On Codex, follow [model-routing.md](model-routing.md). Start with Terra for implementation judgment. Reserve Sol for high-stakes review, architecture, security, or final arbitration.
+On Codex, follow [model-routing.md](model-routing.md). Start with Terra for implementation judgment. Use Sol for demanding implementation and high-stakes review. Reserve Astra for frontier architecture, security, cross-cutting debugging, or final arbitration. Use `max` only for a bounded exceptional case with an explicit reason.
 
 Instruct the worker to:
 
