@@ -357,20 +357,74 @@ install_community_skills() {
 }
 run_step "community skills" install_community_skills
 
-# 4d. firecrawl CLI + its skills (needs `firecrawl login` afterwards to actually work)
+# 4d. Firecrawl CLI + core skills. The Research Index works without login, while
+# the other endpoints still need a key or stored credentials.
+firecrawl_has_research() {
+  command -v firecrawl >/dev/null 2>&1 &&
+    firecrawl research --help 2>/dev/null | grep -Fq "Usage: firecrawl research"
+}
+
 install_firecrawl() {
-  if [ -e "$SKILLS_ROOT/firecrawl" ] || [ -e "$HOME/.claude/skills/firecrawl" ]; then
-    echo "  firecrawl skills already present, skipping"
+  local research_skill="$SKILLS_ROOT/firecrawl-research-index/SKILL.md"
+  local needs_cli=0 needs_skills=0
+
+  firecrawl_has_research || needs_cli=1
+  [ -f "$research_skill" ] || needs_skills=1
+
+  if [ "$needs_cli" -eq 0 ] && [ "$needs_skills" -eq 0 ]; then
+    echo "  firecrawl research command and skill already present, skipping"
     return 0
   fi
   if [ "$DRY" -eq 1 ]; then
-    echo "  [dry-run] npm install -g firecrawl-cli && firecrawl setup skills"
+    [ "$needs_cli" -eq 0 ] || echo "  [dry-run] npm install -g firecrawl-cli"
+    [ "$needs_skills" -eq 0 ] || echo "  [dry-run] firecrawl setup core --global --yes"
     return 0
   fi
-  command -v firecrawl >/dev/null 2>&1 || npm install -g firecrawl-cli || return 1
-  firecrawl setup skills
+
+  if [ "$needs_cli" -eq 1 ]; then
+    npm install -g firecrawl-cli || return 1
+    hash -r
+  fi
+  if ! firecrawl_has_research; then
+    echo "  installed firecrawl CLI does not expose the research command"
+    return 1
+  fi
+  if [ "$needs_skills" -eq 1 ]; then
+    firecrawl setup core --global --yes || return 1
+  fi
+  if [ ! -f "$research_skill" ]; then
+    echo "  firecrawl research skill is missing after setup"
+    return 1
+  fi
 }
 run_step "firecrawl CLI + skills" install_firecrawl
+
+preflight_firecrawl_research() {
+  if [ "$DRY" -eq 1 ]; then
+    echo "  [dry-run] firecrawl research search-papers 'CodePlan repository-level coding' --limit 1"
+    return 0
+  fi
+  local query_output query_status
+  if command -v timeout >/dev/null 2>&1; then
+    query_output="$(timeout 25s firecrawl research search-papers 'CodePlan repository-level coding' --limit 1 2>&1)"
+    query_status=$?
+  else
+    query_output="$(firecrawl research search-papers 'CodePlan repository-level coding' --limit 1 2>&1)"
+    query_status=$?
+  fi
+  if [ "$query_status" -ne 0 ]; then
+    echo "  firecrawl Research Index query failed with exit code $query_status"
+    echo "$query_output" | sed -n '1,4p'
+    return 1
+  fi
+  if [[ "$query_output" != *"CodePlan"* && "$query_output" != *"2309.12499"* ]]; then
+    echo "  firecrawl Research Index query returned no identifiable result"
+    echo "$query_output" | sed -n '1,4p'
+    return 1
+  fi
+  echo "  firecrawl Research Index query returned CodePlan"
+}
+run_step "preflight Firecrawl research" preflight_firecrawl_research
 
 # 4e. the ingest skill shells out to `npx -y @firecrawl/anydoc`, no binary to install here,
 # just a preflight check so a missing npx is a warning instead of a silent failure later.

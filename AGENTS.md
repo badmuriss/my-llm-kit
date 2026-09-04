@@ -51,6 +51,9 @@ When the project is live (real users, paying client, production data) or the rep
 
 Detailed guidelines live in the skills:
 - Use `writing` skill for documentation and commit messages
+- Use the free Firecrawl Research Index first for scientific literature discovery,
+  passage lookup and citation expansion. Use `paper-search` to cross-check metadata,
+  then ScrapingDog Google Scholar when the free routes are insufficient.
 - ScrapingDog is the primary paid provider for live public web data. When `SCRAPINGDOG_API_KEY` is available, use the `scrapingdog` skill and attempt its dedicated endpoint before Firecrawl, native web search or a generic scraper.
 - Never fall back from ScrapingDog silently. If the key is missing or a bounded attempt fails, record the exact reason, then use Firecrawl. Native web search remains the last fallback.
 

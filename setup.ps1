@@ -438,20 +438,60 @@ Invoke-Step "community skills" {
     }
 }
 
+function Test-FirecrawlResearch {
+    if (-not (Test-Command "firecrawl")) {
+        return $false
+    }
+    $helpOutput = (& firecrawl research --help 2>&1 | Out-String)
+    return $LASTEXITCODE -eq 0 -and $helpOutput.Contains("Usage: firecrawl research")
+}
+
 Invoke-Step "firecrawl CLI and skills" {
-    $firecrawlSkill = Join-Path $SkillsRoot "firecrawl"
-    if (Test-Path -LiteralPath $firecrawlSkill) {
-        Write-Host "  firecrawl skills already present, skipping"
+    $researchSkill = Join-Path $SkillsRoot "firecrawl-research-index\SKILL.md"
+    $needsCli = -not (Test-FirecrawlResearch)
+    $needsSkills = -not (Test-Path -LiteralPath $researchSkill)
+
+    if (-not $needsCli -and -not $needsSkills) {
+        Write-Host "  firecrawl research command and skill already present, skipping"
+        return
     }
-    elseif ($DryRun) {
-        Write-Host "  [dry-run] npm install -g firecrawl-cli; firecrawl setup skills"
-    }
-    else {
-        if (-not (Test-Command "firecrawl")) {
-            Invoke-Native "npm" @("install", "-g", "firecrawl-cli")
+    if ($DryRun) {
+        if ($needsCli) {
+            Write-Host "  [dry-run] npm install -g firecrawl-cli"
         }
-        Invoke-Native "firecrawl" @("setup", "skills")
+        if ($needsSkills) {
+            Write-Host "  [dry-run] firecrawl setup core --global --yes"
+        }
+        return
     }
+    if ($needsCli) {
+        Invoke-Native "npm" @("install", "-g", "firecrawl-cli")
+    }
+    if (-not (Test-FirecrawlResearch)) {
+        throw "installed firecrawl CLI does not expose the research command"
+    }
+    if ($needsSkills) {
+        Invoke-Native "firecrawl" @("setup", "core", "--global", "--yes")
+    }
+    if (-not (Test-Path -LiteralPath $researchSkill)) {
+        throw "firecrawl research skill is missing after setup"
+    }
+}
+
+Invoke-Step "preflight Firecrawl research" {
+    if ($DryRun) {
+        Write-Host "  [dry-run] firecrawl research search-papers 'CodePlan repository-level coding' --limit 1"
+        return
+    }
+    $queryOutput = (& firecrawl research search-papers "CodePlan repository-level coding" --limit 1 2>&1 | Out-String)
+    $queryExitCode = $LASTEXITCODE
+    if ($queryExitCode -ne 0) {
+        throw "firecrawl Research Index query failed with exit code ${queryExitCode}: $($queryOutput.Trim())"
+    }
+    if ($queryOutput -notmatch "CodePlan|2309\.12499") {
+        throw "firecrawl Research Index query returned no identifiable result: $($queryOutput.Trim())"
+    }
+    Write-Host "  firecrawl Research Index query returned CodePlan"
 }
 
 Invoke-Step "fan out every skill" {

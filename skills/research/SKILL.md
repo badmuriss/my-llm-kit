@@ -109,7 +109,7 @@ metrics, prices, or other observations that documentation cannot supply.
 | Intent | First route | Credits |
 |---|---|---|
 | Local or product fact | repository, official docs, changelog | 0 |
-| Scientific literature | `paper-search` MCP (arXiv, OpenAlex, Crossref), keep the DOI; then `google_scholar` | 0 / 5 |
+| Scientific literature | Firecrawl Research Index for discovery, passages, and citation expansion; `paper-search` to cross-check metadata; then `google_scholar` | 0 / 0 / 5 |
 | Recent events, announcements | `google_news` | 5 |
 | Demand, seasonality, comparison | `google_trends`; `trending_now` for what is hot | 5 |
 | Local business, reviews, voice of customer | `google_maps` + `google_maps/reviews` | 5 to 10 |
@@ -121,6 +121,17 @@ metrics, prices, or other observations that documentation cannot supply.
 | Community pulse, Brazil or social | `google_news` + `youtube/search` + `x/profile` of known voices | 5 each |
 | Known document | open the primary URL, then `ingest`; `web_scrape` only if blocked | 0 / 1 |
 | Generic page | `web_scrape dynamic=false` (1); dynamic only after a static failure | 1 / 5 |
+
+For literature work, load `firecrawl-research-index` and start with `firecrawl
+research search-papers`. No API key is required for the anonymous tier; use stored
+credentials when available for higher rate limits. Use `read-paper` to verify
+load-bearing claims in the paper body and `related-papers` to follow similar work,
+citers, or references. Keep a DOI or another primary source id, then use
+`paper-search` when a metadata cross-check would improve the finding.
+The Research Index is distinct from Firecrawl web search with
+`categories: ["research"]`, which returns academic web pages rather than indexed
+paper records. See the [official Research Index
+guide](https://docs.firecrawl.dev/features/research) (accessed 2026-09-04).
 
 Reaching `google_search` + `web_scrape` without trying the dedicated endpoint is a
 routing failure; record it in the provider trail. Fallback order after a bounded

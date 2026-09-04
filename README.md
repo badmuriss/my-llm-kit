@@ -80,7 +80,7 @@ match the tasks.
 
 | Skill | Job | Output |
 |---|---|---|
-| `research` | Routes each query to the narrowest provider, adjudicates sources per claim, and optionally runs one bounded council. | An audited finding under `research/` with credit usage, source snapshots (`collect_sources.py`) and semantic audit. |
+| `research` | Routes each query to the narrowest provider, including the free Firecrawl Research Index for literature, adjudicates sources per claim, and optionally runs one bounded council. | An audited finding under `research/` with credit usage, source snapshots (`collect_sources.py`) and semantic audit. |
 | `spec` | Runs adaptive intake and records only the planning depth the evidence requires. A `--council` flag adds one bounded review. | A direct decision, lightweight record, or OpenSpec graph. |
 | `impl` | Executes the selected mode. Graph mode transfers to a fresh coordinator and grades every recorded check. | Code and evidence, plus a replayable journal only for graph work. |
 | `writing` | Keeps docs, commits, PR descriptions, and errors short and concrete. | A clear record of what changed, why, and how it was checked. |
@@ -192,10 +192,11 @@ conversation transcripts.
 | `drawio-skill` | Creates editable architecture, flow, UML, ER, and system diagrams, validates their structure, exports common formats, and requires visual review. | [Agents365-ai/drawio-skill](https://github.com/Agents365-ai/drawio-skill) |
 | `revenue-centric-design` | 101 sourced principles on conversion, onboarding, churn, pricing, and positioning for SaaS. `$site-audit` and `$incredibly-pretty-websites` use it as the revenue argument behind a page change. Source-available: no gambling, betting, or casino use. | [heliocosta-dev/revenue-centric-design](https://github.com/heliocosta-dev/revenue-centric-design) |
 
-### Web fallback
+### Web and literature fallback
 
 | Skill | Purpose | Source |
 |---|---|---|
+| `firecrawl-research-index` | Finds papers, reads relevant passages, and expands through similar papers, citers, or references. The anonymous tier needs no API key. | [Firecrawl Research Index](https://docs.firecrawl.dev/features/research) |
 | `firecrawl` suite | Search, scrape, crawl, and map through the Firecrawl CLI. | [firecrawl/cli](https://github.com/firecrawl/cli) |
 
 ### Web MCP
@@ -260,9 +261,9 @@ The installers:
 1. Detect installed agent hosts and required tools.
 2. Install the shared skills and link them into each host.
 3. Clone the owned and community skill repos when missing, including skills stored in a repository subdirectory.
-4. Install Firecrawl, optional plugins, and the `paper-search` and ScrapingDog MCP servers where supported, including OpenCode's user config.
+4. Install Firecrawl and its core skills, including `firecrawl-research-index`, plus optional plugins and the `paper-search` and ScrapingDog MCP servers where supported, including OpenCode's user config.
 5. Verify the ScrapingDog MCP handshake and tool catalog without API credits.
-6. Verify the `paper-search` executable, version, and one real arXiv query. A failure declares the web fallback.
+6. Verify the Firecrawl Research Index and `paper-search` with one real paper query each. A failure remains visible in the setup summary.
 7. Install the shared `AGENTS.md`, with backups for different existing files.
 8. Install and verify `dcg`, the destructive-command guard.
 9. Leave resource management to the host and operating system by default. Linux users may opt into `agent-resource-guard` with `./setup.sh --with-resource-guard`.
