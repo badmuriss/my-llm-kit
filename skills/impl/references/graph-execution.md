@@ -40,10 +40,17 @@ capsule, current projection and relevant task artifacts after a handoff.
 
 ## Coordinator loop
 
+Keep integrable implementation packets and their coordinator in the same
+worktree by default, with disjoint file ownership or sequential writes. Worker
+creation alone is not a reason to create a worktree. Use a separate worktree for
+a review, experiment or other task only when it needs an isolated revision or
+environment; record that reason and the integration path. A read-only review
+may stay in the shared worktree. Follow an explicit user placement instruction.
+
 Run `claim-coordinator`, then `resume`. Never bootstrap from a claimed coordinator. Every mutating command presents the current generation.
 
 1. Query `ready`. Choose the smallest useful non-conflicting wave.
-2. Classify ready work into only the roles it needs: research, documentation, implementation, review, verification, or integration. The coordinator filters review by cohesive package and material risk, rather than auditing every microtask. Before routing Codex workers, read [the model-routing policy](model-routing.md); use [fast-worker](fast-worker.md) for bounded mechanical work and [deep-reasoner](deep-reasoner.md) for hard judgment. Resolve each attempt through the runtime catalog with the cheapest sufficient model and effort. Persist requested/resolved values independently with fallback, rationale, role, risk, and cost rank. Do not escalate model or effort automatically. Apply the `minimal-by-default-v1` artifact budget from `agent-graph`: no speculative tests or Markdown.
+2. Classify ready work into only the roles it needs: research, documentation, implementation, review, verification, or integration. The coordinator filters review by cohesive package and material risk, rather than auditing every microtask. Before routing Codex workers, read [the model-routing policy](model-routing.md); select only Luna, Terra, Sol or Astra, never GPT-5.5, and verify the resolved model and effort; use [fast-worker](fast-worker.md) for bounded mechanical work and [deep-reasoner](deep-reasoner.md) for hard judgment. Resolve each attempt through the runtime catalog with the cheapest sufficient model and effort. Persist requested/resolved values independently with fallback, rationale, role, risk, and cost rank. Do not escalate model or effort automatically. Apply the `minimal-by-default-v1` artifact budget from `agent-graph`: no speculative tests or Markdown.
 3. Run `dispatch --task <id> --generation <n>`. Give a worker only the generated capsule, which is bounded and transcript-free. Use host-native workers when available or `--local` for one localized task.
 4. Use `sync` for provider lifecycle, `reply` for questions, and `record-result` for a structured result. Driver degradation and auto-selection stay visible in receipts. Dynamic children inherit or narrow paths and context; they cannot grade parents, recursively delegate, or mutate the journal.
 5. Run `run-check --task <id> --generation <n>`. It executes directly and rejects shell operators. A process exit or provider completion is never a grade.

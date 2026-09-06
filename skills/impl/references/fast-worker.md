@@ -2,7 +2,7 @@
 
 Use for boilerplate, test scaffolding, formatting, simple edits, repetitive changes, and difficult tasks with a narrow scope and objective checks. Choose the fastest available coding subagent with a clean context.
 
-On Codex, follow [model-routing.md](model-routing.md). Prefer Luna at `high` for this lane and use `xhigh` for bounded hard work. Move to Terra when the task stops being mechanical instead of spending Astra on it.
+On Codex, follow [model-routing.md](model-routing.md). Prefer Luna `low` for extraction and check execution, or `medium` for mechanical edits. Use `high` for substantive bounded implementation with decisive acceptance. Reserve `xhigh` for role-specific evidence, such as cost-sensitive bounded adversarial review when latency is acceptable; it is not a default for long implementation. Move to Terra `medium` when the work needs broader implementation judgment. Pass model and effort explicitly; never fall back to GPT-5.5.
 
 Instruct the worker to:
 

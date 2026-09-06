@@ -44,9 +44,22 @@ when extraction is needed and check reading order and tables before analysis.
 
 ## Resources and resumption
 
+Keep implementation work that must integrate together in one shared worktree,
+including its coordinator and workers. Separate write ownership by file or task;
+do not create a worktree merely because another worker starts. Use another
+worktree when a review, experiment or other task actually needs an isolated
+revision or environment. A read-only review does not automatically require one.
+State the isolation reason and how its result returns to the main work before
+creating it. Honor the user's explicit placement choice.
+
 Use one writer unless independent tasks justify delegation. Choose the cheapest
 available model and effort sufficient for the role; consult the task's routing
-policy when graph mode needs it. Do not raise effort automatically after failure.
+policy for both direct dispatch and graph work. For Codex, select only GPT-5.6
+Luna, Terra, Sol or GPT-6 Astra. Do not select GPT-5.5, including as a fallback.
+Pass the selected model and effort explicitly when the host supports it; check
+the resolved model before accepting a dispatch. If the host cannot honor the
+selection, report the limitation instead of silently substituting a model.
+Do not raise effort automatically after failure.
 
 Never overlap the same build or typecheck in one worktree. Reuse development
 servers. Track processes started for the task and settle them before finishing,

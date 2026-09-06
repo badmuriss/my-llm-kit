@@ -58,13 +58,13 @@ CATALOG = {
 class RoleRoutingBehavior(unittest.TestCase):
     def test_routes_every_supported_role_deterministically(self) -> None:
         expected = {
-            "coordinator": ("runtime-balanced", "high"),
+            "coordinator": ("runtime-balanced", "medium"),
             "research": ("runtime-fast-a", "low"),
             "documentation": ("runtime-fast-a", "low"),
             "implementation": ("runtime-fast-a", "medium"),
             "review": ("runtime-balanced", "medium"),
             "verification": ("runtime-fast-a", "low"),
-            "integration": ("runtime-balanced", "high"),
+            "integration": ("runtime-balanced", "medium"),
         }
 
         for role, resolved in expected.items():
@@ -104,7 +104,7 @@ class RoleRoutingBehavior(unittest.TestCase):
         self.assertEqual(browser.resolved["model"], "runtime-balanced")
         self.assertEqual(large_context.resolved["model"], "runtime-balanced")
         self.assertEqual(no_check.resolved["model"], "runtime-balanced")
-        self.assertEqual(no_check.resolved["effort"], "high")
+        self.assertEqual(no_check.resolved["effort"], "medium")
 
     def test_keeps_model_and_effort_independent(self) -> None:
         decision = routing.plan_route(
@@ -127,6 +127,32 @@ class RoleRoutingBehavior(unittest.TestCase):
             low_effort_strong.resolved,
             {"agent": "builder-a", "model": "runtime-strong", "effort": "low"},
         )
+
+    def test_routes_calibrated_astra_overrides_with_task_minimums(self) -> None:
+        catalog = {"profiles": [{
+            "agent": "codex",
+            "model": "gpt-6-astra",
+            "lane": "strong",
+            "efforts": ["low", "medium", "high", "xhigh"],
+        }]}
+        for role, risk, effort, outcome in (
+            ("coordinator", "routine", "low", "resolved"),
+            ("implementation", "high", "medium", "resolved"),
+            ("implementation", "high", "low", "blocked"),
+        ):
+            with self.subTest(role=role, risk=risk, effort=effort):
+                decision = routing.plan_route(
+                    catalog,
+                    role=role,
+                    risk=risk,
+                    overrides={"model": "gpt-6-astra", "effort": effort},
+                    escalation_reason="Security-sensitive migration needs the strong lane.",
+                )
+                self.assertEqual(decision.outcome, outcome)
+                if outcome == "resolved":
+                    self.assertEqual(decision.resolved["effort"], effort)
+                else:
+                    self.assertIn("safe minimum medium", decision.blocked_reason)
 
     def test_does_not_raise_a_routine_worker_to_advertised_xhigh(self) -> None:
         catalog = {
@@ -399,11 +425,11 @@ class OverrideAndFallbackBehavior(unittest.TestCase):
         self.assertEqual(decision.outcome, "resolved")
         self.assertEqual(
             decision.requested,
-            {"lane": "balanced", "agent": None, "model": None, "effort": "high"},
+            {"lane": "balanced", "agent": None, "model": None, "effort": "medium"},
         )
         self.assertEqual(
             decision.resolved,
-            {"agent": "portable-agent", "model": "catalog-balanced", "effort": "high"},
+            {"agent": "portable-agent", "model": "catalog-balanced", "effort": "medium"},
         )
         self.assertEqual(
             decision.fallback_reason,
@@ -425,7 +451,7 @@ class OverrideAndFallbackBehavior(unittest.TestCase):
 
         self.assertEqual(decision.resolved["model"], "runtime-strong")
         self.assertEqual(decision.resolved["effort"], "high")
-        self.assertIsNone(decision.fallback_reason)
+        self.assertEqual(decision.fallback_reason, "Requested effort medium resolved to high.")
         self.assertEqual(effort_override.resolved["model"], "runtime-balanced")
         self.assertEqual(effort_override.resolved["effort"], "high")
         self.assertIsNone(effort_override.fallback_reason)
@@ -462,6 +488,41 @@ class OverrideAndFallbackBehavior(unittest.TestCase):
 
 
 class CatalogValidationBehavior(unittest.TestCase):
+    def test_excludes_retired_models_despite_lower_catalog_cost(self) -> None:
+        for retired in ("gpt-5.5", "gpt-5.5-pro", "gpt-5.5-2026-04-23"):
+            with self.subTest(model=retired):
+                catalog = {"profiles": [
+                    {"agent": "codex", "model": retired, "lane": "balanced", "efforts": ["medium"], "cost_rank": 0},
+                    {"agent": "codex", "model": "gpt-5.6-terra", "lane": "balanced", "efforts": ["medium"], "cost_rank": 2},
+                ]}
+                decision = routing.plan_route(catalog, role="implementation")
+                self.assertEqual(decision.resolved["model"], "gpt-5.6-terra")
+                blocked = routing.plan_route(catalog, role="implementation", overrides={"model": retired})
+                self.assertEqual(blocked.outcome, "blocked")
+                self.assertIn("excluded by policy", blocked.blocked_reason)
+
+    def test_keeps_coordinator_fallbacks_within_policy_exclusions(self) -> None:
+        catalog = {"profiles": [
+            {"agent": "codex", "model": "gpt-5.5", "lane": "strong", "efforts": ["xhigh"]},
+            {"agent": "codex", "model": "gpt-5.6-luna", "lane": "fast", "efforts": ["low"]},
+        ]}
+        decision = routing.plan_route(catalog, role="coordinator")
+        self.assertEqual(decision.resolved["model"], "gpt-5.6-luna")
+        self.assertIsNotNone(decision.fallback_reason)
+        blocked = routing.plan_route({"profiles": catalog["profiles"][:1]}, role="coordinator")
+        self.assertEqual(blocked.outcome, "blocked")
+
+    def test_preserves_older_policies_and_applies_provider_neutral_exclusions(self) -> None:
+        policy = json.loads(routing.DEFAULT_POLICY_PATH.read_text())
+        policy.pop("excluded_models")
+        catalog = {"profiles": [CATALOG["profiles"][2]]}
+        previous = routing.RoutingPolicy.from_mapping(policy)
+        self.assertEqual(routing.plan_route(catalog, role="review", policy=previous).outcome, "resolved")
+        policy["excluded_models"] = ["runtime-balanced"]
+        current = routing.RoutingPolicy.from_mapping(policy)
+        self.assertEqual(routing.plan_route(catalog, role="review", policy=current).outcome, "blocked")
+        self.assertEqual(routing.plan_route(catalog, role="review", policy=previous).outcome, "resolved")
+
     def test_uses_an_external_policy_without_scheduler_changes(self) -> None:
         policy = json.loads((SCRIPT.parents[2] / "impl" / "references" / "routing-policy.seed.json").read_text())
         policy["role_defaults"]["implementation"] = {"lane": "balanced", "effort": "medium"}

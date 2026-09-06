@@ -54,10 +54,11 @@ class RoutingPolicy:
     context_bands: tuple[Mapping[str, Any], ...]
     candidate_order: tuple[Mapping[str, str], ...]
     metadata: Mapping[str, Any]
+    excluded_models: tuple[str, ...] = ()
 
     @classmethod
     def from_mapping(cls, value: Mapping[str, Any]) -> "RoutingPolicy":
-        if not isinstance(value, Mapping) or set(value) != {
+        if not isinstance(value, Mapping) or set(value) - {"excluded_models"} != {
             "schema_version", "policy_id", "metadata", "role_defaults", "risk_minimums",
             "check_minimums", "tool_minimums", "context_bands", "candidate_order",
         }:
@@ -122,7 +123,11 @@ class RoutingPolicy:
             if not isinstance(candidate, Mapping) or set(candidate) != {"provider", "agent", "model", "effort"}:
                 raise RoutingError("routing policy candidate is invalid")
             candidates.append({key: _nonempty_string(candidate[key], f"routing policy candidate {key}") for key in candidate})
-        return cls(policy_id, role_defaults, risk_minimums, check_minimums, tool_minimums, tuple(bands), tuple(candidates), dict(metadata))
+        excluded_models = _string_tuple(value.get("excluded_models", []), "routing policy excluded_models")
+        return cls(policy_id, role_defaults, risk_minimums, check_minimums, tool_minimums, tuple(bands), tuple(candidates), dict(metadata), excluded_models)
+
+    def allows_model(self, model: str) -> bool:
+        return not any(model == excluded or model.startswith(f"{excluded}-") for excluded in self.excluded_models)
 
     def requirements_for(self, request: "RoutingRequest") -> tuple[str, str]:
         context = next(band for band in reversed(self.context_bands) if request.context_tokens >= band["min_tokens"])
@@ -519,6 +524,8 @@ def route(
             requested,
             f"Requested effort {requested_effort} is not supported.",
         )
+    if overrides.model is not None and not routing_policy.allows_model(overrides.model):
+        return _blocked(request, requested, f"Requested model {overrides.model} is excluded by policy {routing_policy.policy_id}.")
     if _LANE_RANK[requested_lane] < _LANE_RANK[safe_lane]:
         return _blocked(
             request,
@@ -551,7 +558,7 @@ def route(
             f"Requested model {overrides.model} is not advertised for the requested agent.",
         )
 
-    profiles = _compatible_profiles(catalog, request)
+    profiles = [profile for profile in _compatible_profiles(catalog, request) if routing_policy.allows_model(profile.model)]
     if overrides.agent is not None:
         profiles = [profile for profile in profiles if profile.agent == overrides.agent]
     if overrides.model is not None:

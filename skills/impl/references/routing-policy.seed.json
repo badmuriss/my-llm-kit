@@ -1,43 +1,46 @@
 {
   "schema_version": 1,
-  "policy_id": "canvas-routing-v2",
+  "policy_id": "canvas-routing-v4",
   "metadata": {
-    "source": "Owner-approved routing seed based on https://developers.openai.com/api/docs/models/compare and https://developers.openai.com/api/docs/guides/latest-model?model=gpt-6-astra, accessed 2026-09-04",
+    "source": "Owner-approved four-model scope and effort calibration, researched 2026-09-06: research/2026-09-06-codex-model-value.md; https://learn.chatgpt.com/docs/models; https://learn.chatgpt.com/docs/pricing; https://developers.openai.com/api/docs/pricing. GPT-5.5 excluded; Astra low/medium replaces preferred Sol high/xhigh routes. Task-level cost superiority remains unverified.",
     "default_refresh_interval_days": 14,
     "early_refresh_reasons": ["provider_removal", "catalog_incompatibility", "known_price_or_quota_change", "route_failure", "owner_request"]
   },
   "role_defaults": {
-    "coordinator": {"lane": "balanced", "effort": "high"},
+    "coordinator": {"lane": "balanced", "effort": "medium"},
     "research": {"lane": "fast", "effort": "low"},
     "documentation": {"lane": "fast", "effort": "low"},
     "implementation": {"lane": "fast", "effort": "medium"},
     "review": {"lane": "balanced", "effort": "medium"},
     "verification": {"lane": "fast", "effort": "low"},
-    "integration": {"lane": "balanced", "effort": "high"}
+    "integration": {"lane": "balanced", "effort": "medium"}
   },
   "risk_minimums": {
     "routine": {"lane": "fast", "effort": "low"},
     "material": {"lane": "balanced", "effort": "medium"},
-    "high": {"lane": "strong", "effort": "high"}
+    "high": {"lane": "strong", "effort": "medium"}
   },
   "check_minimums": {
     "decisive": {"lane": "fast", "effort": "low"},
     "partial": {"lane": "fast", "effort": "medium"},
-    "none": {"lane": "balanced", "effort": "high"}
+    "none": {"lane": "balanced", "effort": "medium"}
   },
   "tool_minimums": {"browser": {"lane": "balanced", "effort": "medium"}},
   "context_bands": [
     {"min_tokens": 0, "lane": "fast", "effort": "low"},
     {"min_tokens": 64000, "lane": "balanced", "effort": "medium"}
   ],
+  "excluded_models": ["gpt-5.5"],
   "candidate_order": [
+    {"provider": "openai", "agent": "codex", "model": "gpt-5.6-luna", "effort": "low"},
+    {"provider": "openai", "agent": "codex", "model": "gpt-5.6-luna", "effort": "medium"},
     {"provider": "openai", "agent": "codex", "model": "gpt-5.6-luna", "effort": "high"},
-    {"provider": "openai", "agent": "codex", "model": "gpt-5.6-luna", "effort": "xhigh"},
+    {"provider": "openai", "agent": "codex", "model": "gpt-5.6-terra", "effort": "low"},
     {"provider": "openai", "agent": "codex", "model": "gpt-5.6-terra", "effort": "medium"},
     {"provider": "openai", "agent": "codex", "model": "gpt-5.6-terra", "effort": "high"},
-    {"provider": "openai", "agent": "codex", "model": "gpt-5.6-sol", "effort": "high"},
-    {"provider": "openai", "agent": "codex", "model": "gpt-5.6-sol", "effort": "xhigh"},
-    {"provider": "openai", "agent": "codex", "model": "gpt-6-astra", "effort": "high"},
-    {"provider": "openai", "agent": "codex", "model": "gpt-6-astra", "effort": "xhigh"}
+    {"provider": "openai", "agent": "codex", "model": "gpt-5.6-sol", "effort": "low"},
+    {"provider": "openai", "agent": "codex", "model": "gpt-5.6-sol", "effort": "medium"},
+    {"provider": "openai", "agent": "codex", "model": "gpt-6-astra", "effort": "low"},
+    {"provider": "openai", "agent": "codex", "model": "gpt-6-astra", "effort": "medium"}
   ]
 }

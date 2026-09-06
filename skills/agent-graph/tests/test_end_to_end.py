@@ -253,8 +253,8 @@ class PortableHostRunBehavior(unittest.TestCase):
             role="coordinator",
         )
         self.assertEqual(route.to_dict(), reordered_route.to_dict())
-        self.assertEqual(route.requested, {"lane": "balanced", "agent": None, "model": None, "effort": "high"})
-        self.assertEqual(route.resolved, {"agent": "host-agent", "model": "host-balanced", "effort": "high"})
+        self.assertEqual(route.requested, {"lane": "balanced", "agent": None, "model": None, "effort": "medium"})
+        self.assertEqual(route.resolved, {"agent": "host-agent", "model": "host-balanced", "effort": "medium"})
         self.assertIsNone(route.fallback_reason)
         child_route = routing.plan_route(self.fixture["capability_catalog"], role="verification")
         reordered_child_route = routing.plan_route(
@@ -551,6 +551,9 @@ class PortableHostRunBehavior(unittest.TestCase):
         }
         evidence = json.loads((ROOT.parent.parent / "openspec/changes/maestro-harness-orchestration/evidence/host-run.json").read_text(encoding="utf-8"))
         expected = json.loads(json.dumps(evidence["golden_summary"]))
+        # The historical receipt predates the owner's Astra effort calibration.
+        expected["route"]["requested"]["effort"] = "medium"
+        expected["route"]["resolved"]["effort"] = "medium"
         for counter in ("from_cursor", "final_cursor", "current_revision"):
             golden["watch"][counter] = "<variable>"
             expected["watch"][counter] = "<variable>"

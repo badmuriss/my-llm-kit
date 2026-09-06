@@ -23,6 +23,7 @@
     "check_minimums": {"$ref": "#/$defs/requirementsByCheck"},
     "tool_minimums": {"type": "object", "additionalProperties": {"$ref": "#/$defs/requirement"}},
     "context_bands": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["min_tokens", "lane", "effort"], "properties": {"min_tokens": {"type": "integer", "minimum": 0}, "lane": {"enum": ["fast", "balanced", "strong"]}, "effort": {"$ref": "#/$defs/effort"}}}},
+    "excluded_models": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}, "description": "Disallow these model IDs and their dash-suffixed variants, including overrides and fallbacks."},
     "candidate_order": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["provider", "agent", "model", "effort"], "properties": {"provider": {"type": "string", "minLength": 1}, "agent": {"type": "string", "minLength": 1}, "model": {"type": "string", "minLength": 1}, "effort": {"$ref": "#/$defs/effort"}}}}
   },
   "$defs": {
