@@ -1250,6 +1250,20 @@ class AgentGraphCliBehavior(unittest.TestCase):
             "execution_scope_unsupported",
         )
 
+    def test_accepts_a_local_folder_home_and_git_execution_at_the_same_repository(self) -> None:
+        root = str(self.repository.resolve())
+        receipt = self.explicit_workspace_receipt("run-local-split-identity")
+        receipt["execution_host"] = {"id": "local", "boundary": "local"}
+        receipt["execution_workspace"] = {
+            "execution_host_id": "local",
+            "workspace_key": "worktree:repository-orca-01::" + root,
+            "kind": "git-worktree",
+            "path": root,
+            "worktree_path": root,
+        }
+
+        runtime._require_current_execution_scope(self.repository, receipt)
+
     def test_rejects_missing_execution_snapshot_fields_before_journaling(self) -> None:
         for field, run_id in (("base_revision", "run-missing-base"), ("dirty_paths", "run-missing-dirty")):
             with self.subTest(field=field):

@@ -67,14 +67,13 @@ while IFS= read -r skill_name; do
   [ -n "$skill_name" ] || continue
   install_vendored_skill "$skill_name"
 done < <(
-  python3 "$SRC/scripts/read_install_manifest.py" reduced_install_skills \
+  python3 "$SRC/scripts/read_install_manifest.py" core_install_skills \
     --manifest "$INSTALL_MANIFEST"
 )
 
-npx -y skills add badmuriss/incredibly-pretty-websites -g -y
-npx -y skills add badmuriss/unslop -g -y
-npx -y skills add mattpocock/skills --skill grill-with-docs -g -y
-npx -y skills add badmuriss/site-audit -g -y
-npx -y skills add badmuriss/spec-council -g -y
-npx -y skills add vercel-labs/agent-skills --skill vercel-react-best-practices -g -y
-echo "done — spec and impl available as skills in Claude Code"
+if ! python3 -c 'from jsonschema import Draft202012Validator' 2>/dev/null; then
+  python3 -m pip install --user --break-system-packages -r "$SRC/skills/agent-graph/requirements.txt"
+fi
+python3 "$HOME/.agents/skills/agent-graph/scripts/agent_graph.py" --help >/dev/null
+echo "done: core skills and graph runtime available in Claude Code"
+echo "Use setup.sh --full for optional integrations and specialist skills."

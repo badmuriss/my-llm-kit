@@ -1,6 +1,6 @@
 ---
 name: readme-pass
-description: "Make a public repo README concise, scannable, and agent-first. Use when a README is verbose, hard to scan, missing a copyable agent-install prompt, or needs a presentation pass with a banner, badges, and navigation."
+description: Make a public repository README easier to understand and use. Apply when README structure or presentation is requested.
 ---
 
 # readme-pass
@@ -22,7 +22,7 @@ Make the README useful before making it pretty. Optimize for a distracted reader
    - credits and license
 5. Apply the `writing` skill. Preserve facts, commands, links, names, and licenses.
 6. Add presentation only after the content is lean.
-7. Verify commands, anchors, links, supported operating systems, and the staged diff.
+7. Verify commands, anchors, links, supported operating systems, and the changed diff.
 
 ## Attention budget
 
@@ -48,25 +48,11 @@ When setup changes the user's machine, place a copyable agent-install prompt bef
 
 Use only commands and operating systems present in the repo. Keep manual commands below the prompt as a fallback.
 
-## Header
+## Presentation
 
-Use this order:
-
-1. Existing logo or banner. Existing brand assets win.
-2. One concrete tagline.
-3. A small badge row for facts the repo proves, such as license, stars, or last commit.
-4. Anchor navigation for the main sections.
-5. Install.
-
-If the repo has light and dark logo variants, use a `<picture>` element. If it has no identity, use a centered typographic H1 or generate a banner with `image-gen`.
-
-For a generated banner:
-
-- use a dark, minimal, typographic composition;
-- avoid mockups, people, generic AI icons, purple glow, dots, and grids;
-- target a wide 4:1 image and inspect the rendered PNG;
-- reject garbled text instead of repairing it with an overlay;
-- fall back to a typographic H1 when generation fails.
+Preserve existing branding. Add a banner, badges or navigation only when the
+requested presentation work benefits from them. A text cleanup does not require
+image generation. Use a plain heading when no visual identity is available.
 
 ## Writing rules
 
@@ -74,6 +60,6 @@ Use sentence-case headings, plain words, and concrete claims. Avoid em dashes, d
 
 ## Delivery
 
-- Stage only the README and assets created for it.
-- Scan the staged diff for client names, internal hosts, project codenames, and secrets before publishing.
+- Stage files only when staging, committing or PR preparation is requested.
+- Inspect the changed content for private information before an authorized publication.
 - Report what was cut, what moved, what was added, and what remains unverified.

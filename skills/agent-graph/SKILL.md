@@ -1,13 +1,17 @@
 ---
 name: agent-graph
-description: Select a portable process from repository facts, then run durable dependency-aware graphs only when graph mode is justified.
+description: Run durable task graphs when independent work needs ownership, integration checks and recovery. Use for graph execution, not routine edits.
 ---
 
 # Agent Graph
 
-Run adaptive intake before planning or implementation. Use the durable graph
-only when the decision proves independent packets, bounded ownership, checks,
-integration, budget, and cleanup.
+Use the durable graph only when the decision proves independent packets, bounded
+ownership, checks, integration, budget and cleanup. Ordinary planning and
+implementation do not require this runtime.
+
+Resolve this installed skill directory and invoke its `scripts/agent_graph.py`
+with `--repo <absolute-project-path>`, using `python3` or Windows `py -3`. The
+Python environment needs `jsonschema`; see `requirements.txt`.
 
 ## Adaptive entry
 
@@ -17,7 +21,7 @@ no run or worker.
 
 - Direct and verified-single work need no OpenSpec, graph, Canvas, or Orca process.
 - Light spec uses one amendable Markdown decision record. OpenSpec remains optional.
-- Graph mode alone creates the durable journal and fresh coordinator handoff.
+- Graph mode alone creates the durable journal and coordinator claim.
 
 Persist a graph selection as
 `openspec/changes/<slug>/process-decision.json`. Bootstrap validates that its
@@ -41,8 +45,8 @@ Schedule a task only when every dependency has grade `pass`. Serialize write tas
 Workers default to `minimal-by-default-v1`: create no new test suite or supplemental Markdown. Reuse or extend an existing artifact first. Add at most one focused regression test per reproducible defect, and only when the acceptance, a security or data-integrity invariant, or a public contract requires it. Do not add tests for constants, trivial passthroughs, type guarantees, implementation details, or behavior explicitly removed from scope. Do not create status logs, duplicate plans, or narrative check reports; receipts and `WorkerResult` are the evidence trail. Run the task's declared `Check` first and widen validation only for broad or high-risk changes. Host capsules and Orca task specs carry this policy to the worker.
 
 Use `rule-curator` as an occasional maintenance pass over the standing rule
-corpus, not as a worker role or a per-task artifact. Run it after a material
-rule-set change, consolidate only evidence-backed duplicates, and leave
+corpus, not as a worker role or a per-task artifact. Use it when a whole-corpus audit is requested, consolidate only evidence-backed
+duplicates, and leave
 project-specific rules in their canonical skill or `AGENTS.md` source.
 
 ## Safety rules
@@ -76,19 +80,16 @@ operation that requested it.
 
 ## Harness boundary
 
-`impl` bootstraps one immutable control-runtime reference, then hands the exact
-capsule invocation to one fresh visible top-level coordinator. The bootstrap
-session stops after the handoff receipt; all later commands use the pinned
-absolute entrypoint. The task-local decision and verified capability receipt
-select the coordinator profile. Workers use the cheapest compatible catalog
-profile for their role, risk, tools, context, and check. A resolved profile
-keeps requested and resolved values, fallback reason, rationale, role, risk,
-and cost rank independent of provider model names.
+`impl` freezes one control runtime and claims the coordinator capsule. Use the
+current session when it can own integration and retain the needed context; use a
+new visible session when the task or host requires that handoff. Coordinator
+identity and generation remain mandatory in either case. Read
+[graph execution](../impl/references/graph-execution.md) for the lifecycle.
 
 The coordinator derives only the smallest useful non-conflicting wave. It may
 delegate dynamically, but children inherit or narrow paths, context, and
 capabilities, cannot grade parents, recursively launch workers, or append the
-journal. Keep at most one heavy worker active. Orca and the native Host path
+journal. Bound overlapping heavy work by observed host capacity. Orca and the native Host path
 share these semantics; Orca-specific APIs and the optional Linux resource guard
 are never required for normal operation.
 

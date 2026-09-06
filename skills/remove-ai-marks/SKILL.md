@@ -1,13 +1,6 @@
 ---
 name: remove-ai-marks
-description: >
-  Remove multi-vendor AI provenance marks: invisible Unicode (Layer A), statistical
-  text watermarks via rewrite (Layer B, always offer), and C2PA/EXIF/XMP/container
-  metadata on PNG/JPEG/SVG/PDF/DOCX/ODT/HTML/MD. Covers Claude, Gemini/SynthID-class,
-  OpenAI provenance, and open-LLM sampling marks. Use when the user asks to strip
-  watermarks, remove C2PA/Content Credentials, clean AI metadata, remove invisible
-  Unicode, anti-detect clean AI output, or runs /remove-ai-marks (aliases:
-  /remove-claude-marks).
+description: Inspect and remove requested metadata or invisible marks from user-owned files. Use when provenance cleanup is explicitly requested.
 ---
 
 # Remove AI marks
@@ -88,9 +81,9 @@ python3 "$SCRIPTS/inspect_file.py" OUTPUT   # verify
 
 Optional tools if installed: `c2patool`, `exiftool` (auto-used when present; PDF strongly prefers exiftool).
 
-### 4. Layer B — always offer rewrite (prose)
+### 4. Layer B — offer when relevant rewrite (prose)
 
-After Layer A, **always propose** a statistical-mark reduction pass for natural-language content. Do not skip this step silently.
+Offer a statistical-mark reduction pass only when the user requested text rewriting or statistical-mark reduction. Metadata cleanup alone does not require changing the text.
 
 Multi-pass recipe:
 

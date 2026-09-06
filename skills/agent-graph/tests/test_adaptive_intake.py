@@ -359,23 +359,26 @@ class AdaptiveIntakeBehavior(unittest.TestCase):
         self.assertEqual(rejected["decision"]["mode"], "light_spec")
         self.assertTrue(any("individual check" in item for item in rejected["graph_blockers"]))
 
-    def test_suppresses_a_question_answered_by_repository_instructions(self) -> None:
+    def test_keeps_conditional_compatibility_unresolved_until_answered(self) -> None:
         (self.repository / "AGENTS.md").write_text(
-            "Breaking changes are allowed for this repository.\n", encoding="utf-8"
+            "Prefer a clean breaking change for an MVP.\n"
+            "When the project is live, ask whether backward compatibility is required.\n",
+            encoding="utf-8",
         )
         ambiguity = {
             "question_id": "compatibility",
             "question": "Must the old interface remain compatible?",
             "decision_effects": ["scope", "mode"],
             "repository_fact": "compatibility",
-            "safe_default": "Preserve the old interface.",
         }
+        pending = self.select(ambiguities=[ambiguity])
+        self.assertEqual(pending["status"], "questions")
+        self.assertEqual(pending["questions"][0]["question_id"], "compatibility")
 
-        result = self.select(ambiguities=[ambiguity])
-
-        self.assertEqual(result["status"], "selected")
-        self.assertEqual(result["questions"], [])
-        self.assertEqual(result["decision"]["assumptions"][0]["basis"], "repository")
+        ambiguity["answer"] = "This local MVP can replace the old interface."
+        selected = self.select(ambiguities=[ambiguity])
+        self.assertEqual(selected["status"], "selected")
+        self.assertEqual(selected["decision"]["material_questions"][0]["answer"], ambiguity["answer"])
 
     def test_emits_one_decision_changing_question_and_honors_its_safe_default(self) -> None:
         ambiguity = {

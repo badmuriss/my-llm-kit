@@ -30,10 +30,10 @@ When uncertain, keep the comment.
 ## Workflow
 
 1. Read repository instructions and identify the source diff.
-2. Find at most 10 high-confidence candidates unless the user provides another limit.
-3. Use adjacent code and `git blame` to understand intent and age.
-4. Report each exact comment, path, line, age, and one-sentence reason.
-5. Ask which candidates to remove. Do not edit before approval unless the user explicitly requested immediate removal.
+2. Identify high-confidence candidates within the requested scope.
+3. Use adjacent code; consult history when it helps establish rationale.
+4. For an audit, report the comment, path and reason.
+5. When removal is requested, perform the clear removals within that authorization. Ask only when a candidate has unresolved meaning or ownership.
 6. Remove only approved comments. Do not rewrite useful comments merely to create activity.
 7. Run the cheapest formatter, lint, typecheck, or compile check that can catch a damaged directive or syntax boundary.
 

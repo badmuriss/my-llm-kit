@@ -23,46 +23,17 @@ OBSERVATION_VALUES = {
 }
 DECISION_EFFECTS = frozenset({"behavior", "scope", "risk", "acceptance", "mode"})
 INSTRUCTION_FILES = ("AGENTS.md", "CLAUDE.md", "README.md", "CONTRIBUTING.md")
-READ_LIMIT_BYTES = 262_144
-
-
-def _read_bounded(path: Path) -> str:
-    try:
-        with path.open("rb") as stream:
-            return stream.read(READ_LIMIT_BYTES).decode("utf-8", errors="replace")
-    except OSError:
-        return ""
 
 
 def inspect_repository(repository: Path) -> dict[str, Any]:
-    """Return bounded facts established from repository-owned files."""
+    """Return filesystem facts; the caller interprets instructions in task context."""
 
     root = repository.resolve()
-    instructions: list[str] = []
-    compatibility: dict[str, str] | None = None
-    for name in INSTRUCTION_FILES:
-        path = root / name
-        if not path.is_file():
-            continue
-        instructions.append(name)
-        text = _read_bounded(path).casefold()
-        if compatibility is None and (
-            "breaking changes are allowed" in text
-            or "prefer a clean breaking change" in text
-        ):
-            compatibility = {"value": "not_required", "evidence_ref": f"file:{name}"}
-        if (
-            "backward compatibility is required" in text
-            or "backwards compatibility is required" in text
-        ):
-            compatibility = {"value": "required", "evidence_ref": f"file:{name}"}
-
     return {
         "canonical_root": str(root),
         "git_repository": (root / ".git").exists(),
         "openspec_available": (root / "openspec" / "changes").is_dir(),
-        "instruction_files": instructions,
-        "compatibility": compatibility,
+        "instruction_files": [name for name in INSTRUCTION_FILES if (root / name).is_file()],
     }
 
 
@@ -169,24 +140,21 @@ def _ownership_blockers(packets: Sequence[Mapping[str, Any]]) -> list[str]:
 
 def _material_questions(
     ambiguities: Any,
-    facts: Mapping[str, Any],
     *,
     use_safe_defaults: bool,
-) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     if ambiguities is None:
-        return [], [], []
+        return [], []
     if not isinstance(ambiguities, list):
         raise CliValidationError("adaptive intake ambiguities must be a list")
     answered: list[dict[str, Any]] = []
     pending: list[dict[str, Any]] = []
-    assumptions: list[dict[str, Any]] = []
     for index, ambiguity in enumerate(ambiguities, start=1):
         if not isinstance(ambiguity, Mapping):
             raise CliValidationError(f"adaptive intake ambiguity {index} must be an object")
         question_id = ambiguity.get("question_id")
         question = ambiguity.get("question")
         effects = ambiguity.get("decision_effects")
-        fact_name = ambiguity.get("repository_fact")
         if (
             not isinstance(question_id, str)
             or not question_id
@@ -197,17 +165,6 @@ def _material_questions(
             or not set(effects) <= DECISION_EFFECTS
         ):
             raise CliValidationError(f"adaptive intake ambiguity {index} is not decision-changing")
-        repository_fact = facts.get(fact_name) if isinstance(fact_name, str) else None
-        if isinstance(repository_fact, Mapping) and repository_fact.get("value") is not None:
-            assumptions.append(
-                {
-                    "assumption_id": f"repository-{question_id}",
-                    "statement": f"Repository fact {fact_name} is {repository_fact['value']}.",
-                    "basis": "repository",
-                    "evidence_ref": repository_fact.get("evidence_ref", "repository:inspection"),
-                }
-            )
-            continue
         answer = ambiguity.get("answer")
         provenance = "owner"
         safe_default_selected = False
@@ -235,7 +192,7 @@ def _material_questions(
                     "safe_default": ambiguity.get("safe_default"),
                 }
             )
-    return answered, pending, assumptions
+    return answered, pending
 
 
 def _select_mode(
@@ -301,8 +258,8 @@ def decide_process(
     direct_command_arguments(check_command)
     selected_signals = dict(signals or {})
     facts = inspect_repository(repository)
-    answered, pending, fact_assumptions = _material_questions(
-        selected_signals.get("ambiguities"), facts, use_safe_defaults=use_safe_defaults
+    answered, pending = _material_questions(
+        selected_signals.get("ambiguities"), use_safe_defaults=use_safe_defaults
     )
     if pending:
         return {
@@ -354,14 +311,15 @@ def decide_process(
     scope = _repository_paths(
         selected_signals.get("repository_scope", ["."]), "adaptive intake repository_scope"
     )
-    assumptions = [*fact_assumptions]
-    declared_assumptions = selected_signals.get("assumptions", [])
-    if not isinstance(declared_assumptions, list):
+    assumptions = selected_signals.get("assumptions", [])
+    if not isinstance(assumptions, list):
         raise CliValidationError("adaptive intake assumptions must be a list")
-    assumptions.extend(declared_assumptions)
     stop_conditions = selected_signals.get(
         "stop_conditions",
-        ["The selected check passes.", "No new verifiable hypothesis remains."],
+        [
+            "Every requested outcome has current evidence and owned resources are settled.",
+            "A concrete blocker or the declared budget prevents further in-scope work.",
+        ],
     )
     decision = validate_process_decision(
         {

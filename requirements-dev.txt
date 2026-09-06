@@ -1,1 +1,2 @@
+-r skills/agent-graph/requirements.txt
 ruff==0.16.5

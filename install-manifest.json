@@ -44,13 +44,11 @@
       "plugin": "last30days@last30days-skill"
     }
   ],
-  "reduced_install_skills": [
+  "core_install_skills": [
     "spec",
     "impl",
-    "grill-me",
-    "remove-ai-marks",
-    "trim-code-comments",
-    "thermo-nuclear-code-quality-review",
-    "rule-curator"
+    "agent-graph",
+    "writing",
+    "frontend-visual-validation"
   ]
 }

@@ -1,79 +1,26 @@
 ---
 name: writing
-description: "Clear writing standards based on Zinsser. use_when: documentation, commit messages, PR descriptions, technical communication. do_not_use_when: prose for a human reader, use unslop."
+description: Write clear technical documentation, commit messages and PR descriptions. Use unslop for standalone prose when it is installed.
 ---
 
-# Writing Standards
+# Writing
 
-Based on William Zinsser's "On Writing Well".
+Lead with the concrete change or problem and its effect. Include the context a
+reader needs to assess it, then explain the relevant evidence and limitations.
+Use plain language, active verbs and precise examples. Do not replace calibrated
+uncertainty with a confident claim. Scale structure and detail to the artifact.
 
-Use this skill for technical artifacts whose primary reader is a developer or tool. For standalone prose meant for publication or direct human consumption, route to `unslop`. If a task contains both, use these rules for the technical shell and `unslop` for the authored prose; do not run the full `unslop` rubric on commits, schemas, status updates, or ordinary documentation.
+For commits, use conventional format, such as `fix: preserve pending work on
+resume`. Do not name an agent or add a co-author trailer.
 
-## Core Principles
+For PRs, explain the resulting behavior and how it was verified. Use the repository
+template when present. Omit conversational history and abandoned approaches unless
+they explain a tradeoff that matters to review.
 
-### Clarity
-- One idea per sentence
-- Short sentences (<25 words)
-- Active voice ("We fixed" not "was fixed")
+For documentation, keep commands and capabilities accurate. Move conditional
+procedures to linked references when they distract from normal use. Do not impose
+a heading template, sentence length or arbitrary cutting quota.
 
-### Brevity
-- Every word must earn its place
-- Cut redundant words
-- Delete clutter
-
-### Simplicity
-- Simple words over complex
-- Concrete over abstract
-- Specific over vague
-
-## Patterns
-
-### Commit Messages
-```
-<verb> <what>
-```
-- `Add user authentication`
-- `Fix payment validation`
-- `Refactor database queries`
-
-Never: "Fixed stuff", "Updates", "Claude Code"
-
-### PR Descriptions
-```
-## Summary
-[One sentence: what changed]
-
-## Why
-[One paragraph: motivation]
-
-## Testing
-[How to verify]
-```
-
-### Error Messages
-```
-<What happened>. <What to do>.
-```
-- `User not found. Check the email.`
-- `Payment failed. Retry or contact support.`
-
-### Documentation
-1. What it does (one sentence)
-2. Why it exists (one paragraph)
-3. How to use it (clear steps)
-4. Examples (if needed)
-
-## Avoid
-
-- Passive voice
-- Redundant words ("in order to" → "to")
-- Jargon without explanation
-- Hedging ("might", "possibly")
-- Long paragraphs (>5 sentences)
-
-## Test Your Writing
-
-- Can you cut 30%?
-- Is every word necessary?
-- Would you say this to a friend?
-- Can someone skim and understand?
+Use `unslop` for requested authored prose when it is installed; otherwise write
+directly using the user's style and constraints. Do not invoke its rubric for
+ordinary technical responses or status updates.

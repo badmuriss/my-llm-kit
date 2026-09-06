@@ -1114,7 +1114,6 @@ def _require_current_execution_scope(
     if (
         scope.get("canonical_root") != expected_root
         or scope.get("execution_host", {}).get("boundary") != "local"
-        or scope.get("execution_workspace") != scope.get("orchestration_home")
         or scope.get("execution_workspace", {}).get("path") != expected_root
         or scope.get("orchestration_home", {}).get("path") != expected_root
     ):
@@ -1518,7 +1517,7 @@ def _initialize(
             {
                 "requested": driver_name,
                 "selected": None,
-                "reason": "driver selection is deferred until the fresh coordinator claims the run",
+                "reason": "driver selection is deferred until the coordinator claims the run",
             },
             control_runtime,
         )
@@ -1608,7 +1607,7 @@ def command_bootstrap(arguments: argparse.Namespace) -> dict[str, Any]:
             "coordinator_id": None,
             "coordinator_generation": generation,
             "from_coordinator_id": bootstrap_id,
-            "handoff": "fresh-top-level-session",
+            "handoff": "coordinator-claim",
         },
         coordinator_generation=generation - 1,
     )

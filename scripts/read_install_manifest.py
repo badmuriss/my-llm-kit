@@ -14,7 +14,7 @@ SECTIONS = {
     "own_repositories": ("name", "url"),
     "community_skills": ("name", "url", "path"),
     "plugins": ("marketplace", "plugin"),
-    "reduced_install_skills": (),
+    "core_install_skills": (),
 }
 EMPTY_SECTIONS = {"community_skills"}
 

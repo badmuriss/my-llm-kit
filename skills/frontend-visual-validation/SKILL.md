@@ -1,6 +1,6 @@
 ---
 name: frontend-visual-validation
-description: Validate every rendered frontend change on its actual supported platforms with reproducible browser screenshots and vision review. Use whenever Codex creates, edits, fixes, refactors or reviews UI, CSS, responsive layouts, routes, components, visual states, interactions or frontend assets, and before declaring any frontend implementation complete.
+description: Verify rendered UI changes with reproducible screenshots and vision review on their supported platforms.
 ---
 
 # Frontend Visual Validation
@@ -17,19 +17,19 @@ Treat browser automation and vision as separate mandatory layers. Browser checks
 6. Capture one PNG per expectation under `.visual-evidence/<change>/`. With Playwright, use CSS-pixel screenshot scale so the PNG width matches the declared viewport.
 7. Inspect every PNG individually with `view_image` or `computer-use`. Check all edges and the main content for clipping, overlap, overflow, unreadable text, broken hierarchy, incorrect state, unusable controls and touch-target problems.
 8. Fix every observed defect, recapture the affected scope and inspect it again. A pixel diff can detect change, but it cannot replace vision review.
-9. Record the exact screenshot hash and a concrete observation in the task manifest. Pass it to `agent_graph.py grade` as `file:` evidence.
+9. Record the exact screenshot hash and a concrete observation in the task manifest. In graph mode, pass it to `agent_graph.py grade` as `file:` evidence. Outside graph, keep the same evidence locally without starting a run.
 
 ## Existing suites
 
 - Prefer Playwright projects and `toHaveScreenshot()` when the application already uses Playwright.
 - Prefer Storybook stories for exhaustive component states when Storybook already exists.
 - Keep Chromatic, Percy, Argos and similar hosted baseline services optional. They add regression history, not semantic visual judgment.
-- Keep the Agent Graph manifest as the completion gate even when another visual suite passes.
+- Keep the visual evidence manifest as the completion gate even when another visual suite passes. Agent Graph submission is required only in graph mode.
 
 ## Landing-page handoff
 
 For a live landing page or landing-page redesign, visual evidence is only the user-facing half
-of delivery. Before copy changes, run `$site-audit` Phase 0 in addition to this skill: capture
+of delivery. When diagnosing delivery or conversion is part of the requested scope, use `$site-audit` Phase 0 if available: capture
 the page as a real user and as rendered Googlebot Smartphone, compare the H1/value
 proposition/CTA/form, then exercise the real-user conversion path without submitting a lead
 unless authorized. Do not add Googlebot as a `Visual-Scope` platform; it is a delivery-parity

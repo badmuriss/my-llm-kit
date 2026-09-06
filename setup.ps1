@@ -1,7 +1,8 @@
 # my-llm-kit :: native Windows installer. Idempotent and safe to preview with -DryRun.
 [CmdletBinding()]
 param(
-    [switch]$DryRun
+    [switch]$DryRun,
+    [switch]$Full
 )
 
 Set-StrictMode -Version Latest
@@ -59,8 +60,10 @@ function Invoke-Python {
 function Invoke-Step {
     param(
         [Parameter(Mandatory = $true)][string]$Name,
-        [Parameter(Mandatory = $true)][scriptblock]$Action
+        [Parameter(Mandatory = $true)][scriptblock]$Action,
+        [switch]$FullOnly
     )
+    if ($FullOnly -and -not $Full) { return }
     $stopwatch = [Diagnostics.Stopwatch]::StartNew()
     try {
         & $Action
@@ -158,19 +161,13 @@ function Link-Skill {
 
     if ($sourcePath -ine $canonicalPath) {
         if ((Test-Path -LiteralPath $canonical) -and -not (Test-ReparsePoint $canonical)) {
-            $backupRoot = Join-Path $HomeDirectory ".agents\skills-backup"
-            $backup = Get-BackupPath (Join-Path $backupRoot $Name)
-            if ($DryRun) {
-                Write-Host "  [dry-run] move $canonical to $backup"
-            }
-            else {
-                New-Item -ItemType Directory -Force -Path $backupRoot | Out-Null
-                Move-Item -LiteralPath $canonical -Destination $backup
-                Write-Host "  backup saved at $backup"
-            }
+            Write-Host "  $canonical is a real directory, leaving it alone"
         }
-        New-DirectoryJunction -Path $canonical -Target $sourcePath
+        else {
+            New-DirectoryJunction -Path $canonical -Target $Source
+        }
     }
+
     Add-HostSkillLink -Name $Name -Canonical $canonicalPath
 }
 
@@ -207,6 +204,7 @@ if ((Test-Command "codex") -or (Test-Path (Join-Path $HomeDirectory ".codex"))) 
 Write-Host "my-llm-kit :: Windows setup"
 Write-Host "repo:        $RepoDirectory"
 Write-Host "skill root:  $SkillsRoot"
+if ($Full) { Write-Host "profile:     full" } else { Write-Host "profile:     core (use -Full for optional integrations)" }
 if ($HostSkillDirectories.Count -gt 0) {
     Write-Host "fan out to:  $($HostSkillDirectories -join ', ')"
 }
@@ -220,7 +218,9 @@ Write-Host ""
 
 Invoke-Step "check binaries and manifest" {
     $missing = @()
-    foreach ($binary in @("git", "node", "npm", "npx")) {
+    $binaries = @("git")
+    if ($Full) { $binaries += @("node", "npm", "npx") }
+    foreach ($binary in $binaries) {
         if (-not (Test-Command $binary)) {
             $missing += $binary
         }
@@ -228,7 +228,7 @@ Invoke-Step "check binaries and manifest" {
     if (-not (Test-Command "py") -and -not (Test-Command "python")) {
         $missing += "python"
     }
-    if ($null -eq $InstallManifest.own_repositories -or $null -eq $InstallManifest.reduced_install_skills) {
+    if ($null -eq $InstallManifest.own_repositories -or $null -eq $InstallManifest.core_install_skills) {
         throw "$InstallManifestPath does not match the installer contract"
     }
     if ($missing.Count -gt 0) {
@@ -244,7 +244,7 @@ Invoke-Step "check binaries and manifest" {
     }
 }
 
-Invoke-Step "pip markitdown+paper-search" {
+Invoke-Step "pip markitdown+paper-search" -FullOnly {
     if ($DryRun) {
         Write-Host "  [dry-run] python -m pip install --user markitdown[all] paper-search-mcp 'mcp<2.0.0'"
     }
@@ -270,7 +270,7 @@ function Configure-OpenCodeMcp {
     Invoke-Python $arguments
 }
 
-Invoke-Step "register MCP paper-search" {
+Invoke-Step "register MCP paper-search" -FullOnly {
     if (Test-Command "claude") {
         $listing = (& claude mcp list 2>$null | Out-String)
         if ($listing -match "(?m)^paper-search") {
@@ -300,7 +300,7 @@ Invoke-Step "register MCP paper-search" {
     }
 }
 
-Invoke-Step "install MCP scrapingdog" {
+Invoke-Step "install MCP scrapingdog" -FullOnly {
     if ($DryRun) {
         Write-Host "  [dry-run] npm install --global $ScrapingDogMcpPackage"
     }
@@ -311,7 +311,7 @@ Invoke-Step "install MCP scrapingdog" {
     }
 }
 
-Invoke-Step "register MCP scrapingdog" {
+Invoke-Step "register MCP scrapingdog" -FullOnly {
     $entrypoint = Join-Path ((& npm root --global | Out-String).Trim()) "scrapingdog-mcp\dist\index.js"
     if (Test-Command "claude") {
         $details = (& claude mcp get scrapingdog 2>$null | Out-String)
@@ -357,7 +357,7 @@ Invoke-Step "register MCP scrapingdog" {
     }
 }
 
-Invoke-Step "preflight MCP scrapingdog" {
+Invoke-Step "preflight MCP scrapingdog" -FullOnly {
     $entrypoint = Join-Path ((& npm root --global | Out-String).Trim()) "scrapingdog-mcp\dist\index.js"
     if ($DryRun) {
         Write-Host "  [dry-run] node scripts/preflight_scrapingdog_mcp.mjs $entrypoint"
@@ -367,7 +367,7 @@ Invoke-Step "preflight MCP scrapingdog" {
     }
 }
 
-Invoke-Step "preflight paper-search" {
+Invoke-Step "preflight paper-search" -FullOnly {
     if ($DryRun) {
         Write-Host "  [dry-run] paper-search-mcp --version"
         Write-Host "  [dry-run] paper-search search 'CodePlan repository-level coding' -s arxiv -n 1"
@@ -393,13 +393,41 @@ Invoke-Step "preflight paper-search" {
     Write-Host "  paper-search query returned CodePlan"
 }
 
-Invoke-Step "vendored skills including grill-me" {
-    Get-ChildItem -Directory (Join-Path $RepoDirectory "skills") | ForEach-Object {
-        Link-Skill -Name $_.Name -Source $_.FullName
+Invoke-Step "graph runtime dependency" {
+    $pythonCommand = if (Test-Command "py") { "py" } else { "python" }
+    & $pythonCommand -c "from jsonschema import Draft202012Validator" 2>$null
+    if ($LASTEXITCODE -ne 0) {
+        if ($DryRun) {
+            Write-Host "  [dry-run] install Python requirements from skills/agent-graph/requirements.txt"
+        }
+        else {
+            Invoke-Python @("-m", "pip", "install", "--user", "-r", (Join-Path $RepoDirectory "skills\agent-graph\requirements.txt"))
+        }
     }
 }
 
-Invoke-Step "own skill repositories" {
+Invoke-Step "vendored skills" {
+    $names = if ($Full) {
+        @(Get-ChildItem -Directory (Join-Path $RepoDirectory "skills") |
+            Where-Object { Test-Path (Join-Path $_.FullName "SKILL.md") } |
+            ForEach-Object { $_.Name })
+    }
+    else { @($InstallManifest.core_install_skills) }
+    foreach ($name in $names) {
+        Link-Skill -Name $name -Source (Join-Path $RepoDirectory "skills\$name")
+    }
+}
+
+Invoke-Step "installed graph runtime" {
+    if ($DryRun) {
+        Write-Host "  [dry-run] verify installed graph runtime imports and CLI"
+    }
+    else {
+        Invoke-Python @((Join-Path $SkillsRoot "agent-graph\scripts\agent_graph.py"), "--help")
+    }
+}
+
+Invoke-Step "own skill repositories" -FullOnly {
     foreach ($repository in $InstallManifest.own_repositories) {
         $target = Join-Path $DocumentsDirectory $repository.name
         if (-not (Test-Path -LiteralPath $target)) {
@@ -414,7 +442,7 @@ Invoke-Step "own skill repositories" {
     }
 }
 
-Invoke-Step "community skills" {
+Invoke-Step "community skills" -FullOnly {
     $sourcesRoot = Join-Path $HomeDirectory ".agents\community-skills"
     if (-not $DryRun) {
         New-Item -ItemType Directory -Force -Path $SkillsRoot | Out-Null
@@ -446,7 +474,7 @@ function Test-FirecrawlResearch {
     return $LASTEXITCODE -eq 0 -and $helpOutput.Contains("Usage: firecrawl research")
 }
 
-Invoke-Step "firecrawl CLI and skills" {
+Invoke-Step "firecrawl CLI and skills" -FullOnly {
     $researchSkill = Join-Path $SkillsRoot "firecrawl-research-index\SKILL.md"
     $needsCli = -not (Test-FirecrawlResearch)
     $needsSkills = -not (Test-Path -LiteralPath $researchSkill)
@@ -478,7 +506,7 @@ Invoke-Step "firecrawl CLI and skills" {
     }
 }
 
-Invoke-Step "preflight Firecrawl research" {
+Invoke-Step "preflight Firecrawl research" -FullOnly {
     if ($DryRun) {
         Write-Host "  [dry-run] firecrawl research search-papers 'CodePlan repository-level coding' --limit 1"
         return
@@ -494,7 +522,7 @@ Invoke-Step "preflight Firecrawl research" {
     Write-Host "  firecrawl Research Index query returned CodePlan"
 }
 
-Invoke-Step "fan out every skill" {
+Invoke-Step "fan out every skill" -FullOnly {
     if (-not (Test-Path -LiteralPath $SkillsRoot)) {
         Write-Host "  skill root does not exist yet; earlier dry-run steps show planned links"
         return
@@ -505,7 +533,7 @@ Invoke-Step "fan out every skill" {
 }
 
 Invoke-Step "AGENTS.md" {
-    $source = Join-Path $RepoDirectory "AGENTS.md"
+    $source = Join-Path $RepoDirectory "instructions\AGENTS.md"
     $shared = Join-Path $HomeDirectory ".agents\AGENTS.md"
     Install-ManagedFile -Source $source -Target $shared
     foreach ($alias in @(
@@ -554,7 +582,7 @@ function Install-PluginsForHost {
     }
 }
 
-Invoke-Step "plugins for Claude Code and Codex" {
+Invoke-Step "plugins for Claude Code and Codex" -FullOnly {
     $found = $false
     if (Test-Command "claude") {
         Install-PluginsForHost -HostName "claude" -InstallVerb "install"
@@ -570,7 +598,7 @@ Invoke-Step "plugins for Claude Code and Codex" {
 }
 
 $DcgPath = Join-Path $HomeDirectory ".local\bin\dcg.exe"
-Invoke-Step "dcg destructive command guard" {
+Invoke-Step "dcg destructive command guard" -FullOnly {
     if ($DryRun) {
         Write-Host "  [dry-run] refresh dcg with the official native Windows PowerShell installer"
         Write-Host "  [dry-run] copy calibrated dcg config, install hooks, and run doctor"
@@ -604,7 +632,7 @@ Invoke-Step "dcg destructive command guard" {
 }
 
 $PipelockPath = Join-Path $HomeDirectory ".local\bin\pipelock.exe"
-Invoke-Step "pipelock agent traffic guard" {
+Invoke-Step "pipelock agent traffic guard" -FullOnly {
     $installerArguments = @(
         (Join-Path $RepoDirectory "scripts\install_pipelock.py"),
         "--target",

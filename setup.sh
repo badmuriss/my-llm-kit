@@ -2,17 +2,19 @@
 # my-llm-kit :: installs dependencies, registers MCP servers and links skills. idempotent.
 # host-agnostic: skills land in ~/.agents/skills (the cross-agent convention) and are
 # fanned out to the host dirs that don't read it natively.
-# usage: ./setup.sh [--dry-run] [--with-resource-guard]
+# usage: ./setup.sh [--dry-run] [--full] [--with-resource-guard]
 set -uo pipefail
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INSTALL_MANIFEST="$REPO_DIR/install-manifest.json"
 SCRAPINGDOG_MCP_PACKAGE="https://codeload.github.com/badmuriss/Scrapingdog-mcp/tar.gz/8084d8a77b5836f7c0ef7cfbaec5ab12f1fcb741"
 DRY=0
+FULL=0
 WITH_RESOURCE_GUARD=0
 for a in "$@"; do
   case "$a" in
     --dry-run) DRY=1 ;;
+    --full) FULL=1 ;;
     --with-resource-guard) WITH_RESOURCE_GUARD=1 ;;
     *) echo "unknown flag: $a"; exit 2 ;;
   esac
@@ -65,16 +67,8 @@ link_skill() {
 
   mkdir -p "$SKILLS_ROOT"
   if [ "$canonical" != "$src" ] && [ -e "$canonical" ] && [ ! -L "$canonical" ]; then
-    # the backup must land OUTSIDE the skill root. every host indexes every directory in
-    # there, so a `foo.bak-20260807` sitting next to `foo` shows up as a second, stale
-    # copy of the same skill in the picker.
-    local backup_root="$HOME/.agents/skills-backup"
-    local backup="$backup_root/$name-$(date +%Y%m%d)"
-    mkdir -p "$backup_root"
-    mv "$canonical" "$backup"
-    echo "  backup saved at $backup"
-  fi
-  if [ "$canonical" != "$src" ]; then
+    echo "  $canonical is a real directory, leaving it alone"
+  elif [ "$canonical" != "$src" ]; then
     ln -sfn "$src" "$canonical"
   fi
 
@@ -96,10 +90,11 @@ link_skill() {
 echo "my-llm-kit :: setup"
 echo "repo:        $REPO_DIR"
 echo "skill root:  $SKILLS_ROOT"
+if [ "$FULL" -eq 1 ]; then echo "profile:     full"; else echo "profile:     core (use --full for optional integrations)"; fi
 if [ ${#HOST_SKILL_DIRS[@]} -gt 0 ]; then
   echo "fan out to:  ${HOST_SKILL_DIRS[*]}"
 else
-  echo "fan out to:  (none detected, the canonical root covers Codex/Gemini/Copilot/OpenCode)"
+  echo "fan out to:  (none detected; verify skill discovery in the target host)"
 fi
 [ "$DRY" -eq 1 ] && echo "dry-run mode: no changes will be made"
 echo
@@ -107,13 +102,15 @@ echo
 # 1. check binaries (read-only, runs even in dry-run)
 check_bins() {
   local missing=0
-  for b in git python3 pip3 node npx; do
+  local binaries=(git python3)
+  [ "$FULL" -eq 0 ] || binaries+=(pip3 node npx)
+  for b in "${binaries[@]}"; do
     if ! command -v "$b" >/dev/null 2>&1; then
       echo "  missing: $b"
       missing=1
     fi
   done
-  for section in own_repositories community_skills plugins reduced_install_skills; do
+  for section in own_repositories community_skills plugins core_install_skills; do
     if ! manifest_rows "$section" >/dev/null; then
       echo "  invalid install manifest section: $section"
       missing=1
@@ -132,6 +129,16 @@ check_bins() {
 }
 run_step "check binaries" check_bins
 
+install_runtime_dependency() {
+  python3 -c 'from jsonschema import Draft202012Validator' 2>/dev/null && return 0
+  if [ "$DRY" -eq 1 ]; then
+    echo "  [dry-run] install Python runtime requirements from skills/agent-graph/requirements.txt"
+    return 0
+  fi
+  python3 -m pip install --user --break-system-packages -r "$REPO_DIR/skills/agent-graph/requirements.txt"
+}
+run_step "graph runtime dependency" install_runtime_dependency
+
 # 2. pip install
 install_python_pkgs() {
   if [ "$DRY" -eq 1 ]; then
@@ -141,7 +148,7 @@ install_python_pkgs() {
   # paper-search-mcp declares mcp[cli]>=1.6.0 with no upper bound; mcp 2.0.0 broke fastmcp, so we pin <2.0.0
   pip3 install --quiet --user --break-system-packages "markitdown[all]" paper-search-mcp "mcp<2.0.0"
 }
-run_step "pip markitdown+paper-search" install_python_pkgs
+[ "$FULL" -eq 0 ] || run_step "pip markitdown+paper-search" install_python_pkgs
 
 configure_opencode_mcp() {
   local name="$1"; shift
@@ -185,7 +192,7 @@ register_mcp() {
     configure_opencode_mcp paper-search paper-search-mcp
   fi
 }
-run_step "register MCP paper-search" register_mcp
+[ "$FULL" -eq 0 ] || run_step "register MCP paper-search" register_mcp
 
 install_scrapingdog_mcp() {
   if [ "$DRY" -eq 1 ]; then
@@ -196,7 +203,7 @@ install_scrapingdog_mcp() {
   npm install --global "$SCRAPINGDOG_MCP_PACKAGE"
   npm ci --include=dev --prefix "$(npm root --global)/scrapingdog-mcp"
 }
-run_step "install MCP scrapingdog" install_scrapingdog_mcp
+[ "$FULL" -eq 0 ] || run_step "install MCP scrapingdog" install_scrapingdog_mcp
 
 # ScrapingDog's MCP package exposes its public-web APIs directly to agents.
 # The child process inherits SCRAPINGDOG_API_KEY at runtime, so setup never copies the
@@ -240,7 +247,7 @@ register_scrapingdog_mcp() {
     echo "  scrapingdog registered without a key; export SCRAPINGDOG_API_KEY before starting an agent"
   fi
 }
-run_step "register MCP scrapingdog" register_scrapingdog_mcp
+[ "$FULL" -eq 0 ] || run_step "register MCP scrapingdog" register_scrapingdog_mcp
 
 preflight_scrapingdog_mcp() {
   local entrypoint
@@ -251,7 +258,7 @@ preflight_scrapingdog_mcp() {
   fi
   node "$REPO_DIR/scripts/preflight_scrapingdog_mcp.mjs" "$entrypoint"
 }
-run_step "preflight MCP scrapingdog" preflight_scrapingdog_mcp
+[ "$FULL" -eq 0 ] || run_step "preflight MCP scrapingdog" preflight_scrapingdog_mcp
 
 # An installed package is not proof that research works. Exercise the CLI against one
 # stable arXiv title and fail visibly when the executable or query is unavailable.
@@ -299,20 +306,39 @@ preflight_paper_search() {
   fi
   echo "  paper-search query returned CodePlan"
 }
-run_step "preflight paper-search" preflight_paper_search
+[ "$FULL" -eq 0 ] || run_step "preflight paper-search" preflight_paper_search
 
 # 4. skills vendored in this repo
 link_vendored_skills() {
-  if [ "$DRY" -eq 1 ]; then
-    echo "  [dry-run] link every directory under skills/ into $SKILLS_ROOT (+ host fan-out)"
-    return 0
+  local name
+  local names=()
+  if [ "$FULL" -eq 1 ]; then
+    local dir
+    for dir in "$REPO_DIR/skills/"*/; do
+      [ -f "$dir/SKILL.md" ] && names+=("$(basename "$dir")")
+    done
+  else
+    while IFS= read -r name; do names+=("$name"); done < <(manifest_rows core_install_skills)
   fi
-  local dir
-  for dir in "$REPO_DIR/skills/"*/; do
-    link_skill "$(basename "$dir")" "${dir%/}"
+  for name in "${names[@]}"; do
+    if [ "$DRY" -eq 1 ]; then
+      echo "  [dry-run] link $name into $SKILLS_ROOT (+ host fan-out)"
+    else
+      link_skill "$name" "$REPO_DIR/skills/$name" || return 1
+    fi
   done
 }
+
 run_step "vendored skills" link_vendored_skills
+
+verify_runtime() {
+  if [ "$DRY" -eq 1 ]; then
+    echo "  [dry-run] verify installed graph runtime imports and CLI"
+    return 0
+  fi
+  python3 "$SKILLS_ROOT/agent-graph/scripts/agent_graph.py" --help >/dev/null
+}
+run_step "installed graph runtime" verify_runtime
 
 # 4b. own skill repos: clone if missing, then link
 setup_own_repos() {
@@ -331,7 +357,7 @@ setup_own_repos() {
     link_skill "$name" "$repo"
   done < <(manifest_rows own_repositories)
 }
-run_step "own skill repos" setup_own_repos
+[ "$FULL" -eq 0 ] || run_step "own skill repos" setup_own_repos
 
 # 4c. community skills: clone the source repository, then link its declared skill path.
 install_community_skills() {
@@ -355,7 +381,7 @@ install_community_skills() {
     link_skill "$name" "$source"
   done < <(manifest_rows community_skills)
 }
-run_step "community skills" install_community_skills
+[ "$FULL" -eq 0 ] || run_step "community skills" install_community_skills
 
 # 4d. Firecrawl CLI + core skills. The Research Index works without login, while
 # the other endpoints still need a key or stored credentials.
@@ -397,7 +423,7 @@ install_firecrawl() {
     return 1
   fi
 }
-run_step "firecrawl CLI + skills" install_firecrawl
+[ "$FULL" -eq 0 ] || run_step "firecrawl CLI + skills" install_firecrawl
 
 preflight_firecrawl_research() {
   if [ "$DRY" -eq 1 ]; then
@@ -424,7 +450,7 @@ preflight_firecrawl_research() {
   fi
   echo "  firecrawl Research Index query returned CodePlan"
 }
-run_step "preflight Firecrawl research" preflight_firecrawl_research
+[ "$FULL" -eq 0 ] || run_step "preflight Firecrawl research" preflight_firecrawl_research
 
 # 4e. the ingest skill shells out to `npx -y @firecrawl/anydoc`, no binary to install here,
 # just a preflight check so a missing npx is a warning instead of a silent failure later.
@@ -434,7 +460,7 @@ check_anydoc_npx() {
   fi
   return 0
 }
-run_step "ingest skill preflight (anydoc)" check_anydoc_npx
+[ "$FULL" -eq 0 ] || run_step "ingest skill preflight (anydoc)" check_anydoc_npx
 
 # 4f. every host dir gets a link for every skill in the canonical root, whatever put it there:
 # this repo, a community clone, the firecrawl CLI, or a plain `npx skills add --global`.
@@ -474,11 +500,11 @@ fan_out_all_skills() {
   done
   echo "  $linked link(s) to create/update, $skipped real directory(ies) left alone"
 }
-run_step "fan out every skill to each host" fan_out_all_skills
+[ "$FULL" -eq 0 ] || run_step "fan out every skill to each host" fan_out_all_skills
 
 # 5. AGENTS.md: one file, read by every host through its own expected filename
 link_agents_md() {
-  local src="$REPO_DIR/AGENTS.md"
+  local src="$REPO_DIR/instructions/AGENTS.md"
   local shared="$HOME/.agents/AGENTS.md"
 
   if [ ! -f "$src" ]; then
@@ -582,7 +608,7 @@ install_plugins() {
   fi
   return "$failed"
 }
-run_step "plugins (Claude Code + Codex)" install_plugins
+[ "$FULL" -eq 0 ] || run_step "plugins (Claude Code + Codex)" install_plugins
 
 # 7. Optionally install the Linux-only cross-agent resource guard. Normal setup does not
 # install it: most users can rely on their agent host and operating system process controls.
@@ -669,7 +695,7 @@ install_dcg() {
   "$dcg_bin" install
   "$dcg_bin" doctor || echo "  warning: dcg doctor reported issues"
 }
-run_step "dcg (destructive command guard)" install_dcg
+[ "$FULL" -eq 0 ] || run_step "dcg (destructive command guard)" install_dcg
 
 # 9. Pipelock scans agent actions and wraps existing Codex MCP transports. The helper
 # pins a release and verifies its published SHA-256 before atomically installing it.
@@ -703,7 +729,7 @@ install_pipelock() {
     echo "  Pipelock installed; no Codex or Claude host found to configure"
   fi
 }
-run_step "pipelock agent traffic guard" install_pipelock
+[ "$FULL" -eq 0 ] || run_step "pipelock agent traffic guard" install_pipelock
 
 # 10. Agent-produced artifacts (visual evidence screenshots) land in whatever repo the
 # agent is working on. A machine-wide git exclude keeps them out of every repo at once
