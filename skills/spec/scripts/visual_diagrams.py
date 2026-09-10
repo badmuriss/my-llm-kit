@@ -18,7 +18,7 @@ MAX_CODE_CHARS = 12_000
 MAX_SVG_BYTES = 2_000_000
 FENCE = re.compile(r"^ {0,3}(`{3,}|~{3,})([^\r\n]*)$")
 TYPES = frozenset({"flowchart", "graph", "sequenceDiagram", "stateDiagram", "stateDiagram-v2", "classDiagram", "erDiagram"})
-TAGS = frozenset({"svg", "g", "defs", "path", "rect", "polygon", "polyline", "circle", "ellipse", "line", "text", "tspan", "title", "desc", "style", "marker", "clipPath", "linearGradient", "radialGradient", "stop", "symbol", "use"})
+TAGS = frozenset({"svg", "g", "defs", "path", "rect", "polygon", "polyline", "circle", "ellipse", "line", "text", "tspan", "title", "desc", "style", "marker", "clipPath", "linearGradient", "radialGradient", "stop", "symbol", "use", "filter", "feDropShadow"})
 IMAGE = re.compile(r'<img data-mermaid-sha256="([a-f0-9]{64})" alt="[^"]*" src="data:image/svg\+xml;base64,([A-Za-z0-9+/=]+)">')
 NETWORK_ARGS = ["--disable-background-networking"]
 
