@@ -1,0 +1,39 @@
+name: Runtime checks
+
+on:
+  pull_request:
+    paths:
+      - 'skills/agent-graph/**'
+      - 'skills/impl/**'
+      - 'requirements-dev.txt'
+      - 'ruff.toml'
+      - '.github/workflows/runtime.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: runtime-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  runtime:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Archive the tested source
+        run: git archive --format=tar HEAD > "$RUNNER_TEMP/tested-source.tar"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: tested-source
+          path: ${{ runner.temp }}/tested-source.tar
+          retention-days: 1
+      - name: Install test dependencies
+        run: python3 -m pip install -r requirements-dev.txt
+      - name: Runtime regressions
+        run: python3 -m unittest discover -s skills/agent-graph/tests -p 'test_*.py'
+      - name: Complexity and lint gate
+        run: python3 -m ruff check .
