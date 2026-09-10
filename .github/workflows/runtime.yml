@@ -51,7 +51,6 @@ jobs:
     env:
       PUPPETEER_SKIP_DOWNLOAD: "1"
       CHROME_PATH: /usr/bin/google-chrome
-      VISUAL_OUTPUT: ${{ runner.temp }}/visual-preview
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
@@ -59,6 +58,8 @@ jobs:
       - name: Install optional visual tools only for this job
         run: npm install --prefix skills/spec/tools --ignore-scripts --no-audit --no-fund
       - name: Render Mermaid, HTML and PDF with real Chromium
+        env:
+          VISUAL_OUTPUT: ${{ runner.temp }}/visual-preview
         run: node skills/spec/tools/smoke.mjs
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
