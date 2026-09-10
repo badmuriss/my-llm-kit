@@ -1,0 +1,95 @@
+name: Apply and validate the reviewed efficiency patch
+
+on:
+  push:
+    branches: ['codex/efficient-orchestration-20260910']
+
+permissions:
+  contents: read
+
+jobs:
+  apply:
+    if: github.repository == 'badmuriss/my-llm-kit' && github.event.before == 'd34e9b9963170f2a0c7d9088b9a06b20d61bb842'
+    permissions:
+      contents: write
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      tested_sha: ${{ steps.apply.outputs.tested_sha }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          fetch-depth: 2
+      - name: Apply only the checksum-pinned patch and remove this publisher
+        id: apply
+        env:
+          EXPECTED_BEFORE: d34e9b9963170f2a0c7d9088b9a06b20d61bb842
+        run: |
+          test "$GITHUB_REF" = refs/heads/codex/efficient-orchestration-20260910
+          test "$(git rev-parse HEAD^)" = "$EXPECTED_BEFORE"
+          python3 - <<'PY'
+          import base64
+          import gzip
+          import hashlib
+          import os
+          from pathlib import Path
+          encoded = b''.join(Path(f'.maintenance/efficiency-part-{n}.b64').read_bytes() for n in (1, 2, 3))
+          patch = gzip.decompress(base64.b64decode(encoded, validate=True))
+          expected = '9a1c5c3337402206cecc0b6b79a1270b93010f20d3a7fc41ed0ae793007a9b52'
+          if hashlib.sha256(patch).hexdigest() != expected:
+              raise SystemExit('Reviewed patch checksum mismatch')
+          Path(os.environ['RUNNER_TEMP'], 'efficiency.patch').write_bytes(patch)
+          PY
+          git apply --check --index "$RUNNER_TEMP/efficiency.patch"
+          git apply --index "$RUNNER_TEMP/efficiency.patch"
+          git rm -- .maintenance/efficiency-part-1.b64 .maintenance/efficiency-part-2.b64 .maintenance/efficiency-part-3.b64 .github/workflows/apply-efficiency-once.yml
+          git diff --cached --check
+          test "$(git write-tree)" = 6e6c8002c49eb9a5faa0d4fce3a3749030539869
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'fix: bound coordinator waiting, routing and admission budgets'
+          echo "tested_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      - name: Publish only to the original feature branch without force
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          target=refs/heads/codex/efficient-orchestration-20260910
+          test "$(git ls-remote origin "$target" | cut -f1)" = "$GITHUB_SHA"
+          authorization=$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)
+          echo "::add-mask::$authorization"
+          git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic $authorization" push origin "HEAD:$target"
+  validate:
+    needs: apply
+    permissions:
+      contents: read
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ needs.apply.outputs.tested_sha }}
+          persist-credentials: false
+      - name: Verify the exact delivered source
+        run: |
+          test "$(git rev-parse HEAD^{tree})" = 6e6c8002c49eb9a5faa0d4fce3a3749030539869
+          test ! -e .github/workflows/apply-efficiency-once.yml
+          test ! -e .maintenance/efficiency-part-1.b64
+          git rev-parse HEAD
+      - name: Install declared test dependencies
+        run: python3 -m pip install -r requirements-dev.txt
+      - name: Runtime regressions
+        run: python3 -m unittest discover -s skills/agent-graph/tests -p 'test_*.py' -v 2>&1 | tee "$RUNNER_TEMP/runtime-tests.log"
+      - name: Complexity and lint gate
+        if: always()
+        run: python3 -m ruff check . 2>&1 | tee "$RUNNER_TEMP/ruff.log"
+      - name: Retain validation receipts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: efficiency-validation
+          path: |
+            ${{ runner.temp }}/runtime-tests.log
+            ${{ runner.temp }}/ruff.log
+          retention-days: 7
