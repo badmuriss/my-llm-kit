@@ -86,7 +86,7 @@ class RunProgressTests(unittest.TestCase):
         ]
         coordination = build_run_progress_summary(projection, last_event=events[-1], events=events)["coordination"]
         self.assertEqual(coordination["implementation_wall_time_ms"], 3000)
-        self.assertEqual(coordination["coordinator_wait_for_worker_wall_time_ms"], 3000)
+        self.assertEqual(coordination["coordinator_wait_for_worker_wall_time_ms"], "unavailable")
         self.assertEqual(coordination["check_wall_time_ms"], 17)
         self.assertEqual(coordination["audit_wall_time_ms"], 2000)
 
@@ -290,3 +290,58 @@ class RunProgressTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class EfficientWaitBehavior(unittest.TestCase):
+    def test_internal_polling_ignores_cursor_receipts_and_wakes_on_report(self) -> None:
+        from coordinator_wait import wait_for_change
+        now = [0.0]
+        calls = []
+        initial = _projection()
+        # No ready packet here: the only remaining work is the running worker.
+        initial["tasks"].pop("MLK-02")
+        def sync():
+            calls.append(1)
+            state = copy.deepcopy(initial)
+            state["last_sequence"] += len(calls)
+            attempt = state["attempts"]["attempt-mlk-01"]
+            attempt.update({"cursor": str(len(calls)), "last_poll_receipt": f"receipt-{len(calls)}"})
+            if len(calls) == 3:
+                attempt["status"] = "reported"
+                state["tasks"]["MLK-01"]["status"] = "reported"
+            return state
+        receipt = wait_for_change(initial, sync, clock=lambda: now[0], sleep=lambda seconds: now.__setitem__(0, now[0] + seconds))
+        self.assertEqual(receipt["reason"], "state_changed")
+        self.assertEqual(receipt["empty_polls"], 2)
+        self.assertEqual(receipt["poll_count"], 3)
+        self.assertEqual(receipt["elapsed_ms"], 6000)
+
+    def test_wait_bounds_empty_polls_and_never_retries_provider_exceptions(self) -> None:
+        from coordinator_wait import wait_for_change
+        initial = _projection()
+        for options, expected in (({"timeout_seconds": 3}, "timeout"), ({"max_polls": 2}, "poll_limit")):
+            now = [0.0]
+            receipt = wait_for_change(initial, lambda: copy.deepcopy(initial), clock=lambda: now[0], sleep=lambda seconds: now.__setitem__(0, now[0] + seconds), **options)
+            self.assertEqual(receipt["reason"], expected)
+            self.assertLessEqual(receipt["poll_count"], 2)
+        def fail():
+            raise RuntimeError("provider failed")
+        with self.assertRaisesRegex(RuntimeError, "provider failed"):
+            wait_for_change(initial, fail)
+        for options in ({"timeout_seconds": float("nan")}, {"poll_interval": 0}, {"max_polls": True}):
+            with self.assertRaises(ValueError):
+                wait_for_change(initial, fail, **options)
+        initial["questions"] = {"q": {"status": "open"}}
+        self.assertEqual(wait_for_change(initial, fail)["reason"], "attention_required")
+
+    def test_worker_wall_time_merges_overlaps_without_inventing_coordinator_wait(self) -> None:
+        events = [
+            {"type": "attempt_started", "timestamp": "2026-09-10T12:00:00Z", "data": {"attempt_id": "a"}},
+            {"type": "attempt_started", "timestamp": "2026-09-10T12:00:01Z", "data": {"attempt_id": "b"}},
+            {"type": "worker_reported", "timestamp": "2026-09-10T12:00:03Z", "data": {"attempt_id": "a"}},
+            {"type": "worker_reported", "timestamp": "2026-09-10T12:00:04Z", "data": {"attempt_id": "b"}},
+        ]
+        summary = build_run_progress_summary(_projection(), events=events)["coordination"]
+        self.assertEqual(summary["implementation_wall_time_ms"], 4000)
+        self.assertEqual(summary["coordinator_wait_for_worker_wall_time_ms"], "unavailable")
+        self.assertEqual(build_run_progress_summary(_projection(), events=events[:-1])["coordination"]["implementation_wall_time_ms"], "unavailable")

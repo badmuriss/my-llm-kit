@@ -1064,6 +1064,12 @@ def validate_process_decision(value: Any) -> dict[str, Any]:
     """Validate one bounded decision and its complete mode revision chain."""
 
     decision = _validate_schema(value, "process-decision.schema.json", "process decision")
+    from budget_control import evaluate_limits
+
+    try:
+        evaluate_limits(decision["budget"]["limits"], {})
+    except ValueError as error:
+        raise CliValidationError(str(error)) from error
     amendments = decision["amendments"]
     if decision["revision"] != len(amendments) + 1:
         raise CliValidationError(

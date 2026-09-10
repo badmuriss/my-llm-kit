@@ -1,0 +1,10 @@
+{
+  "name": "my-llm-kit-visual-tools",
+  "private": true,
+  "type": "module",
+  "description": "Optional local Mermaid rendering; never installed by core setup",
+  "dependencies": {
+    "@mermaid-js/mermaid-cli": "11.17.0",
+    "puppeteer": "25.10.0"
+  }
+}

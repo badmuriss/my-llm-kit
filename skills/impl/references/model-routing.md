@@ -56,3 +56,25 @@ path-safe wave, keep one heavy worker active, and use dynamic delegation only
 when the coordinator can narrow the parent's allowance.
 
 Routing resolves one attempt profile. It does not choose a worker count. The coordinator derives the smallest useful wave from ready work, path conflicts, host capacity, and observed resource pressure.
+
+
+## Coordinator cost control
+
+Coordinator fallback selects the lowest sufficient compatible effort, not the
+largest advertised one. Coordinator `xhigh`/`max` requires an explicit effort
+override and a persisted escalation reason, including during catalog fallback.
+Worker exceptional-risk rules, model exclusions and immutable policy snapshots
+remain unchanged. The candidate-order list is still planner guidance, not a
+measured model/effort cost optimizer; do not claim otherwise.
+
+Do not use a frontier coordinator to narrate repeated empty waits or redo a
+healthy worker's investigation. Use the bounded runtime wait in graph execution.
+Keep verification tied to a realistic defect and reuse unchanged passing evidence;
+an advisory reviewer preference does not automatically create another repair.
+The task's accepted outcome, not a fixed number of reasoning turns, is the stop
+condition. Effort is not a guaranteed fixed thinking-token allocation.
+
+The 2026-09-10 research follow-up is
+`research/2026-09-10-astra-efficient-orchestration.md`. It records conflicting
+community reports, context-management caveats and API-only capabilities. It is
+not required context on every dispatch and does not establish new cost rankings.
