@@ -89,7 +89,8 @@ def validate_svg(svg: str) -> str:
     for element in root.iter():
         tag = element.tag.removeprefix("{http://www.w3.org/2000/svg}")
         if tag not in TAGS:
-            raise ValueError("Mermaid SVG contains unsupported active or HTML content")
+            safe_tag = re.sub(r"[^a-zA-Z0-9_-]", "?", tag.rsplit("}", 1)[-1])[:80]
+            raise ValueError(f"Mermaid SVG contains unsupported element {safe_tag} with {len(element)} children")
         for attribute, value in element.attrib.items():
             local = attribute.rsplit("}", 1)[-1].lower()
             if local.startswith("on") or (local in {"href", "src"} and not value.startswith("#")):
