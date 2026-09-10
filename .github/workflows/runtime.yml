@@ -1,0 +1,68 @@
+name: Runtime checks
+
+on:
+  pull_request:
+    paths:
+      - 'skills/agent-graph/**'
+      - 'skills/impl/**'
+      - 'skills/spec/**'
+      - 'requirements-dev.txt'
+      - 'ruff.toml'
+      - '.github/workflows/runtime.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'skills/agent-graph/**'
+      - 'skills/impl/**'
+      - 'skills/spec/**'
+      - 'requirements-dev.txt'
+      - 'ruff.toml'
+      - '.github/workflows/runtime.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: runtime-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  runtime:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Install test dependencies
+        run: python3 -m pip install -r requirements-dev.txt
+      - name: Runtime regressions
+        run: python3 -m unittest discover -s skills/agent-graph/tests -p 'test_*.py'
+      - name: Visual specification regressions
+        run: python3 -m unittest discover -s skills/spec/tests -v
+      - name: Complexity and lint gate
+        if: always()
+        run: python3 -m ruff check .
+  visual:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      PUPPETEER_SKIP_DOWNLOAD: "1"
+      CHROME_PATH: /usr/bin/google-chrome
+      VISUAL_OUTPUT: ${{ runner.temp }}/visual-preview
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Install optional visual tools only for this job
+        run: npm install --prefix skills/spec/tools --ignore-scripts --no-audit --no-fund
+      - name: Render Mermaid, HTML and PDF with real Chromium
+        run: node skills/spec/tools/smoke.mjs
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: visual-preview
+          path: ${{ runner.temp }}/visual-preview
+          retention-days: 7

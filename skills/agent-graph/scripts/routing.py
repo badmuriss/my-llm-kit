@@ -484,6 +484,55 @@ def _resolved(
     )
 
 
+def _coordinator_fallback(
+    profiles: Sequence[ModelCapability], request: RoutingRequest,
+    requested: Mapping[str, str | None], safe_lane: str, safe_effort: str,
+) -> RoutingDecision | None:
+    """Downgrade unavailable preferences using the least sufficient effort."""
+
+    overrides = request.overrides
+    requested_lane = str(requested["lane"])
+    requested_effort = str(requested["effort"])
+    coordinator_exceptional = overrides.effort in EXCEPTIONAL_EFFORTS and bool(request.escalation_reason)
+    fallback_candidates: list[_Candidate] = []
+    for profile in profiles:
+        if _LANE_RANK[profile.lane] < _LANE_RANK[safe_lane]:
+            continue
+        if overrides.lane is not None and profile.lane != requested_lane:
+            continue
+        if overrides.effort is not None:
+            compatible_efforts = (
+                [requested_effort] if requested_effort in profile.efforts else []
+            )
+        else:
+            compatible_efforts = [
+                effort
+                for effort in profile.efforts
+                if _EFFORT_RANK[effort] >= _EFFORT_RANK[safe_effort]
+            ]
+        if compatible_efforts:
+            permitted = [
+                effort for effort in compatible_efforts
+                if effort not in EXCEPTIONAL_EFFORTS or coordinator_exceptional
+            ]
+            if permitted:
+                fallback_candidates.append(_Candidate(profile, permitted[0]))
+    if fallback_candidates:
+        selected = min(
+            fallback_candidates,
+            key=lambda candidate: (
+                _LANE_RANK[candidate.capability.lane],
+                _EFFORT_RANK[candidate.effort],
+                candidate.capability.cost_rank,
+                candidate.capability.agent,
+                candidate.capability.model,
+            ),
+        )
+        return _resolved(request, requested, selected)
+
+    return None
+
+
 def route(
     request: RoutingRequest,
     catalog: RuntimeCatalog,
@@ -598,6 +647,11 @@ def route(
             all_candidates.append(_Candidate(profile, compatible_efforts[0]))
 
     candidates = all_candidates
+    coordinator_exceptional = (
+        overrides.effort in EXCEPTIONAL_EFFORTS and bool(request.escalation_reason)
+    )
+    if request.role == "coordinator" and not coordinator_exceptional:
+        candidates = [candidate for candidate in candidates if candidate.effort not in EXCEPTIONAL_EFFORTS]
     exceptional_escalation = _has_exceptional_escalation_reason(request.escalation_reason)
     if request.role != "coordinator" and not exceptional_escalation:
         candidates = [
@@ -636,44 +690,17 @@ def route(
         )
 
     if request.role == "coordinator":
-        fallback_candidates: list[_Candidate] = []
-        for profile in profiles:
-            if _LANE_RANK[profile.lane] < _LANE_RANK[safe_lane]:
-                continue
-            if overrides.lane is not None and profile.lane != requested_lane:
-                continue
-            if overrides.effort is not None:
-                compatible_efforts = (
-                    [requested_effort] if requested_effort in profile.efforts else []
-                )
-            else:
-                compatible_efforts = [
-                    effort
-                    for effort in profile.efforts
-                    if _EFFORT_RANK[effort] >= _EFFORT_RANK[safe_effort]
-                ]
-            if compatible_efforts:
-                fallback_candidates.append(_Candidate(profile, compatible_efforts[-1]))
-        if fallback_candidates:
-            selected = min(
-                fallback_candidates,
-                key=lambda candidate: (
-                    (
-                        _LANE_RANK[candidate.capability.lane]
-                        if overrides.lane is not None
-                        else -_LANE_RANK[candidate.capability.lane]
-                    ),
-                    (
-                        _EFFORT_RANK[candidate.effort]
-                        if overrides.effort is not None
-                        else -_EFFORT_RANK[candidate.effort]
-                    ),
-                    candidate.capability.cost_rank,
-                    candidate.capability.agent,
-                    candidate.capability.model,
-                ),
-            )
-            return _resolved(request, requested, selected)
+        fallback = _coordinator_fallback(profiles, request, requested, safe_lane, safe_effort)
+        if fallback is not None:
+            return fallback
+
+    if request.role == "coordinator" and not coordinator_exceptional and any(
+        candidate.effort in EXCEPTIONAL_EFFORTS for candidate in all_candidates
+    ):
+        return _blocked(
+            request, requested,
+            "Coordinator exceptional effort requires an explicit effort override and escalation reason.",
+        )
 
     details: list[str] = []
     if request.required_tools:

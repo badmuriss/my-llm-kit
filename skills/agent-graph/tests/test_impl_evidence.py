@@ -86,6 +86,7 @@ class ImplEvidenceBehavior(unittest.TestCase):
             },
         )
         (change / "process-decision.json").write_text(json.dumps(transition), encoding="utf-8")
+        (self.repository / ".gitignore").write_text(".visual-evidence/\n", encoding="utf-8")
         subprocess.run(["git", "init", "-q", str(self.repository)], check=True)
         subprocess.run(["git", "-C", str(self.repository), "config", "user.email", "test@example.com"], check=True)
         subprocess.run(["git", "-C", str(self.repository), "config", "user.name", "Test"], check=True)

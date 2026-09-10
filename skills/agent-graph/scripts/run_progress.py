@@ -172,9 +172,25 @@ def _event_timestamp(event: Mapping[str, Any]) -> datetime | None:
     if not isinstance(value, str):
         return None
     try:
-        return datetime.fromisoformat(value.replace("Z", "+00:00"))
+        result = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        return result if result.tzinfo is not None else None
     except ValueError:
         return None
+
+
+def _worker_wall_time(starts: Mapping[str, datetime | None], ends: Mapping[str, datetime | None]) -> int | str:
+    if not starts or any(start is None or ends.get(key) is None or ends[key] < start for key, start in starts.items()):
+        return "unavailable"
+    intervals = sorted((start, ends[key]) for key, start in starts.items())
+    left, right = intervals[0]
+    duration = 0.0
+    for start, end in intervals[1:]:
+        if start > right:
+            duration += (right - left).total_seconds()
+            left, right = start, end
+        else:
+            right = max(right, end)
+    return int((duration + (right - left).total_seconds()) * 1000)
 
 
 def _coordination_metrics(projection: Mapping[str, Any], events: list[Mapping[str, Any]]) -> dict[str, Any]:
@@ -192,7 +208,7 @@ def _coordination_metrics(projection: Mapping[str, Any], events: list[Mapping[st
             ends[attempt_id] = _event_timestamp(event)
         if event.get("type") == "worker_reported":
             reported.add(attempt_id)
-    implementation = [int((ends[key] - start).total_seconds() * 1000) for key, start in starts.items() if start is not None and ends.get(key) is not None and ends[key] >= start]
+    implementation = _worker_wall_time(starts, ends)
     check_started: dict[str, tuple[str, datetime]] = {}
     audit_intervals: list[int] = []
     for event in events:
@@ -219,9 +235,9 @@ def _coordination_metrics(projection: Mapping[str, Any], events: list[Mapping[st
     return {
         "execution_mode": projection.get("execution_mode", "single_writer"),
         "latest_transition_reason": _mapping(projection.get("reduction")).get("reason"),
-        "implementation_wall_time_ms": sum(implementation) if implementation else "unavailable",
+        "implementation_wall_time_ms": implementation,
         "check_wall_time_ms": check_wall,
-        "coordinator_wait_for_worker_wall_time_ms": sum(implementation) if implementation else "unavailable",
+        "coordinator_wait_for_worker_wall_time_ms": "unavailable",
         "audit_wall_time_ms": sum(audit_intervals) if audit_intervals else "unavailable",
         "dispatch_count": sum(kind == "attempt_started" for kind in event_types),
         "operational_start_failures": sum(kind == "attempt_start_failed" for kind in event_types) + sum(event.get("type") == "attempt_abandoned" and str(_mapping(event.get("data")).get("attempt_id")) not in reported and not isinstance(_mapping(attempts.get(str(_mapping(event.get("data")).get("attempt_id")))).get("check"), Mapping) for event in events),

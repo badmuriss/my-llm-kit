@@ -25,6 +25,7 @@ if str(SCRIPTS_DIRECTORY) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_DIRECTORY))
 
 
+from budget_control import observe_admission
 from browser_surfaces import (
     BrowserSurfaceError,
     validate_browser_surface_request,
@@ -164,6 +165,16 @@ class GraphValidationError(GraphError):
 
 class JournalError(GraphError):
     """Reports journal corruption or an invalid event."""
+
+
+class BudgetAdmissionError(JournalError):
+    """New work would exceed a limit or requires an unavailable observation."""
+
+    code = "budget_admission_blocked"
+
+    def __init__(self, assessment: Mapping[str, Any]) -> None:
+        super().__init__("new work blocked: " + ", ".join(assessment["blocking"]))
+        self.details = {"budget": dict(assessment)}
 
 
 class StaleCoordinatorError(JournalError):
@@ -4612,6 +4623,10 @@ class EventJournal:
                     f"coordinator generation {coordinator_generation} is stale; "
                     f"current generation is {current_generation}"
                 )
+            if event_type == "attempt_reserved":
+                assessment = observe_admission(projection, events)
+                if assessment["blocking"]:
+                    raise BudgetAdmissionError(assessment)
             sequence = len(events) + 1
             event = {
                 "schema_version": SCHEMA_VERSION,

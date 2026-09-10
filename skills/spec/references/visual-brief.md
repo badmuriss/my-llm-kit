@@ -1,96 +1,113 @@
 # Human-readable visual specification
 
-The owner must be able to understand the proposed change, challenge a decision
-before implementation, and find the right evidence when something fails. A
-pretty diagram is not acceptance evidence. Keep the canonical decision/spec;
-render a view of it rather than maintaining a second independent plan.
+Help the owner understand and challenge a proposed change before implementation,
+and locate evidence after failure. A diagram is not acceptance evidence. Keep the
+canonical decision/spec; derive the HTML and PDF from it, not another plan.
 
-## What to present
-
-For substantial planning, show a compact overview containing the objective,
-before/after behavior, important decisions and exclusions, verification criteria,
-and failure/recovery paths. Make unverified assumptions visible. Expose technical
-detail progressively instead of putting every file and agent in one diagram.
-
-Choose visuals by the question, not by the available tool:
+## Choose the view by the question
 
 | Question | Useful view |
 |---|---|
 | What changes and why? | Before/after cards and decision alternatives |
-| Which systems depend on each other? | A small architecture/data-flow diagram |
+| Which systems depend on each other? | Small architecture or data-flow diagram |
 | What happens over time, including retries? | Sequence or state diagram with failure paths |
 | What does the user interact with? | Wireframe or screen flow, including empty/error states |
 | How will we know it works? | Criterion-to-check/evidence table |
 | Where should I look after a failure? | Symptom, evidence locator, owner and recovery table |
 
-The worker dependency graph is not the software architecture. Label the system
-boundary, arrows and their meanings. Use color plus text, not color alone. A
-simple task should receive a short explanation, not a compulsory report pack.
+A worker dependency graph is not the software architecture. Label boundaries,
+arrows and their meanings. Expose detail progressively; use color plus text, not
+color alone. Substantial plans should explain objective, changes, choices,
+exclusions, acceptance and failure/recovery. Trivial edits need no report pack.
 
-## Included renderer
+## One source, including Mermaid
 
-The dependency-free script reads exactly one `visual-brief` JSON fence in the
-existing Markdown spec. Use the field shape in
-[`visual-brief-example.md`](../assets/visual-brief-example.md). This is bounded
-presentation metadata inside the canonical spec, not another scheduler, task
-ledger or separately maintained JSON file. Detailed reasoning stays in that same
-spec; the visual overview need not reproduce it verbatim.
+Put exactly one `visual-brief` JSON fence and the relevant standard `mermaid`
+fences in the existing Markdown spec. Follow
+[`visual-brief-example.md`](../assets/visual-brief-example.md). Write each diagram
+under a short heading, preferably with `accTitle` and a one-line `accDescr`.
+Use a flowchart, sequence, state, class or ER diagram. Keep at most six diagrams,
+12,000 characters each. Split complex views instead of shrinking unreadable text.
+Do not force a diagram when a comparison or short explanation is clearer.
 
-```text
-python3 "<installed-spec>/scripts/render_visual_brief.py" "<project>/decisions/<slug>.md" --output "<project>/decisions/<slug>.html"
-python3 "<installed-spec>/scripts/render_visual_brief.py" "<project>/decisions/<slug>.md" --output "<project>/decisions/<slug>.html" --check
+The renderer embeds locally produced SVGs as isolated data images. HTML needs no
+JavaScript, CDN, network requests or adjacent asset files. Mermaid source remains
+available in collapsible details for editing; print hides those code blocks and
+keeps the diagrams and captions. Missing tools or invalid diagrams fail the build,
+not silently fall back to raw Mermaid in a supposedly complete PDF.
+
+Plain briefs without Mermaid still need Python only. Install optional visual
+tooling explicitly when needed, not on every core install:
+
+```sh
+npm install --prefix "<installed-spec>/tools"
+python3 "<installed-spec>/scripts/render_visual_brief.py" "<project>/decisions/<slug>.md" \
+  --output "<project>/decisions/<slug>.html" \
+  --mmdc "<installed-spec>/tools/node_modules/.bin/mmdc"
 ```
 
-On Windows use `py -3`. Resolve the script from the installed skill, not the
-consumer project's checkout. Open the HTML locally; it contains no JavaScript,
-CDN dependency, remote fonts or network calls. It supports section navigation,
-progressive source details, a before/after comparison, an ordered decision flow,
-acceptance evidence and troubleshooting cards. Print the same page to PDF when
-requested or useful for sharing; do not author another independent PDF document.
+An existing `mmdc` on PATH works without `--mmdc`. The npm dependency installs a
+local Mermaid CLI and Puppeteer browser; nothing is added globally. With an
+existing Chromium/Chrome, use `PUPPETEER_SKIP_DOWNLOAD=1` during installation and
+pass `--browser /path/to/chrome`. No package installation happens in the renderer.
+On Windows use `py -3` and the installed `mmdc.cmd`; native Windows is unverified.
+Resolve all skill scripts from their installed directory, not the consumer repo.
 
-The source hash and proposed/not-executed notice remain visible. `--check`
-compares both the source fingerprint and the generated content. It never approves
-the spec or the code. The renderer refuses to overwrite an unrelated HTML file.
-The input limits keep the overview legible; split a larger view rather than
-shrinking text or silently dropping content.
+## PDF from the same rendered HTML
 
-## Rich diagrams and portability
+```sh
+python3 "<installed-spec>/scripts/render_visual_brief.py" "<project>/decisions/<slug>.md" \
+  --output "<project>/decisions/<slug>.html" \
+  --mmdc "<installed-spec>/tools/node_modules/.bin/mmdc" \
+  --browser /path/to/chrome --pdf "<project>/decisions/<slug>.pdf"
+```
 
-The included ordered flow is an overview, not a general graph renderer. Use an
-existing Mermaid renderer for relational/sequence diagrams, or draw.io when
-editable canvas layout adds value. No MCP or renderer installation is required
-for the included overview, and none is automatically added to the global stack.
-Keep diagram source near the canonical spec and embed a locally rendered SVG
-when composing a richer view. Never pass private architecture or secrets to a
-public diagram URL or remote renderer without appropriate authorization.
+Alternatively open the HTML and print to PDF. `--pdf` requires local Chromium or
+Chrome (defaults to `chromium` on PATH); it refuses to overwrite an existing PDF.
+Choose a new export name or explicitly remove your previous export. The browser sandbox remains enabled; configure a supported local browser rather
+than disabling its protections. Renderer subprocesses have finite timeouts and
+fixed Mermaid security configuration. No private diagram is sent to a public
+rendering service.
 
-draw.io's official tooling supports Mermaid imports and editable diagrams;
-Mermaid CLI supports SVG, PNG and PDF export. Automatic rendering does not prove
-that dependencies, labels, retry behavior or evidence claims are correct. Check
-those against the source, then inspect the rendered view for clipping and overlap.
-Avoid repeated cosmetic-agent passes: reuse the template, render once, repair a
-concrete defect, and stop. Sources accessed 2026-09-10:
-https://www.drawio.com/docs/manual/generate/drawio-mcp-server/
-https://www.drawio.com/docs/manual/mermaid/
-https://github.com/mermaid-js/mermaid-cli
+Check freshness without rerendering Mermaid, starting a browser or writing:
+
+```sh
+python3 "<installed-spec>/scripts/render_visual_brief.py" "<project>/decisions/<slug>.md" \
+  --output "<project>/decisions/<slug>.html" --check
+```
+
+This verifies source identity, the embedded-image digest and exact HTML content.
+It does not approve the spec, validate diagram semantics or certify a separately
+edited PDF. Source changes require regeneration, including the PDF export.
+Unrelated HTML and symlink outputs are not overwritten. Inputs are escaped;
+Mermaid config directives, remote resources and active SVG/HTML are rejected.
 
 ## Handoff and execution evidence
 
-Present the visual brief before code changes for substantial work. When the owner
-already authorized implementation and no material uncertainty remains, presenting
-the brief does not manufacture another approval round. Stop for a genuinely
-unresolved scope/risk decision or an existing approval requirement.
+Present the visual brief before substantial code changes. Existing authorization
+still applies: do not manufacture another approval round. Stop for a genuine
+scope/risk decision or an existing approval requirement. Check diagram semantics
+against the spec and inspect desktop, tablet/mobile and printed views for clipped
+labels, overlap, unreadable scaling and missing arrows. A render/build alone is
+not visual acceptance. Reuse the template and fix concrete defects, not endless
+cosmetic passes.
 
-This renderer is a static planning view, not a live dashboard. A later execution
-view must derive actual state from the existing verified journal and check
-receipts, preserve generation/source identity, and distinguish proposed, running,
-passed, failed and unavailable. Never infer a successful check from a diagram or
-checked Markdown box. Do not add a second status ledger for visualization.
+The page is a static planning snapshot, not a live dashboard. Actual execution
+views must derive from the existing verified journal and check receipts,
+preserving generation and source identity. Never invent another status ledger.
+Keep rendered HTML/PDF/SVG out of recurrent model context. Return paths, source
+fingerprint and the relevant change summary; regenerate after source changes,
+not after every worker poll.
 
-Keep HTML/PDF and large rendered assets outside recurrent model context. Return
-their path, source fingerprint and relevant change summary; reread source only
-when a decision needs it. Re-render after a material spec change, not every poll.
+Mermaid is the default relational view here; draw.io remains an optional editor,
+not an installed MCP dependency. C4 levels are selected for useful questions,
+not as a mandatory four-level documentation exercise.
 
-C4's creator recommends only the diagram levels that add value and separates a
-model from its views; use that principle, not a mandatory four-level ceremony:
-https://c4model.com/diagrams and https://c4model.com/tooling, accessed 2026-09-10.
+Primary references accessed 2026-09-10:
+https://github.com/mermaid-js/mermaid-cli
+https://mermaid.js.org/config/usage.html
+https://mermaid.js.org/config/schema-docs/config.html
+https://www.drawio.com/docs/manual/mermaid/
+https://www.drawio.com/docs/manual/generate/drawio-mcp-server/
+https://c4model.com/diagrams
+https://c4model.com/tooling

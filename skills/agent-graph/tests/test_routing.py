@@ -582,5 +582,29 @@ class CatalogValidationBehavior(unittest.TestCase):
         )
 
 
+class CoordinatorEconomyBehavior(unittest.TestCase):
+    def test_fallback_selects_low_instead_of_the_largest_advertised_effort(self) -> None:
+        catalog = {"profiles": [{"agent": "codex", "model": "gpt-5.6-luna", "lane": "fast", "efforts": ["low", "medium", "high", "xhigh", "max"]}]}
+        decision = routing.plan_route(catalog, role="coordinator")
+        self.assertEqual(decision.resolved["effort"], "low")
+        self.assertIn("resolved to low", decision.fallback_reason)
+
+    def test_normal_and_fallback_routes_never_implicitly_select_exceptional_effort(self) -> None:
+        for lane in ("fast", "balanced", "strong"):
+            for effort in ("xhigh", "max"):
+                with self.subTest(lane=lane, effort=effort):
+                    catalog = {"profiles": [{"agent": "codex", "model": "gpt-6-astra", "lane": lane, "efforts": [effort]}]}
+                    self.assertEqual(routing.plan_route(catalog, role="coordinator").outcome, "blocked")
+                    self.assertEqual(routing.plan_route(catalog, role="coordinator", escalation_reason="Owner requested a thorough review.").outcome, "blocked")
+                    approved = routing.plan_route(catalog, role="coordinator", overrides={"effort": effort}, escalation_reason="Owner requested this exceptional review budget.")
+                    self.assertEqual(approved.resolved["effort"], effort)
+
+    def test_fallback_preserves_safety_and_explicit_effort(self) -> None:
+        catalog = {"profiles": [{"agent": "codex", "model": "gpt-5.6-luna", "lane": "fast", "efforts": ["low", "medium", "high"]}]}
+        self.assertEqual(routing.plan_route(catalog, role="coordinator", risk="material").outcome, "blocked")
+        selected = routing.plan_route(catalog, role="coordinator", overrides={"effort": "high"})
+        self.assertEqual(selected.resolved["effort"], "high")
+
+
 if __name__ == "__main__":
     unittest.main()

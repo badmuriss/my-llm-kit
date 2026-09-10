@@ -75,3 +75,16 @@ never present it as a measured total.
 Run `python3 "<research-dir>/scripts/audit_finding.py" <finding.md>` (Windows:
 `py -3`). Fix structural failures. The validator checks provenance structure, not
 whether the sources entail the conclusion. Complete that judgment yourself.
+
+
+## Reusable evidence cards
+
+For comparative model or harness research, keep a compact card in the existing
+report: source URL/version, access date, task and input scope, actual model/effort,
+measurement basis (API billing, credits, allowance or raw tokens), outcome,
+limitations and the decision it can affect. Unknown fields remain unknown.
+Retain source locators rather than pasting full threads and papers into every
+worker/coordinator context. Treat a comment quoted by several sites as one report.
+Never equate raw cached input volume with its share of billed cost, or a
+subscription percentage with API dollars. Abstract-only results are discovery
+leads; read the method and contrary/appendix results before changing defaults.

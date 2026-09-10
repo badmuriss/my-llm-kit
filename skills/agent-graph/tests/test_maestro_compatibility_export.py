@@ -223,26 +223,25 @@ class MaestroCompatibilityExportTests(unittest.TestCase):
         self.write_state(state)
         self.assert_rejected(self.export())
 
-    def test_accepts_exact_legacy_ordinary_no_status_artifact(self) -> None:
-        legacy = ROOT / "openspec" / "runs" / "maestro-harness-orchestration" / "maestro-harness-20260823T072820Z"
-        state = json.loads((legacy / "state.json").read_text())
-        check = state["tasks"]["MLK-15"]["check"]
-        document = json.loads((ROOT / check["artifact"]).read_text())
-        self.assertNotIn("status", document)
-        evidence, execution = exporter._check_evidence(ROOT, state, {}, check, "MLK-15", exporter.CHECK_RECORDED, None)
-        self.assertEqual(evidence["ref"], f"file:{check['artifact']}")
+    def test_accepts_legacy_ordinary_no_status_artifact_and_rejects_timeout(self) -> None:
+        # Reproduce the legacy format without requiring a developer's ignored run.
+        artifact = "legacy-check.json"
+        document = {"command": CHECK, "exit_code": 0, "timed_out": False}
+        check = {**document, "status": "passed", "task_id": "MLK-15", "attempt_id": "legacy-attempt", "artifact": artifact}
+        (self.repository / artifact).write_text(json.dumps(document))
+        evidence, execution = exporter._check_evidence(self.repository, {}, {}, check, "MLK-15", exporter.CHECK_RECORDED, None)
+        self.assertEqual(evidence["ref"], f"file:{artifact}")
         self.assertIsNone(execution)
+        (self.repository / artifact).write_text(json.dumps({**document, "timed_out": True}))
+        with self.assertRaises(exporter.ExportError):
+            exporter._check_evidence(self.repository, {}, {}, check, "MLK-15", exporter.CHECK_RECORDED, None)
 
-    def test_accepts_exact_legacy_done_cleanup_with_verified_receipt(self) -> None:
-        legacy = ROOT / "openspec" / "runs" / "maestro-harness-orchestration" / "maestro-harness-20260823T121943Z"
-        state = json.loads((legacy / "state.json").read_text())
-        candidates = [item for item in state["cleanup"].values() if item.get("status") == "done" and item.get("receipt", {}).get("status") == "verified"]
-        self.assertTrue(candidates)
-        for cleanup in candidates:
-            self.assertIsInstance(cleanup["owner"], str)
-            self.assertNotIn("identity_version", cleanup)
-            self.assertEqual(cleanup["receipt"]["status"], "verified")
+    def test_accepts_legacy_done_cleanup_only_with_a_valid_receipt(self) -> None:
+        state = {"cleanup": {"legacy": {"owner": "legacy-attempt", "status": "done", "receipt": {"status": "verified"}}}}
         exporter._verify_cleanup(state)
+        state["cleanup"]["legacy"]["receipt"]["status"] = "pending"
+        with self.assertRaises(exporter.ExportError):
+            exporter._verify_cleanup(state)
 
     def test_rejects_incomplete_partial_and_unresolved_runs(self) -> None:
         journal = self.run_directory / "events.jsonl"

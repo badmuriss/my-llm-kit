@@ -435,3 +435,47 @@ class AdaptiveIntakeBehavior(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class BudgetObservationBehavior(unittest.TestCase):
+    def test_hard_limits_distinguish_unknown_invalid_zero_and_exhausted_usage(self) -> None:
+        from budget_control import evaluate_limits
+        limit = {"resource": "tokens", "value": 100, "unit": "tokens", "rationale": "Test", "enforcement": "hard"}
+        for value in (None, True, -1, float("nan"), float("inf")):
+            with self.subTest(value=value):
+                self.assertEqual(evaluate_limits([limit], {"tokens": value})["blocking"], ["budget_unavailable:tokens"])
+        self.assertEqual(evaluate_limits([limit], {"tokens": 0})["blocking"], [])
+        self.assertEqual(evaluate_limits([limit], {"tokens": 100})["blocking"], ["budget_exhausted:tokens"])
+        legacy = {key: value for key, value in limit.items() if key != "enforcement"}
+        self.assertEqual(evaluate_limits([legacy], {})["blocking"], [])
+        self.assertEqual(evaluate_limits([legacy], {})["unavailable"], ["tokens"])
+        advisory = {**limit, "enforcement": "advisory"}
+        self.assertEqual(evaluate_limits([advisory], {"tokens": 200})["advisory"], ["budget_exhausted:tokens"])
+        with self.assertRaises(ValueError):
+            evaluate_limits([limit, {**limit, "unit": "other"}], {})
+
+    def test_admission_counts_pending_cleanup_and_normalizes_wall_time(self) -> None:
+        from budget_control import observe_admission
+        from datetime import UTC, datetime
+        limits = [{"resource": "workers", "value": 1, "unit": "workers", "enforcement": "hard"},
+                  {"resource": "wall_time", "value": 1, "unit": "minutes", "enforcement": "hard"}]
+        state = {"process_decision": {"budget": {"limits": limits}},
+                 "attempts": {"a": {"status": "reported"}},
+                 "cleanup": {"c": {"owner": "a", "status": "pending"}}}
+        events = [{"timestamp": "2026-09-10T12:00:00Z"}]
+        result = observe_admission(state, events, now=datetime(2026, 9, 10, 12, 1, tzinfo=UTC))
+        self.assertEqual(result["usage"], {"workers": 1, "wall_time": 1})
+        self.assertEqual(result["blocking"], ["budget_exhausted:workers", "budget_exhausted:wall_time"])
+        state["cleanup"]["c"]["status"] = "verified"
+        self.assertEqual(observe_admission(state, events)["usage"]["workers"], 0)
+
+    def test_rejects_nonfinite_limits_and_ambiguous_resource_units(self) -> None:
+        for value in (float("inf"), float("nan")):
+            candidate = process_decision("graph")
+            candidate["budget"]["limits"][0]["value"] = value
+            with self.assertRaises(CliValidationError):
+                validate_process_decision(candidate)
+        candidate = process_decision("graph")
+        candidate["budget"]["limits"].append(dict(candidate["budget"]["limits"][0]))
+        with self.assertRaises(CliValidationError):
+            validate_process_decision(candidate)
