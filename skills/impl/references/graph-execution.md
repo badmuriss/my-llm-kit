@@ -60,6 +60,35 @@ Run `claim-coordinator`, then `resume`. Never bootstrap from a claimed coordinat
    `cleanup-register` before capsule delivery or other side effects. Finish them
    with `cleanup-finish` only after the target or receipt proves cleanup.
 
+When only workers are running, prefer an advertised host completion notification.
+Otherwise call the pinned runtime's `wait --generation <n> --timeout-seconds 180`
+once instead of repeatedly returning empty `sync` results to the model. It runs
+bounded synchronization in code and returns a compact receipt on semantic change,
+attention, a deadline or a poll limit. Use `--poll-interval` and `--max-polls` to
+bound provider load. A timeout alone never authorizes interrupting, replacing or
+raising the effort of a healthy worker. Continue other ready, non-conflicting work
+instead of waiting. Match the enclosing host tool timeout to the selected wait;
+the runtime cannot prevent the host from re-entering its model prematurely.
+
+`wait` preserves generation fences and ingestion checks. It does not dispatch,
+grade, repair, or introduce a second scheduler. The deadline stops another poll
+from starting; an in-flight provider call keeps its driver timeout. Its elapsed
+receipt measures this wait call, not global coordinator idle time or token cost.
+Host polls returning exactly no events and no cursor change create no extra
+journal event or receipt file. Provider state changes remain recorded.
+
+New intake budgets are hard unless explicitly marked advisory. Each new attempt
+reservation checks the budget under the journal lock, before worker launch.
+`attempts` counts all reservations, including operational start failures;
+`workers` counts active attempts and unsettled owned cleanup. Wall-time limits
+use aware journal timestamps and declared seconds, milliseconds or minutes.
+Missing token/spend/context/tool-cost measurements block a hard limit; they are
+not inferred from journal events or worker durations. Use observable operational
+limits when provider totals are unavailable. An admission limit cannot cancel
+already-running spend; cleanup and evidence recording remain allowed. Old pinned
+runtimes/policies keep their behavior. Omitted enforcement in legacy decisions
+continues legacy handling and reports missing observations as unavailable.
+
 Use `status --watch` for projection-only monitoring. Use `takeover` after coordinator loss. Takeover reconciles attempts, increments the generation, and fences the prior coordinator.
 Resume reports incomplete reservations. Recover them with `recover-driver-selection` or `recover-attempt`, which reuse the provider retry identity. If reconciliation proves an attempt cannot return, run `abandon-attempt --attempt <id> --reason <text>`; that command must prove driver-owned release before making the task retryable. Never retry a reserved, running, or interrupted attempt in place.
 

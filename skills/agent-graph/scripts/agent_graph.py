@@ -1467,6 +1467,7 @@ def _initialize(
     stop_reasons = evaluate_stop_conditions(
         process_decision,
         permission_observed=graph_contract["permission_observed"],
+        usage={"attempts": 0, "workers": 0, "wall_time": 0},
     )
     if stop_reasons:
         raise AgentGraphCliError(
@@ -3894,6 +3895,24 @@ def _release_reduction_surplus(
     }, projection
 
 
+def command_wait(arguments: argparse.Namespace) -> dict[str, Any]:
+    from coordinator_wait import wait_for_change
+
+    directory = _run_directory(arguments.repo, arguments.change, arguments.run_id)
+    projection = _journal(directory).verify_projection()
+    _generation(arguments, projection)
+    if ready_tasks(_saved_graph(projection), projection):
+        return {"reason": "ready_work", "poll_count": 0, "empty_polls": 0, "elapsed_ms": 0, "model_calls_by_wait": 0, "state": projection}
+    try:
+        return wait_for_change(
+            projection, lambda: command_sync(arguments)["state"],
+            timeout_seconds=arguments.timeout_seconds,
+            poll_interval=arguments.poll_interval, max_polls=arguments.max_polls,
+        )
+    except ValueError as error:
+        raise AgentGraphCliError(str(error)) from error
+
+
 def command_sync(arguments: argparse.Namespace) -> dict[str, Any]:
     directory = _run_directory(arguments.repo, arguments.change, arguments.run_id)
     journal = _journal(directory)
@@ -4008,6 +4027,9 @@ def command_sync(arguments: argparse.Namespace) -> dict[str, Any]:
                 malformed_candidate,
             )
             observed.append({"malformed_result_reconciliation": reconciled})
+            continue
+        if (isinstance(driver, HostDriver) and receipt.raw == {"events": []}
+                and receipt.external_refs.get("cursor") == attempt.get("cursor")):
             continue
         receipt_id, receipt_path = _driver_receipt(arguments.repo, directory, receipt)
         observed.append({"attempt_id": attempt_id, "receipt_id": receipt_id, "receipt_path": receipt_path})
@@ -7112,6 +7134,13 @@ def build_parser() -> argparse.ArgumentParser:
     sync = commands.add_parser("sync")
     _add_common(sync, mutate=True)
     sync.set_defaults(handler=command_sync)
+
+    wait = commands.add_parser("wait")
+    _add_common(wait, mutate=True)
+    wait.add_argument("--timeout-seconds", type=float, default=180)
+    wait.add_argument("--poll-interval", type=float, default=2)
+    wait.add_argument("--max-polls", type=int, default=60)
+    wait.set_defaults(handler=command_wait)
 
     record = commands.add_parser("record-result")
     _add_common(record, mutate=True)

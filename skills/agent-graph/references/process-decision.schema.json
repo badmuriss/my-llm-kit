@@ -176,6 +176,7 @@
             "cleanup"
           ]
         },
+        "enforcement": {"enum": ["hard", "advisory"]},
         "value": {"type": "number", "exclusiveMinimum": 0},
         "unit": {"type": "string", "minLength": 1, "maxLength": 64},
         "rationale": {"type": "string", "minLength": 1, "maxLength": 1024}

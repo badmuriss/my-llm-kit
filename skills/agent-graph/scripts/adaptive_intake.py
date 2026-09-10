@@ -304,6 +304,12 @@ def decide_process(
     budget_limits = selected_signals.get("budget_limits", [])
     if not isinstance(budget_limits, list):
         raise CliValidationError("adaptive intake budget_limits must be a list")
+    # New contracts must declare what an unobserved limit means. Old frozen
+    # decisions remain unchanged; callers can explicitly choose advisory.
+    budget_limits = [
+        {"enforcement": "hard", **limit} if isinstance(limit, Mapping) else limit
+        for limit in budget_limits
+    ]
     mode, graph_blockers = _select_mode(
         selected_signals, observations, packets, packet_blockers, budget_limits
     )
@@ -440,11 +446,10 @@ def evaluate_stop_conditions(
         or observations["external_effects"] != "none"
     ):
         reasons.append("insufficient_oracle_for_blast_radius")
-    measured = dict(usage or {})
-    for limit in current["budget"]["limits"]:
-        value = measured.get(limit["resource"])
-        if isinstance(value, (int, float)) and value >= limit["value"]:
-            reasons.append(f"budget_exhausted:{limit['resource']}")
+    from budget_control import evaluate_limits
+
+    assessment = evaluate_limits(current["budget"]["limits"], dict(usage or {}))
+    reasons.extend(assessment["blocking"])
     return reasons
 
 

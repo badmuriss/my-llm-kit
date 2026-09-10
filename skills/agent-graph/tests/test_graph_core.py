@@ -1016,6 +1016,39 @@ class JournalBehavior(unittest.TestCase):
             "effective_scope": projection["attempts"][attempt_id]["effective_scope"],
         }
 
+    def test_admits_only_one_concurrent_reservation_and_preserves_cleanup_access(self) -> None:
+        import concurrent.futures
+        import threading
+
+        decision = graph_intake()["decision"]
+        decision["budget"]["limits"] = [{"resource": "attempts", "value": 1, "unit": "attempts", "rationale": "One reservation", "enforcement": "hard"}]
+        self.journal.append("run_started", {
+            "change": "portable-graph", "run_id": "run-1", "coordinator_id": "coordinator-1",
+            "coordinator_generation": 1, "workspace_scope": workspace_scope(),
+            "control_runtime": CONTROL_RUNTIME, "tasks": [task.to_dict() for task in self.graph.tasks],
+            "process_decision": decision,
+        }, coordinator_generation=1)
+        barrier = threading.Barrier(2)
+
+        def reserve(index: int) -> str:
+            independent = graph_core.EventJournal(self.directory / "events.jsonl")
+            barrier.wait(timeout=5)
+            try:
+                independent.append("attempt_reserved", attempt_data(f"attempt-{index}"), coordinator_generation=1)
+                return "admitted"
+            except graph_core.BudgetAdmissionError:
+                return "blocked"
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
+            outcomes = list(pool.map(reserve, (1, 2)))
+        self.assertCountEqual(outcomes, ["admitted", "blocked"])
+        state = self.journal.verify_projection()
+        self.assertEqual(len(state["attempts"]), 1)
+        attempt_id = next(iter(state["attempts"]))
+        # Exhaustion blocks new work, not recording/settling already-owned work.
+        self.journal.append("cleanup_registered", {"cleanup_id": "c", "kind": "other", "target": "owned", "owner": attempt_id}, coordinator_generation=1)
+        self.assertIn("c", self.journal.verify_projection()["cleanup"])
+
     def test_replays_the_saved_projection(self) -> None:
         self.starts_run()
         started = self.freezes_attempt()

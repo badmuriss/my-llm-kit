@@ -2928,6 +2928,28 @@ class AgentGraphCliBehavior(unittest.TestCase):
                 with self.assertRaises(runtime.DriverError):
                     runtime.persisted_driver_context(candidate)
 
+    def test_wait_suppresses_empty_host_receipts_and_ingests_a_result(self) -> None:
+        self.bootstrap_and_claim()
+        common = ("--change", "portable", "--run-id", "run-1", "--generation", "2")
+        dispatched = self.result(self.run_cli("dispatch", *common, "--task", "ROOT-01", "--local"))
+        before = dispatched["state"]["last_sequence"]
+        waited = self.result(self.run_cli("wait", *common, "--max-polls", "2", "--poll-interval", "0.01"))
+        self.assertEqual(waited["reason"], "poll_limit")
+        self.assertEqual(waited["empty_polls"], 2)
+        self.assertEqual(waited["state"]["last_sequence"], before)
+        stale = self.run_cli("wait", "--change", "portable", "--run-id", "run-1", "--generation", "1")
+        self.assertNotEqual(stale.returncode, 0)
+        capsule = json.loads((self.repository / dispatched["capsule"]).read_text())
+        (self.repository / capsule["result_path"]).write_text(json.dumps({
+            "task_id": "ROOT-01", "attempt_id": dispatched["attempt_id"], "outcome": "reported",
+            "summary": "The bounded worker finished.", "files_changed": ["src/root.py"],
+            "checks_run": ["python3 -m unittest tests.test_root"], "evidence_refs": [], "questions": [], "external_refs": {"host": "native"},
+        }))
+        completed = self.result(self.run_cli("wait", *common))
+        self.assertEqual(completed["reason"], "state_changed")
+        self.assertEqual(completed["state"]["tasks"]["ROOT-01"]["status"], "reported")
+        self.assertIsNone(completed["state"]["tasks"]["ROOT-01"]["grade"])
+
     def test_sync_keeps_host_result_events_on_the_shared_ingestion_path(self) -> None:
         self.bootstrap_and_claim()
         dispatched = self.result(

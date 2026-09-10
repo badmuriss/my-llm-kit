@@ -20,6 +20,8 @@ jobs:
   runtime:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
@@ -36,4 +38,5 @@ jobs:
       - name: Runtime regressions
         run: python3 -m unittest discover -s skills/agent-graph/tests -p 'test_*.py'
       - name: Complexity and lint gate
+        if: always()
         run: python3 -m ruff check .
