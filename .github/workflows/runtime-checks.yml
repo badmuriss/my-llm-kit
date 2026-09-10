@@ -5,6 +5,7 @@ on:
     paths:
       - 'skills/agent-graph/**'
       - 'skills/impl/**'
+      - 'skills/spec/**'
       - 'requirements-dev.txt'
       - 'ruff.toml'
       - '.github/workflows/runtime-checks.yml'
@@ -29,12 +30,4 @@ jobs:
       - run: ruff check .
       - run: python -m unittest discover -s skills/agent-graph/tests -p 'test_routing.py' -v
       - run: python -m unittest discover -s skills/agent-graph/tests -p 'test_runtime_pin.py' -v
-      - name: Package checked public source
-        if: always()
-        run: git archive --format=tar.gz -o runtime-source.tar.gz HEAD
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: checked-runtime-source
-          path: runtime-source.tar.gz
-          retention-days: 1
+      - run: python -m unittest discover -s skills/spec/tests -v

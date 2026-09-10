@@ -26,6 +26,11 @@ optional ideas and exclusions. Define completion as meeting the current request,
 not merely finishing implementation or obtaining a successful process exit.
 Name any acceptance that cannot currently be observed.
 
+For substantial plans or an explicit visual request, present a rendered
+[visual brief](references/visual-brief.md) before implementation handoff. Keep it
+derived from the existing spec, distinguish proposals from execution evidence,
+and use only visuals that clarify the change. Trivial edits need no new artifact.
+
 Do not invoke `grill-me`, a council or a whole-corpus audit unless requested.
 When the plan is ready, provide the appropriate `$impl` invocation. Do not demand
 another approval when the user already authorized implementation of this scope.
