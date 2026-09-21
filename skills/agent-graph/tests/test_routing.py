@@ -489,14 +489,21 @@ class OverrideAndFallbackBehavior(unittest.TestCase):
 
 class CatalogValidationBehavior(unittest.TestCase):
     def test_excludes_retired_models_despite_lower_catalog_cost(self) -> None:
-        for retired in ("gpt-5.5", "gpt-5.5-pro", "gpt-5.5-2026-04-23"):
+        for retired in (
+            "gpt-5.5",
+            "gpt-5.5-pro",
+            "gpt-5.5-2026-04-23",
+            "gpt-5.6-terra",
+            "gpt-5.6-terra-pro",
+            "gpt-5.6-terra-2026-09-01",
+        ):
             with self.subTest(model=retired):
                 catalog = {"profiles": [
                     {"agent": "codex", "model": retired, "lane": "balanced", "efforts": ["medium"], "cost_rank": 0},
-                    {"agent": "codex", "model": "gpt-5.6-terra", "lane": "balanced", "efforts": ["medium"], "cost_rank": 2},
+                    {"agent": "codex", "model": "gpt-5.6-luna", "lane": "fast", "efforts": ["medium"], "cost_rank": 2},
                 ]}
                 decision = routing.plan_route(catalog, role="implementation")
-                self.assertEqual(decision.resolved["model"], "gpt-5.6-terra")
+                self.assertEqual(decision.resolved["model"], "gpt-5.6-luna")
                 blocked = routing.plan_route(catalog, role="implementation", overrides={"model": retired})
                 self.assertEqual(blocked.outcome, "blocked")
                 self.assertIn("excluded by policy", blocked.blocked_reason)

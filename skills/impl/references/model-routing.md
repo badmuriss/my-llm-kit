@@ -2,22 +2,21 @@
 
 `RoutingPolicy v1` is the versioned source of route defaults. It is external JSON, not scheduler code. It maps roles, risk, tools, context bands, Check strength, abstract lanes, and ordered provider candidates to a requested effort. Provider catalogs separately advertise the agents, models, efforts, tools, context limits, launch modes, and available observations.
 
-The next Canvas run starts from [`routing-policy.seed.json`](./routing-policy.seed.json). Its concrete Luna, Terra, Sol, and Astra entries are policy data. A provider catalog must still advertise an entry before the router can select it.
+The next Canvas run starts from [`routing-policy.seed.json`](./routing-policy.seed.json). Its concrete Luna, Sol, and Astra entries are policy data. A provider catalog must still advertise an entry before the router can select it.
 
-Use only the concrete Codex IDs below, for direct child dispatch as well as graph work. GPT-5.5 and its dash-suffixed variants are excluded, including fallback. Pass model and effort explicitly and check the resolved profile; do not rely on an inherited host default. If the host cannot honor the route, report that limitation.
+Use only the concrete Codex IDs below, for direct child dispatch as well as graph work. GPT-5.5, GPT-5.6 Terra, and their dash-suffixed variants are excluded, including fallback. Pass model and effort explicitly and check the resolved profile; do not rely on an inherited host default. If the host cannot honor the route, report that limitation.
 
 | Model | Starting effort | Use and escalation |
 |---|---|---|
 | `gpt-5.6-luna` | `low` for extraction/checks; `medium` for mechanical edits; `high` for bounded implementation | Clear scope and decisive acceptance. Consider `xhigh` for bounded adversarial review with role-specific evidence and acceptable latency; never a universal default. |
-| `gpt-5.6-terra` | `medium`; `low` for straightforward tool work | Everyday implementation and related files. Use `high` for demonstrated reasoning difficulty; consider a stronger model before `xhigh`. |
-| `gpt-5.6-sol` | `low`, `medium` | Complex work where more judgment than Terra is useful but Astra's cost is not justified. Prefer Astra low/medium over Sol high/xhigh. |
+| `gpt-5.6-sol` | `low`, `medium` | Complex work where more judgment than Luna is useful but Astra's cost is not justified. Prefer Astra low/medium over Sol high/xhigh. |
 | `gpt-6-astra` | `low` for bounded difficult work; `medium` for ambiguity, coordination and risk | Architecture, difficult debugging and complete workflows. `high` needs a concrete reason; `xhigh` and `max` remain exceptional. |
 
 These are operating defaults, not measured equivalences between model/effort pairs. The repository research record `research/2026-09-06-codex-model-value.md` contains the evidence and billing assumptions; it is not required for dispatch. Official [Codex model guidance](https://learn.chatgpt.com/docs/models), accessed 2026-09-06, supports the workload distinctions and starting with the lowest sufficient effort.
 
 Sol low/medium remains a cost option: Astra's Standard per-token rates are 2.5 times Sol's in both [API pricing](https://developers.openai.com/api/docs/pricing) and [Codex token-based credits](https://learn.chatgpt.com/docs/pricing), accessed 2026-09-06. Better quality at low effort does not establish lower total task cost. Count reasoning, context, tools and repairs; distinguish API dollars, credits, included allowances and Fast mode. Do not run duplicate full implementations just to benchmark.
 
-The owner requested Astra low/medium for former Sol high/xhigh work using an employee-attributed message on 2026-09-06. Its attribution and comparison are unverified. Preserve this calibration as the owner's choice; do not claim it is a controlled benchmark. The [Astra API migration guide](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-6-astra), accessed 2026-09-06, provides a different starting baseline: preserve effective effort except when migrating from none/minimal.
+The owner requested Astra low/medium for former Sol high/xhigh work using an employee-attributed message on 2026-09-06, then retired GPT-5.6 Terra from all routes on 2026-09-20. These are owner choices, not controlled benchmarks. The [Astra API migration guide](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-6-astra), accessed 2026-09-06, provides a different starting baseline: preserve effective effort except when migrating from none/minimal.
 
 The graph seed requests at least `medium` for implementation, coordination, integration, material/high risk and checks that are not decisive. Graph low routes must satisfy all minimums; direct dispatch follows the task-based table. `candidate_order` records planner preferences; the portable router selects by lane, effort and catalog cost rank, so the planner must pass model and effort overrides to enforce a specific route. The optional `excluded_models` field is enforced by the router before automatic selection and coordinator fallback, and also blocks explicit overrides. It matches each excluded ID and its dash-suffixed variants. Older policies without this field retain their existing behavior.
 

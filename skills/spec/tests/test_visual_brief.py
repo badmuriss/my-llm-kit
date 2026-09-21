@@ -64,7 +64,7 @@ class VisualBriefTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             src, out = Path(directory) / "spec.md", Path(directory) / "spec.html"
             src.write_text(TEXT_ONLY, encoding="utf-8")
-            args = [str(src), "--output", str(out)]
+            args = [str(src), "--output", str(out), "--html-only"]
             with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
                 self.assertEqual(brief.main(args), 0)
                 self.assertEqual(brief.main(args + ["--check"]), 0)
@@ -75,6 +75,36 @@ class VisualBriefTests(unittest.TestCase):
                 self.assertEqual(out.read_text(), "unrelated content")
                 self.assertEqual(brief.main([str(src), "--output", str(src)]), 1)
             self.assertEqual(src.read_text(encoding="utf-8"), TEXT_ONLY)
+
+    def test_exports_pdf_by_default_and_checks_without_exporting_again(self):
+        with tempfile.TemporaryDirectory() as directory:
+            src, out = Path(directory) / "spec.md", Path(directory) / "spec.html"
+            src.write_text(TEXT_ONLY, encoding="utf-8")
+            def export(html_path, pdf_path, **kwargs):
+                content = html_path.read_text(encoding="utf-8")
+                self.assertIn("data:font/woff2;base64,", content)
+                self.assertIn("SIL OPEN FONT LICENSE", content)
+                pdf_path.write_bytes(b"%PDF-test")
+            args = [str(src), "--output", str(out)]
+            with patch.object(brief, "export_pdf", side_effect=export) as exporter, contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(brief.main(args), 0)
+                self.assertEqual(out.with_suffix(".pdf").read_bytes(), b"%PDF-test")
+                self.assertEqual(brief.main(args + ["--check"]), 0)
+                self.assertEqual(exporter.call_count, 1)
+
+    def test_html_only_skips_browser_and_default_export_failure_preserves_html(self):
+        with tempfile.TemporaryDirectory() as directory:
+            src, out = Path(directory) / "spec.md", Path(directory) / "spec.html"
+            src.write_text(TEXT_ONLY, encoding="utf-8")
+            args = [str(src), "--output", str(out)]
+            with patch.object(brief, "export_pdf", side_effect=ValueError("browser absent")) as exporter, contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                self.assertEqual(brief.main(args + ["--html-only"]), 0)
+                exporter.assert_not_called()
+                previous = out.read_bytes()
+                src.write_text(TEXT_ONLY.replace("Antes", "Before"), encoding="utf-8")
+                self.assertEqual(brief.main(args), 1)
+                self.assertEqual(out.read_bytes(), previous)
+                self.assertFalse(out.with_suffix(".pdf").exists())
 
     def test_embeds_rendered_images_and_keeps_editable_source(self):
         rendered = brief.render(EXAMPLE, "spec.md", [SVG, SVG])

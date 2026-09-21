@@ -26,10 +26,15 @@ optional ideas and exclusions. Define completion as meeting the current request,
 not merely finishing implementation or obtaining a successful process exit.
 Name any acceptance that cannot currently be observed.
 
-For substantial plans or an explicit visual request, present a rendered
-[visual brief](references/visual-brief.md) before implementation handoff. Keep
+For substantial plans or an explicit visual request, deliver a **PDF visual
+summary** before implementation handoff, with a direct link to the actual PDF.
+Use the bundled [visual brief](references/visual-brief.md) renderer and template;
+it produces PDF plus self-contained HTML by default. HTML alone, screenshots or
+instructions to print are not a completed PDF delivery. If export is blocked,
+report that explicitly; use HTML-only only when the user requests that exception.
+Inspect the rendered PDF for pagination, legibility and missing content. Keep
 Mermaid flow/sequence diagrams in the canonical spec when they explain the
-change; render them into the same offline HTML/PDF as the decisions and checks.
+change; render them into the same offline PDF as the decisions and checks.
 Distinguish proposals from execution evidence. Trivial edits need no artifact.
 
 Do not invoke `grill-me`, a council or a whole-corpus audit unless requested.

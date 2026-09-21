@@ -55,7 +55,8 @@ creating it. Honor the user's explicit placement choice.
 Use one writer unless independent tasks justify delegation. Choose the cheapest
 available model and effort sufficient for the role; consult the task's routing
 policy for both direct dispatch and graph work. For Codex, select only GPT-5.6
-Luna, Terra, Sol or GPT-6 Astra. Do not select GPT-5.5, including as a fallback.
+Luna, GPT-5.6 Sol or GPT-6 Astra. Do not select GPT-5.5 or GPT-5.6 Terra,
+including as a fallback.
 Pass the selected model and effort explicitly when the host supports it; check
 the resolved model before accepting a dispatch. If the host cannot honor the
 selection, report the limitation instead of silently substituting a model.

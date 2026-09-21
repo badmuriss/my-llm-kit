@@ -19,7 +19,10 @@ MARKER = 'name="visual-brief-generator" content="my-llm-kit-v1"'
 FENCE = re.compile(r"^```visual-brief[ \t]*\n(.*?)^```[ \t]*$", re.M | re.S)
 MAX_SOURCE_BYTES = 262_144
 MAX_HTML_BYTES = 20_000_000
-CSS = (Path(__file__).parents[1] / "assets" / "visual-brief.css").read_text(encoding="utf-8")
+ASSETS = Path(__file__).parents[1] / "assets"
+CSS = (ASSETS / "visual-brief.css").read_text(encoding="utf-8")
+FONT = base64.b64encode((ASSETS / "fonts" / "InterVariable.woff2").read_bytes()).decode()
+FONT_LICENSE = (ASSETS / "fonts" / "OFL.txt").read_text(encoding="utf-8")
 
 
 def _text(value: Any, field: str, maximum: int = 800) -> str:
@@ -77,7 +80,8 @@ def _gallery(diagrams: list[dict[str, str]], svgs: list[str], pt: bool) -> str:
     for diagram, svg in zip(diagrams, svgs):
         encoded = base64.b64encode(validate_svg(svg).encode()).decode()
         rows.append(f'''<figure class="diagram"><h3>{html.escape(diagram['title'])}</h3>
-<div class="diagram-frame"><img data-mermaid-sha256="{diagram['sha256']}" alt="{html.escape(diagram['description'])}" src="data:image/svg+xml;base64,{encoded}"></div>
+<p class="diagram-hint">{'Deslize para os lados para ver o diagrama inteiro.' if pt else 'Scroll sideways to view the complete diagram.'}</p>
+<div class="diagram-frame" tabindex="0" role="region" aria-label="{html.escape(diagram['title'])}"><img data-mermaid-sha256="{diagram['sha256']}" alt="{html.escape(diagram['description'])}" src="data:image/svg+xml;base64,{encoded}"></div>
 <figcaption>{html.escape(diagram['description'])}</figcaption>
 <details class="diagram-source"><summary>{'Ver código Mermaid' if pt else 'View Mermaid source'}</summary><pre>{html.escape(diagram['code'])}</pre></details></figure>''')
     return f'<section class="diagrams" id="diagrams"><h2>{"Fluxos e relações" if pt else "Flows and relationships"}</h2>{"".join(rows)}</section>'
@@ -101,18 +105,19 @@ def render(source: str, source_name: str, svgs: list[str] | None = None) -> str:
     return f'''<!doctype html>
 <html lang="{data.get('language', 'en')}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta {MARKER}><meta name="spec-sha256" content="{digest(source)}"><meta name="diagrams-sha256" content="{digest(json.dumps(images))}">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
-<title>{e(data['title'])}</title><style>{CSS}</style></head><body><main>
-<header><div class="eyebrow">{label('Visual specification / planning snapshot', 'Especificação visual / retrato do planejamento')}</div><h1>{e(data['title'])}</h1><p class="summary">{e(data['summary'])}</p></header>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; font-src data:; img-src data:; base-uri 'none'; form-action 'none'">
+<title>{e(data['title'])}</title><style>@font-face {{font-family: 'Inter'; src: url(data:font/woff2;base64,{FONT}) format('woff2'); font-weight: 100 900; font-display: block;}}\n{CSS}</style></head><body><main>
+<header><div class="masthead"><span>{label('Specification', 'Especificação')}</span><span>{label('Visual brief', 'Resumo visual')}</span></div><h1>{e(data['title'])}</h1><p class="summary">{e(data['summary'])}</p></header>
 <div class="notice"><strong>{label('Proposed, not execution evidence.', 'Proposta, não evidência de execução.')}</strong> {label('No approval, passing check or live status is implied by this page.', 'Esta página não significa aprovação, teste aprovado ou acompanhamento ao vivo.')}</div>
 <nav aria-label="{label('Sections', 'Seções')}"><a href="#change">{label('Change', 'Mudança')}</a><a href="#flow">{label('Flow', 'Fluxo')}</a>{diagram_link}<a href="#checks">{label('Acceptance', 'Aceite')}</a><a href="#risks">{label('Failures', 'Falhas')}</a></nav>
 <h2 id="change">{label('What changes', 'O que muda')}</h2><div class="pair"><section><h3>{label('Before', 'Antes')}</h3><p>{e(data['before'])}</p></section><section><h3>{label('After', 'Depois')}</h3><p>{e(data['after'])}</p></section></div>
 <h2 id="flow">{label('Decision flow', 'Fluxo de decisão')}</h2><ol class="flow">{flow}</ol>
-<h2 id="checks">{label('How we will verify it', 'Como vamos verificar')}</h2><table><thead><tr><th>{label('Criterion', 'Critério')}</th><th>{label('Required evidence', 'Evidência necessária')}</th></tr></thead><tbody>{checks}</tbody></table>
-{gallery}
+<section class="verification"><h2 id="checks">{label('How we will verify it', 'Como vamos verificar')}</h2><table><thead><tr><th scope="col">{label('Criterion', 'Critério')}</th><th scope="col">{label('Required evidence', 'Evidência necessária')}</th></tr></thead><tbody>{checks}</tbody></table></section>
 <section class="secondary"><h2 id="risks">{label('When something goes wrong', 'Quando algo der errado')}</h2>{risks}<h2>{label('Decisions and tradeoffs', 'Decisões e escolhas')}</h2>{items('decisions')}<h2>{label('Outside this scope', 'Fora deste escopo')}</h2>{items('excluded')}</section>
-<details open><summary>{label('Source and traceability', 'Fonte e rastreabilidade')}</summary><p>{e(source_name)}</p><code>SHA-256: {digest(source)}</code><p>{label('Regenerate after changing the spec. This is a static derived view, not another source of truth.', 'Gere novamente após mudar a spec. Esta é uma visão estática derivada, não outra fonte da verdade.')}</p></details>
-<p class="footer">{label('Open locally. Print to PDF through the browser. No scripts, remote fonts or network requests.', 'Abra localmente. Imprima em PDF pelo navegador. Sem scripts, fontes remotas ou requisições de rede.')}</p>
+<details class="provenance" open><summary>{label('Source and traceability', 'Fonte e rastreabilidade')}</summary><p>{e(source_name)}</p><code>SHA-256: {digest(source)}</code><p>{label('Regenerate after changing the spec. This is a static derived view, not another source of truth.', 'Gere novamente após mudar a spec. Esta é uma visão estática derivada, não outra fonte da verdade.')}</p></details>
+<p class="footer">{label('Offline document. Embedded typography. Derived from the canonical specification.', 'Documento offline. Tipografia incorporada. Derivado da especificação canônica.')}</p>
+<details class="font-license"><summary>{label('Font license', 'Licença da fonte')}: Inter</summary><pre>{e(FONT_LICENSE)}</pre></details>
+{gallery}
 </main></body></html>\n'''
 
 
@@ -150,19 +155,22 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("source", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--check", action="store_true", help="verify source, images and HTML without a browser or writes")
-    parser.add_argument("--pdf", type=Path, help="export the same HTML to a new PDF using local Chromium")
+    delivery = parser.add_mutually_exclusive_group()
+    delivery.add_argument("--pdf", type=Path, help="PDF destination (default: the HTML path with .pdf extension)")
+    delivery.add_argument("--html-only", action="store_true", help="explicitly skip PDF export; not a completed PDF handoff")
     parser.add_argument("--mmdc", help="installed Mermaid CLI executable; no automatic installation")
     parser.add_argument("--browser", help="local Chromium/Chrome executable for Mermaid and PDF")
     args = parser.parse_args(argv)
     try:
         if args.check and args.pdf:
             raise ValueError("--check is read-only and cannot be combined with --pdf")
+        pdf = None if args.check or args.html_only else args.pdf or args.output.with_suffix(".pdf")
         if args.source.stat().st_size > MAX_SOURCE_BYTES:
             raise ValueError("spec exceeds the bounded source size")
         source = args.source.read_text(encoding="utf-8")
         parse_brief(source)
         diagrams = parse_diagrams(source)
-        _destination(args.source, args.output, args.pdf)
+        _destination(args.source, args.output, pdf)
         if args.check:
             existing = _existing(args.output)
             if not check_fresh(source, existing) or existing != render(source, args.source.name, cached_diagrams(existing, diagrams)):
@@ -176,16 +184,16 @@ def main(argv: list[str] | None = None) -> int:
             temporary_html = Path(directory) / "brief.html"
             temporary_html.write_text(rendered, encoding="utf-8")
             temporary_pdf = Path(directory) / "brief.pdf"
-            if args.pdf:
+            if pdf:
                 export_pdf(temporary_html, temporary_pdf, browser=args.browser)
-                args.pdf.parent.mkdir(parents=True, exist_ok=True)
-                with args.pdf.open("xb") as target:
+                pdf.parent.mkdir(parents=True, exist_ok=True)
+                with pdf.open("xb") as target:
                     target.write(temporary_pdf.read_bytes())
             args.output.parent.mkdir(parents=True, exist_ok=True)
             _publish(args.output, rendered)
         print(f"Visual brief written: {args.output} ({len(diagrams)} Mermaid diagrams)")
-        if args.pdf:
-            print(f"PDF written: {args.pdf}")
+        if pdf:
+            print(f"PDF written: {pdf}")
         return 0
     except (OSError, UnicodeError, ValueError) as error:
         print(f"Cannot render visual brief: {error}", file=sys.stderr)

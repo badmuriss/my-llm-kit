@@ -30,7 +30,7 @@ Do not maintain a second JSON document or an independently edited PDF.
     {"symptom": "O diagrama está bonito, mas desatualizado", "inspect": "Fingerprint da spec e revisão do código referenciada.", "recovery": "Regenerar a visão a partir da fonte; não editar o PDF como se fosse o plano original."}
   ],
   "decisions": [
-    "HTML é a visão principal. PDF é uma exportação da mesma visão, incluindo os diagramas.",
+    "PDF é a entrega principal, incluindo os diagramas. HTML é a versão navegável da mesma fonte.",
     "Mermaid explica relações e sequências. As setas do processo não representam a arquitetura inteira do software.",
     "Os SVGs são renderizados localmente uma vez. Abrir ou verificar o HTML não chama outro modelo nem carrega uma CDN."
   ],

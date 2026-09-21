@@ -8,7 +8,7 @@ canonical decision/spec; derive the HTML and PDF from it, not another plan.
 
 | Question | Useful view |
 |---|---|
-| What changes and why? | Before/after cards and decision alternatives |
+| What changes and why? | Before/after comparison and decision alternatives |
 | Which systems depend on each other? | Small architecture or data-flow diagram |
 | What happens over time, including retries? | Sequence or state diagram with failure paths |
 | What does the user interact with? | Wireframe or screen flow, including empty/error states |
@@ -36,14 +36,16 @@ available in collapsible details for editing; print hides those code blocks and
 keeps the diagrams and captions. Missing tools or invalid diagrams fail the build,
 not silently fall back to raw Mermaid in a supposedly complete PDF.
 
-Plain briefs without Mermaid still need Python only. Install optional visual
-tooling explicitly when needed, not on every core install:
+PDF is the default deliverable, with offline HTML as a companion. Even without
+Mermaid, PDF export needs Python and local Chromium/Chrome. Install optional
+Mermaid tooling explicitly when needed, not on every core install:
 
 ```sh
 npm install --prefix "<installed-spec>/tools"
 python3 "<installed-spec>/scripts/render_visual_brief.py" "<project>/decisions/<slug>.md" \
   --output "<project>/decisions/<slug>.html" \
-  --mmdc "<installed-spec>/tools/node_modules/.bin/mmdc"
+  --mmdc "<installed-spec>/tools/node_modules/.bin/mmdc" \
+  --browser /path/to/chrome
 ```
 
 An existing `mmdc` on PATH works without `--mmdc`. The npm dependency installs a
@@ -62,12 +64,39 @@ python3 "<installed-spec>/scripts/render_visual_brief.py" "<project>/decisions/<
   --browser /path/to/chrome --pdf "<project>/decisions/<slug>.pdf"
 ```
 
-Alternatively open the HTML and print to PDF. `--pdf` requires local Chromium or
-Chrome (defaults to `chromium` on PATH); it refuses to overwrite an existing PDF.
+Omit `--pdf` to write beside the HTML with the same stem and `.pdf` extension.
+Omit `--mmdc` for specs without Mermaid. Export requires local Chromium or Chrome
+(defaults to `chromium` on PATH); it refuses to overwrite an existing PDF.
 Choose a new export name or explicitly remove your previous export. The browser sandbox remains enabled; configure a supported local browser rather
 than disabling its protections. Renderer subprocesses have finite timeouts and
 fixed Mermaid security configuration. No private diagram is sent to a public
 rendering service.
+
+`--html-only` is an explicit exception for a user-requested HTML deliverable or
+local template development; a plain brief then needs Python only. It must not
+silently replace a required PDF. Missing browser or failed export returns an
+error without replacing the existing HTML. `--pdf` and `--html-only` are mutually
+exclusive. Existing scripts that intentionally need HTML alone must add
+`--html-only`; `--check` remains read-only and needs no browser.
+
+## Template and typography
+
+Reuse `assets/visual-brief.css`: white paper, graphite text, Inter variable,
+numbered sections, ruled comparisons and tables, restrained spacing. Avoid
+decorative dashboard cards, oversized cover-only pages and tiny print text.
+The A4 stylesheet uses 10.5pt body text, repeating table headings, kept-together
+rows and page numbers. Long content flows across pages; never clamp or truncate
+the summary to fit a page. Keep diagrams readable and split an overfull diagram
+at the source instead of reducing its text indefinitely.
+
+The renderer embeds `assets/fonts/InterVariable.woff2` and its OFL license in the
+offline HTML. Do not replace it with a CDN dependency. Font source:
+https://github.com/rsms/inter/tree/master/docs/font-files, license in
+`assets/fonts/OFL.txt`, retrieved 2026-09-20. Design direction, researched with
+Refero on that date: Vectary's white technical-document structure and Inter
+hierarchy; Expo's restrained technical typography. The
+incredibly-pretty-websites skill informed spacing, responsive type and print
+polish, not a new runtime dependency.
 
 Check freshness without rerendering Mermaid, starting a browser or writing:
 
@@ -84,11 +113,16 @@ Mermaid config directives, remote resources and active SVG/HTML are rejected.
 
 ## Handoff and execution evidence
 
-Present the visual brief before substantial code changes. Existing authorization
+Link the PDF first in the handoff, optionally followed by HTML and canonical
+Markdown. Do not make the user export it themselves. Present the visual brief
+before substantial code changes. Existing authorization
 still applies: do not manufacture another approval round. Stop for a genuine
 scope/risk decision or an existing approval requirement. Check diagram semantics
 against the spec and inspect desktop, tablet/mobile and printed views for clipped
-labels, overlap, unreadable scaling and missing arrows. A render/build alone is
+labels, overlap, unreadable scaling and missing arrows. Rasterize and inspect
+every page of the actual PDF, not just the browser's print-media preview. Check
+that embedded fonts loaded and no content disappeared at page boundaries.
+A render/build alone is
 not visual acceptance. Reuse the template and fix concrete defects, not endless
 cosmetic passes.
 
