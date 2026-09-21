@@ -24,7 +24,7 @@ SCRIPTS_DIRECTORY = Path(__file__).resolve().parent
 if str(SCRIPTS_DIRECTORY) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_DIRECTORY))
 
-
+from semantic_assessment import AssessmentError, validate_record
 from budget_control import observe_admission
 from browser_surfaces import (
     BrowserSurfaceError,
@@ -67,6 +67,7 @@ CORE_EVENT_TYPES = frozenset(
         "attempt_scope_frozen",
         "attempt_started",
         "attempt_observed",
+        "attempt_assessed",
         "attempt_start_failed",
         "attempt_abandoned",
         "attempt_provider_result_rejected",
@@ -2996,6 +2997,27 @@ def _apply_attempt_result_event(
         state["degradations"].append(json.loads(json.dumps(dict(data), sort_keys=True)))
 
 
+def _apply_assessment_event(
+    state: dict[str, Any],
+    event_type: str,
+    data: Mapping[str, Any],
+    event: Mapping[str, Any],
+) -> None:
+    try:
+        validate_record(data)
+    except (AssessmentError, TypeError, KeyError) as error:
+        raise JournalError("invalid advisory assessment record") from error
+    attempt = state["attempts"].get(data["attempt_id"])
+    if not isinstance(attempt, dict) or attempt.get("status") != "running":
+        raise JournalError("advisory assessment requires a running attempt")
+    if data["source_sequence"] != event["sequence"] - 1:
+        raise StaleRevisionError("advisory assessment observation is stale")
+    if data["source_receipt"] != attempt.get("last_poll_receipt"):
+        raise JournalError("advisory assessment receipt does not match the attempt")
+    attempt["semantic_assessment"] = {**json.loads(json.dumps(data)), "timestamp": event["timestamp"]}
+    attempt["assessment_count"] = attempt.get("assessment_count", 0) + 1
+
+
 def _apply_interaction_event(
     state: dict[str, Any],
     event_type: str,
@@ -4160,6 +4182,10 @@ _EVENT_REDUCER_GROUPS = (
             }
         ),
         _apply_attempt_result_event,
+    ),
+    (
+        frozenset({"attempt_assessed"}),
+        _apply_assessment_event,
     ),
     (
         frozenset({"question_opened", "question_answered", "worker_reported"}),

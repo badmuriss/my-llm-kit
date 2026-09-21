@@ -78,6 +78,9 @@ Future adapters declare the same portable capabilities and explicit
 degradations. An unavailable rich feature blocks or downgrades only the
 operation that requested it.
 
+For Jev browser execution and the optional advisory worker evaluator,
+read [Jev integration](references/jev-integration.md) when those capabilities are needed.
+
 ## Harness boundary
 
 `impl` freezes one control runtime and claims the coordinator capsule. Use the

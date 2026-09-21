@@ -130,7 +130,7 @@ make a relative command work. Use the returned pinned entrypoint after bootstrap
 |---|---|
 | `spec` | Plan scope and sufficient acceptance evidence |
 | `impl` | Implement, verify and report concrete blockers |
-| `agent-graph` | Durable ownership, integration and recovery when justified |
+| `agent-graph` | Durable ownership, integration and recovery; optional [Jev worker advice](skills/agent-graph/references/jev-integration.md) through OpenRouter |
 | `writing` | Clear technical documentation, commits and PRs |
 | `frontend-visual-validation` | Inspect rendered changes with reproducible PNG evidence |
 
@@ -142,6 +142,7 @@ as unobserved. See the [visual skill](skills/frontend-visual-validation/SKILL.md
 | Optional vendored skill (`--full`) | Use |
 |---|---|
 | `research` | Source-based lookups and research reports |
+| `computer-use` | Jev via OpenRouter for bounded browser tasks; Orca for desktop and general UI |
 | `scrapingdog` | Dedicated public-web data collection |
 | `ingest` | Extract documents that cannot be read reliably as text |
 | `grill-me` | Explicit adversarial planning interview |

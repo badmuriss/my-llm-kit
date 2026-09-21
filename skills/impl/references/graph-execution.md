@@ -60,6 +60,14 @@ Run `claim-coordinator`, then `resume`. Never bootstrap from a claimed coordinat
    `cleanup-register` before capsule delivery or other side effects. Finish them
    with `cleanup-finish` only after the target or receipt proves cleanup.
 
+When semantic supervision is requested and `OPENROUTER_API_KEY` is available,
+call the pinned runtime's `assess --attempt <id> --generation <n>` after `sync`
+returns fresh worker output, with the usual `--repo`, `--change` and `--run-id`.
+Read [the evaluator contract](../../agent-graph/references/jev-integration.md).
+Its suggestions help inspect loops and scope/instruction drift; they cannot grade,
+interrupt or message a worker. Missing evidence or provider failure is nonblocking.
+Keep this within the existing loop; do not create a separate polling supervisor.
+
 When only workers are running, prefer an advertised host completion notification.
 Otherwise call the pinned runtime's `wait --generation <n> --timeout-seconds 180`
 once instead of repeatedly returning empty `sync` results to the model. It runs

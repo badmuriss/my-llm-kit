@@ -41,6 +41,16 @@ After a request amendment, update affected outcomes and checks before continuing
 On resume, reconcile existing work and owned processes first. Read the objective,
 decisions, evidence and pending work instead of replaying the whole transcript.
 
+## Browser work
+
+For interactive web tasks, use the installed `computer-use` skill when available.
+It selects Jev for supported browser actions and Orca for desktop or unsupported
+interactions. Reuse a working installation; resolve bundled scripts from that
+skill directory, not the consumer checkout. Keep outcome verification independent
+of the model's completion decision. In graph mode, preserve the active driver's
+browser ownership and cleanup contract; a browser backend is not a second
+coordinator. See [browser integration](../agent-graph/references/jev-integration.md).
+
 ## Completion gates, all modes
 
 - Reconcile the current request against delivered outcomes. Name anything missing,

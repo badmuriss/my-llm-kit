@@ -30,6 +30,7 @@ from drivers.host import (  # noqa: E402
     dependency_digest_from_projection,
 )
 from drivers.orca import OrcaDriver  # noqa: E402
+import semantic_assessment  # noqa: E402
 from browser_surfaces import (  # noqa: E402
     BrowserSurfaceError,
     public_receipt,
@@ -5009,6 +5010,55 @@ def command_reject_attempt(arguments: argparse.Namespace) -> dict[str, Any]:
     }
 
 
+def command_assess(arguments: argparse.Namespace) -> dict[str, Any]:
+    directory = _run_directory(arguments.repo, arguments.change, arguments.run_id)
+    journal = _journal(directory)
+    projection = journal.verify_projection()
+    generation = _generation(arguments, projection)
+    attempt = projection["attempts"].get(arguments.attempt)
+    response = {"attempt_id": arguments.attempt, "advisory_only": True}
+    if not isinstance(attempt, Mapping) or attempt.get("status") != "running":
+        return {**response, "status": "skipped", "reason": "attempt_not_running"}
+    source = attempt.get("last_poll_receipt")
+    if not isinstance(source, str):
+        return {**response, "status": "skipped", "reason": "sync_required"}
+    path, _ = repository_relative_path(arguments.repo, source, "assessment observation")
+    if not path.resolve().is_relative_to(directory.resolve()) or path.stat().st_size > 1_048_576:
+        raise AgentGraphCliError("assessment receipt must be bounded and inside the run", code="invalid_observation")
+    task = _task_from_state(projection, attempt["task_id"])
+    try:
+        observed = semantic_assessment.observation(task.to_dict(), load_json_object(path, "observation"))
+    except semantic_assessment.AssessmentError as error:
+        return {**response, "status": "unavailable", "reason": str(error)}
+    if observed is None:
+        return {**response, "status": "skipped", "reason": "worker_output_unavailable"}
+    digest = semantic_assessment.observation_hash(observed)
+    previous = attempt.get("semantic_assessment")
+    if isinstance(previous, Mapping):
+        if previous["observation_hash"] == digest and previous["assessment"]["status"] == "assessed":
+            return {**response, "status": "cached", "assessment": previous["assessment"],
+                    "guidance": semantic_assessment.guidance(previous["assessment"])}
+        elapsed = (datetime.now(UTC) - datetime.fromisoformat(previous["timestamp"].replace("Z", "+00:00"))).total_seconds()
+        if elapsed < semantic_assessment.MIN_INTERVAL_SECONDS:
+            return {**response, "status": "skipped", "reason": "assessment_cooldown"}
+    if attempt.get("assessment_count", 0) >= semantic_assessment.MAX_ASSESSMENTS:
+        return {**response, "status": "skipped", "reason": "assessment_budget_exhausted"}
+    if not os.environ.get("OPENROUTER_API_KEY"):
+        return {**response, "status": "unavailable", "reason": "missing_openrouter_key"}
+    try:
+        assessment = semantic_assessment.ask_jev(observed)
+    except semantic_assessment.AssessmentError as error:
+        assessment = {"status": "unavailable", "reason": str(error)}
+    record = {"attempt_id": arguments.attempt, "source_sequence": projection["last_sequence"],
+              "source_receipt": source, "observation_hash": digest, "assessment": assessment}
+    try:
+        journal.append("attempt_assessed", record, coordinator_generation=generation)
+    except (StaleRevisionError, StaleCoordinatorError):
+        return {**response, "status": "discarded", "reason": "observation_changed"}
+    return {**response, "status": assessment["status"], "assessment": assessment,
+            "guidance": semantic_assessment.guidance(assessment), "source_sequence": record["source_sequence"]}
+
+
 def command_record_finding(arguments: argparse.Namespace) -> dict[str, Any]:
     if (arguments.finding is None) == (arguments.finding_json is None):
         raise AgentGraphCliError(
@@ -7130,6 +7180,11 @@ def build_parser() -> argparse.ArgumentParser:
     dispatch.add_argument("--route-input")
     dispatch.add_argument("--defer-launch", action="store_true")
     dispatch.set_defaults(handler=command_dispatch)
+
+    assess = commands.add_parser("assess")
+    _add_common(assess, mutate=True)
+    assess.add_argument("--attempt", required=True)
+    assess.set_defaults(handler=command_assess)
 
     sync = commands.add_parser("sync")
     _add_common(sync, mutate=True)

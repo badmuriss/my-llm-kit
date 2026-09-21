@@ -7,6 +7,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 
@@ -68,6 +69,120 @@ class AgentGraphCliBehavior(unittest.TestCase):
 
     def tearDown(self) -> None:
         self.temporary_directory.cleanup()
+
+    def assessment_fixture(self):
+        self.bootstrap_and_claim()
+        dispatched = self.result(self.run_cli(
+            "dispatch", "--change", "portable", "--run-id", "run-1",
+            "--generation", "2", "--task", "ROOT-01", "--local",
+        ))
+        directory = self.repository / "openspec/runs/portable/run-1"
+        journal = runtime._journal(directory)
+        _, receipt = runtime._driver_receipt(self.repository, directory, runtime.DriverReceipt(
+            "poll", "observed", raw={"read": {"result": {"source": "transcript", "transcript": {"messages": [{"role": "assistant", "blocks": [{"type": "text", "text": "Repeated the same failing test four times without changing any code or hypothesis."}]}]}}}},
+        ))
+        journal.append("attempt_observed", {"attempt_id": dispatched["attempt_id"], "cursor": "first", "receipt_path": receipt}, coordinator_generation=2)
+        args = runtime.build_parser().parse_args([
+            "assess", "--repo", str(self.repository), "--change", "portable", "--run-id", "run-1",
+            "--generation", "2", "--attempt", dispatched["attempt_id"],
+        ])
+        args.repo = self.repository
+        return args, directory, receipt
+
+    def test_records_advice_without_grading_or_intervening_and_reuses_observations(self):
+        args, directory, receipt = self.assessment_fixture()
+        before = runtime._journal(directory).verify_projection()
+        scores = {name: 0.1 for name in runtime.semantic_assessment.QUESTIONS}
+        scores.update(evidence_sufficient=0.95, worker_stuck=0.93)
+        answer = {"status": "assessed", "model": "typesafe/jev-1.13", "scores": scores, "usage": {}}
+        with patch.dict(runtime.os.environ, {"OPENROUTER_API_KEY": "fake"}), patch.object(runtime.semantic_assessment, "ask_jev", return_value=answer) as ask:
+            result = runtime.command_assess(args)
+            repeated = runtime.command_assess(args)
+        self.assertEqual(result["status"], "assessed")
+        self.assertEqual(len(result["guidance"]), 1)
+        self.assertEqual(repeated["status"], "cached")
+        ask.assert_called_once()
+        after = runtime._journal(directory).verify_projection()
+        self.assertEqual(after["tasks"], before["tasks"])
+        self.assertEqual(after["cleanup"], before["cleanup"])
+        attempt = after["attempts"][args.attempt]
+        self.assertEqual(attempt["status"], "running")
+        self.assertEqual(attempt["assessment_count"], 1)
+        self.assertEqual(attempt["semantic_assessment"]["source_receipt"], receipt)
+        events = runtime._journal(directory)._read_complete_events()[0]
+        self.assertEqual(runtime.replay_events(events), after)
+        invalid = copy.deepcopy(events)
+        invalid[-1]["data"]["source_sequence"] -= 1
+        with self.assertRaises(runtime.StaleRevisionError):
+            runtime.replay_events(invalid)
+
+    def test_discards_assessments_when_the_journal_changes_during_inference(self):
+        args, directory, receipt = self.assessment_fixture()
+        def changes_observation(_):
+            runtime._journal(directory).append("attempt_observed", {"attempt_id": args.attempt, "cursor": "new", "receipt_path": receipt}, coordinator_generation=2)
+            return {"status": "unavailable", "reason": "provider_unavailable"}
+        with patch.dict(runtime.os.environ, {"OPENROUTER_API_KEY": "fake"}), patch.object(runtime.semantic_assessment, "ask_jev", side_effect=changes_observation):
+            result = runtime.command_assess(args)
+        self.assertEqual(result["status"], "discarded")
+        self.assertNotIn("semantic_assessment", runtime._journal(directory).verify_projection()["attempts"][args.attempt])
+
+    def test_keeps_workers_running_when_assessment_fails_and_throttles_retries(self):
+        args, directory, _ = self.assessment_fixture()
+        failure = runtime.semantic_assessment.AssessmentError("provider_http_429")
+        with patch.dict(runtime.os.environ, {"OPENROUTER_API_KEY": "fake"}), patch.object(runtime.semantic_assessment, "ask_jev", side_effect=failure) as ask:
+            result = runtime.command_assess(args)
+            repeated = runtime.command_assess(args)
+        self.assertEqual(result["status"], "unavailable")
+        self.assertEqual(result["guidance"], [])
+        self.assertEqual(repeated["reason"], "assessment_cooldown")
+        ask.assert_called_once()
+        state = runtime._journal(directory).verify_projection()
+        self.assertEqual(state["attempts"][args.attempt]["status"], "running")
+        self.assertIsNone(state["tasks"]["ROOT-01"]["grade"])
+
+    def test_runs_the_pinned_assess_command_without_a_key_or_network_call(self):
+        args, directory, _ = self.assessment_fixture()
+        with patch.dict(runtime.os.environ):
+            runtime.os.environ.pop("OPENROUTER_API_KEY", None)
+            result = self.result(self.run_cli(
+                "assess", "--change", "portable", "--run-id", "run-1",
+                "--generation", "2", "--attempt", args.attempt,
+            ))
+        self.assertEqual(result["reason"], "missing_openrouter_key")
+        state = runtime._journal(directory).verify_projection()
+        self.assertNotIn("semantic_assessment", state["attempts"][args.attempt])
+
+    def test_rejects_malformed_semantic_probabilities_and_ignores_weak_evidence(self):
+        module = runtime.semantic_assessment
+        response = {"model": "typesafe/jev-1.13", "answers": {name: {"type": "noul", "noul": 0.9} for name in module.QUESTIONS}}
+        for bad in (True, -0.1, 1.2, float("nan"), "0.9", None):
+            with self.subTest(bad=bad):
+                malformed = copy.deepcopy(response)
+                malformed["answers"]["worker_stuck"]["noul"] = bad
+                with self.assertRaises(module.AssessmentError):
+                    module.parse_response(malformed)
+        answer = module.parse_response(response)
+        self.assertTrue(module.guidance(answer))
+        answer["scores"]["evidence_sufficient"] = 0.2
+        self.assertEqual(module.guidance(answer), [])
+
+    def test_reads_orca_transcripts_and_terminal_tails_without_hidden_blocks(self):
+        module = runtime.semantic_assessment
+        result = {"transcript": {"messages": [{"role": "assistant", "blocks": [
+            {"type": "tool-call", "name": "exec", "input": {"cmd": "pytest"}},
+            {"type": "tool-result", "output": "FAILED", "isError": True},
+            {"type": "image-ref", "url": "private-image"},
+        ]}]}}
+        state = module.observation({"id": "A"}, {"raw": {"read": {"result": result}}})
+        self.assertIn("pytest", state["worker_output"])
+        self.assertIn("FAILED", state["worker_output"])
+        self.assertNotIn("private-image", state["worker_output"])
+        self.assertTrue(state["output_truncated"])
+        for terminal in ({"tail": ["running checks"], "truncated": False}, {"terminal": {"tail": ["running checks"]}}):
+            self.assertEqual(module.worker_output(terminal), ("running checks", False))
+        incomplete = {"terminal": {"tail": ["partial output"], "truncated": False}, "contentComplete": False}
+        self.assertEqual(module.worker_output(incomplete), ("partial output", True))
+        self.assertIsNone(module.observation({}, {"raw": {"read": {"result": {}}}}))
 
     def write_process_decision(self, *, allow_unsafe_checks: bool = False) -> None:
         change = self.repository / "openspec/changes/portable"
