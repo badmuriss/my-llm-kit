@@ -162,10 +162,11 @@ capabilities; installation does not make them prerequisites for ordinary work.
 
 ## Supported agents
 
-Skills share `~/.agents/skills`. Setup creates per-skill links for detected Claude
-and Codex hosts where needed. Full setup also distributes existing shared skills;
-core setup only links its selected skills. An already unified skill directory may
-expose additional user-installed skills. Nothing prunes those automatically.
+Skills share `~/.agents/skills`, which OMP reads natively. Setup creates per-skill
+links for detected Claude and Codex hosts where needed. Full setup also distributes
+existing shared skills; core setup only links its selected skills. An already
+unified skill directory may expose additional user-installed skills. Nothing
+prunes those automatically.
 
 Shared instructions come from [`instructions/AGENTS.md`](instructions/AGENTS.md).
 The repository's root [`AGENTS.md`](AGENTS.md) contains development constraints,
@@ -173,9 +174,9 @@ so the same global policy is not repeated as project instructions.
 
 | Capability | Installed/configured by this repository | Verification boundary |
 |---|---|---|
-| Shared skills | Shared directory; Claude and Codex aliases | Check discovery in the actual host |
-| Global instructions | Claude and Codex aliases/copies | Other hosts need their documented instruction configuration |
-| MCP (`--full`) | Claude, Codex and OpenCode | Setup preflights configured services |
+| Shared skills | Shared directory read by OMP; Claude and Codex aliases | Check discovery in the actual host |
+| Global instructions | Shared file read by OMP; Claude/Codex aliases and an OMP alias when its directory exists on Unix | Native OMP discovery does not require the alias |
+| MCP (`--full`) | Claude, Codex and OpenCode | OMP MCP configuration is currently local, not provisioned by setup |
 | Graph workers | Host and Orca adapters | Optional capabilities need runtime receipts |
 | UI evidence | Browser capture and vision-capable host | Not replaced by unit tests or a build |
 | Resource guard | Optional Linux enhancement | Not required on other systems |
@@ -184,6 +185,14 @@ The presence of files does not certify all host versions. Gemini, Copilot and
 OpenCode can be skill consumers, but global-instruction discovery and execution
 must be verified in those hosts. Native Windows, macOS and Linux installers have
 different filesystem behavior; report platform checks actually performed.
+
+OMP is the primary local harness, using ChatGPT/Codex subscription models.
+Its effective roles, models, agents, hooks and MCP configuration live under
+`~/.omp/agent/`. Setup does not install the OMP executable or reproduce those
+machine-local settings. Do not copy credential-bearing MCP files into the repository.
+See the [migration record](research/2026-09-22-omp-gpt6-routing.md) and
+[repository/harness audit](research/2026-09-22-omp-harness-audit.md) for verified
+behavior and remaining gaps.
 
 ## Setup details
 

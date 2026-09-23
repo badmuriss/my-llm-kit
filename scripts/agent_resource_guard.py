@@ -33,6 +33,7 @@ AGENT_EXECUTABLES = frozenset(
         "copilot",
         "cursor-agent",
         "gemini",
+        "omp",
         "opencode",
     }
 )

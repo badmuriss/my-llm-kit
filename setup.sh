@@ -513,7 +513,7 @@ link_agents_md() {
   fi
 
   # every host path that should end up pointing at the shared file
-  local -a aliases=("$HOME/.claude/CLAUDE.md" "$HOME/.codex/AGENTS.md")
+  local -a aliases=("$HOME/.claude/CLAUDE.md" "$HOME/.codex/AGENTS.md" "$HOME/.omp/agent/AGENTS.md")
 
   if [ "$DRY" -eq 1 ]; then
     echo "  [dry-run] symlink $shared -> $src (with backup if needed)"

@@ -1,0 +1,37 @@
+{
+  "ruff": {
+    "command": "uvx --from ruff==0.16.5 ruff check .",
+    "exit_code": 0,
+    "output": "All checks passed!"
+  },
+  "npm_audit": {
+    "cwd": "skills/spec/tools",
+    "command": "npm audit --omit=dev --ignore-scripts --json",
+    "exit_code": 0,
+    "vulnerabilities": {"info": 0, "low": 0, "moderate": 0, "high": 0, "critical": 0, "total": 0},
+    "dependencies": {"prod": 186, "dev": 0, "optional": 14, "peer": 1, "peerOptional": 0, "total": 200}
+  },
+  "research_pytest": {
+    "command": "uvx --from pytest pytest -q skills/research/scripts/tests/test_audit_finding.py skills/scrapingdog/scripts/test_account_summary.py",
+    "exit_code": 0,
+    "passed": 7,
+    "note": "Os sete casos pertencem a research; o arquivo ScrapingDog é um script standalone, não uma suíte pytest."
+  },
+  "scrapingdog_standalone": {
+    "command": "python3 skills/scrapingdog/scripts/test_account_summary.py",
+    "exit_code": 0,
+    "output": "account_summary: ok"
+  },
+  "migration_report_validator": {
+    "command": "python3 skills/research/scripts/audit_finding.py research/2026-09-22-omp-gpt6-routing.md",
+    "exit_code": 0
+  },
+  "local_links": {
+    "documents": ["README.md", "instructions/AGENTS.md", "research/2026-09-22-omp-gpt6-routing.md", "research/2026-09-22-omp-harness-audit.md"],
+    "broken_links": []
+  },
+  "timeout_cleanup": {
+    "scope": "Processos Python/bash/sleep/node/bun/git do usuário com HOME ou XDG da execução isolada anterior",
+    "owned_processes_remaining": 0
+  }
+}

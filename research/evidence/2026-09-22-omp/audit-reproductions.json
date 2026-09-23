@@ -1,0 +1,21 @@
+{
+  "jsonc_string": {
+    "before": "preserve,]inside",
+    "after": "preserve]inside"
+  },
+  "backup_permissions": {
+    "original_mode": "0600",
+    "backup_mode": "0644"
+  },
+  "signaled_check": {
+    "exit_code": -15,
+    "timed_out": false
+  },
+  "unknown_binary": {
+    "exit_code": 1,
+    "bytes_before": 9,
+    "bytes_after": 0,
+    "backup_preserves_original": true,
+    "unicode_encode_error": true
+  }
+}

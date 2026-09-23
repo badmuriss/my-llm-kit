@@ -1,0 +1,115 @@
+{
+  "platform": "linux",
+  "isolated_home": true,
+  "credential_environment_removed": true,
+  "results": [
+    {
+      "label": "scripts",
+      "command": [
+        "/home/linuxbrew/.linuxbrew/opt/python@3.14/bin/python3.14",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "scripts/tests",
+        "-p",
+        "test_*.py"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "....................................\n----------------------------------------------------------------------\nRan 36 tests in 22.576s\n\nOK\n"
+    },
+    {
+      "label": "agent-graph",
+      "command": [
+        "/home/linuxbrew/.linuxbrew/opt/python@3.14/bin/python3.14",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "skills/agent-graph/tests",
+        "-p",
+        "test_*.py"
+      ],
+      "exit_code": 124,
+      "stdout": "",
+      "stderr": "Timed out after 300 seconds"
+    },
+    {
+      "label": "computer-use",
+      "command": [
+        "/home/linuxbrew/.linuxbrew/opt/python@3.14/bin/python3.14",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "skills/computer-use/tests",
+        "-p",
+        "test_*.py"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.002s\n\nOK\n"
+    },
+    {
+      "label": "spec",
+      "command": [
+        "/home/linuxbrew/.linuxbrew/opt/python@3.14/bin/python3.14",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "skills/spec/tests",
+        "-p",
+        "test_*.py"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "..................\n----------------------------------------------------------------------\nRan 18 tests in 0.063s\n\nOK\n"
+    },
+    {
+      "label": "research",
+      "command": [
+        "/home/linuxbrew/.linuxbrew/opt/python@3.14/bin/python3.14",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "skills/research/scripts/tests",
+        "-p",
+        "test_*.py"
+      ],
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "E\n======================================================================\nERROR: test_audit_finding (unittest.loader._FailedTest.test_audit_finding)\n----------------------------------------------------------------------\nImportError: Failed to import test module: test_audit_finding\nTraceback (most recent call last):\n  File \"/home/linuxbrew/.linuxbrew/opt/python@3.14/lib/python3.14/unittest/loader.py\", line 433, in _find_test_path\n    module = self._get_module_from_name(name)\n  File \"/home/linuxbrew/.linuxbrew/opt/python@3.14/lib/python3.14/unittest/loader.py\", line 374, in _get_module_from_name\n    __import__(name)\n    ~~~~~~~~~~^^^^^^\n  File \"/home/badmuriss/Documents/my-llm-kit/skills/research/scripts/tests/test_audit_finding.py\", line 8, in <module>\n    import pytest\nModuleNotFoundError: No module named 'pytest'\n\n\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nFAILED (errors=1)\n"
+    },
+    {
+      "label": "scrapingdog",
+      "command": [
+        "/home/linuxbrew/.linuxbrew/opt/python@3.14/bin/python3.14",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "skills/scrapingdog/scripts",
+        "-p",
+        "test_account_summary.py"
+      ],
+      "exit_code": 5,
+      "stdout": "",
+      "stderr": "\n----------------------------------------------------------------------\nRan 0 tests in 0.000s\n\nNO TESTS RAN\n"
+    },
+    {
+      "label": "shell-syntax",
+      "command": [
+        "bash",
+        "-n",
+        "setup.sh",
+        "install.sh"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ]
+}

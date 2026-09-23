@@ -54,12 +54,11 @@ creating it. Honor the user's explicit placement choice.
 
 Use one writer unless independent tasks justify delegation. Choose the cheapest
 available model and effort sufficient for the role; consult the task's routing
-policy for both direct dispatch and graph work. For Codex, select only GPT-5.6
-Luna, GPT-5.6 Sol or GPT-6 Astra. Do not select GPT-5.5 or GPT-5.6 Terra,
-including as a fallback.
-Pass the selected model and effort explicitly when the host supports it; check
-the resolved model before accepting a dispatch. If the host cannot honor the
-selection, report the limitation instead of silently substituting a model.
+policy for both direct dispatch and graph work. OMP role aliases are assigned in
+`~/.omp/agent/config.yml`, so dispatch with `@slow`, `@plan`, `@smol` or a
+concrete `provider/model:effort` selector, and check the resolved model before
+accepting a dispatch. If the host cannot honor the selection, report the
+limitation instead of silently substituting a model.
 Do not raise effort automatically after failure.
 
 Never overlap the same build or typecheck in one worktree. Reuse development
@@ -70,6 +69,52 @@ Retain the objective, decisions, evidence and pending work across context change
 For unusually high fan-out or overlapping heavy work on Linux, use
 `agent-resource-guard` if installed and honor a denial. It is optional; other
 systems use host controls. Reduce concurrency when observed capacity requires it.
+
+## Harness
+
+`omp` (Oh My Pi) is the primary coding agent and runs on the ChatGPT/Codex
+subscription models. Keep one configuration surface: OMP-native files under
+`~/.omp/agent/`.
+
+| What | Where |
+|---|---|
+| Models, roles, effort | `~/.omp/agent/config.yml` (`modelRoles`, `retry.fallbackChains`) |
+| Extra model ids | `~/.omp/agent/models.yml` |
+| Skills | `~/.agents/skills/<name>/SKILL.md`, shared by every host |
+| Instructions | `~/.agents/AGENTS.md` (this file, symlinked into each host) |
+| MCP servers | `~/.omp/agent/mcp.json` |
+| Hooks | `~/.omp/agent/hooks/{pre,post}/*.ts` |
+| Subagents | `~/.omp/agent/agents/*.md` |
+
+Use GPT-6 Sol for ordinary work, GPT-6 Luna for mechanical execution and GPT-6
+Astra for difficult reasoning. These are starting recommendations, not a second
+configuration surface: read `modelRoles` for the current selection and preserve
+explicit user changes. Configured chat roles and fallbacks stay on
+`openai-codex/*`. Do not route model inference through OpenRouter or other
+pay-as-you-go endpoints, including optional skill scripts, without explicit
+authorization for that exception. Disabling an OMP provider does not block
+network calls made by external scripts.
+
+| Role | Model | Use |
+|---|---|---|
+| `default`, `task` | GPT-6 Sol medium, unless explicitly changed | interactive work, bounded implementation |
+| `plan` | GPT-6 Sol high | planning, multi-file design |
+| `slow` | GPT-6 Astra medium | architecture, hard debugging, coordination |
+| `smol` | GPT-6 Luna medium | mechanical edits, extraction, check execution |
+| `vision` | GPT-6 Sol medium | screenshots, rendered UI, image reading |
+| `tiny`, `commit` | GPT-6 Luna low | titles, commit messages, classification |
+| `image` | `gpt-image-1` | `generate_image` output |
+
+Effort follows complexity: Luna low or medium for mechanical work, Sol medium for
+ordinary implementation, Sol high or Astra medium when the task is ambiguous or
+costly to get wrong; xhigh and max only with a demonstrated benefit. Astra bills
+about five times Sol and a hundred times Luna per token, so it earns its place
+through fewer attempts, not habit.
+
+`deep-reasoner` (`@slow`, clean context, reasoning-heavy phases) and `fast-worker`
+(`@smol`, mechanical work) are the dispatchable subagents, alongside the bundled
+`scout`, `reviewer`, `security-reviewer`, `sonic` and `task`. Image generation is
+available through the `generate_image` tool.
 
 ## Writing and Git
 

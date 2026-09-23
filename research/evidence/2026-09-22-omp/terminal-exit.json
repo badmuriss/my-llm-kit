@@ -1,0 +1,18 @@
+[
+  {
+    "timestamp": "2026-09-22T18:40:55.681-03:00",
+    "level": "warn",
+    "pid": 636150,
+    "message": "terminal disconnected; stopping interactive rendering",
+    "reason": "stdin ended"
+  },
+  {
+    "timestamp": "2026-09-22T18:40:55.707-03:00",
+    "level": "warn",
+    "pid": 636150,
+    "message": "Session exit recorded",
+    "reason": "sighup",
+    "kind": "signal",
+    "pendingToolCalls": 0
+  }
+]
