@@ -29,9 +29,15 @@ search snippets and collector summaries do not count as an opened source.
 
 For durable web snapshots, the existing `scripts/collect_sources.py` accepts a
 JSON list of `{slug, url, dynamic?}` and an output directory. Its `--dry-run` lists
-requests first. Use it when its ScrapingDog route is appropriate; otherwise retain
-the source and provenance from the provider already used, without paying to fetch
-it again solely for a template.
+requests first. It uses Scrapinho with `SCRAPINHO_API_KEY`, optional
+`SCRAPINHO_BASE_URL` (default `https://scrapinho.dev`), and `--project-scope`.
+`dynamic: true` selects browser acquisition. It verifies the raw SHA-256, reads
+normalized text through EOF, and records acquisition time, job/source identifiers
+and measured usage. A failed refresh removes stale page artifacts and preserves
+the failed attempt usage. Cost remains unknown, not zero. This migrates URL
+snapshots only; search and other provider routes retain their current contracts.
+Retain source and provenance from an already used provider without fetching again
+solely for a template.
 
 ## Adjudicate claims
 

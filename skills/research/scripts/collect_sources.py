@@ -1,139 +1,141 @@
 #!/usr/bin/env python3
-"""Snapshot web sources for a research finding.
-
-Input: JSON list of {"slug", "url", "dynamic"?}.
-Output per slug: <out>/<slug>/{page.html, page.md, record.json}.
-Fetches through ScrapingDog /scrape with SCRAPINGDOG_API_KEY; static (1 credit)
-unless "dynamic": true (5 credits). Stdlib only; html2text is used when installed.
-"""
-
-from __future__ import annotations
-
+"""Collect private Scrapinho snapshots into page.html, page.md and record.json."""
 import argparse
 import hashlib
-import html
 import json
 import os
+from pathlib import Path
 import re
 import sys
-import urllib.error
-import urllib.parse
-import urllib.request
-from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime, timezone
-from pathlib import Path
+from tempfile import NamedTemporaryFile
+from urllib.parse import urlsplit
+from uuid import uuid4
 
-API_URL = "https://api.scrapingdog.com/scrape"
-CREDITS = {False: 1, True: 5}
-MAX_WORKERS = 4
-SLUG = re.compile(r"^[a-z0-9][a-z0-9-]*$")
-
-try:
-    import html2text  # type: ignore
-except ImportError:  # pragma: no cover
-    html2text = None
+from scrapinho import Client, ScrapinhoError
 
 
-def load_sources(path: Path) -> list[dict]:
+def load_sources(path):
     raw = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(raw, list):
-        raise SystemExit("input must be a JSON list")
-    seen: set[str] = set()
-    sources = []
-    for index, item in enumerate(raw):
+        raise ValueError("input_must_be_list")
+    sources, seen = [], set()
+    for item in raw:
+        if not isinstance(item, dict):
+            raise ValueError("invalid_source")
         slug, url = item.get("slug"), item.get("url")
-        if not slug or not SLUG.match(slug) or slug in seen:
-            raise SystemExit(f"item {index}: slug must be unique and match {SLUG.pattern}")
-        if not url or not url.startswith(("http://", "https://")):
-            raise SystemExit(f"item {index}: url must start with http(s)://")
+        if not isinstance(slug, str) or not re.fullmatch(r"[a-z0-9][a-z0-9-]{0,127}", slug) or slug in seen:
+            raise ValueError("invalid_or_duplicate_slug")
+        if not isinstance(url, str):
+            raise ValueError("invalid_url")
+        parsed = urlsplit(url)
+        if parsed.scheme not in {"http", "https"} or not parsed.hostname or parsed.username or parsed.password:
+            raise ValueError("invalid_url")
+        if not isinstance(item.get("dynamic", False), bool):
+            raise ValueError("invalid_dynamic")
         seen.add(slug)
-        sources.append({"slug": slug, "url": url, "dynamic": bool(item.get("dynamic", False))})
+        sources.append({"slug": slug, "url": url, "dynamic": item.get("dynamic", False)})
     return sources
 
 
-def to_markdown(body: str) -> str:
-    if html2text is not None:
-        converter = html2text.HTML2Text()
-        converter.body_width = 0
-        return converter.handle(body)
-    text = re.sub(r"(?is)<(script|style|noscript|svg).*?</\1>", " ", body)
-    text = re.sub(r"(?i)</?(h[1-6]|p|li|div|br|tr)[^>]*>", "\n", text)
-    text = re.sub(r"<[^>]+>", " ", text)
-    text = html.unescape(text)
-    lines = [" ".join(line.split()) for line in text.splitlines()]
-    return "\n".join(line for line in lines if line) + "\n"
-
-
-def fetch(source: dict, api_key: str, timeout: int) -> tuple[int, bytes]:
-    params = urllib.parse.urlencode(
-        {"api_key": api_key, "url": source["url"], "dynamic": str(source["dynamic"]).lower()}
-    )
-    request = urllib.request.Request(f"{API_URL}?{params}", headers={"User-Agent": "research-collect/1.0"})
+def atomic_write(path, body):
+    temporary = None
     try:
-        with urllib.request.urlopen(request, timeout=timeout) as response:
-            return response.status, response.read()
-    except urllib.error.HTTPError as exc:
-        return exc.code, exc.read()
+        with NamedTemporaryFile(dir=path.parent, delete=False) as stream:
+            temporary = Path(stream.name)
+            stream.write(body)
+        temporary.replace(path)
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
 
 
-def collect(source: dict, out: Path, api_key: str, timeout: int) -> dict:
-    target = out / source["slug"]
-    target.mkdir(parents=True, exist_ok=True)
-    record = {
-        "url": source["url"],
-        "accessed_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-        "endpoint": f"/scrape?dynamic={str(source['dynamic']).lower()}",
-        "credits_est": CREDITS[source["dynamic"]],
-        "sha256": None,
-        "http_status": None,
-        "error": None,
-    }
+def collect(sources, out, client, project_scope, timeout):
+    run_id = str(uuid4())
+    requests = [{"operation": "fetch.page", "project_scope": project_scope,
+                 "input": {"url": source["url"]}, "execution": "browser" if source["dynamic"] else "static",
+                 "limits": {"timeout_ms": int(timeout * 1000)}} for source in sources]
+    # Invalidate the previous generation before any batch/network operation.
+    for source in sources:
+        target = out / source["slug"]
+        target.mkdir(parents=True, exist_ok=True)
+        for filename in ("page.html", "page.md", "record.json"):
+            (target / filename).unlink(missing_ok=True)
     try:
-        status, body = fetch(source, api_key, timeout)
-        record["http_status"] = status
-        if status == 200:
-            (target / "page.html").write_bytes(body)
-            (target / "page.md").write_text(to_markdown(body.decode("utf-8", "replace")), encoding="utf-8")
-            record["sha256"] = hashlib.sha256(body).hexdigest()
-        else:
-            record["credits_est"] = 0
-            record["error"] = body[:200].decode("utf-8", "replace")
-    except Exception as exc:  # network or filesystem failure stays in the record
-        record["credits_est"] = 0
-        record["error"] = f"{type(exc).__name__}: {exc}"
-    (target / "record.json").write_text(json.dumps(record, indent=2, ensure_ascii=False), encoding="utf-8")
-    return record
+        jobs = client.map(requests, timeout=timeout)
+    except (ScrapinhoError, OSError, ValueError) as error:
+        code = error.code if isinstance(error, ScrapinhoError) else "batch_acquisition_failed"
+        jobs = [{"status": "failed", "errors": [{"code": code}]} for _ in sources]
+    records = []
+    for source, job in zip(sources, jobs, strict=True):
+        target = out / source["slug"]
+        target.mkdir(parents=True, exist_ok=True)
+        record = {"schema_version": 1, "run_id": run_id, "provider": "scrapinho", "url": source["url"],
+                  "job_id": job.get("job_id"), "source_id": job.get("source_id"), "accessed_at": None,
+                  "sha256": None, "http_status": None, "status": job.get("status"), "error": None,
+                  "proxy_bytes": None, "cost_usd": None,
+                  "usage": job.get("usage"), "usage_basis": job.get("usage_basis"),
+                  "cache_hit": job.get("cache_hit", False), "max_age_s": job.get("max_age_s")}
+        try:
+            if job.get("status") != "succeeded" or not job.get("source_id"):
+                raise ScrapinhoError(next(iter(job.get("errors", [])), {}).get("code", "acquisition_incomplete"))
+            page = client.read_all(job["source_id"])
+            if not page["acquisition_complete"]:
+                raise ScrapinhoError("acquisition_incomplete")
+            manifest = client.export_source(job["source_id"])
+            body = client.export_source(job["source_id"], "html")
+            digest = hashlib.sha256(body).hexdigest()
+            if digest != page["content_sha256"]:
+                raise ScrapinhoError("source_integrity_mismatch")
+            record.update({"sha256": digest, "accessed_at": page["fetched_at"], "http_status": manifest["target_status"]})
+            atomic_write(target / "page.html", body)
+            atomic_write(target / "page.md", (page["text"] + "\n").encode("utf-8"))
+        except (ScrapinhoError, OSError) as error:
+            record["error"] = error.code if isinstance(error, ScrapinhoError) else "artifact_write_failed"
+            record["status"] = "failed"
+            record["sha256"] = None
+            record["http_status"] = None
+            for filename in ("page.html", "page.md"):
+                (target / filename).unlink(missing_ok=True)
+        try:
+            # The record is the commit marker for the newly published generation.
+            atomic_write(target / "record.json", (json.dumps(record, indent=2, ensure_ascii=False) + "\n").encode("utf-8"))
+        except OSError:
+            for filename in ("page.html", "page.md"):
+                (target / filename).unlink(missing_ok=True)
+            raise
+        records.append(record)
+    return records
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--input", required=True, type=Path, help="JSON list of {slug, url, dynamic?}")
-    parser.add_argument("--out", default=Path("research/sources"), type=Path, help="output root (default research/sources)")
-    parser.add_argument("--dry-run", action="store_true", help="list planned requests and credits without calling the API")
-    parser.add_argument("--timeout", default=60, type=int, help="seconds per request (default 60)")
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--input", required=True, type=Path)
+    parser.add_argument("--out", default=Path("research/sources"), type=Path)
+    parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--timeout", default=120, type=float)
+    parser.add_argument("--project-scope", default=os.environ.get("SCRAPINHO_PROJECT_SCOPE", "research"))
     args = parser.parse_args()
-
-    sources = load_sources(args.input)
-    planned = sum(CREDITS[s["dynamic"]] for s in sources)
-    if args.dry_run:
-        for s in sources:
-            print(f"{s['slug']}\t/scrape?dynamic={str(s['dynamic']).lower()}\t{CREDITS[s['dynamic']]}\t{s['url']}")
-        print(f"dry run: {len(sources)} requests, {planned} credits estimated, out={args.out}")
-        return 0
-
-    api_key = os.environ.get("SCRAPINGDOG_API_KEY")
-    if not api_key:
-        print("SCRAPINGDOG_API_KEY missing; run scripts/key-env-check.sh", file=sys.stderr)
+    try:
+        sources = load_sources(args.input)
+        if not 1 <= args.timeout <= 900:
+            raise ValueError("invalid_timeout")
+        if args.dry_run:
+            for source in sources:
+                print(f"{source['slug']}\tfetch.page\t{'browser' if source['dynamic'] else 'static'}\t{source['url']}")
+            print(f"dry run: {len(sources)} acquisitions; billed bytes and cost unknown")
+            return 0
+        key = os.environ.get("SCRAPINHO_API_KEY")
+        if not key:
+            print("SCRAPINHO_API_KEY missing", file=sys.stderr)
+            return 2
+        client = Client(os.environ.get("SCRAPINHO_BASE_URL", "https://scrapinho.dev"), key)
+        records = collect(sources, args.out, client, args.project_scope, args.timeout)
+        for source, record in zip(sources, records, strict=True):
+            print(f"{source['slug']}\t{record['status']}\t{record['error'] or args.out / source['slug'] / 'page.md'}")
+        return int(any(record["error"] for record in records))
+    except (OSError, ValueError, ScrapinhoError) as error:
+        print(error.code if isinstance(error, ScrapinhoError) else "invalid_input_or_output", file=sys.stderr)
         return 2
-
-    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as pool:
-        records = list(pool.map(lambda s: collect(s, args.out, api_key, args.timeout), sources))
-
-    failed = [s["slug"] for s, r in zip(sources, records) if r["http_status"] != 200]
-    for s, r in zip(sources, records):
-        print(f"{s['slug']}\t{r['http_status']}\t{r['credits_est']}\t{r['error'] or args.out / s['slug'] / 'page.md'}")
-    print(f"collected {len(records) - len(failed)}/{len(records)}, {sum(r['credits_est'] for r in records)} credits estimated, failed={failed or 'none'}")
-    return 1 if failed else 0
 
 
 if __name__ == "__main__":
