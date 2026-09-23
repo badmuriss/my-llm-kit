@@ -1,4 +1,5 @@
 import { pathToFileURL } from 'node:url';
+import { realpathSync } from 'node:fs';
 
 const REQUIRED_TOOLS = ['scraper_capabilities', 'scraper_usage', 'scraper_submit', 'scraper_get', 'scraper_cancel', 'scraper_read_source'];
 
@@ -40,7 +41,7 @@ export async function preflight({ baseUrl = 'https://scrapinho.dev', apiKey }) {
   return { scope: 'fetch.page', authenticated: true, modes: ['static', 'browser'], acquisitions: 0 };
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href) {
   try {
     console.log(JSON.stringify(await preflight({ baseUrl: process.env.SCRAPINHO_BASE_URL, apiKey: process.env.SCRAPINHO_API_KEY })));
   } catch (error) {

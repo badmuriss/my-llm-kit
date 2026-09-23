@@ -1,3 +1,9 @@
+import { mkdtemp, symlink, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
 import { createServer } from 'node:http';
 import { once } from 'node:events';
 import assert from 'node:assert/strict';
@@ -64,4 +70,17 @@ test('refuses redirects without forwarding bearer credentials', async () => {
     await assert.rejects(preflight(options), { message: 'service_connection_failed' });
     assert.deepEqual(calls.map(call => call.path), ['/mcp']);
   }, { redirect: true });
+});
+
+
+test('executes the CLI through an installed skill symlink', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'scrapinho-preflight-'));
+  const installed = join(directory, 'installed.mjs');
+  try {
+    await symlink(fileURLToPath(new URL('../../skills/research/scripts/preflight_scrapinho_mcp.mjs', import.meta.url)), installed);
+    await fixture(async options => {
+      const { stdout } = await promisify(execFile)(process.execPath, [installed], { env: { ...process.env, SCRAPINHO_BASE_URL: options.baseUrl, SCRAPINHO_API_KEY: options.apiKey }, timeout: 5000 });
+      assert.equal(JSON.parse(stdout).scope, 'fetch.page');
+    });
+  } finally { await rm(directory, { recursive: true, force: true }); }
 });
