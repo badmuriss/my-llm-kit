@@ -35,9 +35,11 @@ platform is unavailable, report that evidence as unobserved. A build is not
 visual evidence.
 
 Use sources for material external facts and volatile values; cite the source and
-access date. Prefer repository evidence for local questions. For public web data,
-use ScrapingDog when keyed; after a bounded failure or missing key, disclose the
-reason and use Firecrawl, then host search. Scientific literature starts with the
+access date. Prefer repository evidence for local questions. For known public URLs, use configured Scrapinho page acquisition; after a bounded
+failure or missing access, disclose the reason and use Firecrawl, then host tools.
+Search and specialized methods without verified Scrapinho parity still use
+ScrapingDog when keyed, then Firecrawl and host search after a bounded failure or
+missing key. Scientific literature starts with the
 free Firecrawl Research Index when available. Use `research` when available for a research
 workflow, not as a prerequisite for every local fact or number. Convert documents
 when extraction is needed and check reading order and tables before analysis.

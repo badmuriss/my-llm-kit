@@ -260,6 +260,17 @@ preflight_scrapingdog_mcp() {
 }
 [ "$FULL" -eq 0 ] || run_step "preflight MCP scrapingdog" preflight_scrapingdog_mcp
 
+preflight_scrapinho_mcp() {
+  if [ "$DRY" -eq 1 ]; then
+    echo "  [dry-run] node skills/research/scripts/preflight_scrapinho_mcp.mjs (when SCRAPINHO_API_KEY is configured)"
+  elif [ -n "${SCRAPINHO_API_KEY:-}" ]; then
+    node "$REPO_DIR/skills/research/scripts/preflight_scrapinho_mcp.mjs"
+  else
+    echo "  Scrapinho preflight skipped: SCRAPINHO_API_KEY is not configured"
+  fi
+}
+[ "$FULL" -eq 0 ] || run_step "preflight Scrapinho pages" preflight_scrapinho_mcp
+
 # An installed package is not proof that research works. Exercise the CLI against one
 # stable arXiv title and fail visibly when the executable or query is unavailable.
 preflight_paper_search() {

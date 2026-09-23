@@ -39,6 +39,13 @@ snapshots only; search and other provider routes retain their current contracts.
 Retain source and provenance from an already used provider without fetching again
 solely for a template.
 
+Before using a configured Scrapinho endpoint, resolve this installed skill’s
+`scripts/preflight_scrapinho_mcp.mjs` and run it with Node. It checks authentication, MCP tools and
+public static/browser page availability without acquiring a source. It reads the
+same environment variables as the collector. `setup.sh --full` and
+`setup.ps1 -Full` run it when the key is configured; a missing key is reported as
+skipped. This preflight covers pages, not complete research-provider parity.
+
 ## Adjudicate claims
 
 Keep a claim ledger containing the claim, source URL, access date, snapshot path,

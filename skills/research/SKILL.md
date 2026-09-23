@@ -20,9 +20,17 @@ local check does not require web research. Verify volatile external values at
 the source; record when they were accessed. Treat snippets and agent summaries
 as leads, not as sources already read.
 
-For public web collection, use the installed `scrapingdog` skill when keyed.
-After a bounded failure or missing key, record why and use Firecrawl, then host
-search. For a known official document, direct reading is sufficient. For papers,
+For known public URLs, use Scrapinho when configured: check
+`scraper_capabilities`, submit `fetch.page`, poll the returned job, then read the
+source through EOF. Use static acquisition unless rendering is needed; partial
+sources do not prove complete content. For durable snapshots, use the collector
+described in [reporting.md](references/reporting.md). After a bounded failure or
+missing Scrapinho access, record why and use Firecrawl, then host tools.
+
+Search and specialized methods without verified Scrapinho parity still use the
+installed `scrapingdog` skill when keyed, then Firecrawl and host search after a
+bounded failure or missing key. Do not infer search, transcript or social coverage
+from `fetch.page`. For a known official document, direct reading is sufficient. For papers,
 start with the free Firecrawl Research Index when available; use paper-search to
 cross-check metadata when needed. Missing optional providers do not block local
 work that already has adequate evidence.

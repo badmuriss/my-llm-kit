@@ -367,6 +367,18 @@ Invoke-Step "preflight MCP scrapingdog" -FullOnly {
     }
 }
 
+Invoke-Step "preflight Scrapinho pages" -FullOnly {
+    if ($DryRun) {
+        Write-Host "  [dry-run] node skills/research/scripts/preflight_scrapinho_mcp.mjs (when SCRAPINHO_API_KEY is configured)"
+    }
+    elseif (-not [string]::IsNullOrWhiteSpace($env:SCRAPINHO_API_KEY)) {
+        Invoke-Native "node" @((Join-Path $RepoDirectory "skills/research/scripts/preflight_scrapinho_mcp.mjs"))
+    }
+    else {
+        Write-Host "  Scrapinho preflight skipped: SCRAPINHO_API_KEY is not configured"
+    }
+}
+
 Invoke-Step "preflight paper-search" -FullOnly {
     if ($DryRun) {
         Write-Host "  [dry-run] paper-search-mcp --version"
