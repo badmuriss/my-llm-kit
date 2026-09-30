@@ -1,22 +1,16 @@
 #!/usr/bin/env bash
 # Print ScrapingDog credit usage without exposing account secrets.
 # Output: "used/limit remaining=N concurrency=M pack=P".
-# SCRAPINGDOG_ACCOUNT_FIXTURE=<json path> parses that file instead of calling /account.
-# Exit 2 when the key is missing (and no fixture is given), 3 when the response cannot be parsed.
+# Exit 2 when the key is missing, 3 when the response cannot be parsed.
 
 set -u
 
-fixture="${SCRAPINGDOG_ACCOUNT_FIXTURE:-}"
-if [[ -n "$fixture" ]]; then
-  payload="$(cat "$fixture")" || exit 3
-else
-  if [[ -z "${SCRAPINGDOG_API_KEY:-}" ]]; then
-    echo "SCRAPINGDOG_API_KEY missing" >&2
-    exit 2
-  fi
-  payload="$(curl -sS --max-time 30 -G "https://api.scrapingdog.com/account" \
-    --data-urlencode "api_key=${SCRAPINGDOG_API_KEY}")" || exit 3
+if [[ -z "${SCRAPINGDOG_API_KEY:-}" ]]; then
+  echo "SCRAPINGDOG_API_KEY missing" >&2
+  exit 2
 fi
+payload="$(curl -sS --max-time 30 -G "https://api.scrapingdog.com/account" \
+  --data-urlencode "api_key=${SCRAPINGDOG_API_KEY}")" || exit 3
 
 ACCOUNT_PAYLOAD="$payload" python3 - <<'PY'
 import json

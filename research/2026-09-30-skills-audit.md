@@ -1,5 +1,35 @@
 # Auditoria de skills compartilhadas e my-llm-kit
 
+## Instalação por prompt solicitada
+
+- [x] Substituir os instaladores do kit por um prompt e um contrato de instalação no README.
+- [x] Manter a base pequena, o catálogo opcional e a descoberta adaptada ao harness ativo.
+- [x] Preservar skills próprias, configuração nativa, credenciais e recursos de graph/PDF.
+- [x] Retirar helpers e testes exclusivos dos instaladores e corrigir referências ativas.
+- [x] Verificar os pacotes instalados em diretórios temporários e registrar os limites observados.
+- [x] Retirar todos os GitHub Actions, suítes de testes, fixtures exclusivos e dependências de desenvolvimento conforme a instrução posterior.
+
+Esta mudança altera a distribuição do kit. A instalação local existente continua
+preservada; os registros anteriores descrevem os instaladores usados na época.
+O catálogo está no README, com duas skills de base e os mesmos sete pacotes
+externos opcionais. Saíram os instaladores Bash/PowerShell, o manifest e os
+helpers exclusivos de instalação e configuração automática por host. Stagehand
+usa as dependências travadas no próprio pacote; a extensão OMP é uma escolha
+explícita.
+
+Antes da instrução posterior para retirar os testes, os 38 testes restantes dos
+helpers passaram. A verificação em diretórios temporários também confirmou o uso
+do research por link e por cópia, a partir de outro projeto e sem credenciais,
+os recursos de policy e runtime de graph e o acesso ao CLI de PDF. A descoberta
+numa instalação nova de cada harness e os sistemas Windows/macOS nativos continuam
+não observados. Suítes de testes e automação GitHub Actions não fazem parte do
+modelo de distribuição solicitado.
+Os workflows, diretórios de testes, scripts de smoke, fixtures e dependências de
+desenvolvimento saíram do checkout. A regra específica deste repositório impede
+que essa infraestrutura seja recriada; a política compartilhada para projetos
+consumidores mantém seu escopo próprio.
+Evidência: [instalação por prompt](evidence/2026-09-30-skills-audit/prompt-installation.json).
+
 ## Publicação solicitada
 
 - [x] Conferir os repositórios, remotes e mudanças pendentes, incluindo trabalho anterior autorizado pelo usuário.

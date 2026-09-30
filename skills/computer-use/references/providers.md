@@ -32,20 +32,13 @@ The runner's step budget defaults to 30 prediction cycles and accepts `--max-ste
 from 1 to 60. Only `done` returns zero, but it still requires independent verification.
 Connection errors and model failures never cause an automatic replay.
 
-## Reproduce the paid local browser smoke test
+## Observe completion
 
-This uses synthetic data, an isolated headless Chrome profile, a named daemon and
-an ephemeral HTTP server. It closes its tab, stops its own daemon/browser/server,
-and never attaches to the user's Chrome profile. Chrome/Chromium and uv must exist.
-Run from any consumer project, resolving both scripts from this skill:
-
-```sh
-uv run --with 'jev-ultrafast @ git+https://github.com/browser-use/jev-ultrafast@1231850a0bf1a0c0341fe408ef1668dbbfdfac46' --python 3.12 python <skill-dir>/tests/smoke_browser.py .visual-evidence/jev-browser-integration
-```
-
-Inspect `saved.png` with vision and read `result.json`. The script independently
-checks the saved DOM output; it does not treat the model's `DONE` as proof.
-Linux Chrome was exercised. Native Windows and macOS execution remain unverified.
+Verify a requested action through actual target state or a durable result. Capture
+PNG evidence for rendered changes and inspect it with vision. The model's `DONE`
+does not establish completion. Close the task's owned browser, daemon and other
+resources. Existing Linux Chrome observations remain historical evidence; native
+Windows and macOS execution remain unverified.
 
 Sources accessed 2026-09-21: [TypeSafe API](https://docs.typesafe.ai/api.md),
 [Jev Ultrafast](https://github.com/browser-use/jev-ultrafast),

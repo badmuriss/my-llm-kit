@@ -11,21 +11,26 @@ It is deterministic browser automation, not `act`, `observe` or AI `extract`.
 
 ## Installation and ownership
 
-Resolve this installed skill directory, not a `skills/` directory in the consumer project:
+Use the kit's README installation instructions to link or copy this complete
+skill into the shared skill directory. Resolve the installed skill's `tools/`
+directory and install its locked dependencies there:
 
 ```text
-node <skill-dir>/tools/install.mjs --dry-run
-node <skill-dir>/tools/install.mjs
+npm ci --ignore-scripts --no-audit --no-fund
 ```
 
-The kit's `--full` / `-Full` installer runs this step. It pins Stagehand 4.1.0 in this
-skill and links one OMP extension only when `~/.omp/agent/` already exists. Other
-harnesses can import `openSession` from `<skill-dir>/tools/session.mjs` in local
-scripts and close the session in `finally`; they do not need the OMP tool. Model
-roles, credentials, MCP servers and other browser tools stay untouched. Node >=22.18
-and installed Chrome are required. In OMP, reload extensions or start a new session
-after installation. Windows installation logic
-is provided, but native Windows browser execution has not been verified.
+Run that command with `tools/` as its working directory, outside the consumer
+project. `package.json` and its lockfile pin Stagehand 4.1.0; Node >=22.18 and
+installed Chrome are required. Any harness can import `openSession` from
+`<skill-dir>/tools/session.mjs` in local scripts and close the session in `finally`.
+Model roles, credentials, MCP servers and other browser tools stay untouched.
+
+When the user selects the OMP tool, use OMP's actual native extension directory.
+Add a loader that re-exports the default from this skill's `tools/omp-extension.mjs`
+using its absolute file URL; preserve an existing user-owned extension. Reload
+extensions or start a new session, then verify tool discovery in OMP. An OMP
+directory alone does not select this integration. Native Windows and macOS
+browser execution remain unverified.
 
 The `stagehand` tool launches lazily, retains its tab across calls, and releases its
 resources on `close`, OMP session switch or shutdown. This is the optional extension's
@@ -131,13 +136,11 @@ is installed and no external trace export is configured.
 
 ## Verification
 
-```text
-node <skill-dir>/tools/smoke.mjs <consumer-dir>/.visual-evidence/stagehand-browser
-```
-
-This uses a synthetic loopback application and actual Chrome, no production login or
-LLM request. Read `result.json` and inspect `saved.png`; missing engine/platform evidence
-remains unobserved. Official APIs and migration limits, accessed 2026-09-23:
+Verify the requested action through actual DOM state or a durable result. For
+rendered changes, capture PNG evidence from the same session and inspect it with
+vision using `frontend-visual-validation`. Close the owned session when the task
+ends; missing engine/platform evidence remains unobserved. Official APIs and
+migration limits, accessed 2026-09-23:
 
 - https://docs.stagehand.dev/v4/migrations/playwright
 - https://docs.stagehand.dev/v4/configuration/browser

@@ -83,8 +83,9 @@ explicit unsupported country must fail rather than being changed silently.
 Unsupported operations or formats are reported, not silently routed back to
 the removed generic scraper. The Node preflight takes `SCRAPINHO_API_KEY` from
 the private environment, unlike the collector's optional private JSON loader.
-`setup.sh --full` and `setup.ps1 -Full` run it when configured; a missing key is
-reported as skipped. It covers pages, not full provider parity.
+When installing or updating a selected Scrapinho integration, run this preflight
+only when credentials are configured; report a missing key as unavailable.
+It covers pages, not full provider parity.
 
 ### Local cutover evidence, 2026-09-29
 

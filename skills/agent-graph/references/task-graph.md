@@ -127,7 +127,7 @@ Graph mode starts as `single_writer`. It may reuse an explicit Host-native worke
 
 ## Maestro protocol v1
 
-`agent-graph-view.schema.json`, `maestro-mutation.schema.json`, and `delegation-intent.schema.json` define the Canvas boundary. Conformance fixtures live under `fixtures/maestro-protocol-v1/`.
+`agent-graph-view.schema.json`, `maestro-mutation.schema.json`, and `delegation-intent.schema.json` define the Canvas boundary.
 
 `AgentGraphView v1` contains bounded task, attempt, note-reference, terminal-receipt, evidence, cleanup, and portal nodes, plus a required `RunProgressSummary v1`. Typed edges connect those nodes. Snapshots and deltas carry a revision and resumable cursor. A non-null progress activity sequence must equal that view revision. The view excludes prompts, conversations, terminal output, transcripts, full file bodies, and unbounded reports.
 
