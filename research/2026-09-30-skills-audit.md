@@ -4,11 +4,16 @@
 
 - [x] Conferir os repositórios, remotes e mudanças pendentes, incluindo trabalho anterior autorizado pelo usuário.
 - [x] Verificar os helpers de research/Webshare e os scripts afetados antes de publicar.
-- [ ] Criar commits e publicar os três repositórios com origin, preservando mudanças novas do remoto.
-- [ ] Criar commit em .agents e publicar quando houver um destino remoto informado.
+- [x] Criar commits e publicar os três repositórios com origin, preservando mudanças novas do remoto.
+- [x] Criar commit local em .agents.
+- [ ] Publicar .agents quando houver um destino remoto informado.
 
 O repositório local .agents não tinha remote configurado na conferência. Seus
 backups de recuperação, caches e clones upstream ficam fora dos commits.
+Os pushes de `my-llm-kit`, `incredibly-pretty-websites` e `site-audit` foram
+confirmados pelo hash da branch remota. O commit local de `.agents` é `9259e6b`;
+a URL necessária para o push foi solicitada e continua pendente.
+Evidência: [publicação e checks adicionais](evidence/2026-09-30-skills-audit/publication.json).
 
 **Limpeza aplicada: 47 retiradas e 9 consolidações das 95 entradas originais.**
 A raiz compartilhada agora tem 40 skills: o núcleo de 5, as 34 opções preservadas

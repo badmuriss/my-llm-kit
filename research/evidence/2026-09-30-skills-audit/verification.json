@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-09-30T18:04:40.770476+00:00",
+  "checked_at": "2026-09-30T18:55:28.232094+00:00",
   "initial_audit_verification": {
     "checked_at": "2026-09-30T04:53:26.991603+00:00",
     "omp_version": "18.4.4",
@@ -67,10 +67,10 @@
   ],
   "remaining_cleanup_applied": true,
   "errors": [],
-  "report_sha256": "84fd3dee028a812be909f21b62a498d08b19cfd0b9fe9cc351324f5c41f58523",
+  "report_sha256": "a396557b956bf7c7bb9ae70ec9c2c57e6c5952db03f309150356796aef222fd8",
   "recommendations_sha256": "d5d6af678022b940d2788dbc801d3ee192334bd2fed5d087ada6ba545c686e86",
   "report_trailing_whitespace_lines": [],
-  "plan_pending_checkboxes": 0,
+  "plan_pending_checkboxes": 1,
   "harness_portability_record": "harness-portability.json",
   "root_scan_after_portability_count": 94,
   "root_scan_after_portability_warnings": [],
@@ -156,5 +156,10 @@
     }
   },
   "root_scan_after_cleanup_count": 40,
-  "root_scan_after_cleanup_warnings": []
+  "root_scan_after_cleanup_warnings": [],
+  "cleanup_report_sha256": "84fd3dee028a812be909f21b62a498d08b19cfd0b9fe9cc351324f5c41f58523",
+  "pending_work": [
+    "Push .agents after the user supplies a remote URL."
+  ],
+  "publication_record": "publication.json"
 }
