@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "observed_at": "2026-09-30T21:10:42.482Z",
+  "consumer": "research",
+  "project_scope": "my-llm-kit-research-mcp-20260930",
+  "transport": "configured native MCP tools",
+  "installed_skill": "/home/badmuriss/.agents/skills/research",
+  "canonical_skill": "/home/badmuriss/Documents/my-llm-kit/skills/research",
+  "installed_policy": "/home/badmuriss/.agents/AGENTS.md",
+  "canonical_policy": "/home/badmuriss/Documents/my-llm-kit/instructions/AGENTS.md",
+  "checks": {
+    "capabilities": {"fetch.page": true, "search.web": true},
+    "skill_package_validation": "Skill is valid!",
+    "relative_links": {
+      "skills/research/SKILL.md": "resolved",
+      "skills/research/references/reporting.md": "resolved",
+      "README.md": "resolved"
+    },
+    "operational_references_to_removed_helpers": "No matches found"
+  },
+  "acquisitions": [
+    {
+      "client_request_id": "llm-kit-research-direct-mcp-page-20260930",
+      "operation": "fetch.page",
+      "input": {"url": "https://example.com"},
+      "execution": "static",
+      "job_id": "3392243c-8c92-4ae9-8834-e5a4cf6acd3d",
+      "source_id": "3392243c-8c92-4ae9-8834-e5a4cf6acd3d",
+      "status": "succeeded",
+      "errors": [],
+      "cache_hit": false,
+      "usage": {"attempts": 1, "bytes": 8797, "browser_ms": 0},
+      "source_read": {
+        "view": "full",
+        "text": "This domain is for use in documentation examples without needing permission. This is not a service, avoid relying on it for testing and monitoring purposes.\nLearn more",
+        "total_chars": 167,
+        "next_cursor": null,
+        "complete": true,
+        "acquisition_complete": true,
+        "content_sha256": "7d3e61f8f627c8cc640c209ba0777db95f198a64e766f47484c321d5eb5e0962",
+        "fetched_at": "2026-09-30T21:07:47.907Z",
+        "extraction_method": "html-v1"
+      }
+    },
+    {
+      "client_request_id": "llm-kit-research-direct-mcp-search-20260930",
+      "operation": "search.web",
+      "input": {"query": "IANA example domains", "engine": "duckduckgo", "page": 0, "limit": 3},
+      "execution": "browser",
+      "job_id": "fe366879-929d-4587-abc7-4bcbd6ed826a",
+      "source_id": "fe366879-929d-4587-abc7-4bcbd6ed826a",
+      "status": "succeeded",
+      "errors": [],
+      "cache_hit": false,
+      "usage": {"attempts": 1, "bytes": 43742, "browser_ms": 0},
+      "source_read": {
+        "view": "full",
+        "total_chars": 1564,
+        "next_cursor": null,
+        "complete": true,
+        "acquisition_complete": true,
+        "content_sha256": "7463b0e55a9767fc0d25809f382a1e40fc057aefbcb435a716974cb920287213",
+        "fetched_at": "2026-09-30T21:09:13.847Z",
+        "extraction_method": "http-serp-v1"
+      },
+      "structured_search": {
+        "schema_version": 1,
+        "source_id": "fe366879-929d-4587-abc7-4bcbd6ed826a",
+        "provider": "http:duckduckgo",
+        "engine": "duckduckgo",
+        "parser_version": "http-serp-v1",
+        "fallback_reason": null,
+        "query": "IANA example domains",
+        "page": 0,
+        "locale": {"language": "pt-BR", "country": "BR"},
+        "results": [
+          {
+            "position": 1,
+            "provider_rank": 1,
+            "title": "IANA-managed Reserved Domains",
+            "url": "https://www.iana.org/domains/reserved",
+            "snippet": "IANA-managed Reserved Domains Certain domains are set aside, and nominally registered to \"IANA\", for specific policy or technical purposes. Example domains As described in RFC 2606 and RFC 6761, a number of domains such as example.com and example.org are maintained for documentation purposes. These domains may be used as illustrative examples in documents without prior coordination with us ..."
+          },
+          {
+            "position": 2,
+            "provider_rank": 2,
+            "title": "Example Domains - Internet Assigned Numbers Authority",
+            "url": "https://www.iana.org/help/example-domains",
+            "snippet": "As described in RFC 2606 and RFC 6761, a number of domains such as example.com and example.org are maintained for documentation purposes. These domains may be used as illustrative examples in documents without prior coordination with us. They are not available for registration or transfer."
+          },
+          {
+            "position": 3,
+            "provider_rank": 3,
+            "title": ".example - ICANNWiki",
+            "url": "https://icannwiki.org/.example",
+            "snippet": ".example is a reserved special-use top level domain name. It was first reserved for use in RFC 2606, which describes current practice. .example is accompanied by three sister second level domains that are similarly reserved for use in documentation:"
+          }
+        ],
+        "has_next_page": true,
+        "fetched_at": "2026-09-30T21:09:13.847Z",
+        "content_sha256": "7463b0e55a9767fc0d25809f382a1e40fc057aefbcb435a716974cb920287213",
+        "acquisition_complete": true,
+        "cache_hit": false
+      }
+    }
+  ],
+  "settled_project_usage": {
+    "attempts": 2,
+    "bytes": 52539,
+    "browser_ms": 0,
+    "usage_basis": "settled_usage_and_active_reservations",
+    "active_reservations": {"attempts": 0, "bytes": 0, "browser_ms": 0}
+  },
+  "raw_export_performed": false,
+  "raw_sha256_locally_verified": false,
+  "unexercised": ["search page 1", "browser page acquisition", "raw export", "Windows", "macOS"]
+}

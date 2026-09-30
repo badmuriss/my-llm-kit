@@ -20,27 +20,31 @@ local check does not require web research. Verify volatile external values at
 the source; record when they were accessed. Treat snippets and agent summaries
 as leads, not as sources already read.
 
-For generic web discovery and public-page reading, use Scrapinho: `search.web`
-with explicit `input.engine: "duckduckgo"`, and `fetch.page`. Require a project
-scope and a stable request/idempotency key per acquisition; never share scope
-between unrelated projects. Use the installed `scripts/collect_sources.py` for
-durable evidence, including search results, as described in
-[reporting.md](references/reporting.md). Its dry-run does not load credentials
-or access the network. A missing key or capability is a blocker for this route,
-not permission to silently restore the removed generic scraper.
+For generic web discovery and public-page reading, call the configured Scrapinho
+MCP tools directly: `search.web` with explicit `input.engine: "duckduckgo"`, and
+`fetch.page`. Do not run acquisition/preflight scripts or build a REST client.
+The active harness owns MCP authentication; a working MCP connection does not
+require a separate `SCRAPINHO_API_KEY` environment check. Require a project scope
+and a stable request/idempotency key per acquisition; never share scope between
+unrelated projects. Save durable evidence with the host's file-writing tools as
+described in [reporting.md](references/reporting.md).
 
-For MCP acquisition, run the installed `scripts/preflight_scrapinho_mcp.mjs`
-first for page defaults, and inspect `scraper_capabilities` for the requested
-discovery operation. Reuse schema defaults for omitted fields, but set one
-attempt and bounded limits. Do not infer geography from language or domains:
-web search currently has fixed pt-BR/BR locale. An unsupported geographic
-override must fail rather than silently change. Stop on auth, quota, CAPTCHA,
-403 or 429; do not retry acquisition or switch proxies to bypass refusal.
+Start with `scraper_capabilities` to check authentication and the requested
+operation, then use `scraper_submit`, `scraper_get` and `scraper_read_source`.
+Read the exposed tool schema for required fields and defaults; set one attempt
+and bounded limits. Do not infer geography from language or domains: web search
+currently has fixed pt-BR/BR locale. An unsupported geographic override must fail
+rather than silently change. A missing MCP connection or capability is a blocker
+for this route, not permission to substitute scripts or the removed generic
+scraper. Stop on auth, quota, CAPTCHA, 403 or 429; do not retry acquisition or
+switch proxies to bypass refusal.
 
-Poll the admitted job and read sources through `next_cursor=null`; verify raw
-SHA-256 when exporting. Partial sources are not complete evidence. Web search
-supports pages 0 and 1; request page 1 explicitly only when page 0 reports it.
-Keep the effective engine across pages. Preserve each query/page's original
+Poll the admitted job without submitting it again. Read sources through
+`next_cursor=null`; partial sources are not complete evidence. Use
+`scraper_read_search` for structured search results. Verify raw SHA-256 only when
+raw bytes are actually exported; text read over MCP is not a raw export. Web
+search supports pages 0 and 1; request page 1 explicitly only when page 0 reports
+it. Keep the effective engine across pages. Preserve each query/page's original
 positions and provenance; deduplicate URLs only when selecting pages to open,
 not by rewriting the ranked snapshots. Snippets and missing publication dates
 must not become verified claims or invented dates.

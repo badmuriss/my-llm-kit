@@ -40,9 +40,10 @@ platform is unavailable, report that evidence as unobserved. A build is not
 visual evidence.
 
 Use sources for material external facts and volatile values; cite the source and
-access date. Prefer repository evidence for local questions. Use configured
-Scrapinho for generic web discovery and public-page acquisition, following the
-research skill's capability, scope and refusal policy. Do not silently fall back
+access date. Prefer repository evidence for local questions.
+Use configured Scrapinho MCP tools directly for generic web discovery and public-page
+acquisition, following the research skill's capability, scope and refusal policy.
+Do not substitute acquisition scripts or REST clients, or silently fall back
 to the removed generic scraper. Specialized methods without verified parity
 retain their existing providers; do not substitute generic search for them.
 Scientific literature starts with the

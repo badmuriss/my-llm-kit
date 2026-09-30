@@ -27,8 +27,8 @@ Read README.md and AGENTS.md, then follow the installation instructions below.
 Install the shared policy and the research and frontend-visual-validation skills.
 Detect my operating system and active harness, using its native discovery mechanism.
 Preserve my existing skills, instructions, credentials and harness configuration.
-Verify discovery in the active harness and run the installed research helper from
-a separate project directory. Report changes, backups and anything unverified.
+Verify discovery in the active harness and exercise the configured research MCP
+with a separate project scope. Report changes, backups and anything unverified.
 Install optional skills or integrations only when I select them.
 ```
 
@@ -61,15 +61,16 @@ and integrations in place.
    them. Instruction aliases use `AGENTS.md`. Verify the installed files are
    actually loaded by the active harness.
 4. Resolve dependencies for the selected capabilities using the user's existing
-   environment and package tools. The core helper check uses Python 3; Node is
-   needed for the configured Scrapinho MCP preflight. API keys, model selection,
-   roles, effort, hooks and MCP servers stay in private environment variables or
-   the active harness's native configuration. Preserve existing guards and
-   provider choices. Add `.visual-evidence/` to the user's existing global Git
-   excludes file if needed, preserving its entries and configured path.
+   environment and package tools. Core research calls the configured MCP directly;
+   it requires no Python collector or Node preflight. Optional local validators
+   and other selected integrations retain their own runtime requirements. API
+   keys, model selection, roles, effort, hooks and MCP servers stay in private
+   environment variables or the active harness's native configuration. Preserve
+   existing guards and provider choices. Add `.visual-evidence/` to the user's
+   existing global Git excludes file if needed, preserving its entries and path.
 5. Verify from a separate temporary consumer project using the resolved installed
    paths. Check package references and instruction discovery, then exercise the
-   research dry-run below. Inspect the installation a second time to confirm that
+   direct MCP check below. Inspect the installation a second time to confirm that
    it needs no duplicate links or destructive replacement. Report installed,
    preserved and conflicting paths, backups, checks and unavailable capabilities.
    A file on disk proves placement; host discovery and runtime checks need their
@@ -85,25 +86,30 @@ knowledge staying in the shared files.
 
 ### Verify the core
 
-In the temporary consumer directory, create `sources.json` containing:
+Check that the installed [research skill](skills/research/SKILL.md) is discovered
+and its references resolve from a consumer project. For a selected Scrapinho
+integration, call its native `scraper_capabilities` tool and check the requested
+operation. This verifies the configured MCP connection without acquiring a source
+or requiring a separate API-key environment check.
 
-```json
-[{"slug":"installation-check","query":"primary evidence","page":0}]
-```
+When live acquisition is authorized, use the exposed `scraper_submit` schema for
+one bounded public-page request with a project-specific scope, stable request key
+and one attempt. Follow `scraper_get` to terminal status and `scraper_read_source`
+through `next_cursor=null`. For discovery, use `search.web` with explicit
+DuckDuckGo and `scraper_read_search` for ranked results. Save observed evidence
+with the host's file-writing tools as described in
+[the report protocol](skills/research/references/reporting.md).
 
-Run the helper from the installed skill, passing the consumer paths explicitly:
+No collector dry-run or scripted MCP preflight is required. If the MCP is absent,
+unauthenticated or lacks the requested capability, report that limitation rather
+than creating a Python/REST replacement.
 
-```text
-python3 "<installed-research>/scripts/collect_sources.py" --input "<consumer>/sources.json" --out "<consumer>/evidence" --project-scope "installation-check" --dry-run
-```
-
-Use the available Python 3 interpreter, such as `py -3` on Windows. A successful
-dry-run prints a `search.web` request with the chosen project scope and completes
-without credentials or acquisition. Generic live research still requires configured
-Scrapinho. If that integration is selected and credentials exist, run the installed
-[`preflight_scrapinho_mcp.mjs`](skills/research/scripts/preflight_scrapinho_mcp.mjs)
-with Node; otherwise report it as unavailable. Research provider details remain
-in the [skill](skills/research/SKILL.md).
+Local Linux check, 2026-09-30: the installed skill and shared policy resolve to the
+canonical files. Direct MCP `fetch.page` and DuckDuckGo `search.web` each succeeded
+with one attempt; both sources were read through EOF, and structured search
+results retained their original positions. See the
+[direct-MCP smoke evidence](research/evidence/research-mcp-direct-20260930.json).
+Raw export and browser page acquisition were not exercised.
 
 Native Windows and macOS installation and host discovery remain unverified here.
 An installing agent must report the platform and host it actually checked.
@@ -171,7 +177,7 @@ make a relative command work. Use the returned pinned entrypoint after bootstrap
 
 | Core skill | Purpose |
 |---|---|
-| `research` | Source-based lookups, acquisition helpers and research reports |
+| `research` | Direct MCP source acquisition, evidence comparison and research reports |
 | `frontend-visual-validation` | Inspect rendered changes with reproducible PNG evidence |
 
 Rendered changes require vision review of affected states on supported platforms.
