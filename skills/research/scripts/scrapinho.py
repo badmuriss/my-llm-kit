@@ -1,5 +1,4 @@
 """Bounded Scrapinho REST client. Provider credentials never belong here."""
-from concurrent.futures import ThreadPoolExecutor
 import json
 import random
 import time
@@ -8,7 +7,7 @@ from urllib.parse import urlencode, urlsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 from uuid import uuid4
 
-TERMINAL = {"succeeded", "partial", "blocked", "captcha", "forbidden", "timeout", "parse_error", "cancelled", "failed"}
+TERMINAL = {"succeeded", "partial", "blocked", "captcha", "forbidden", "timeout", "parse_error", "cancelled", "failed", "execution_unknown"}
 
 
 class ScrapinhoError(Exception):
@@ -71,8 +70,8 @@ class Client:
         query = urlencode({} if project_scope is None else {"project_scope": project_scope})
         return self._request("/v1/usage?" + query)
 
-    def submit(self, request, request_id=None):
-        return self._request("/v1/jobs", "POST", request, request_id or str(uuid4()))
+    def submit(self, request, request_id=None, timeout=None):
+        return self._request("/v1/jobs", "POST", request, request_id or str(uuid4()), timeout=timeout)
 
     def get(self, job_id, timeout=None):
         return self._request("/v1/jobs/" + job_id, timeout=timeout)
@@ -83,30 +82,39 @@ class Client:
         return self._request("/v1/jobs?" + urlencode({"ids": ",".join(job_ids)}))["jobs"]
 
     def map(self, requests, timeout=120):
-        requests = list(requests)
-        results = []
-        for offset in range(0, len(requests), 32):
-            batch = self.submit_many(requests[offset:offset + 32])
-            pending = {job["job_id"]: index for index, job in enumerate(batch) if "job_id" in job}
+        """Acquire sequentially; never retry admission or continue after a refusal."""
+        results, stopped = [], False
+        for request in requests:
+            if stopped:
+                results.append({"status": "failed", "errors": [{"code": "batch_stopped"}]})
+                continue
+            job = {}
             deadline = time.monotonic() + timeout
-            while pending and time.monotonic() < deadline:
-                try:
-                    jobs = self.get_many(list(pending))
-                except ScrapinhoError as error:
-                    for index in pending.values():
-                        batch[index] = {"status": "failed", "errors": [{"code": error.code}]}
-                    pending.clear()
-                    break
-                for job in jobs:
-                    if job.get("status") in TERMINAL or (job.get("errors") and "status" not in job):
-                        index = pending.pop(job["job_id"], None)
-                        if index is not None:
-                            batch[index] = job
-                if pending:
-                    time.sleep(min(random.uniform(0.8, 1), max(0, deadline - time.monotonic())))
-            for job_id, index in pending.items():
-                batch[index] = {"job_id": job_id, "status": "pending", "errors": [{"code": "client_deadline_exceeded"}]}
-            results.extend(batch)
+            try:
+                job = self.submit(request, timeout=timeout)
+                if job.get("status") not in TERMINAL:
+                    job = self.wait(job["job_id"], timeout=max(0.001, deadline - time.monotonic()))
+                stopped = job.get("status") in {"blocked", "captcha", "forbidden", "execution_unknown"}
+            except ScrapinhoError as error:
+                stopped = True
+                failure = {"code": error.code}
+                job = {**job, "status": "failed", "errors": [failure]}
+                if job.get("job_id"):
+                    try:
+                        cancellation = self.cancel(job["job_id"])
+                    except ScrapinhoError:
+                        job["cancellation_unconfirmed"] = True
+                    else:
+                        original_errors = job["errors"]
+                        job = {**job, **cancellation}
+                        job["errors"] = original_errors
+                        if cancellation.get("status") == "execution_unknown":
+                            job["cancellation_unconfirmed"] = True
+                        elif cancellation.get("status") == "cancelled":
+                            job["cancellation_unconfirmed"] = False
+                results.append(job)
+                continue
+            results.append(job)
         return results
 
     def delete_scope(self, project_scope=None):
@@ -130,34 +138,23 @@ class Client:
             time.sleep(delay * random.uniform(0.8, 1))
         raise ScrapinhoError("client_deadline_exceeded")
 
-    def submit_many(self, requests):
-        """Submits at most 32 pending jobs, using four short-lived HTTP calls."""
-        requests = list(requests)
-        if len(requests) > 32:
-            raise ValueError("pending_window_exceeded")
 
-        def submit_one(request):
-            try:
-                return self.submit(request)
-            except ScrapinhoError as error:
-                return {"status": "failed", "errors": [{"code": error.code}]}
-
-        with ThreadPoolExecutor(max_workers=4) as pool:
-            return list(pool.map(submit_one, requests))
-
-    def read_source(self, source_id, view="full", cursor=None, limit=16384):
+    def read_source(self, source_id, view="full", cursor=None, limit=16384, timeout=None):
         params = {"view": view, "limit": limit}
         if cursor:
             params["cursor"] = cursor
-        return self._request("/v1/sources/" + source_id + "?" + urlencode(params))
+        return self._request("/v1/sources/" + source_id + "?" + urlencode(params), timeout=timeout)
 
-    def read_all(self, source_id, view="full"):
+    def read_search(self, source_id, timeout=None):
+        return self._request("/v1/sources/" + source_id + "/search", timeout=timeout)
+
+    def read_all(self, source_id, view="full", timeout=120):
         text, cursor, digest, fetched_at = [], None, None, None
-        deadline = time.monotonic() + 120
+        deadline = time.monotonic() + timeout
         for _page_number in range(512):
             if time.monotonic() >= deadline:
                 raise ScrapinhoError("client_deadline_exceeded")
-            page = self.read_source(source_id, view, cursor)
+            page = self.read_source(source_id, view, cursor, timeout=max(0.001, deadline - time.monotonic()))
             if digest is not None and (page["content_sha256"] != digest or page["fetched_at"] != fetched_at):
                 raise ScrapinhoError("snapshot_changed")
             digest, fetched_at = page["content_sha256"], page["fetched_at"]
@@ -170,10 +167,11 @@ class Client:
             cursor = next_cursor
         raise ScrapinhoError("source_page_limit")
 
-    def export_source(self, source_id, representation="manifest"):
-        if representation not in {"manifest", "html", "raw"}:
+    def export_source(self, source_id, representation="manifest", timeout=None):
+        if representation not in {"manifest", "html", "raw", "decoded_html"}:
             raise ValueError("invalid_representation")
-        return self._request("/v1/sources/" + source_id + "/export?" + urlencode({"format": representation}), raw=representation != "manifest")
+        return self._request("/v1/sources/" + source_id + "/export?" + urlencode({"format": representation}),
+                             raw=representation != "manifest", timeout=timeout)
 
     def delete_source(self, source_id):
         return self._request("/v1/sources/" + source_id, "DELETE")

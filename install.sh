@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Install the spec/impl skills into ~/.claude, plus the skills they rely on.
+# Install the portable core skills and the legacy Claude agent templates.
 set -e
 
 LINK=0
@@ -10,7 +10,8 @@ for arg in "$@"; do
       cat <<'USAGE'
 usage: install.sh [--link]
 
-  (no flag)  copy agents/ into $HOME/.claude as regular files.
+  (no flag)  copy core skills into $HOME/.agents/skills and agents/ into
+             $HOME/.claude/agents as regular files; link skills for Claude.
   --link     symlink them to this clone instead, so `git pull` updates them in
              place. Only useful if you keep the clone around.
   -h,--help  this text.
@@ -71,9 +72,5 @@ done < <(
     --manifest "$INSTALL_MANIFEST"
 )
 
-if ! python3 -c 'from jsonschema import Draft202012Validator' 2>/dev/null; then
-  python3 -m pip install --user --break-system-packages -r "$SRC/skills/agent-graph/requirements.txt"
-fi
-python3 "$HOME/.agents/skills/agent-graph/scripts/agent_graph.py" --help >/dev/null
-echo "done: core skills and graph runtime available in Claude Code"
+echo "done: core skills available in Claude Code"
 echo "Use setup.sh --full for optional integrations and specialist skills."

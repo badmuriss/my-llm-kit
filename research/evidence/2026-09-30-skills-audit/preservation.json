@@ -1,0 +1,4647 @@
+{
+  "kit": {
+    "root": "/home/badmuriss/Documents/my-llm-kit",
+    "status_counts": {
+      " M": 18,
+      "??": 8
+    },
+    "entries": [
+      {
+        "status": " M",
+        "path": ".gitignore",
+        "sha256": "acc9a73b2d5ac76f9a0504ed6749d8cb09364640736e2b18bb5f7cca4a2b653d",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "README.md",
+        "sha256": "4ed587356d7337ccb6d88adeeacbe4f5664c973093b223a1b5ac9190e7c9031c",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "install-manifest.json",
+        "sha256": "fde4a3893cafcb44a027ceede32c8a9ca93727e97f5524e43d40c82d1c091da3",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "instructions/AGENTS.md",
+        "sha256": "a8c1ebb750a769673a99a9c8b1e69c776b4e6e6eeeb372e418ddbbe72613f756",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "research/2026-09-22-omp-harness-audit.md",
+        "sha256": "4494b2d0055a77b2303de475a4d646253550c67e0e8bad86c29b7e2a657ff14e",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "scripts/tests/preflight_scrapinho.test.mjs",
+        "sha256": "a079c40fe48908a3477ef59aa6655871c0f59ddbce332cdb0f7d333e87d11732",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "scripts/tests/test_research_collector.py",
+        "sha256": "f6456571baafc731e9e92fd351d1e3950a347d4ef172109fa6c5d43c8b0f73c7",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "setup.ps1",
+        "sha256": "176a63adeff18e2b93f15b0d87aaf71f86416351c708a0fd618d7af3f17a6bd4",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "setup.sh",
+        "sha256": "d780329a2f22fe1b6056fb29f6d22c5f8e2c50f26f64245354ea899f6d14ad14",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/computer-use/SKILL.md",
+        "sha256": "1c89dee52e09ccf921edd8eef85447203533089816bf8dff04feeb559f95fa5d",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/frontend-visual-validation/SKILL.md",
+        "sha256": "f5dd5fb56ed10d3faa7c9ce3890ffd31070eccae00de236ecf0a7bbb4541a1ac",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/impl/SKILL.md",
+        "sha256": "8968e60fa15d7c05fa5d283f4153da92863b6af1c121162eb6478e7bdc703349",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/research/SKILL.md",
+        "sha256": "61aeed0238e6b6f2dabf95d736b085431bef1aac76c587cb996b36c696ad5afa",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/research/references/reporting.md",
+        "sha256": "2b569271cda8037bfdfbb97564577f058a6ae06e9e523d49634a6311ecaddd27",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/research/scripts/collect_sources.py",
+        "sha256": "61fcaf44ba6cbfee271d63e82c59983864321ffc4000161610bd9d17bcbe7247",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/research/scripts/preflight_scrapinho_mcp.mjs",
+        "sha256": "be1f1e5fe3e82aec28613839a17312a1ace9429751f9081b586a4fa37ec7e5a2",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/research/scripts/scrapinho.py",
+        "sha256": "162bfdff5cdaf65ffb6fe1b16bb317edad5d50adaecf0af5bfae676f1a32ac20",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/spec/SKILL.md",
+        "sha256": "5c219f47d409eb635f946e41bf75dc754f0f0e86ea373fb09fcff6c8b480801b",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "research/2026-09-23-stagehand-migration.md",
+        "sha256": "52452cd75c5c2f82c6b45ab58891aab1acb33915f69814be7af29108c3855386",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "research/evidence/2026-09-22-omp/mcp-webshare-update.json",
+        "sha256": "707b083bedcdd929dfc541ad6cd054f0b2581a62f158f1cd956160f1f8d3ed9c",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "research/evidence/research-scrapinho-cutover-20260929.json",
+        "sha256": "3ee7a87c1beb23f87af621c6e82870a856c55a342825bea9155ce52a88ab7ac0",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "scripts/tests/test_webshare_fetch.py",
+        "sha256": "8463d60b49d6610a493ff684ca3bd31407b832a802b751addc04aec7246cddb2",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "scripts/webshare_fetch.py",
+        "sha256": "c96b52e95c398e1c1a3ff43c640245e73413464c97b08312f3cea5f04c578bea",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/spec/references/plan-validation.md",
+        "sha256": "889d0ef4c3c710d86366fbe85a9a9b8a06acaf81ca00bb84a29e60e4f5d81e16",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/spec/tools/package-lock.json",
+        "sha256": "c33920c936dbd4c9496711b0199d3efd99f2f7953845fe495f0e89b6cafbc38b",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/stagehand-browser/",
+        "sha256": null,
+        "link_target": null
+      }
+    ]
+  },
+  "shared": {
+    "root": "/home/badmuriss/.agents",
+    "status_counts": {
+      " M": 268,
+      " D": 273,
+      "??": 204
+    },
+    "entries": [
+      {
+        "status": " M",
+        "path": "AGENTS.md",
+        "sha256": null,
+        "link_target": "/home/badmuriss/Documents/my-llm-kit/instructions/AGENTS.md"
+      },
+      {
+        "status": " M",
+        "path": "skills/computer-use/SKILL.md",
+        "sha256": "2839933fd35216845461466403e6061488005f6df57126d0cd0f769ea45753f3",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/drawio-skill/SKILL.md",
+        "sha256": "b5b6f5cb2f53b9ea9c9d33f6b6e14b2d45c1f6d14ed54d6f0991e20b32711600",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/drawio-skill/data/SHAPE-INDEX-NOTICE.md",
+        "sha256": "dc6e070b9fd905c6a574614dd0c4403253ad8b7111e2f2f3892996b2729e26ab",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/drawio-skill/data/lobe-icons.json",
+        "sha256": "e7c309bd5ebf4df948563d48469090d0868432549f168319534215f79b0077cc",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/drawio-skill/data/shape-index.json.gz",
+        "sha256": "f19d9f794775d91e196b0a8d1fce32d6dbbf9828f094bedc53e843c8131ee8ea",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/drawio-skill/references/autolayout.md",
+        "sha256": "af5a08474b64d3e1d790090b2b9d7fd4775ed45ffb957d67cf61ee4a6eafb3d8",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/drawio-skill/references/diagram-types.md",
+        "sha256": "958b6d0ab59b2731b6fb9d567a95d8c8cde596cddad18d5242304d916a78f7e1",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/drawio-skill/references/shapes.md",
+        "sha256": "b696df00bb4d74afb93670adf0e58acd6e0eb5cf8145e40994851ec052a18c23",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/drawio-skill/references/style-extraction.md",
+        "sha256": "9dfba198a0e0f610e2fdaecff29aa380984ba03c67d5a02c86b75106c95de2a0",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/drawio-skill/references/style-presets.md",
+        "sha256": "51ed8394684b7700cad867a99da975878d0c1c662ee364b26d54a9c4ae8b99ad",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/drawio-skill/references/troubleshooting.md",
+        "sha256": "3c0f2319c2af4c16a824e2326b9c2219aeed9cd2507aa1742d52f9ddd74a24a5",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/drawio-skill/scripts/aiicons.py",
+        "sha256": "1a7ab34a27dd2dd7982e9cc5f906caf94fca6a21120e5be3164ee204baa96720",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/drawio-skill/scripts/autolayout.py",
+        "sha256": "d72e15eb0cfa356e9722c9824037d2fbd65840ee686324e87070d195d973a162",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/drawio-skill/scripts/encode_drawio_url.py",
+        "sha256": "47b77e4bc46226cc1a1cea29e93988877796d0a60706a2a38c7fd7910af3dfef",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/drawio-skill/scripts/goimports.py",
+        "sha256": "de0f376117db385bdf502f8f498979f1c4b18107cceae9e16013d7f66319f555",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/drawio-skill/scripts/jsimports.py",
+        "sha256": "edce79ff352558d9539ab96942c2762ea60c313e58bac14b647cf195e459dc50",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/drawio-skill/scripts/pyclasses.py",
+        "sha256": "a7810d9dbc981bba82726e122d119fb0366e027a08e9cfb1dd03926b2aef3e02",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/drawio-skill/scripts/pyimports.py",
+        "sha256": "39f8b2a8732bf3b2ec62a99b8d82c7652b40dd0287307af7482a7de6214df683",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/drawio-skill/scripts/repair_png.py",
+        "sha256": "1a453cb88231813dcb5631456b0c7431eb59acd21570c7e749c1cce89ae31c4c",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/drawio-skill/scripts/rustimports.py",
+        "sha256": "de08f1a9e29e0f71616e3ae9ad93e2b4c00a0ebc8213538c5a386b0ec9e1b52b",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/drawio-skill/scripts/shapesearch.py",
+        "sha256": "ac624fa2d532c1a72cc77ec0b2fd94a71e0baf4cd03ba339b60eb7a784e511b3",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/drawio-skill/scripts/validate.py",
+        "sha256": "92afc13212c913b9e881460f94943202a179eb304856d6247187b309b077b52e",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/drawio-skill/styles/built-in/corporate.json",
+        "sha256": "0cb0ba05b44e5938ce775bb917b6ffaa3a0501ceedbd610975cc6e909fe5e60b",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/drawio-skill/styles/built-in/default.json",
+        "sha256": "5340c1f80ab983f412e895d58d5dffb4949c246acc516702fd565675fec140e1",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/drawio-skill/styles/built-in/handdrawn.json",
+        "sha256": "92a1fdca1bbb95e5239fca62b2da81d4035936a11ca690e026419a5c2508e541",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/drawio-skill/styles/schema.json",
+        "sha256": "4886d76481285d584eaa7963053c1ec6786eb335b4f75e1093b66788dce148c0",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/embedded-captions/.gitignore",
+        "sha256": "f48ec93898d7c053f987a8d2904e6923af09900358ad39a9e4d2e6c61eb52f97",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/embedded-captions/CATALOG.md",
+        "sha256": "f1eb0a6781980862fac9bbfe06be5bc9f70d5fb9c493aa159c82673b33379585",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/embedded-captions/SKILL.md",
+        "sha256": "761d9cd5e03fc10cc7f09faf8a47c56aa3a67ab558123e6c59a06c52872664eb",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/embedded-captions/assets/brand/CDPR-fankit-terms.txt",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/embedded-captions/assets/brand/CyberpunkReplica.ttf",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/embedded-captions/assets/brand/cyberpunk-widths.json",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/embedded-captions/dna/README.md",
+        "sha256": "3e0dcb20140a8d73ea166dfde7af27f5d4cd492fd9ad2805c5c8dd064ba58f1c",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/embedded-captions/dna/neon.json",
+        "sha256": "eeaab8bbc1c53f191452f9914ec9fc79ed8a82d58711b98dfb25517a864f7aa6",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/embedded-captions/modes/standard/_anatomy.md",
+        "sha256": "b5410622c66196b50e20b2463f37d77d9db707c4cd7533d83a78ef7f20273f19",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/embedded-captions/references/aesthetic-principles.md",
+        "sha256": "87a139c2da38b589f34631e4865e3017300306a6e893c2e3fc5829e5ef5b954d",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/embedded-captions/references/bespoke-vs-presets.md",
+        "sha256": "e378c7640ce060a41572e9c3c729afa7dc341d42a4bc2029e974e5d72b934b1a",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/embedded-captions/references/rail.md",
+        "sha256": "b7f8f33bb3361dd9e1e11bd0a931927a84cbdcb4ccc29ed15c33b55c06b3fd97",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/embedded-captions/references/test-set.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/embedded-captions/scripts/check-occlusion.cjs",
+        "sha256": "3fe11c2a6fe8dc2351781997b31b68ac45b785610907416260b110566d9c1344",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/embedded-captions/scripts/check-overflow.cjs",
+        "sha256": "ade70e9a86367e3e7e75cc8af35914d4ef72970baa952a5af41256a0f104ff6a",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/embedded-captions/scripts/check-rail-climax.cjs",
+        "sha256": "b15ee1a3eba75af899ce82000ce90312976a406c02a6a1027e1913eb2c7ae49e",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/embedded-captions/scripts/gen-stroke-path.py",
+        "sha256": "5d1fa8ae9b6e5d7b8f1444860b3a56252abbcef128fc8a7e459dc4ffd27b7a22",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/embedded-captions/scripts/make-cinematic.cjs",
+        "sha256": "d5b971bfa62d7dfee5aafad3d51fd5465e83b37b4bd594dd1e7a6c80707dcafd",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/embedded-captions/scripts/make-composition.cjs",
+        "sha256": "e60c6943802b06e3cd63b7154a85094f366e4d2fdaa622d2ec4247ab264a44e8",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/embedded-captions/scripts/make-theme.cjs",
+        "sha256": "e8907929661c24cedd6393c3547716bf393f7d4f00659311f0d1353498a9a0d2",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/embedded-captions/scripts/matte.cjs",
+        "sha256": "60ec7dda8ba78639df11639353a3726548cb1f32511361d1c0536774fb18154a",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/embedded-captions/scripts/measure-layout.cjs",
+        "sha256": "cddba863b5a34953fe42c949fd92cdc84972888e9b4181a4750cdc8c12ab5819",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/embedded-captions/scripts/preview-frames.cjs",
+        "sha256": "35d66eeedbaacf7e3907440d01a590ae4da34a6fa25cb9d3a72cb4519c34b604",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/embedded-captions/scripts/render-and-composite.sh",
+        "sha256": "037251b4afb3889633521e250702e9c2374a0ccc14ad7f42e1ff0b0b5479770a",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/embedded-captions/scripts/safe-zones.cjs",
+        "sha256": "a08f75de5b26e6a0a8df519110321bf6f81f1f7a6fba069511e267708d205270",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/embedded-captions/scripts/transcribe.cjs",
+        "sha256": "6f34326a00c93859fd70cb9536ca625ac0f4cf63fc4a96c1dbdc72b60abc68a4",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/embedded-captions/themes/PORTING.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/embedded-captions/themes/README.md",
+        "sha256": "5ce273a6baa1997a933fef31994b1461ae6d4d78c7532d65c2770d3fed32d7b0",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/embedded-captions/themes/nightcity.json",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/excalidraw/SKILL.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/excalidraw/references/schema-reference.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/excalidraw/scripts/excalidraw_lib.py",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/faceless-explainer/SKILL.md",
+        "sha256": "8745992c08b21e767e8f972d9c19f7457800c8481a5f70ba02a8fc575eb62e21",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/faceless-explainer/references/composition.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/faceless-explainer/references/motion-language.md",
+        "sha256": "98d70940bf68894a62b64b237cfd875acfcc1b6851ba45a90dc822d2915a5c57",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/faceless-explainer/references/story-design.md",
+        "sha256": "3e3a1efa94d164722d37f2fc0789fa2bed3a3eb6f5cb30a07beee870c7010f6b",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/faceless-explainer/references/visual-design.md",
+        "sha256": "5271ebbf0a2c25e64975b5606a166655dfe2e2bac2fee09995fcf5d71401a2dc",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/faceless-explainer/scripts/assemble-index.mjs",
+        "sha256": "cee8b2b4041e6da58c47d8ac6f19c616e10d79c719bf544744f7f31af430fb37",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/faceless-explainer/scripts/audio.mjs",
+        "sha256": "aa19d18d144addab79c28055fac4e350f3b257b0d38d17e4d69d634e46d53765",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/faceless-explainer/scripts/build-frame.mjs",
+        "sha256": "5e5d10f4a45ce15f8f8a65ff15e9f34206ada0b0656cdd274d14e522298e53bf",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/faceless-explainer/scripts/captions.mjs",
+        "sha256": "f5de218105a619ca60d47e237b2902d56673b7a010dd47d280ce58580baca1ef",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/faceless-explainer/scripts/lib/assets.mjs",
+        "sha256": "fb955aae9b8b5a43e785c08d564cbfb5e20b5709e62858317af4290271076e04",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/faceless-explainer/scripts/lib/dimensions.mjs",
+        "sha256": "6d4b9603cfb212a8ebd65d74b1b1955636b49cdeaaf9763add02ff16d753b2d3",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/faceless-explainer/scripts/lib/storyboard.mjs",
+        "sha256": "e422c1faefc814e2d064d08b25fda60ad5b55728bb8a2400bf02494a4710b5da",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/faceless-explainer/scripts/lib/tokens.mjs",
+        "sha256": "48d23cdd744d8ea70479573aaecaca45dc5f15f6f7c24dd6c3007a5be631e67a",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/faceless-explainer/scripts/lib/transitions.json",
+        "sha256": "e471afb61bc2b69b37d63f1438bdedcd36d625d03fe30166ad6bfe0aea29a103",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/faceless-explainer/scripts/transitions.mjs",
+        "sha256": "19232dbc866faad93e678a0fa7e9619e3fcdc72343f1dc5b8e55f0e6b480570f",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/faceless-explainer/sub-agents/frame-worker.md",
+        "sha256": "46e9e4063bc63d00a73180c95c9793dc1e0d5722ed47c579efa3d4673d31fd5c",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/firecrawl-agent/SKILL.md",
+        "sha256": "06a98afae501172e0fc68d279ad9d157dd092672c54cfc667020fc184e540e51",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/firecrawl-crawl/SKILL.md",
+        "sha256": "f4f2b262564c1532fa210b29fe783213fd41c5a1169b0a7b43c3dfb5dbdd706c",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/firecrawl-download/SKILL.md",
+        "sha256": "1127c7d3977794bcb8618e218d0d07a1cfda59da5ab4d9f52a731c45292807f4",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/firecrawl-map/SKILL.md",
+        "sha256": "0697e27b5cafa11987235415c556b625e04dd562a295468041d792ea42af06b8",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/firecrawl-scrape/SKILL.md",
+        "sha256": "46ba76f60d9371e0bd91b8873c5570e9b689883cd4cc709893bf16dc62783ea7",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/firecrawl-search/SKILL.md",
+        "sha256": "2d782f5da2f905178f7773c9d3b18b15331b0892d6d1cb678d166dc672ac41f5",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/firecrawl/SKILL.md",
+        "sha256": "d9e3c7fd90bc64ef6782f730c6775d96a84226404729c6ca9ed566f03e0479d1",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/firecrawl/rules/install.md",
+        "sha256": "30b9ce217ce10bc58f1374a0673fc586e5137d6d693bf9d0502945919945d612",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/firecrawl/rules/security.md",
+        "sha256": "ca9bf923a60147f5c4852ad04de37c5deb46e53e954da5ccf4982531a59d0ccb",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/font-recommendations/SKILL.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/general-video/SKILL.md",
+        "sha256": "4d7c52972a800c1413c222a107891cbee9c43f3bed5fa3c09157d5442bf65efe",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/humanizer/README.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/humanizer/SKILL.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/humanizer/WARP.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/SKILL.md",
+        "sha256": "c16fed4153a9ec22b3de51a40bf1b3d756dde1835b32534291565259a413d4ad",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/adapters/animejs.md",
+        "sha256": "ade4ebfdfe4bab62ef98ec4ebc83b84f0792faad5993ff5d398d67d1a499de93",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/adapters/css-animations.md",
+        "sha256": "52a1a7fd8702cf8721bbe63e324f0492f3966c5b092925f5135839132a999012",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/adapters/gsap-easing-and-stagger.md",
+        "sha256": "825e8d2524ad166d8c29d59d72caa9e81c3a0368bcfbe059c86371a64d3494d0",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/adapters/gsap-timeline-and-labels.md",
+        "sha256": "96aaef95ff4e546dfff9d2090ca07d3d921d99b01348ef4adccae7686a515dca",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/adapters/gsap-transforms-and-perf.md",
+        "sha256": "a73c1ea0af7dd782936dd5726e0ea6c1cdc98126c89c6aec4370624f4622ee67",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/adapters/gsap.md",
+        "sha256": "1e4fd8f99fcefedc53352828f1370fd06065fe1abd4762016e5365a5da017341",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/adapters/lottie.md",
+        "sha256": "16da66c43a511b261f6a249c56c0c0bc3cdb76632e20952aa289e32803565d42",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/adapters/three.md",
+        "sha256": "cf0082681b4cba66116fe091493db3d85e24c8b82620e0c5b01c58729aa35562",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/adapters/typegpu.md",
+        "sha256": "221d7aa6dc3007e0c9fc31f27e10aa979c0a25567d98540fc0d2e4e9a79bbd24",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/adapters/waapi.md",
+        "sha256": "3e173bc484cd7daef9022c2c80e8e2091ab73321def54c2a100ddf738ee8d1e0",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/blueprints-index.md",
+        "sha256": "601228ddcfda89ed6add52bd08becf53296764e155126fb5e7100eb29caaa46e",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/blueprints/constellation-hub.md",
+        "sha256": "729357480806d512217f46155d7810537f0ab6f7f46ba47b0905e4c3ea4d59c0",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/blueprints/cta-morph-press.md",
+        "sha256": "0f8ee56ff89af960cf2deb1da86994d5bb93186b85e71d601fb5c64b40deaaeb",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/blueprints/cursor-ui-demo.md",
+        "sha256": "f4403a088e1358b59a21eabc4f5867f53b9179f5a4abf2f28e8e9982ef9fb479",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/blueprints/dataviz-countup.md",
+        "sha256": "9de0c34b44bcee7dda7371f8597df3421b4e6d46380237f76e815044f02e4a1f",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/blueprints/device-surface-showcase.md",
+        "sha256": "83d1c7b91b40ba24de324a14b50d023514c95b6b01a3c5bcf5c066a770e07fc8",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/blueprints/grid-card-assemble.md",
+        "sha256": "c35349ce839aec1e279ec66b297553c3a9dd1f30fdf64ce8b768c9fafdb4e662",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/blueprints/kinetic-type-beats.md",
+        "sha256": "4515b7aa6284898117e8970b76c04fd350ec61c664f5b241deb81c7fdd655d8c",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/blueprints/logo-assemble-lockup.md",
+        "sha256": "53bff65b0b4b14566bceb061c71a9a987003273aa1f7ef711dc20c30b812ec55",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/blueprints/overwhelm-surround.md",
+        "sha256": "e35c5bff4db70574124db06122d79443cc0d3ab8238b52949548c4ba995c5b9e",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/blueprints/spatial-pan-stations.md",
+        "sha256": "6c044d1fbdb057aae80d46efd1e5fa7222ad3e294a249566f36c82221ba02386",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/blueprints/titlecard-reveal.md",
+        "sha256": "39ebf47ec45da556a03d0521d028924c61a02e0c6d60cd194cc40a236af2f08e",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-animation/examples/assets/avatars/01.png",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-animation/examples/assets/avatars/02.avif",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-animation/examples/assets/avatars/03.png",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-animation/examples/assets/avatars/04.webp",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-animation/examples/assets/avatars/05.webp",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-animation/examples/assets/avatars/06.webp",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-animation/examples/assets/avatars/07.webp",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-animation/examples/assets/avatars/08.webp",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-animation/examples/assets/avatars/09.jpg",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-animation/examples/assets/avatars/10.webp",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-animation/examples/assets/background-tech-data-flow.mp4",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-animation/examples/assets/brands/github.avif",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-animation/examples/assets/brands/nvidia.avif",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-animation/examples/assets/brands/visa.avif",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-animation/examples/assets/brands/zoominfo.avif",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-animation/examples/assets/hyperframes-showcase-hypecard.mp4",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-animation/examples/assets/logo-hyperframes.png",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules-index.md",
+        "sha256": "21eba5fd57769b7560b846a0a9aca8e8f6cacb3130d76e9cd090b564f9e46679",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/3d-page-scroll.md",
+        "sha256": "4afe02d1205513afc9fe669c739e9734f23057b15b92bf62dff6004f00c1650c",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/3d-text-depth-layers.md",
+        "sha256": "e95234a6a42bdd25a555365d5978f7f3cf20305c5f1a3be46c39b9b5d34a49d9",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/ai-tracking-box.md",
+        "sha256": "7e7b0433c58d95f468d65ae061beb3037f83442940aadfe89e32da8039ef5bfa",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/ambient-glow-bloom.md",
+        "sha256": "06cf000cd14dc72f92f4038114c21020ffc358efad921bcea05d85025d28a5e4",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/asr-keyword-glow.md",
+        "sha256": "30d60b09bfe977896b588f2ae53d2c02a6d45d65aeaa32e261c25cba0e26d4d8",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/avatar-cloud-network.md",
+        "sha256": "c29e0c58150e0056516c76c30932d93f9ac9a57bdb99ec6ff7327867d34a1a90",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/camera-cursor-tracking.md",
+        "sha256": "60dc50359c1cf60b96cee782a2ce11ec33c5e653c5f330df6ee270b280693235",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/card-morph-anchor.md",
+        "sha256": "57ee55f0401026160808532dbfe4d060a412b1c2c603f8ce1f097913a556676b",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/center-outward-expansion.md",
+        "sha256": "e8f95caa0060d015abce3c3dc422b9e05756bde5c2d5ce6a341360a14ec75217",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/context-sensitive-cursor.md",
+        "sha256": "ba33d4d325d83e8e96905cfa24160f9d64a9ae36b831374f203436e790cd1951",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/coordinate-target-zoom.md",
+        "sha256": "b716cdceace2e34518bf77dae1e0f04e2bad3c0d181b0e4919843ca8ed2c957c",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/counting-dynamic-scale.md",
+        "sha256": "442d9f9a5cf8c10cc62fc5ece5732eca58f76aaa9724cebe92c1f91cc515fa62",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/css-marker-patterns.md",
+        "sha256": "8ac8dd360b4dc8d78d34c3846b834155ad2b482a2d1388cbbd2d3061c6e9d0c2",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/cursor-click-ripple.md",
+        "sha256": "f3cfefe1c4d2ef61388bafd3ffbf09debc4596a7abf46fef6b9fa70dd013b1c1",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/depth-of-field-blur.md",
+        "sha256": "d83b73641a8d5591ca1809bb0df21675537628e00ddb2a2d144fe562be1025df",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/depth-scatter-assemble.md",
+        "sha256": "63689fce3df29c4eca02f83cebf578f6026935bb04f3b57dbf465c63b4d8ba1e",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/discrete-text-sequence.md",
+        "sha256": "d3eb00b0942f98eb30908f1b90f44c0bf9a4da1c2eb0dc6899b14accb75802cf",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/dynamic-content-sequencing.md",
+        "sha256": "7fd77bb18f989e31136338d383179beb2abe2da4b208a67ab7edb712607bc92d",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/gsap-effects.md",
+        "sha256": "63ee2ee5d9dcef1ecbd88b69526e1621f0ff7ce682ec7f2dbe553b5647656bbd",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/hacker-flip-3d.md",
+        "sha256": "67a79e585996b4a58dfb778283d9431ce02ae6bb0150a474d5adb1c4d23d6951",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/kinetic-beat-slam.md",
+        "sha256": "05ae130e17e6229bec8fb144bdf2ec43f8cd1105221af5246673d5d403f0451a",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/motion-blur-streak.md",
+        "sha256": "a970baf9802c7239934a18696753d0c4ef6d70746889473c8b1316740d98a2d7",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/multi-phase-camera.md",
+        "sha256": "ffdcd08f47ed49d52d31b27f11676435d45fb34581fabe1507bc59e79364e375",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/orbit-3d-entry.md",
+        "sha256": "2b24b8d92203e75faaef14c4bfdb216a70f700660056a6f77a9e5f035c5de94f",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/physics-press-reaction.md",
+        "sha256": "858ebad87af7bc4e7d7141f7aea19ad62d67a6af0bda6e01c9e3e8e841f38483",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/press-release-spring.md",
+        "sha256": "36947331983342c48470c6a685ce04175ada089b0370adbb62acc06dcc98f579",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/reactive-displacement.md",
+        "sha256": "7913e02dd6a303017993315045e0c3cd30aa2df9f09093b697e0396ecb7cfe51",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/scale-swap-transition.md",
+        "sha256": "e527ce5e2614f5ef8dc0a4da8b97d2a015a85866f1d52d22d22c8411efdaa854",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/sine-wave-loop.md",
+        "sha256": "54f283f4a8915de5c3f6d7c668b97f416efad3df6b5baf4941254cea8831944b",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/split-tilt-cards.md",
+        "sha256": "a50c135af38eb5a85f7f2f8753e5a8dcff3e6782392c2c6ee42bfafad9e41ab4",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/spring-pop-entrance.md",
+        "sha256": "f6cfb58b967769900edc0a4b9ed2685127167a8e4f74f7047df07d4ca4a10fbf",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/stat-bars-and-fills.md",
+        "sha256": "2da2a14d1d040e6c7c3634745eb047cd2805090ad374900d07ada50ecbcf650e",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/svg-icon-enrichment.md",
+        "sha256": "f0209f4c4254281d1750bb5d4e963f5372361b1443ada43236a27a0e37bbb810",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/svg-path-draw.md",
+        "sha256": "38e304463abcde3ac88095d682f86a2ea30517d366683d09d6bccccc6752c304",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/vertical-spring-ticker.md",
+        "sha256": "44ca684601429932cc9667ee56e44c8473e591de9b29c0eef808fabb432cda88",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/rules/viewport-change.md",
+        "sha256": "c1ac00dab35da2fe57fd11d460a96730c37f73d8b4d5e73a0ce85b18b9922a75",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/scripts/animation-map.mjs",
+        "sha256": "136a3d473f4cae48538b62da8025968393397d462508c091752d7b0302c7f1a4",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/scripts/package-loader.mjs",
+        "sha256": "f96e0e6058b8c79b9d89de9aa078d2b25a1755d569c1008c8c3ab9e17b519ccf",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/techniques.md",
+        "sha256": "9852a58701c6d5456ec90048bb604274c5b6307016d00085c642352c0ff93ed3",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/transitions/TRANSITION-REGISTRY.md",
+        "sha256": "250b59a56011c75c1eab69196c6f1ddf7ebb13fb4b0d89d765c016da35ff2a67",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/transitions/css-destruction.md",
+        "sha256": "3f2fbbd561aacc8276f70cbee09ff420fc6e9c65b1e060c14e8399960d3bfbbc",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-animation/transitions/css-push.md",
+        "sha256": "d55f18fd88c71ca694a7709ac613967cf81ead4f325900be3b8ace1888818eff",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-cli/SKILL.md",
+        "sha256": "f94a4c7f11fae1d2af70330e83ceb9f13e1d0ff5cec3ee113184fb089038356f",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-cli/references/doctor-browser.md",
+        "sha256": "7c8ab29ca563b288286fa3f5812e6badf3b36aea3641a0ef0197a1a8afba7527",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-cli/references/init-and-scaffold.md",
+        "sha256": "78bd5c49352a986bd136f7c5d43f96ec5e0a5199f1d0de3b5c437cabe337cb23",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-cli/references/lambda.md",
+        "sha256": "73e681f3e5c6c3608b8d4f66b4b75628eed708803b4d2fd5532366659a0667c9",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-cli/references/lint-validate-inspect.md",
+        "sha256": "e1c196066e646b50462f094e29ef41423c78ff6714ff7c2fffb565ab76657a46",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-cli/references/preview-render.md",
+        "sha256": "8faf5de843c2b6d8277d91767bc0c63f391b8b01289320fc05bfb8c58b1e408a",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-cli/references/upgrade-info-misc.md",
+        "sha256": "a5c1adce923dba149ec10b7f5de29974558866dff0561c66088c72273f0a31ac",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-core/SKILL.md",
+        "sha256": "c232a83c0cae2c7fc789fb25b85c3bf9f59f5be402bca3fd63a1ad18c6ed62c9",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-core/references/composition-patterns.md",
+        "sha256": "bcdf548ba1fec8decce5ea22c7bed99c73ba268986b1bfefc837f2d7f70f55b0",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-core/references/data-attributes.md",
+        "sha256": "9467fa4cb0dfb12cb2d052d7584f21b4ad5d32dc80d15188da19e1a1acc0f435",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-core/references/determinism-rules.md",
+        "sha256": "ccd07ae7f9ef2d303c86735ca920267ac0882d10828ee5f188c67f1ed2fa0bc1",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-core/references/full-screen-motion.md",
+        "sha256": "4534cc717e94f9b7a83d5b86990d6af16594d18c4b9ddcb97950d919288f3994",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-core/references/minimal-composition.md",
+        "sha256": "0884abd9feeeea48d0de3d517c3d074859b9c322318401a928b9d1f9ee2cf851",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-core/references/script-format.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-core/references/storyboard-format.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-core/references/sub-compositions.md",
+        "sha256": "7caf63046ea0d1915b51e4eb49897101e36dc716ea1195f9a34cef4ba9c18f64",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-core/references/subagent-dispatch.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-core/references/tailwind.md",
+        "sha256": "bce2e8ae118f91df3a9790e99273f50942f12d1c345a149d6762c9411e3dfd2c",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-core/references/tracks-and-clips.md",
+        "sha256": "4e6fdf6b74cc2ad788633dba510e9c8d6d47affd084c30dc156fdc2ce7829cf4",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-core/references/variables-and-media.md",
+        "sha256": "dd8404b7cdc251f88cf7221c367e6bb92480e5eca3b8a02f8de7772f5b9dbb50",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-creative/SKILL.md",
+        "sha256": "3ea9a6108ad547ba52742520281ad61e15edd7b969f3829072e3eb70e1c06cec",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-creative/frame-presets/claude/FRAME.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-creative/frame-presets/claude/caption-skin.html",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-creative/frame-presets/claude/frame-showcase.html",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-creative/references/design-spec.md",
+        "sha256": "a583fe293facc2e6d242fa69f64c8cdc110c5cfe25f8ddb2429bfb445fcf8ad5",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-creative/references/house-style.md",
+        "sha256": "3adc51745bfce9719b63ba74251fcf9e5b9eed56b1e0d8c3928f47c3703eba92",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-creative/references/motion-principles.md",
+        "sha256": "43cb4193d2716bffde5a44f3740021f0b2eede83fe5c75d30e3f5398e2bf6d2e",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-creative/references/prompt-expansion.md",
+        "sha256": "3c428274da00f7809e93a2036454b2b9cba9a20b3ae3811d43f33a50501a36f6",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-creative/references/typography.md",
+        "sha256": "2213319b8055285dbe5b6aeb923f27660355a04a1b27da1edda8fd0c91888ab2",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-creative/references/video-composition.md",
+        "sha256": "037a966583e4b5fc4c3385ef6217560d36237ec638d2b68b5808950c873e424b",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-creative/scripts/contrast-report.mjs",
+        "sha256": "c53d140011adfd1c5b9a0a2444ca80a4ed1b027163c48811d92524477374f104",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-creative/scripts/extract-audio-data.py",
+        "sha256": "2b72d7aaa8688a4c524042274364f9696fb26fa9dd7125c58798cbdf021950e8",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-creative/scripts/package-loader.mjs",
+        "sha256": "f96e0e6058b8c79b9d89de9aa078d2b25a1755d569c1008c8c3ab9e17b519ccf",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/SKILL.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/assets/sfx/CREDITS.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/assets/sfx/chime.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/assets/sfx/click-soft.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/assets/sfx/click.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/assets/sfx/error.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/assets/sfx/glitch-1.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/assets/sfx/glitch-2.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/assets/sfx/glitch-3.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/assets/sfx/impact-bass-1.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/assets/sfx/impact-bass-2.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/assets/sfx/key-press.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/assets/sfx/manifest.json",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/assets/sfx/notification.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/assets/sfx/ping.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/assets/sfx/pop.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/assets/sfx/riser.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/assets/sfx/sparkle.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/assets/sfx/typing.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/assets/sfx/whoosh-cinematic.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/assets/sfx/whoosh-short.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/assets/sfx/whoosh.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/references/bgm.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/references/captions/authoring.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/references/captions/motion.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/references/captions/transcript-handling.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/references/remove-background.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/references/requirements.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/references/sfx.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/references/transcribe.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/references/tts-to-captions.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/references/tts.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/scripts/audio.mjs",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/scripts/heygen-tts.mjs",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/scripts/lib/bgm.mjs",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/scripts/lib/heygen.mjs",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/scripts/lib/sfx.mjs",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/scripts/lib/tts.mjs",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/scripts/lyria-recipe.py",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/hyperframes-media/scripts/wait-bgm.mjs",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-registry/SKILL.md",
+        "sha256": "5c0fa72f016897b78d1bb7589179eb44eed5572813fd044df94fa09ec52ad4ee",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-registry/references/contributing.md",
+        "sha256": "7e9e6fd894e54251fad9aa30a08730960ceb776da590a175eadfc1d9014106b1",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-registry/references/discovery.md",
+        "sha256": "0b79462927c834b1f57af31fd514bbb81152d411c7386f1317572ea07168ea6b",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes-registry/references/templates.md",
+        "sha256": "98e1ef62d3c1264b28139d85a1c9b5a8b7438209914aebef6d9890e3f4275805",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/hyperframes/SKILL.md",
+        "sha256": "ce542b8e03b4b9268bcda0f95790b1cf869b4ff9b3faf803c2abf816fd51c54c",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/legal-document-analyzer/SKILL.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/legal-document-analyzer/examples/contract_analyzer.py",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/legal-document-analyzer/examples/contract_risk_analyzer.py",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/legal-document-analyzer/examples/legal_document_parser.py",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/legal-document-analyzer/examples/legal_report_generator.py",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/legal-response/SKILL.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/legal-risk-assessment/SKILL.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/linkedin-profile-optimizer/SKILL.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/linkedin-profile-optimizer/references/about-section-templates.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/linkedin-profile-optimizer/references/banner-photo-specs.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/linkedin-profile-optimizer/references/experience-skills-rules.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/linkedin-profile-optimizer/references/featured-section-playbook.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/linkedin-profile-optimizer/references/profile-headline-formulas.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/llm-council/.gitignore",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/llm-council/README.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/llm-council/SKILL.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/media-use/SKILL.md",
+        "sha256": "6baf869f1e33bbe8d15ad1e7fc5db182899bdf5ccf42a05fb452c42b61e32d52",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/media-use/scripts/lib/adopt.mjs",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/media-use/scripts/lib/bgm-provider.mjs",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/media-use/scripts/lib/brand-provider.mjs",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/media-use/scripts/lib/cache.mjs",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/media-use/scripts/lib/freeze.mjs",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/media-use/scripts/lib/heygen-search.mjs",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/media-use/scripts/lib/image-provider.mjs",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/media-use/scripts/lib/index-gen.mjs",
+        "sha256": "fde84f36ebfb4fa819935956b2b6dc43a70b749a5c846d5470295d7c439e40e6",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/media-use/scripts/lib/manifest.mjs",
+        "sha256": "25e1c2a802a238a1b68bb3bb2d46947a479ef4ca3089f82365b02ef779bf6564",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/media-use/scripts/lib/manifest.test.mjs",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/media-use/scripts/lib/probe.mjs",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/media-use/scripts/lib/probe.test.mjs",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/media-use/scripts/lib/providers.mjs",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/media-use/scripts/lib/sfx-provider.mjs",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/media-use/scripts/resolve.mjs",
+        "sha256": "85aec401d22b65639fa6a91056e515563135962a127516aaae1e2644d48fa0b9",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/media-use/scripts/resolve.test.mjs",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/motion-graphics/SKILL.md",
+        "sha256": "d2139f2b6e56e94ee320546c8353aa3ceae84b20c335f6c2096474e89d5241e2",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/motion-graphics/agents/builder.md",
+        "sha256": "65cb8e2246a51038a793dda13e0f4d6a2a091c163f7a6d4af3097612b704c640",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/motion-graphics/agents/director.md",
+        "sha256": "dd761ec5164cd6e71f41fa9858478fcab8f96b0177137d68f61cdff089bd4de0",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/motion-graphics/agents/finalize.md",
+        "sha256": "3263eb51cff1c652bffc376fdbe819fe93fb65f5721c4452bd1e658efdddb276",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/motion-graphics/catalog-map.md",
+        "sha256": "3c3ddb7918f2e160323da1459d3ab16fef0ab7802218e96638db5cf50bd4d043",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/motion-graphics/categories/charts/module.md",
+        "sha256": "d74da1b84377d9a18c4ddcea905394890b0335d8323e3c72d641202e7b4a8c7f",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/motion-graphics/categories/kinetic-type/module.md",
+        "sha256": "06e81c37a929ff056309018486dfc96a2a7e18549c10db938fbc533ff075b80c",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/motion-graphics/categories/logo-reveal/module.md",
+        "sha256": "05dfca69987c12802e7db5b9f848f5c28cc9649f34338a0c39170a06bb3d2a9c",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/motion-graphics/categories/lower-thirds/module.md",
+        "sha256": "9c8e9e14b9e7144650a989952af15ad9e0a66b5b2de78e23cb77f9ed217253c0",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/motion-graphics/categories/news/module.md",
+        "sha256": "f6cb6be152b859b7a273d60abc3b2ee5376afb25cb25ffd89eca52fd2074a60c",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/motion-graphics/categories/webpage/module.md",
+        "sha256": "9fc6361185696c12106adc478f07ad9a4061d17ae4d392c3743ea1cb3c8c2807",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/motion-graphics/grounding/locate.mjs",
+        "sha256": "7572b3dadf3561495a1ad4c67b1fd7dd6e871c65aec8ca13574fc52649ce66cd",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/motion-graphics/phases/source/guide.md",
+        "sha256": "9a5866cf3e1d29946a2cc3c648e8eed959daccbb6c48a1b2b8aeab469c1e27cd",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/motion-graphics/references/builder-contract.md",
+        "sha256": "b0dbb30e6be63df8af9ff086dd401853ddf49a7d975b8e270d6dd7e8886cd1e4",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/motion-graphics/references/motion-vocabulary.md",
+        "sha256": "afad1da63f33291e3585fcf65fe3708775cb607aab3e22c695dc20481bd60b4a",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/SKILL.md",
+        "sha256": "4a5ac7feeb6e0298e2a2ab3d9714cd27520ccc67f15d036c13cc85326dbf915a",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/montage.md",
+        "sha256": "ebff415eb7b169050cedf24072f912cffe1f0b4b3fbfe09f57c59f5689515633",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/3d-card-flip/index.html",
+        "sha256": "abc3d1f5301f604cb4d1a4ef6e4e0c8dfc68c3eb99cc78b2fdbaa38e0b05c580",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/bg-flow-field/index.html",
+        "sha256": "eacfe75db7a23ac56172b98e567bbe683755668649cfafd691d9f445e54bd5fb",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/binary-decrypt/index.html",
+        "sha256": "becab5350bc4bb42a1c0b19ec6d4e9e3b3632c91a75f87a498e1751dbdd87d06",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/blur-resolve/index.html",
+        "sha256": "30daceac4303d2fc0bfa304a87120064e66c3ec01ca0fac52378547920d2af70",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/braam-punch/index.html",
+        "sha256": "1621119821ed74967739d18ce5878ff4a249cf597d7e756838447d96db859220",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/chromatic-split/index.html",
+        "sha256": "583b5b3389383efaf2521084ab74c7d99609236250bcc23e6faac723bf310d8a",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/chrome-sweep/index.html",
+        "sha256": "8bafd57f91bba0a3b1c65bbcf3940af9a71530023161717985127ed9a2762442",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/counting-punch/index.html",
+        "sha256": "dc4ef758bcdb3e9fc93c895c2355b06ad065c96ea7abd5c4b41ba082a6f1f586",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/crash-zoom-in/index.html",
+        "sha256": "ec4d17f551a14126346b40a86b9316a73f95e05eb94ab9b6de0bc9b439706d75",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/datamosh-smear/index.html",
+        "sha256": "01e63786eb27d6f00e7401a7da68f9f882c061f6ad27ebf571b53f80726dc61a",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/directional-fill/index.html",
+        "sha256": "a5d76de0ca8f5e10ba623ab6b1f3f552ee1c77d47e9fb5ae7f63a2a7c49f2a87",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/dolly-zoom/index.html",
+        "sha256": "018ef572f08037a8426eacbe7603666db1b7f76ca90a5b21f0adbbe148518576",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/electric-arc/index.html",
+        "sha256": "86d2b5bd9e09b876705189e8421659ea35c822a89f3dd096c6ca6aac700219f2",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/flash-cut/index.html",
+        "sha256": "a1efcdf5cbe981dc1911e54cfa0cd75005f26d1b82de76a779dc23589ad3c395",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/gooey-metaball/index.html",
+        "sha256": "726e707fd39e299977b1e0e9885a54baf1968768e403273be5b39ad3ff646d97",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/hard-cut/index.html",
+        "sha256": "854a42f1047c4651a587b15b4982085c752f0b29340cdb43a3dd8046c6479210",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/hypercut-whip/index.html",
+        "sha256": "6d93e0f7cbb48f9d1a53c61024b26b3c37aaa48bdc40545e1a09b4f5b0681b72",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/iris-open/index.html",
+        "sha256": "6480efa9f7993c58c6c492bc74caa5dcaa53adb11020846128320a23fd705b3d",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/kinetic-letter-in/index.html",
+        "sha256": "48696b14561eaaea122e9fdbc5b4c904e3ea96c1831828975a95604ae857f385",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/liquid-morph/index.html",
+        "sha256": "57257c3e5ea8ff5e45f417822f85ce224e8627e95ee55fdf470710cf6b6eced6",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/mask-reveal/index.html",
+        "sha256": "e00aad2347daf781c78d2861ea903d2cd6f3d7b431b5c6f61a7958386831bb0a",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/mosaic-pack/index.html",
+        "sha256": "9aab860e4f6f3abd0dcd45798c21da646e08b6e1ae15e7d91df0fa68a38de9e2",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/neon-flicker/index.html",
+        "sha256": "e5c43bfbf61b9c2802a63b9043015812654534a023eeea997288e1e51bb5c44b",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/outline-to-fill/index.html",
+        "sha256": "549734bada344a8d163d031e39b81795643b6cdbf3f402c0510c355b3b1abee3",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/palette-flip/index.html",
+        "sha256": "5370742f3fd2d50fcc461cb00cf976809aa4b73d54b40d577ecfe8851ed21f2f",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/particle-burst/index.html",
+        "sha256": "cf4044f27cbfe305d0390bed761f5f7eb8f05d3cf7d2a7aded96715f71cedd58",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/pixel-dissolve/index.html",
+        "sha256": "8bb6318cf4e7e7ee7b4ac262d83d4dd8375d3181b9ae8dcdb382d9e7cfdf36c9",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/radial-burst-lines/index.html",
+        "sha256": "a21616299a5b9600a1f141bb199c5df0ca3b5f9899b41c4ed9a5053ea9689276",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/screen-shake/index.html",
+        "sha256": "92614b15efd1b209582c89f66417041d62306d86035329eec511d01258c4ce00",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/slot-machine-reveal/index.html",
+        "sha256": "fa47780f62fffe7e722720ca41810c7117fd8d60e47844a394295d4009987cb3",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/spotlight-sweep/index.html",
+        "sha256": "6ecbe12c5605997f0da94228969c562a772a5d9a80da6629a8a108dfe5b1368e",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/staggered-exit/index.html",
+        "sha256": "758c91f492d9d25f0dff01f5a88d583bc88011dab2f2028f3c21e2a89a636b03",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/text-spectral-rays/index.html",
+        "sha256": "12065d5e2fb12b68d9a960f704b64f403f4d604c3ab3b9a4aaedb53f5eee83eb",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/text-wave-distort/index.html",
+        "sha256": "a4f76521bfcdbac18c21d8358c26b7290d73371d69e511f8963e521da505b235",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/tile-mosaic/index.html",
+        "sha256": "ab05488e2236867bc774232e658ee558849d503ca9d11ba8f8dea670db9b36e8",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/typewriter-reveal/index.html",
+        "sha256": "db6dd81852148a92f31f7c316bcad298bba1f12f9334a4a074d908dcb2106a30",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/motion-primitives/word-grid-burst/index.html",
+        "sha256": "86d62e4b092ebcc4b4449ee7c4bef47f3474e3b6e86fbea36d1d67e0aeedc5bc",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/planning.md",
+        "sha256": "e844b7e270f9de3744fef23632ce097f0f3324ef44e66bd839e08a2da4b4b7cb",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/templates/intro-kinetic-cascade/index.html",
+        "sha256": "7a69edbfd3cae461f233c934430d66791c11cb8d00d2979d9e15ff842159ab23",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/references/templates/logo-split-lockup-pulse/index.html",
+        "sha256": "ec2c97b761011d0fe044ba0983b7ce4ec9943c2997b153b9029de414b9664511",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/scripts/analyze-beatgrid.py",
+        "sha256": "acc14ffbbbcfb59fbe89a6886380d584df07a14205b1a299f424810bc85baed0",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/scripts/assemble-index.mjs",
+        "sha256": "955b715f58952b1c32e8cb29fab55fa2387c571ccca6ec9b8d58716f012e78bf",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/scripts/lib/storyboard.mjs",
+        "sha256": "e422c1faefc814e2d064d08b25fda60ad5b55728bb8a2400bf02494a4710b5da",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/music-to-video/sub-agents/frame-worker.md",
+        "sha256": "649e9bad3cc30f564a06068bb600fc13b51a33c55e479aa43871e2cdaf561dee",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/on-page-seo-auditor/SKILL.md",
+        "sha256": "09425ce0230c05cc06df259947d957457b8cc19f4de22a1d883d3df32ff3094c",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/orca-cli/SKILL.md",
+        "sha256": "cdd5d9c8a95837a6cc24d68b150a117684afe9bbb2d763de2cc7fba1da1ed163",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/orchestration/SKILL.md",
+        "sha256": "cd1b364bf35781bad06bf75ab1766afa8d6cec69cb2060529691d89871a2098a",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/planning/SKILL.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/pr-to-video/SKILL.md",
+        "sha256": "e6d814eaf6bd3ca5a09baccdc9d596fb219ddec3af6024975363d07478043977",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/pr-to-video/references/code-vocabulary.md",
+        "sha256": "922ab77f7d7c286d459597cc299a39d9e2112a6db11c4392e1a534cc6e91f0ef",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/pr-to-video/references/composition.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/pr-to-video/references/motion-language.md",
+        "sha256": "13be565b49eb1632c183d9d409973393111bce1289f321eddca36cf90133e581",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/pr-to-video/references/story-design.md",
+        "sha256": "fc3f5e5a1edfcf113189723732217c81fd5768f280b937132a47752e862bdfe4",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/pr-to-video/references/visual-design.md",
+        "sha256": "fd380ea892a0a45a08ae5641688b0aacda6122b0947890f5bfb548300c486e83",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/pr-to-video/scripts/assemble-index.mjs",
+        "sha256": "37bd4692dd734c0e645ab9710cace16f49008efe2492fc34a91dab8edf4ee837",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/pr-to-video/scripts/audio.mjs",
+        "sha256": "aa19d18d144addab79c28055fac4e350f3b257b0d38d17e4d69d634e46d53765",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/pr-to-video/scripts/build-frame.mjs",
+        "sha256": "e8f743da7d7482b7957a1e47ee2c39c602872f5291aad52587b06c1b342cbaf9",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/pr-to-video/scripts/captions.mjs",
+        "sha256": "f5de218105a619ca60d47e237b2902d56673b7a010dd47d280ce58580baca1ef",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/pr-to-video/scripts/fetch-people-avatars.mjs",
+        "sha256": "c93e2554f697697d0f55e9b619c5acca87ce07c9c1b154855895ec1da0905184",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/pr-to-video/scripts/fetch-pr.mjs",
+        "sha256": "64fe269e884058f05d3744d14eeac6c93041e0d74e9d91c1c32ad4a9fd9347ce",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/pr-to-video/scripts/ingest.mjs",
+        "sha256": "4b41fe9d7f6f9e5fc7a541018442b186fb1ccb430e1c6e05b8e6cb41d87f185d",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/pr-to-video/scripts/lib/assets.mjs",
+        "sha256": "fb955aae9b8b5a43e785c08d564cbfb5e20b5709e62858317af4290271076e04",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/pr-to-video/scripts/lib/dimensions.mjs",
+        "sha256": "6d4b9603cfb212a8ebd65d74b1b1955636b49cdeaaf9763add02ff16d753b2d3",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/pr-to-video/scripts/lib/storyboard.mjs",
+        "sha256": "e422c1faefc814e2d064d08b25fda60ad5b55728bb8a2400bf02494a4710b5da",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/pr-to-video/scripts/lib/tokens.mjs",
+        "sha256": "48d23cdd744d8ea70479573aaecaca45dc5f15f6f7c24dd6c3007a5be631e67a",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/pr-to-video/scripts/lib/transitions.json",
+        "sha256": "e471afb61bc2b69b37d63f1438bdedcd36d625d03fe30166ad6bfe0aea29a103",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/pr-to-video/scripts/transitions.mjs",
+        "sha256": "b444da858e805c5251789a6b8ccd5ab461c935e2984e5efb5e3b6a0a84072a54",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/pr-to-video/sub-agents/frame-worker.md",
+        "sha256": "e2994536818af2474ddaf090c3117806637736c58748434c600748d64061efb2",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/prd/SKILL.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/product-launch-video/SKILL.md",
+        "sha256": "5ef06256aa75ca544fdd9fccc4b16b92e45a945ee7438b2aa28b18e27a647448",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/product-launch-video/references/cut-catalog.md",
+        "sha256": "9834bf2f8357771fc519e17c0fd11afa61ea8d1c3faca775804dcc494891d13c",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/product-launch-video/references/motion-language.md",
+        "sha256": "8ed8191062abd862edcf1879ef3c39215105b3b337fc7c4b8db5322ba67ebf43",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/product-launch-video/references/story-design.md",
+        "sha256": "2702233c25d93c9feff40a5de430e9493f427ccd1ca52cdb3f3dea0699e45b94",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/product-launch-video/scripts/assemble-index.mjs",
+        "sha256": "02bb4ada3978f71342b1b283d2632947ad78780c8277a7df7704bd05193bd8f2",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/product-launch-video/scripts/audio.mjs",
+        "sha256": "65b100eebff8b1d48353b1ca975631130bcc89ae0ba9d0ac830038de388bd60e",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/product-launch-video/scripts/build-frame.mjs",
+        "sha256": "95f9c57da33bbb32fc4dd3fb8c56b164b9520ac66ecb1d010649bb8115a0b5d2",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/product-launch-video/scripts/captions.mjs",
+        "sha256": "f5de218105a619ca60d47e237b2902d56673b7a010dd47d280ce58580baca1ef",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/product-launch-video/scripts/lib/assets.mjs",
+        "sha256": "fb955aae9b8b5a43e785c08d564cbfb5e20b5709e62858317af4290271076e04",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/product-launch-video/scripts/lib/storyboard.mjs",
+        "sha256": "e422c1faefc814e2d064d08b25fda60ad5b55728bb8a2400bf02494a4710b5da",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/product-launch-video/scripts/lib/tokens.mjs",
+        "sha256": "9b33a71a18d10877eb8397e22513df9082004bea9c745470edb7a8fd6d7c4d03",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/product-launch-video/scripts/lib/transitions.json",
+        "sha256": "e471afb61bc2b69b37d63f1438bdedcd36d625d03fe30166ad6bfe0aea29a103",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/product-launch-video/scripts/transitions.mjs",
+        "sha256": "b444da858e805c5251789a6b8ccd5ab461c935e2984e5efb5e3b6a0a84072a54",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/product-launch-video/sub-agents/frame-worker.md",
+        "sha256": "2daaeace6f4a8d66de4070f92bf9c19cf8e33db5bb50bdbca266ac279c434639",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/ralph/SKILL.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/AGENTS.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/README.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/SKILL.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/metadata.json",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/_sections.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/_template.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/advanced-effect-event-deps.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/advanced-event-handler-refs.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/advanced-init-once.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/advanced-use-latest.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/async-api-routes.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/async-cheap-condition-before-await.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/async-defer-await.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/async-dependencies.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/async-parallel.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/async-suspense-boundaries.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/bundle-analyzable-paths.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/bundle-barrel-imports.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/bundle-conditional.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/bundle-defer-third-party.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/bundle-dynamic-imports.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/bundle-preload.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/client-event-listeners.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/client-localstorage-schema.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/client-passive-event-listeners.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/client-swr-dedup.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/js-batch-dom-css.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/js-cache-function-results.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/js-cache-property-access.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/js-cache-storage.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/js-combine-iterations.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/js-early-exit.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/js-flatmap-filter.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/js-hoist-regexp.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/js-index-maps.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/js-length-check-first.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/js-min-max-loop.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/js-request-idle-callback.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/js-set-map-lookups.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/js-tosorted-immutable.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/rendering-activity.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/rendering-animate-svg-wrapper.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/rendering-conditional-render.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/rendering-content-visibility.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/rendering-hoist-jsx.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/rendering-hydration-no-flicker.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/rendering-hydration-suppress-warning.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/rendering-resource-hints.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/rendering-script-defer-async.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/rendering-svg-precision.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/rendering-usetransition-loading.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/rerender-defer-reads.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/rerender-dependencies.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/rerender-derived-state-no-effect.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/rerender-derived-state.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/rerender-functional-setstate.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/rerender-lazy-state-init.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/rerender-memo-with-default-value.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/rerender-memo.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/rerender-move-effect-to-event.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/rerender-no-inline-components.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/rerender-simple-expression-in-memo.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/rerender-split-combined-hooks.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/rerender-transitions.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/rerender-use-deferred-value.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/rerender-use-ref-transient-values.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/server-after-nonblocking.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/server-auth-actions.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/server-cache-lru.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/server-cache-react.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/server-dedup-props.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/server-hoist-static-io.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/server-no-shared-module-state.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/server-parallel-fetching.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/server-parallel-nested-fetching.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/react-best-practices/rules/server-serialization.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/remotion-to-hyperframes/SKILL.md",
+        "sha256": "dadbc7d7775b80e3e5be407dbd08b81f77e1e6b67476633ca7348f256fe8b251",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/remotion-to-hyperframes/assets/test-corpus/tier-1-title-card/expected.json",
+        "sha256": "7bae1fbcd11d3bc18d3b83fc2604da2d84845578dc6fb2f181c9f927550b6cd3",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/remotion-to-hyperframes/assets/test-corpus/tier-1-title-card/hf-src/index.html",
+        "sha256": "bda6a0df4d5abf1fb129f708c7b1f2e79e2f6bbfb304fc937e681215d0f8fa51",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/remotion-to-hyperframes/assets/test-corpus/tier-2-multi-scene/README.md",
+        "sha256": "d6c6591c58ce2b6e211bab45baf573ce9e522e2795a86ce0ded5542d043c9997",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/remotion-to-hyperframes/assets/test-corpus/tier-2-multi-scene/expected.json",
+        "sha256": "aefb204abb7faa5b33da4d1f686164438b92e50f4b6daa9c0da3f8cb193e632f",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/remotion-to-hyperframes/assets/test-corpus/tier-2-multi-scene/hf-src/index.html",
+        "sha256": "8c1695814c80cd6fe6bdb9b8fbe68660997bc0743fff0bb1f7ef51d6660560e3",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/remotion-to-hyperframes/assets/test-corpus/tier-3-data-driven/expected.json",
+        "sha256": "6ccf8a4f67bbe48b9967d7b616b9e6c17931572b5b810cf1ed99c659c9ca15df",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/remotion-to-hyperframes/assets/test-corpus/tier-3-data-driven/hf-src/index.html",
+        "sha256": "aaec12aabff46337f7bfff2ea5d6c13e488b40f95868b1bd6c0657a56dd81910",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/remotion-to-hyperframes/references/api-map.md",
+        "sha256": "f8470156d854b13822ee59134efa3975b84812c5e7fedf558836adc2a42440f2",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/remotion-to-hyperframes/references/limitations.md",
+        "sha256": "458b78ac6283ddf5cdaec25c796c9356047d16ff05c450f15d02e858b3a47366",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/remotion-to-hyperframes/references/lottie.md",
+        "sha256": "2c139a6854709569f3708d71dcde90a8c718d9f485ff6122182bf9d35b032be0",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/remotion-to-hyperframes/references/media.md",
+        "sha256": "7d053b03d0fb1531b7756b5b237ee72c0d0145e8632f046e62621759cfabbd64",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/remotion-to-hyperframes/references/parameters.md",
+        "sha256": "eabfa937f1613fb5d14e6e1d160d48864682c04edd5ff843d179fa9e786f362a",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/remotion-to-hyperframes/references/sequencing.md",
+        "sha256": "5b916e26efcd4d100d097ff25886df463c7d6934bb9bdec1da5ed7189afd13ae",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/remotion-to-hyperframes/scripts/frame_strip.sh",
+        "sha256": "c6cb73b4886991b2092417b5c3fa257d34fefb288e248a7fda854047b8c66bae",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/remotion-to-hyperframes/scripts/lint_source.py",
+        "sha256": "6043611ad04ce16d2ef5596822eb2887e865ed9759c8e528471b994dff7d88b1",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/review-contract/SKILL.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/reviewing-code/SKILL.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/sentry-cli/SKILL.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/sentry-cli/references/alert.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/sentry-cli/references/api.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/sentry-cli/references/auth.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/sentry-cli/references/cli.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/sentry-cli/references/code-mappings.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/sentry-cli/references/dart-symbol-map.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/sentry-cli/references/dashboard.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/sentry-cli/references/event.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/sentry-cli/references/explore.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/sentry-cli/references/init.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/sentry-cli/references/issue.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/sentry-cli/references/local.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/sentry-cli/references/log.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/sentry-cli/references/monitor.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/sentry-cli/references/org.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/sentry-cli/references/proguard.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/sentry-cli/references/project.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/sentry-cli/references/release.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/sentry-cli/references/replay.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/sentry-cli/references/repo.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/sentry-cli/references/schema.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/sentry-cli/references/sourcemap.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/sentry-cli/references/span.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/sentry-cli/references/team.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/sentry-cli/references/trace.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/sentry-cli/references/trial.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/slideshow/SKILL.md",
+        "sha256": "ca93daf7a53781b4c5fc4a881a262e3dc5b2bc62612e77406304e5256222b755",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/slideshow/references/standalone-harness.md",
+        "sha256": "9435c87a7a77fc08900cb73a935496996ca8c5cc8962ab7050ca0d8048b883e7",
+        "link_target": null
+      },
+      {
+        "status": " M",
+        "path": "skills/talking-head-recut/SKILL.md",
+        "sha256": "a3b6084b4be1e23be6bc04e8b98bb96d073badf335a3c02befd91fa808e644a4",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/thermo-nuclear-code-quality-review/SKILL.md",
+        "sha256": "945db257ae17757db26ff5b8e4f74270f4550d4ddc6e8fee5df92203f2cdb6ca",
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/website-to-video/SKILL.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/website-to-video/assets/sfx/CREDITS.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/website-to-video/assets/sfx/chime.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/website-to-video/assets/sfx/click-soft.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/website-to-video/assets/sfx/click.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/website-to-video/assets/sfx/error.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/website-to-video/assets/sfx/glitch-1.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/website-to-video/assets/sfx/glitch-2.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/website-to-video/assets/sfx/glitch-3.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/website-to-video/assets/sfx/impact-bass-1.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/website-to-video/assets/sfx/impact-bass-2.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/website-to-video/assets/sfx/key-press.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/website-to-video/assets/sfx/manifest.json",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/website-to-video/assets/sfx/notification.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/website-to-video/assets/sfx/ping.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/website-to-video/assets/sfx/pop.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/website-to-video/assets/sfx/riser.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/website-to-video/assets/sfx/sparkle.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/website-to-video/assets/sfx/typing.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/website-to-video/assets/sfx/whoosh-cinematic.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/website-to-video/assets/sfx/whoosh-short.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/website-to-video/assets/sfx/whoosh.mp3",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/website-to-video/references/beat-builder-guide.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/website-to-video/references/capabilities.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/website-to-video/references/step-0-capture.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/website-to-video/references/step-1-design.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/website-to-video/references/step-2-brief.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/website-to-video/references/step-3-storyboard.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/website-to-video/references/step-4-vo.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/website-to-video/references/step-5-build.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/website-to-video/references/step-6-validate.md",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": " D",
+        "path": "skills/website-to-video/scripts/w2h-verify.mjs",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": ".skill-lock.json",
+        "sha256": "25eb601599514a0fb011f21538cd37e5d46f7a917faef48d7b8b30deab6e0502",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "AGENTS.md.bak-20260807",
+        "sha256": "816e69b1938351eeab221e1611d8554d37b4d842e00ab397f7f27409151fad42",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "community-skills/",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills-backup/",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills-disabled/",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/agent-browser/",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/docx/scripts/office/helpers/__pycache__/__init__.cpython-314.pyc",
+        "sha256": "48855886a31935bc572502b2ebcd422a26306cdf831d20844ad31e20061bba99",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/docx/scripts/office/helpers/__pycache__/merge_runs.cpython-314.pyc",
+        "sha256": "7be875f3b6fbb3737a73ca3ef8e73c782ead3b517b1ee65235fa240da8c0b2ce",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/docx/scripts/office/helpers/__pycache__/simplify_redlines.cpython-314.pyc",
+        "sha256": "49f7449570e89b09ef86f0483a6810063fcf4fdacfc7758dd88c9b734925d986",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/docx/scripts/office/validators/__pycache__/__init__.cpython-312.pyc",
+        "sha256": "9a9b40bf3854b4ca566d30679bae1d1ce338a79a0f2e312c544873033520da4e",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/docx/scripts/office/validators/__pycache__/__init__.cpython-314.pyc",
+        "sha256": "bfead55fd512c5abbe109a90d039d7c5a1db1b3004aad06d845d0b3dc391b2f6",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/docx/scripts/office/validators/__pycache__/base.cpython-312.pyc",
+        "sha256": "baa7f22b64a53923bfeb4714a8ff30f78dd47867af6bb3085081a28e87500e0f",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/docx/scripts/office/validators/__pycache__/base.cpython-314.pyc",
+        "sha256": "36467da210f705cb7c6c80dbe38bb1b083e7c340325ea9286122c776e5325a19",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/docx/scripts/office/validators/__pycache__/docx.cpython-314.pyc",
+        "sha256": "a444ed7c5324d03b6a97dfa0e1473ab904fc52d9c95fcec7288fc839bf0acabc",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/docx/scripts/office/validators/__pycache__/pptx.cpython-314.pyc",
+        "sha256": "07c967453e85855f8711d1eb9bb37731d98edc0b6a1dcfbec319f352e1d95839",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/docx/scripts/office/validators/__pycache__/redlining.cpython-314.pyc",
+        "sha256": "9e76a22e8d0bca4d5074b758972e94dcfc283c83089128bbf5fb01f0e5624e36",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/drawio-skill",
+        "sha256": null,
+        "link_target": "/home/badmuriss/.agents/community-skills/drawio-skill/skills/drawio-skill"
+      },
+      {
+        "status": "??",
+        "path": "skills/embedded-captions/scripts/fixtures/",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/embedded-captions/scripts/hf-cli.cjs",
+        "sha256": "2cd8c551e57e386a7691920c6f036addd0b26609dd0380f8cf1f059480bc320d",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/embedded-captions/scripts/make-theme.test.mjs",
+        "sha256": "5a75ef0f203730dbd2950d63e88018b2ac96e904ad28d95539c3c9a37801f8ee",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/embedded-captions/scripts/preview-frames.test.mjs",
+        "sha256": "0754a7f217cca4ace2211fa23eac3802996b058b6316c8a3298abb73de5b5a48",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/embedded-captions/scripts/transcribe.test.mjs",
+        "sha256": "350de0a6da13c76b1fd42a5be887ee5209291c4df07f7944b5fd97c6aff3352d",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/faceless-explainer/references/cut-catalog.md",
+        "sha256": "9efbade2be5b9b2acb7793a313cda8a63b11781400c05f4705e49096f1f27c3f",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/faceless-explainer/scripts/assemble-index.test.mjs",
+        "sha256": "abeafe05767e290ff751d23c26c01cae6d949dba20f57bc66f4906743c80a002",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/faceless-explainer/scripts/audio.test.mjs",
+        "sha256": "d5c49e09bea8d28f89cb070d2ea3f13250212a08d7169f68deb8fdd5fb13223b",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/faceless-explainer/scripts/captions.test.mjs",
+        "sha256": "a6852ebf8460c5056321089b18b43022125226b1be28f7869a0395b23a4b77cb",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/faceless-explainer/scripts/frame-packets.mjs",
+        "sha256": "92b2adca4113c480c89fcc5dbd5e9296f55fa925865789ee27305115e095ef7c",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/faceless-explainer/scripts/frame-packets.test.mjs",
+        "sha256": "d8b54a274032a8119b8190ef90f79d1b5f252583b5b8c32918bbf4b1d9893822",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/faceless-explainer/scripts/lib/bgm-volume.mjs",
+        "sha256": "bb9debebdbd09724f6d07cd10b3982a076639664420ff8caf5f5a36ae7429a8c",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/faceless-explainer/scripts/lib/captured-fonts.mjs",
+        "sha256": "b08b989519b6c45f0758fd0ab2220477bea63afed975ec88e271edbd922795c8",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/faceless-explainer/scripts/lib/frame-packets-core.mjs",
+        "sha256": "1c8b10b77568c959caf97467451ff65a71197872fba5f08f5cdf6fd6c37abdd6",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/faceless-explainer/scripts/lib/pad-frame-duration.mjs",
+        "sha256": "733de1b9109c9db9963c6c083db54b2c045c6aba9dfadeb3188f1c456ee9b2c1",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/faceless-explainer/scripts/transitions.test.mjs",
+        "sha256": "b084fa8a6ad45e60af27fc9c146cc3a57a6bcd795251dc89ddcc6f29af0702e6",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/firecrawl-developer-index/",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/firecrawl-interact/",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/firecrawl-monitor/",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/firecrawl-parse/",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/firecrawl-research-index/",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/frontend-visual-validation",
+        "sha256": null,
+        "link_target": "/home/badmuriss/Documents/my-llm-kit/skills/frontend-visual-validation"
+      },
+      {
+        "status": "??",
+        "path": "skills/general-video/scripts/",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/general-video/sub-agents/",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/gerar-criativos/",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/grill-me",
+        "sha256": null,
+        "link_target": "/home/badmuriss/Documents/my-llm-kit/skills/grill-me"
+      },
+      {
+        "status": "??",
+        "path": "skills/grill-with-docs",
+        "sha256": null,
+        "link_target": "/home/badmuriss/Documents/my-llm-kit/skills/grill-with-docs"
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-animation/blueprints/agent-progress-theater.md",
+        "sha256": "1939690276ebf41123126e40915c283b69d3b2fd7d563f774c96e6ff6a076d4b",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-animation/blueprints/camera-journey.md",
+        "sha256": "0508b034b4a1c30bf3cd37a25137987c435e7805f3d5a98f85921ce0e6f06d1e",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-animation/blueprints/fixed-anchor-cycle.md",
+        "sha256": "1a49afda275f54c0383e8569b405175f2a2424a74574d935d1fdf3858f50eb89",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-animation/blueprints/panel-edit-live-sync.md",
+        "sha256": "f864194c9a56ca7936df72b92b4806427437c1a09fab11cd27eb3d0499186644",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-animation/blueprints/prompt-type-submit-generate.md",
+        "sha256": "c94f17f6cccec12c7e8eac246d8b534e7cb4120a3f9b7c52dee049b9d228da1a",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-animation/blueprints/transcript-scroll-artifact-reveal.md",
+        "sha256": "bb76b82b375ad919412fd201186c82950f636753608efd810ac4f32c5655de4b",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-animation/blueprints/zoom-out-workspace-reveal.md",
+        "sha256": "30a6a396a72bcd37127100f6e4cb5f13f6ca1ea179df7001ce347a3b84c8b7ae",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-animation/references/",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-animation/rules/3d-camera-flight.md",
+        "sha256": "f88aa996dfff909ba780e0ace41dd7fe3cb2b275b6d87694470f26e78fbb13c1",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-animation/rules/anchored-layout-expand.md",
+        "sha256": "11eae6a4c3ca7c31ae41c068c577a960c76fd9714bea12a2bc9ec608f8b098c3",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-animation/rules/chart-scrub-readout.md",
+        "sha256": "e0a0fb62a9ce7ca4ef535ee50328078dc8bb7cf63f1f3a8ee68844b4a5294f61",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-animation/rules/chromatic-glitch.md",
+        "sha256": "388eb6e8d7eb65c8ebca22c07538e7bd383184242a9dfcfe5561fad854551f28",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-animation/rules/control-target-sync.md",
+        "sha256": "7f82b8a64cca6759580b9c7ab1dd4373a7c03a474bd8cfc927e18b587614dc47",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-animation/rules/cursor-drag.md",
+        "sha256": "c7c88d33ab9f7f1c6f0a93d984d4acb1b95698a2bd7a99ef306065da727445be",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-animation/rules/gradient-text-sweep.md",
+        "sha256": "ee17df8644eea65f2751c97604db1546c17260ab054483579e221eba6a5257a1",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-animation/rules/multi-cursor-choreography.md",
+        "sha256": "6d4207d9a0dac8a9ec9d681a6bd30b5cb2707b76349c513f336701c8ea4b4c14",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-animation/rules/nudge-curve.md",
+        "sha256": "91084469a672c8c979e8f2e2f76f78526fdff8e1d647650a5f4a54e21df1b3ad",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-animation/rules/particle-burst.md",
+        "sha256": "b54113dc2d079ff49cd800b650e2c521cd4cf1af8aa125bfa2c9ff53fe5c88d1",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-animation/rules/theme-crossfade-morph.md",
+        "sha256": "d1855ee32b2b2a45f9b5dffd3d1edf96dd08b199d6aa8c685e302878ba8f0fef",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-animation/rules/waterfall-entry.md",
+        "sha256": "d9b8a3df6c59e0af6eef1f3f3d7ffb8058c8983976e4ce150566215770ff7c50",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-animation/scripts/animation-map-sampling.mjs",
+        "sha256": "1d9275d8764fab0c185291d498b6eedd87622437226a4f7a48c44607e25debe7",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-animation/scripts/animation-map-sampling.test.mjs",
+        "sha256": "470d2e9a7aa9c530d13298a604e01b1b031255b3b99546f446d62091b33217ac",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-animation/scripts/animation-map.test.mjs",
+        "sha256": "5d3b9ff36d82f3a0c53c2d7e3947e82a27cbcc9af177362abcc2cb96c611a930",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-animation/scripts/package-loader.test.mjs",
+        "sha256": "504125ede3efaf687dba15de699c0100bf1fd47855fc83c98aec5c6fb9a4168f",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-audio/",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-cli/references/beats.md",
+        "sha256": "5b90e725a0a676cadfd597524e3abed77e80a5aca03a4d7bee2c3be44e5b85d6",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-cli/references/cloud.md",
+        "sha256": "65d1a787a940ee360a07e492014c775a898a4b794e26f778e17dca659ffa7a1f",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-cli/references/cloudrun.md",
+        "sha256": "87ba98cc0db3721fb09776d44a5c8ef75fd95b6a74cea1376dc028907b98aeba",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-cli/references/compare-and-batch.md",
+        "sha256": "d17fa5a16707d981fa6473b99a28aa45abf41bca0fd96c5157c632abd0bfc222",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-core/references/creator-editing-recipes.md",
+        "sha256": "b270100faa6fcb4ab7df87d8cd201cd7af54eb16cd2284d9a5a8d241f637a611",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-creative/frame-presets/code-editorial/",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-creative/references/story-spine.md",
+        "sha256": "6c390b68004ffaaf3368e22a0355d914302d31921436c9a8fe79f9e0e096b4ef",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-creative/references/storyboard-recipe.md",
+        "sha256": "75ce8a42aaa087c1b18f932eb61f5baccb6a0eb8315c97afb6f8bea00f0b158b",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-creative/scripts/package-loader.test.mjs",
+        "sha256": "504125ede3efaf687dba15de699c0100bf1fd47855fc83c98aec5c6fb9a4168f",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-keyframes/",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-registry/references/component-quality-bar.md",
+        "sha256": "f0d4c3c44131bc0791f8a8cc3d2d7478d38045451775af7d20b2dd47cf5f91ac",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-registry/references/placeholder-material.md",
+        "sha256": "15adf4a40b26166f64df784aed065adb58051d9ccd5c0c52ad9b71e3b8367a09",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes-studio/",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes/references/",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/hyperframes/scripts/",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/impl",
+        "sha256": null,
+        "link_target": "/home/badmuriss/Documents/my-llm-kit/skills/impl"
+      },
+      {
+        "status": "??",
+        "path": "skills/incredibly-pretty-websites",
+        "sha256": null,
+        "link_target": "/home/badmuriss/Documents/incredibly-pretty-websites"
+      },
+      {
+        "status": "??",
+        "path": "skills/ingest",
+        "sha256": null,
+        "link_target": "/home/badmuriss/Documents/my-llm-kit/skills/ingest"
+      },
+      {
+        "status": "??",
+        "path": "skills/media-use/audio/",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/media-use/luts/",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/media-use/references/",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/media-use/scripts/audio-duck.mjs",
+        "sha256": "6beac3c1c6c0e0375e67a04c184406ced3740cc832bb3ba9a09c796bbe16d40e",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/media-use/scripts/compatibility.test.mjs",
+        "sha256": "f45979fb53e6a12e03c0ef54d07469d7754fae5ce0fa7e749baffd1285b49e9f",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/media-use/scripts/dither.mjs",
+        "sha256": "8e9f437526f39f417f6793912ddeef71094ddb5a5b8d4893c5339086bc39547f",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/media-use/scripts/dither.test.mjs",
+        "sha256": "c22c3a0ae41647ac3f733b489a6bc6043fd294155d00954be5d901b3cff7d216",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/media-use/scripts/lib/config-lock.mjs",
+        "sha256": "a9d1679e2039be38cd1756a1011f813ae4be0577c2ff77b9ed411b99b1c94275",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/media-use/scripts/lib/cutlist.mjs",
+        "sha256": "9226c19382993a9a6efac0acb6f02e3693b4d044c224bee447ad3df2560e176b",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/media-use/scripts/lib/duck.mjs",
+        "sha256": "287f14838458677246cb18ef0355a9e63fc3d8691764c84a769e3c4077ad94b9",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/media-use/scripts/lib/error-diffusion.mjs",
+        "sha256": "aa718fe95f98087979bab5ea31d68b8e45fbde0c5b874c6888ad21923fb45936",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/media-use/scripts/lib/media-fetch.mjs",
+        "sha256": "6a90740eee3e4765b83b4c9726676b2935a7fbc9990f61ad5b166f9263188366",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/media-use/scripts/lib/media-home.mjs",
+        "sha256": "7f69890d7b822f202b44ddec0d8176c767cd8b1da4dfc4d918599c6a05cfecb1",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/media-use/scripts/lib/npx-sync.mjs",
+        "sha256": "1dc7f6372da36242f8c373defcba80fe9e006ce824e0f459e6d56226b3bf919a",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/media-use/scripts/lib/parakeet-words.mjs",
+        "sha256": "d5b66efe6cb8975beab2f523503113c3be3117e687ebc20695e7ab08c2ba1b4d",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/media-use/scripts/lib/prefs-store.mjs",
+        "sha256": "c781efa1485b0eba4120e766fa2555f7639bcf4d432f174c3f8ee796b57ced01",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/media-use/scripts/lib/recipe-store.mjs",
+        "sha256": "be457529fda79ded9d47fc25d20fa3950f31aabdb346258157e9dbc348188ae8",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/media-use/scripts/lib/telemetry.mjs",
+        "sha256": "846af288893c42c2be14defecf01f17e44886c5068795eea284e091015778012",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/media-use/scripts/lib/transcriptCutFade.mjs",
+        "sha256": "ee9c7ec28650cf0f6a0f1f21f1c6a1faa5e152337163cccc0cc9a109b3c99805",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/media-use/scripts/lib/words.mjs",
+        "sha256": "612261aa0c27130d42b507746d59416466969e69efa2d44bb64cd8bc5adef216",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/media-use/scripts/prefs.mjs",
+        "sha256": "149836b527e1243f5ab714694393f742e23328890bcef21cf28eed52f888273e",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/media-use/scripts/recipe.mjs",
+        "sha256": "c9936537405dc8d066ed7aff519d28bc43fe683c42fc50a336945e33ac43f938",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/media-use/scripts/resolve-plugin.test.mjs",
+        "sha256": "fe8f4dce139b3a88e9ba817da335ae7667a644a715f250613901f7cc1e75f0ed",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/media-use/scripts/transcribe.mjs",
+        "sha256": "9e0f2fd2775e3a76267fc219d4b5aa52373a95478812884f8f40f6292e09dac7",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/media-use/scripts/transcribe.test.mjs",
+        "sha256": "39a456ac37a0eca282417b09d7e556c0f2ac11ab3726bc361ff077e75a963ae1",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/media-use/scripts/transcript-cut.mjs",
+        "sha256": "9677c36087b028dc76300b5d3250124ff8bc6bce366c608d39edf6db21d4984a",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/media-use/scripts/transcript-cut.test.mjs",
+        "sha256": "a73b6d1e6a40930d0f0b35d733eeeab661464b960b8f01e0770a6bd484e33925",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/3d-card-flip/scene.html",
+        "sha256": "ff08a9bf9e15ecf3d9caa3ef6894754c54fc650fc36db7ea0755fb0758921771",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/bg-flow-field/scene.html",
+        "sha256": "6dc0d9724b8a92a8db91e437ea860f1d7582646bf35fc1049f8c4bef291e4b51",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/binary-decrypt/scene.html",
+        "sha256": "5586c60a1c5311e8b5cb094aa6486d5fb5d006715dacad615030ec336973bc11",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/blur-resolve/scene.html",
+        "sha256": "a1e1605e57878b96e5d49de78685198889bb616e858358b871808627b5e9d753",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/braam-punch/scene.html",
+        "sha256": "8a646ace2258ba654e3bd37b5917fa1f1c242685e4ec1a2a083c2a6e09a7a8cb",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/chromatic-split/scene.html",
+        "sha256": "f1f69fc76fd711af1ed336a72ae505ed876e169c984aa50307ba639730976823",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/chrome-sweep/scene.html",
+        "sha256": "4c5bc34b08616cf482affd2907f3363c24ca09b37b44ea90072c8841dcab36eb",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/counting-punch/scene.html",
+        "sha256": "4887ef0b6a04fd1148228d5fb1e5547b6912ca18215cad5ed526e4e68b45adc5",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/crash-zoom-in/scene.html",
+        "sha256": "89efaf0896ffc157a38d8055b2bd861e9db068856e177eb67b417368d7d767ac",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/datamosh-smear/scene.html",
+        "sha256": "d392e80ead2e3552429f106311f191964aea1fa0f3f20a274d5b31d77260d4a4",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/directional-fill/scene.html",
+        "sha256": "aaf30be57d38081fc353ffab7478753fdb9fdd28d6002611447bfc5d4a13c807",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/dolly-zoom/scene.html",
+        "sha256": "15e500a390b02aa97403260b7cd2dcf86c92a8acd1739392af9a1b6fece9e813",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/electric-arc/scene.html",
+        "sha256": "5a2e1947b3b746606b27b051d6c95a7b78b110ad53b0b6ee6c9e3093301958f2",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/flash-cut/scene.html",
+        "sha256": "37e1f3df24e224cf0946d5e18f3a660101fc9c2aa1097163c1c4fd0c33190209",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/gooey-metaball/scene.html",
+        "sha256": "eb5afdd323defc1598c79d1528bf3b78de42fb065ca2de2dc7fcd7c44863f395",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/hard-cut/scene.html",
+        "sha256": "e16fe666e83374b46ca4ad9af5f6d85514fe43df68517542addfe40f8cf12526",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/hypercut-whip/scene.html",
+        "sha256": "64aabc74c648bd34af037c06775b62716a951de2f969aaa1a5c7a0e3020d1677",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/iris-open/scene.html",
+        "sha256": "7485cc601e40975e12af82d2c7924e81db7f3e105c761b6c15405e7ecee4446d",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/kinetic-letter-in/scene.html",
+        "sha256": "df1125dc8992a99004fd86f7464e58de115135b176b8d6b40070b5dbc705fd2b",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/liquid-morph/scene.html",
+        "sha256": "dd89778d3361c3e492bf49d559f3db1eef7b3965a0d8c646354d5dd2e0c0f7de",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/mask-reveal/scene.html",
+        "sha256": "1a00da4579b7d10eb942926f9a9378dd291aa95df17e66ecbec1ffb25c2b890f",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/mosaic-pack/scene.html",
+        "sha256": "d47a7be29fae465701ccee809f2531f6262a04358ab7385d23a92b6230c5fc6c",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/neon-flicker/scene.html",
+        "sha256": "26089326fbab80caf3489be11581c14fb97281d814b828e4c16512b60141d1ca",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/outline-to-fill/scene.html",
+        "sha256": "f65d2f5f2d6644453e51cf4356cefa70c42bb0c9eabf499c3dfd7e5f8c5d014d",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/palette-flip/scene.html",
+        "sha256": "cf0a7e69f39aad2c53a9993381402cf0ae148f2217674a353388b9a8778ab962",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/particle-burst/scene.html",
+        "sha256": "2da20d0c073e306e8c4eb3390d4d81c5de5859798ecf0f09e552dc84154f68be",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/pixel-dissolve/scene.html",
+        "sha256": "2a4ee5965a71f857c99a0014a73b89bfa168a81bae1b44b622dfb5d5e9f64238",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/radial-burst-lines/scene.html",
+        "sha256": "94c69992e11933a315b52b8afdb729441dbfd5f2e12343667bf31eaeb753d9d8",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/screen-shake/scene.html",
+        "sha256": "a8fdbb227f18d7e9f95e698545d43afa9e4a0614ebfc1ef77e7a2661621e539d",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/slot-machine-reveal/scene.html",
+        "sha256": "d8b1f9c96a7876564ab5be55668c9a92631e8d6a456368d5b6387f3dc5b484ce",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/spotlight-sweep/scene.html",
+        "sha256": "80c3235cf006e507c5e3bec0f3f4ff183872e88df28191b97c1ff9355bcc6b11",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/staggered-exit/scene.html",
+        "sha256": "ef8d1783b44c434be16c8125768aef95e8bad9405252b95ebec9ff69f1dce21a",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/text-spectral-rays/scene.html",
+        "sha256": "164f582e24620fb7b08d94651876e86640b1cd3195e1c1255f28858ef64b96e2",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/text-wave-distort/scene.html",
+        "sha256": "f502ddd8583b9caaa591877d891917de6120414994374cf5c555281062c632b2",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/tile-mosaic/scene.html",
+        "sha256": "f4708f4b591823c679b52cab4f5c75269eb30659bcec94156b691ebe046a8f28",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/typewriter-reveal/scene.html",
+        "sha256": "cf557bf9381dd04352d3bfde6d54647f3eda2b3b996c2209081264bae84fbe49",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/music-to-video/references/motion-primitives/word-grid-burst/scene.html",
+        "sha256": "bb4be310ddb7e14d0d10dde83c4eb0c41e4086b3e05c643cfc0353c60127953c",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/pptx/scripts/office/__pycache__/",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/pptx/scripts/office/validators/__pycache__/",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/pr-to-video/references/cut-catalog.md",
+        "sha256": "9efbade2be5b9b2acb7793a313cda8a63b11781400c05f4705e49096f1f27c3f",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/pr-to-video/scripts/assemble-index.test.mjs",
+        "sha256": "9b315e77e3cf352fbee80b16f164c14368bce941a447039792e1bd5cf5dfcb59",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/pr-to-video/scripts/captions.test.mjs",
+        "sha256": "db45516aee129f0be7e2dec708073c09c7430e47974e22f943289e5b7abc9410",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/pr-to-video/scripts/frame-contract.test.mjs",
+        "sha256": "c6216b0aa7edd18ee9c267fe1d352d8ed54e3c8246cb7444dc65ead3c9ddf509",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/pr-to-video/scripts/frame-packets.mjs",
+        "sha256": "8db1d5e11516bee585d73760186627f6b473926d93cc811924cc1a5adc6e0b59",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/pr-to-video/scripts/lib/bgm-volume.mjs",
+        "sha256": "bb9debebdbd09724f6d07cd10b3982a076639664420ff8caf5f5a36ae7429a8c",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/pr-to-video/scripts/lib/captured-fonts.mjs",
+        "sha256": "b08b989519b6c45f0758fd0ab2220477bea63afed975ec88e271edbd922795c8",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/pr-to-video/scripts/lib/frame-contract.mjs",
+        "sha256": "1c7f7e97692ec66af59867cb6a6aedc7546b3f916f107ce20abd918ab16c954b",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/pr-to-video/scripts/lib/frame-packets-core.mjs",
+        "sha256": "1c8b10b77568c959caf97467451ff65a71197872fba5f08f5cdf6fd6c37abdd6",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/pr-to-video/scripts/lib/pad-frame-duration.mjs",
+        "sha256": "733de1b9109c9db9963c6c083db54b2c045c6aba9dfadeb3188f1c456ee9b2c1",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/pr-to-video/scripts/preflight.mjs",
+        "sha256": "adc660d7dcf7d87a8c1b2eeeef3c86131b1fb8e56800076f15e30304ff7e0c48",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/pr-to-video/scripts/project-dir.mjs",
+        "sha256": "8b95c616a710b63be3226437a56e4f10251aca2834493615f05d0d0ebfb4c3eb",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/pr-to-video/scripts/workflow-guardrails.test.mjs",
+        "sha256": "09766905d3ab01c4de65d4610ff321814753a9ef6b26d89e8bf5be7c11a22b49",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/product-launch-video/scripts/assemble-index.test.mjs",
+        "sha256": "abeafe05767e290ff751d23c26c01cae6d949dba20f57bc66f4906743c80a002",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/product-launch-video/scripts/audio.test.mjs",
+        "sha256": "84768a62a8704f05045902de52691745a310242b5f51c4956b5220907da6f4df",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/product-launch-video/scripts/build-frame-subsets.test.mjs",
+        "sha256": "48fcd4c9ca00dc4f7d0f9dd9e3f600800ee76a9c6a1723ddff7df6729294663a",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/product-launch-video/scripts/captions.test.mjs",
+        "sha256": "a6852ebf8460c5056321089b18b43022125226b1be28f7869a0395b23a4b77cb",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/product-launch-video/scripts/capture-skill-guardrails.test.mjs",
+        "sha256": "98e41b2b055664fd6ea26c04b470622b4c2879f5fc1f4ed771071070eed959e5",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/product-launch-video/scripts/frame-packets.mjs",
+        "sha256": "92b2adca4113c480c89fcc5dbd5e9296f55fa925865789ee27305115e095ef7c",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/product-launch-video/scripts/frame-packets.test.mjs",
+        "sha256": "eab5356c0ecb4501931f7dd88a92524d2ca32d83d4328088c934a7cfa7fd8866",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/product-launch-video/scripts/lib/bgm-volume.mjs",
+        "sha256": "bb9debebdbd09724f6d07cd10b3982a076639664420ff8caf5f5a36ae7429a8c",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/product-launch-video/scripts/lib/captured-fonts.mjs",
+        "sha256": "b08b989519b6c45f0758fd0ab2220477bea63afed975ec88e271edbd922795c8",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/product-launch-video/scripts/lib/frame-packets-core.mjs",
+        "sha256": "1c8b10b77568c959caf97467451ff65a71197872fba5f08f5cdf6fd6c37abdd6",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/product-launch-video/scripts/lib/pad-frame-duration.mjs",
+        "sha256": "733de1b9109c9db9963c6c083db54b2c045c6aba9dfadeb3188f1c456ee9b2c1",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/product-launch-video/scripts/lib/pad-frame-duration.test.mjs",
+        "sha256": "6cf79b1ceb62e266adafbdd26b3280cf9f356ff55e996b3f529b2a644f9a17e2",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/product-launch-video/scripts/lib/tokens.test.mjs",
+        "sha256": "7f4e0f8fe3d629e7bb2df4a6a99518af395329e41e990c651a5e7ed0a0bd9fa8",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/product-launch-video/scripts/media-contract.test.mjs",
+        "sha256": "6969181b24da19a9dfc5cefae2fb2fc82bef4db9512d875954e79ece228ac0ac",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/product-launch-video/scripts/stage-assets.test.mjs",
+        "sha256": "5ae37d0197ec0fbfac2478f91f9005ac1329ac77c4372c6fb51a80d40afba101",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/product-launch-video/scripts/transitions.test.mjs",
+        "sha256": "0ede495b9922af9d834da783a31103fab188e1bd8c30e01ad5356a342d082be6",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/proxy-manager/",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/readme-pass",
+        "sha256": null,
+        "link_target": "/home/badmuriss/Documents/my-llm-kit/skills/readme-pass"
+      },
+      {
+        "status": "??",
+        "path": "skills/refero-design",
+        "sha256": null,
+        "link_target": "/home/badmuriss/.agents/community-skills/refero-design/skills/refero-design"
+      },
+      {
+        "status": "??",
+        "path": "skills/remotion-to-hyperframes/assets/test-corpus/tier-1-title-card/hf-src/compositions/",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/remotion-to-hyperframes/assets/test-corpus/tier-2-multi-scene/hf-src/compositions/",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/remotion-to-hyperframes/assets/test-corpus/tier-3-data-driven/hf-src/compositions/",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/remove-ai-marks",
+        "sha256": null,
+        "link_target": "/home/badmuriss/Documents/my-llm-kit/skills/remove-ai-marks"
+      },
+      {
+        "status": "??",
+        "path": "skills/research",
+        "sha256": null,
+        "link_target": "/home/badmuriss/Documents/my-llm-kit/skills/research"
+      },
+      {
+        "status": "??",
+        "path": "skills/rule-curator",
+        "sha256": null,
+        "link_target": "/home/badmuriss/Documents/my-llm-kit/skills/rule-curator"
+      },
+      {
+        "status": "??",
+        "path": "skills/scrapingdog",
+        "sha256": null,
+        "link_target": "/home/badmuriss/Documents/my-llm-kit/skills/scrapingdog"
+      },
+      {
+        "status": "??",
+        "path": "skills/site-audit",
+        "sha256": null,
+        "link_target": "/home/badmuriss/Documents/site-audit"
+      },
+      {
+        "status": "??",
+        "path": "skills/soymi-imagegen/",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/spec",
+        "sha256": null,
+        "link_target": "/home/badmuriss/Documents/my-llm-kit/skills/spec"
+      },
+      {
+        "status": "??",
+        "path": "skills/spec-council",
+        "sha256": null,
+        "link_target": "/home/badmuriss/Documents/spec-council"
+      },
+      {
+        "status": "??",
+        "path": "skills/stagehand-browser",
+        "sha256": null,
+        "link_target": "/home/badmuriss/Documents/my-llm-kit/skills/stagehand-browser"
+      },
+      {
+        "status": "??",
+        "path": "skills/synced/",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/talking-head-recut/media-contract.test.mjs",
+        "sha256": "a1797a8339a213fbd35adee3db91781f24cceabd86593cf3f89d0fc2721a217c",
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/thermo-nuclear-code-quality-review",
+        "sha256": null,
+        "link_target": "/home/badmuriss/Documents/my-llm-kit/skills/thermo-nuclear-code-quality-review"
+      },
+      {
+        "status": "??",
+        "path": "skills/trim-code-comments",
+        "sha256": null,
+        "link_target": "/home/badmuriss/Documents/my-llm-kit/skills/trim-code-comments"
+      },
+      {
+        "status": "??",
+        "path": "skills/typesafe-ai/",
+        "sha256": null,
+        "link_target": null
+      },
+      {
+        "status": "??",
+        "path": "skills/unslop",
+        "sha256": null,
+        "link_target": "/home/badmuriss/Documents/unslop"
+      },
+      {
+        "status": "??",
+        "path": "skills/writing",
+        "sha256": null,
+        "link_target": "/home/badmuriss/Documents/my-llm-kit/skills/writing"
+      }
+    ]
+  }
+}

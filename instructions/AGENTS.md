@@ -20,6 +20,11 @@ removing it. Respect an existing answer; do not ask again. Preserve unrelated
 changes and user-owned configuration. Do not add adapters, flags, abstractions
 or dependencies for hypothetical consumers.
 
+Keep implementation decisions traceable and ownership cohesive. Simplify real
+branches and duplicated behavior; do not move the same complexity into thin
+wrappers merely to improve a metric. Respect project complexity gates without
+raising ceilings or adding suppressions to make a change pass.
+
 ## Evidence and visibility
 
 Use the smallest check that can catch a realistic failure. Add a regression for a
@@ -35,11 +40,12 @@ platform is unavailable, report that evidence as unobserved. A build is not
 visual evidence.
 
 Use sources for material external facts and volatile values; cite the source and
-access date. Prefer repository evidence for local questions. For known public URLs, use configured Scrapinho page acquisition; after a bounded
-failure or missing access, disclose the reason and use Firecrawl, then host tools.
-Search and specialized methods without verified Scrapinho parity still use
-ScrapingDog when keyed, then Firecrawl and host search after a bounded failure or
-missing key. Scientific literature starts with the
+access date. Prefer repository evidence for local questions. Use configured
+Scrapinho for generic web discovery and public-page acquisition, following the
+research skill's capability, scope and refusal policy. Do not silently fall back
+to the removed generic scraper. Specialized methods without verified parity
+retain their existing providers; do not substitute generic search for them.
+Scientific literature starts with the
 free Firecrawl Research Index when available. Use `research` when available for a research
 workflow, not as a prerequisite for every local fact or number. Convert documents
 when extraction is needed and check reading order and tables before analysis.
@@ -56,11 +62,11 @@ creating it. Honor the user's explicit placement choice.
 
 Use one writer unless independent tasks justify delegation. Choose the cheapest
 available model and effort sufficient for the role; consult the task's routing
-policy for both direct dispatch and graph work. OMP role aliases are assigned in
-`~/.omp/agent/config.yml`, so dispatch with `@slow`, `@plan`, `@smol` or a
-concrete `provider/model:effort` selector, and check the resolved model before
-accepting a dispatch. If the host cannot honor the selection, report the
-limitation instead of silently substituting a model.
+policy for both direct dispatch and graph work. Read the active harness's native
+configuration for available roles, models and effort. Use its supported dispatch
+interface and check the resolved selection before accepting a dispatch. If the
+host cannot honor the selection, report the limitation instead of silently
+substituting a model.
 Do not raise effort automatically after failure.
 
 Never overlap the same build or typecheck in one worktree. Reuse development
@@ -72,56 +78,67 @@ For unusually high fan-out or overlapping heavy work on Linux, use
 `agent-resource-guard` if installed and honor a denial. It is optional; other
 systems use host controls. Reduce concurrency when observed capacity requires it.
 
-## Harness
+## Harness and capabilities
 
-`omp` (Oh My Pi) is the primary coding agent and runs on the ChatGPT/Codex
-subscription models. Keep one configuration surface: OMP-native files under
-`~/.omp/agent/`.
+Keep shared instructions and reusable skills independent of the coding agent.
+OMP is the user's current preference; it may change. A switch of harness must not
+require rewriting project rules or domain knowledge.
 
-| What | Where |
-|---|---|
-| Models, roles, effort | `~/.omp/agent/config.yml` (`modelRoles`, `retry.fallbackChains`) |
-| Extra model ids | `~/.omp/agent/models.yml` |
-| Skills | `~/.agents/skills/<name>/SKILL.md`, shared by every host |
-| Instructions | `~/.agents/AGENTS.md` (this file, symlinked into each host) |
-| MCP servers | `~/.omp/agent/mcp.json` |
-| Hooks | `~/.omp/agent/hooks/{pre,post}/*.ts` |
-| Subagents | `~/.omp/agent/agents/*.md` |
+Shared skills live at `~/.agents/skills/<name>/SKILL.md`; shared instructions live
+at `~/.agents/AGENTS.md`. Host instruction aliases use `AGENTS.md`. Keep models,
+roles, effort, credentials, MCP servers and hooks in the active harness's native
+configuration. Preserve explicit user choices; do not copy one host's configuration
+into another or invent a second configuration surface.
 
-Use GPT-6 Sol for ordinary work, GPT-6 Luna for mechanical execution and GPT-6
-Astra for difficult reasoning. These are starting recommendations, not a second
-configuration surface: read `modelRoles` for the current selection and preserve
-explicit user changes. Configured chat roles and fallbacks stay on
-`openai-codex/*`. Do not route model inference through OpenRouter or other
-pay-as-you-go endpoints, including optional skill scripts, without explicit
-authorization for that exception. Disabling an OMP provider does not block
-network calls made by external scripts.
+Choose tools by the capability and evidence the task requires, using what is
+available in the current session. Generic skills must not require OMP, Codex or
+Claude tools. Host-specific integrations remain conditional on that host and must
+state their dependency. Do not launch another coding agent merely to obtain a tool.
 
-| Role | Model | Use |
-|---|---|---|
-| `default`, `task` | GPT-6 Sol medium, unless explicitly changed | interactive work, bounded implementation |
-| `plan` | GPT-6 Sol high | planning, multi-file design |
-| `slow` | GPT-6 Astra medium | architecture, hard debugging, coordination |
-| `smol` | GPT-6 Luna medium | mechanical edits, extraction, check execution |
-| `vision` | GPT-6 Sol medium | screenshots, rendered UI, image reading |
-| `tiny`, `commit` | GPT-6 Luna low | titles, commit messages, classification |
-| `image` | `gpt-image-1` | `generate_image` output |
+Prefer the configured subscription-backed inference. Do not route model inference
+through OpenRouter or other pay-as-you-go endpoints, including optional skill
+scripts, without explicit authorization for that exception. A disabled host
+provider does not prevent external scripts from making network calls. Model
+availability follows the authenticated account, not manually registered names.
+Use the lowest sufficient effort; raise model cost only for a concrete task need.
 
-Effort follows complexity: Luna low or medium for mechanical work, Sol medium for
-ordinary implementation, Sol high or Astra medium when the task is ambiguous or
-costly to get wrong; xhigh and max only with a demonstrated benefit. Astra bills
-about five times Sol and a hundred times Luna per token, so it earns its place
-through fewer attempts, not habit.
+## Cloudflare CLI - cf - v20260928
 
-`deep-reasoner` (`@slow`, clean context, reasoning-heavy phases) and `fast-worker`
-(`@smol`, mechanical work) are the dispatchable subagents, alongside the bundled
-`scout`, `reviewer`, `security-reviewer`, `sonic` and `task`. Image generation is
-available through the `generate_image` tool.
+`cf` is Cloudflare's current CLI and covers the whole Cloudflare platform. Prefer it over Wrangler: create projects with `cf init`, develop with `cf dev`, deploy with `cf deploy`, and manage account resources with `cf <product> …` (for example `cf d1 list`).
+
+Wrangler is only for projects that already use it – a `wrangler.jsonc`, `wrangler.json` or `wrangler.toml` file – or when the user asks for it. Keep using Wrangler in those projects unless asked to migrate, and use `cf migrate` in this case.
+
+`cf` commands differ from Wrangler's; check `cf --help` or `cf cli search <what you want to do>` instead of guessing. If a `cf` command fails in a project that doesn't use Wrangler, don't fall back to Wrangler (including `npx wrangler`) without offering to report it.
+
+### Workers development stack
+
+The user's usual stack is Cloudflare Workers with React, TanStack or Next.js.
+For new JavaScript/TypeScript Workers, including backend APIs, prefer `cf` with
+the official Cloudflare Vite Plugin for development and builds. Use compatible
+Vite and framework versions, HMR and local bindings in the Workers runtime;
+prefer Cloudflare's Vitest integration when testing Worker runtime behavior.
+
+Check the framework's current Cloudflare deployment path before changing an
+existing app. Next.js/OpenNext and vinext require separate compatibility checks;
+do not replace the framework or its adapter as an incidental CLI update.
+Having a Vite frontend does not mean the Worker already uses the Cloudflare
+Vite Plugin. `cf migrate` can retain Wrangler as its bundler, so distinguish
+CLI/configuration migration from adopting Vite for the Worker.
+
+Evaluate existing projects with `cf migrate --dry-run` first. Preserve build
+hooks, prerendered pages and SEO, bindings, migrations, queues, scheduled
+handlers and deployment behavior. Recommend migration when there is a concrete
+benefit and a supported path; verify development, builds and affected behavior
+before replacing the working deployment flow.
+
+Sources checked 2026-09-29: [Cloudflare Vite Plugin](https://developers.cloudflare.com/workers/vite-plugin/),
+[Next.js on Workers](https://developers.cloudflare.com/workers/framework-guides/web-apps/nextjs/).
 
 ## Writing and Git
 
-Use conventional commits without agent names or co-author trailers. Use `writing`
-for documentation, commits and PR descriptions. When installed, use `unslop` only
+Use conventional commits without agent names or co-author trailers. Documentation,
+commits and PR descriptions lead with the concrete change, relevant evidence and
+limitations, using plain language. When installed, use `unslop` only
 for requested standalone prose or an explicit rewrite/audit of prose, never ordinary responses,
 status, implementation summaries or code review. Preserve facts when rewriting.
 When using `unslop` for Portuguese, load its pt-br layer. Without that skill,

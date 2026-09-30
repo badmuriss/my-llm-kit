@@ -1,0 +1,382 @@
+{
+  "count": 94,
+  "items": [
+    {
+      "name": "agent-browser",
+      "path": "/home/badmuriss/.agents/skills/agent-browser/SKILL.md"
+    },
+    {
+      "name": "agents-sdk",
+      "path": "/home/badmuriss/.agents/skills/agents-sdk/SKILL.md"
+    },
+    {
+      "name": "cloudflare",
+      "path": "/home/badmuriss/.agents/skills/cloudflare/SKILL.md"
+    },
+    {
+      "name": "cloudflare-email-service",
+      "path": "/home/badmuriss/.agents/skills/cloudflare-email-service/SKILL.md"
+    },
+    {
+      "name": "coding-guidelines",
+      "path": "/home/badmuriss/.agents/skills/coding-guidelines/SKILL.md"
+    },
+    {
+      "name": "computer-use",
+      "path": "/home/badmuriss/.agents/skills/computer-use/SKILL.md"
+    },
+    {
+      "name": "content-strategy",
+      "path": "/home/badmuriss/.agents/skills/content-strategy/SKILL.md"
+    },
+    {
+      "name": "docx",
+      "path": "/home/badmuriss/.agents/skills/docx/SKILL.md"
+    },
+    {
+      "name": "drawio-skill",
+      "path": "/home/badmuriss/.agents/skills/drawio-skill/SKILL.md"
+    },
+    {
+      "name": "durable-objects",
+      "path": "/home/badmuriss/.agents/skills/durable-objects/SKILL.md"
+    },
+    {
+      "name": "embedded-captions",
+      "path": "/home/badmuriss/.agents/skills/embedded-captions/SKILL.md"
+    },
+    {
+      "name": "emil-design-eng",
+      "path": "/home/badmuriss/.agents/skills/emil-design-eng/SKILL.md"
+    },
+    {
+      "name": "faceless-explainer",
+      "path": "/home/badmuriss/.agents/skills/faceless-explainer/SKILL.md"
+    },
+    {
+      "name": "find-animation-opportunities",
+      "path": "/home/badmuriss/.agents/skills/find-animation-opportunities/SKILL.md"
+    },
+    {
+      "name": "find-skills",
+      "path": "/home/badmuriss/.agents/skills/find-skills/SKILL.md"
+    },
+    {
+      "name": "firecrawl",
+      "path": "/home/badmuriss/.agents/skills/firecrawl/SKILL.md"
+    },
+    {
+      "name": "firecrawl-agent",
+      "path": "/home/badmuriss/.agents/skills/firecrawl-agent/SKILL.md"
+    },
+    {
+      "name": "firecrawl-crawl",
+      "path": "/home/badmuriss/.agents/skills/firecrawl-crawl/SKILL.md"
+    },
+    {
+      "name": "firecrawl-developer-index",
+      "path": "/home/badmuriss/.agents/skills/firecrawl-developer-index/SKILL.md"
+    },
+    {
+      "name": "firecrawl-download",
+      "path": "/home/badmuriss/.agents/skills/firecrawl-download/SKILL.md"
+    },
+    {
+      "name": "firecrawl-instruct",
+      "path": "/home/badmuriss/.agents/skills/firecrawl-instruct/SKILL.md"
+    },
+    {
+      "name": "firecrawl-interact",
+      "path": "/home/badmuriss/.agents/skills/firecrawl-interact/SKILL.md"
+    },
+    {
+      "name": "firecrawl-map",
+      "path": "/home/badmuriss/.agents/skills/firecrawl-map/SKILL.md"
+    },
+    {
+      "name": "firecrawl-monitor",
+      "path": "/home/badmuriss/.agents/skills/firecrawl-monitor/SKILL.md"
+    },
+    {
+      "name": "firecrawl-parse",
+      "path": "/home/badmuriss/.agents/skills/firecrawl-parse/SKILL.md"
+    },
+    {
+      "name": "firecrawl-research-index",
+      "path": "/home/badmuriss/.agents/skills/firecrawl-research-index/SKILL.md"
+    },
+    {
+      "name": "firecrawl-scrape",
+      "path": "/home/badmuriss/.agents/skills/firecrawl-scrape/SKILL.md"
+    },
+    {
+      "name": "firecrawl-search",
+      "path": "/home/badmuriss/.agents/skills/firecrawl-search/SKILL.md"
+    },
+    {
+      "name": "frontend-slides",
+      "path": "/home/badmuriss/.agents/skills/frontend-slides/SKILL.md"
+    },
+    {
+      "name": "frontend-visual-validation",
+      "path": "/home/badmuriss/.agents/skills/frontend-visual-validation/SKILL.md"
+    },
+    {
+      "name": "general-video",
+      "path": "/home/badmuriss/.agents/skills/general-video/SKILL.md"
+    },
+    {
+      "name": "gerar-criativos",
+      "path": "/home/badmuriss/.agents/skills/gerar-criativos/SKILL.md"
+    },
+    {
+      "name": "grill-me",
+      "path": "/home/badmuriss/.agents/skills/grill-me/SKILL.md"
+    },
+    {
+      "name": "grill-with-docs",
+      "path": "/home/badmuriss/.agents/skills/grill-with-docs/SKILL.md"
+    },
+    {
+      "name": "hyperframes",
+      "path": "/home/badmuriss/.agents/skills/hyperframes/SKILL.md"
+    },
+    {
+      "name": "hyperframes-animation",
+      "path": "/home/badmuriss/.agents/skills/hyperframes-animation/SKILL.md"
+    },
+    {
+      "name": "hyperframes-audio",
+      "path": "/home/badmuriss/.agents/skills/hyperframes-audio/SKILL.md"
+    },
+    {
+      "name": "hyperframes-cli",
+      "path": "/home/badmuriss/.agents/skills/hyperframes-cli/SKILL.md"
+    },
+    {
+      "name": "hyperframes-core",
+      "path": "/home/badmuriss/.agents/skills/hyperframes-core/SKILL.md"
+    },
+    {
+      "name": "hyperframes-creative",
+      "path": "/home/badmuriss/.agents/skills/hyperframes-creative/SKILL.md"
+    },
+    {
+      "name": "hyperframes-keyframes",
+      "path": "/home/badmuriss/.agents/skills/hyperframes-keyframes/SKILL.md"
+    },
+    {
+      "name": "hyperframes-registry",
+      "path": "/home/badmuriss/.agents/skills/hyperframes-registry/SKILL.md"
+    },
+    {
+      "name": "hyperframes-studio",
+      "path": "/home/badmuriss/.agents/skills/hyperframes-studio/SKILL.md"
+    },
+    {
+      "name": "image-gen",
+      "path": "/home/badmuriss/.agents/skills/image-gen/SKILL.md"
+    },
+    {
+      "name": "impl",
+      "path": "/home/badmuriss/.agents/skills/impl/SKILL.md"
+    },
+    {
+      "name": "improve",
+      "path": "/home/badmuriss/.agents/skills/improve/SKILL.md"
+    },
+    {
+      "name": "improve-animations",
+      "path": "/home/badmuriss/.agents/skills/improve-animations/SKILL.md"
+    },
+    {
+      "name": "incredibly-pretty-websites",
+      "path": "/home/badmuriss/.agents/skills/incredibly-pretty-websites/SKILL.md"
+    },
+    {
+      "name": "ingest",
+      "path": "/home/badmuriss/.agents/skills/ingest/SKILL.md"
+    },
+    {
+      "name": "job-application-automation",
+      "path": "/home/badmuriss/.agents/skills/job-application-automation/SKILL.md"
+    },
+    {
+      "name": "law-irac",
+      "path": "/home/badmuriss/.agents/skills/law-irac/SKILL.md"
+    },
+    {
+      "name": "lgpd-brasil",
+      "path": "/home/badmuriss/.agents/skills/lgpd-brasil/SKILL.md"
+    },
+    {
+      "name": "media-use",
+      "path": "/home/badmuriss/.agents/skills/media-use/SKILL.md"
+    },
+    {
+      "name": "motion-graphics",
+      "path": "/home/badmuriss/.agents/skills/motion-graphics/SKILL.md"
+    },
+    {
+      "name": "music-to-video",
+      "path": "/home/badmuriss/.agents/skills/music-to-video/SKILL.md"
+    },
+    {
+      "name": "notebooklm",
+      "path": "/home/badmuriss/.agents/skills/notebooklm/SKILL.md"
+    },
+    {
+      "name": "on-page-seo-auditor",
+      "path": "/home/badmuriss/.agents/skills/on-page-seo-auditor/SKILL.md"
+    },
+    {
+      "name": "orca-cli",
+      "path": "/home/badmuriss/.agents/skills/orca-cli/SKILL.md"
+    },
+    {
+      "name": "orchestration",
+      "path": "/home/badmuriss/.agents/skills/orchestration/SKILL.md"
+    },
+    {
+      "name": "pptx",
+      "path": "/home/badmuriss/.agents/skills/pptx/SKILL.md"
+    },
+    {
+      "name": "pr-to-video",
+      "path": "/home/badmuriss/.agents/skills/pr-to-video/SKILL.md"
+    },
+    {
+      "name": "product-launch-video",
+      "path": "/home/badmuriss/.agents/skills/product-launch-video/SKILL.md"
+    },
+    {
+      "name": "proxy-manager",
+      "path": "/home/badmuriss/.agents/skills/proxy-manager/SKILL.md"
+    },
+    {
+      "name": "react",
+      "path": "/home/badmuriss/.agents/skills/react/SKILL.md"
+    },
+    {
+      "name": "readme-pass",
+      "path": "/home/badmuriss/.agents/skills/readme-pass/SKILL.md"
+    },
+    {
+      "name": "remotion-best-practices",
+      "path": "/home/badmuriss/.agents/skills/remotion-best-practices/SKILL.md"
+    },
+    {
+      "name": "remotion-to-hyperframes",
+      "path": "/home/badmuriss/.agents/skills/remotion-to-hyperframes/SKILL.md"
+    },
+    {
+      "name": "remove-ai-marks",
+      "path": "/home/badmuriss/.agents/skills/remove-ai-marks/SKILL.md"
+    },
+    {
+      "name": "research",
+      "path": "/home/badmuriss/.agents/skills/research/SKILL.md"
+    },
+    {
+      "name": "review-animations",
+      "path": "/home/badmuriss/.agents/skills/review-animations/SKILL.md"
+    },
+    {
+      "name": "review-changes",
+      "path": "/home/badmuriss/.agents/skills/review-changes/SKILL.md"
+    },
+    {
+      "name": "rule-curator",
+      "path": "/home/badmuriss/.agents/skills/rule-curator/SKILL.md"
+    },
+    {
+      "name": "sandbox-sdk",
+      "path": "/home/badmuriss/.agents/skills/sandbox-sdk/SKILL.md"
+    },
+    {
+      "name": "scrapingdog",
+      "path": "/home/badmuriss/.agents/skills/scrapingdog/SKILL.md"
+    },
+    {
+      "name": "site-audit",
+      "path": "/home/badmuriss/.agents/skills/site-audit/SKILL.md"
+    },
+    {
+      "name": "skill-creator",
+      "path": "/home/badmuriss/.agents/skills/skill-creator/SKILL.md"
+    },
+    {
+      "name": "slideshow",
+      "path": "/home/badmuriss/.agents/skills/slideshow/SKILL.md"
+    },
+    {
+      "name": "software-engineering",
+      "path": "/home/badmuriss/.agents/skills/software-engineering/SKILL.md"
+    },
+    {
+      "name": "soymi-imagegen",
+      "path": "/home/badmuriss/.agents/skills/soymi-imagegen/SKILL.md"
+    },
+    {
+      "name": "spec",
+      "path": "/home/badmuriss/.agents/skills/spec/SKILL.md"
+    },
+    {
+      "name": "spec-council",
+      "path": "/home/badmuriss/.agents/skills/spec-council/SKILL.md"
+    },
+    {
+      "name": "stagehand-browser",
+      "path": "/home/badmuriss/.agents/skills/stagehand-browser/SKILL.md"
+    },
+    {
+      "name": "talking-head-recut",
+      "path": "/home/badmuriss/.agents/skills/talking-head-recut/SKILL.md"
+    },
+    {
+      "name": "thermo-nuclear-code-quality-review",
+      "path": "/home/badmuriss/.agents/skills/thermo-nuclear-code-quality-review/SKILL.md"
+    },
+    {
+      "name": "trim-code-comments",
+      "path": "/home/badmuriss/.agents/skills/trim-code-comments/SKILL.md"
+    },
+    {
+      "name": "typesafe-ai",
+      "path": "/home/badmuriss/.agents/skills/typesafe-ai/SKILL.md"
+    },
+    {
+      "name": "typescript",
+      "path": "/home/badmuriss/.agents/skills/typescript/SKILL.md"
+    },
+    {
+      "name": "unslop",
+      "path": "/home/badmuriss/.agents/skills/unslop/SKILL.md"
+    },
+    {
+      "name": "vercel-react-best-practices",
+      "path": "/home/badmuriss/.agents/skills/vercel-react-best-practices/SKILL.md"
+    },
+    {
+      "name": "web-perf",
+      "path": "/home/badmuriss/.agents/skills/web-perf/SKILL.md"
+    },
+    {
+      "name": "workers-best-practices",
+      "path": "/home/badmuriss/.agents/skills/workers-best-practices/SKILL.md"
+    },
+    {
+      "name": "wrangler",
+      "path": "/home/badmuriss/.agents/skills/wrangler/SKILL.md"
+    },
+    {
+      "name": "writing",
+      "path": "/home/badmuriss/.agents/skills/writing/SKILL.md"
+    },
+    {
+      "name": "x-article-publisher",
+      "path": "/home/badmuriss/.agents/skills/x-article-publisher/SKILL.md"
+    }
+  ],
+  "warnings": []
+}

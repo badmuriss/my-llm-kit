@@ -37,6 +37,25 @@ Mermaid flow/sequence diagrams in the canonical spec when they explain the
 change; render them into the same offline PDF as the decisions and checks.
 Distinguish proposals from execution evidence. Trivial edits need no artifact.
 
-Do not invoke `grill-me`, a council or a whole-corpus audit unless requested.
-When the plan is ready, provide the appropriate `$impl` invocation. Do not demand
-another approval when the user already authorized implementation of this scope.
+## Validate the plan before handoff
+
+For a requested adversarial review, or a substantial plan involving migration,
+retirement, changed contracts or independent integration risks, use the bounded
+[plan validation](references/plan-validation.md) workflow before declaring the
+plan ready. Use read-only subagents when delegation is allowed and independent
+review can add evidence; skip delegation for trivial, single-path edits. This is
+plan validation, not permission to implement, run live experiments or create a
+new orchestration graph. Respect explicit model, budget and placement choices.
+
+Keep requirements, findings, decisions and remaining proof obligations in the
+existing spec. Reviewer agreement does not prove completeness; an unresolved
+required capability must remain visible in the handoff.
+
+Do not invoke `grill-me`, a separate council or a whole-corpus audit merely
+because it is installed. Reuse a requested council that already covers these
+risks instead of spawning another review.
+When an implementation plan is ready, provide the appropriate `$impl` invocation
+as a handoff, not as execution authority. For research-only requests, report the
+design and remaining proof obligations without implying implementation starts.
+Do not demand another approval when the user already authorized implementation
+of this scope.

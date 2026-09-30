@@ -1,20 +1,26 @@
 ---
 name: computer-use
 description: >-
-  Inspect and operate local browser or desktop interfaces. Prefer Jev Ultrafast
-  for supported browser-only goals when its required credentials are available;
-  use Orca for desktop apps, unsupported browser interactions, screenshots, and
-  accessibility-level control.
+  Inspect and operate browser or desktop interfaces with an available backend.
+  Preserve existing browser suites; use local Stagehand scripts for deterministic
+  Chromium and Orca for supported desktop surfaces. Jev is an optional paid backend.
 ---
 
 # Computer Use
 
-Route each task to Jev Ultrafast or Orca. Jev is the preferred browser backend when it is
-ready and the task fits its supported action space. Orca remains the general desktop and
-browser accessibility backend; its full, version-matched guide is served by the `orca`
-binary so it cannot drift from the commands that will run.
+Choose an available backend by the required surface, authenticated context and
+verification contract. Preserve existing Playwright/browser suites. Jev is optional
+for narrow goals when the user has authorized that inference service. For deterministic Chromium
+automation, extraction, screenshots and assertions, read `stagehand-browser` and use
+its local tools when installed. Stagehand needs no second model or paid API. Preserve
+existing application suites when their assertions or browser engines are unsupported.
+Use Orca for desktop and embedded-browser work. Do not replace the user's authenticated
+context with a fresh login silently.
 
-## Prefer Jev for supported browser goals
+## Optional Jev for authorized browser goals
+
+A configured key is not by itself authorization to incur costs. Respect the user's
+existing authorization; do not run paid probes under subscription-only constraints.
 
 Reuse a working local Jev installation when available. For the portable kit path,
 resolve this installed skill directory and run its bundled runner with `uv` (Python

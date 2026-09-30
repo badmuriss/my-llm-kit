@@ -86,7 +86,7 @@ def coordinator_capsule_invocation(capsule_path: str | Path) -> str:
     """Return the exact manual fresh-session invocation for a capsule."""
 
     path = _repository_path_text(capsule_path, "coordinator capsule path")
-    return f"$impl --coordinator-capsule {path}"
+    return f"$agent-graph --coordinator-capsule {path}"
 
 
 def _repository_path_text(value: str | Path, context: str) -> str:

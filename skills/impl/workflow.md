@@ -44,8 +44,8 @@ decisions, evidence and pending work instead of replaying the whole transcript.
 ## Browser work
 
 For interactive web tasks, use the installed `computer-use` skill when available.
-It selects Jev for supported browser actions and Orca for desktop or unsupported
-interactions. Reuse a working installation; resolve bundled scripts from that
+It prefers available, authorized Jev for supported goals, local Stagehand for
+deterministic Chromium checks, and Orca for desktop. Resolve bundled scripts from that
 skill directory, not the consumer checkout. Keep outcome verification independent
 of the model's completion decision. In graph mode, preserve the active driver's
 browser ownership and cleanup contract; a browser backend is not a second

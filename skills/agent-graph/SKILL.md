@@ -30,7 +30,24 @@ and cleanup plan match the OpenSpec task graph before creating run artifacts.
 
 Choose the mode from task evidence. Resolve Host, Orca, or future adapter
 capabilities only after selection. Never use a provider, model, Canvas, or
-worker count as a mode signal. `grill-me` remains explicit and opt-in.
+worker count as a mode signal. A requested interview is a conversation, not a
+required planning skill or an automatic graph phase.
+
+## Optional planning and execution resources
+
+This entry owns the graph-specific [planning protocol](../spec/references/graph-planning.md)
+and [execution protocol](../impl/references/graph-execution.md). The former spec/impl
+entrypoints are retired. Their support directories remain at existing paths because
+the routing-policy seed, frozen runtime and learning contracts use those paths.
+Do not create another graph, ledger or scheduler to access them.
+
+For a requested PDF/HTML visual brief, use the retained
+[renderer guide](../spec/references/visual-brief.md). Resolve the installed graph
+directory to its real source path first; the sibling spec/scripts renderer belongs
+to this optional package, not to the consumer project. PDF output is not required
+for ordinary planning. Read the legacy [planning](../spec/workflow.md) or
+[execution](../impl/workflow.md) notes only when their resource details are needed;
+shared AGENTS.md and current user scope govern the common workflow.
 
 ## Core contract
 
@@ -83,7 +100,14 @@ read [Jev integration](references/jev-integration.md) when those capabilities ar
 
 ## Harness boundary
 
-`impl` freezes one control runtime and claims the coordinator capsule. Use the
+For `--coordinator-capsule <path>`, read the existing capsule and use its pinned
+runtime to claim the coordinator and resume the run, following
+[graph execution](../impl/references/graph-execution.md). Preserve the capsule's
+workspace, identity and generation. Never bootstrap another run for a handoff.
+Older frozen runtimes may still name the retired impl skill in their handoff text;
+read their capsule through this entry without changing the frozen runtime or journal.
+
+Graph bootstrap freezes one control runtime and claims the coordinator capsule. Use the
 current session when it can own integration and retain the needed context; use a
 new visible session when the task or host requires that handoff. Coordinator
 identity and generation remain mandatory in either case. Read

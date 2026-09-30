@@ -193,6 +193,30 @@ function Install-ManagedFile {
     }
     Copy-Item -Force -LiteralPath $Source -Destination $Target
 }
+function Install-WebshareFetch {
+    $source = Join-Path $RepoDirectory "scripts\webshare_fetch.py"
+    $target = Join-Path $HomeDirectory ".local\bin\webshare-fetch.cmd"
+    if (-not (Test-Path -LiteralPath $source)) {
+        throw "Webshare helper is missing: $source"
+    }
+    $scriptPath = [IO.Path]::GetFullPath($source)
+    $content = "@echo off`r`nsetlocal`r`nwhere py >nul 2>&1`r`nif errorlevel 1 goto use_python`r`npy -3 `"$scriptPath`" %*`r`nexit /b %errorlevel%`r`n:use_python`r`npython `"$scriptPath`" %*`r`nexit /b %errorlevel%`r`n"
+    if (Test-Path -LiteralPath $target) {
+        $sameContent = $content -eq (Get-Content -Raw -LiteralPath $target)
+        if ($sameContent) {
+            Write-Host "  webshare-fetch already installed at $target"
+            return
+        }
+        throw "$target exists and is not managed by my-llm-kit; refusing to replace it"
+    }
+    if ($DryRun) {
+        Write-Host "  [dry-run] write $target -> $source"
+        return
+    }
+    $parent = Split-Path -Parent $target
+    New-Item -ItemType Directory -Force -Path $parent | Out-Null
+    Set-Content -LiteralPath $target -Value $content -NoNewline
+}
 
 if ((Test-Command "claude") -or (Test-Path (Join-Path $HomeDirectory ".claude"))) {
     $HostSkillDirectories += (Join-Path $HomeDirectory ".claude\skills")
@@ -243,6 +267,9 @@ Invoke-Step "check binaries and manifest" {
         Write-Host "  no agent host binary found; skills will still install"
     }
 }
+Invoke-Step "webshare-fetch helper" -FullOnly {
+    Install-WebshareFetch
+}
 
 Invoke-Step "pip markitdown+paper-search" -FullOnly {
     if ($DryRun) {
@@ -272,7 +299,7 @@ function Configure-OpenCodeMcp {
 
 Invoke-Step "register MCP paper-search" -FullOnly {
     if (Test-Command "claude") {
-        $listing = (& claude mcp list 2>$null | Out-String)
+        $listing = if ($DryRun) { "" } else { (& claude mcp list 2>$null | Out-String) }
         if ($listing -match "(?m)^paper-search") {
             Write-Host "  claude: paper-search already registered, skipping"
         }
@@ -284,7 +311,7 @@ Invoke-Step "register MCP paper-search" -FullOnly {
         }
     }
     if (Test-Command "codex") {
-        $details = (& codex mcp get paper-search 2>$null | Out-String)
+        $details = if ($DryRun) { "" } else { (& codex mcp get paper-search 2>$null | Out-String) }
         if ($details.Contains("command: paper-search-mcp") -and $details.Contains("enabled: true")) {
             Write-Host "  codex: paper-search already registered and enabled, skipping"
         }
@@ -312,9 +339,14 @@ Invoke-Step "install MCP scrapingdog" -FullOnly {
 }
 
 Invoke-Step "register MCP scrapingdog" -FullOnly {
-    $entrypoint = Join-Path ((& npm root --global | Out-String).Trim()) "scrapingdog-mcp\dist\index.js"
+    $entrypoint = if ($DryRun) {
+        "<npm-global>/scrapingdog-mcp/dist/index.js"
+    }
+    else {
+        Join-Path ((& npm root --global | Out-String).Trim()) "scrapingdog-mcp\dist\index.js"
+    }
     if (Test-Command "claude") {
-        $details = (& claude mcp get scrapingdog 2>$null | Out-String)
+        $details = if ($DryRun) { "" } else { (& claude mcp get scrapingdog 2>$null | Out-String) }
         if ($details.Contains($entrypoint)) {
             Write-Host "  claude: scrapingdog already points to the pinned build, skipping"
         }
@@ -332,7 +364,7 @@ Invoke-Step "register MCP scrapingdog" -FullOnly {
         }
     }
     if (Test-Command "codex") {
-        $details = (& codex mcp get scrapingdog 2>$null | Out-String)
+        $details = if ($DryRun) { "" } else { (& codex mcp get scrapingdog 2>$null | Out-String) }
         if ($details.Contains($entrypoint) -and $details.Contains("enabled: true")) {
             Write-Host "  codex: scrapingdog already points to the pinned build and is enabled, skipping"
         }
@@ -405,7 +437,7 @@ Invoke-Step "preflight paper-search" -FullOnly {
     Write-Host "  paper-search query returned CodePlan"
 }
 
-Invoke-Step "graph runtime dependency" {
+Invoke-Step "graph runtime dependency" -FullOnly {
     $pythonCommand = if (Test-Command "py") { "py" } else { "python" }
     & $pythonCommand -c "from jsonschema import Draft202012Validator" 2>$null
     if ($LASTEXITCODE -ne 0) {
@@ -430,7 +462,16 @@ Invoke-Step "vendored skills" {
     }
 }
 
-Invoke-Step "installed graph runtime" {
+Invoke-Step "Stagehand browser" -FullOnly {
+    if ($DryRun) {
+        Write-Host "  [dry-run] install pinned Stagehand SDK; OMP extension only for an existing host (Node >=22.18, existing Chrome)"
+    }
+    else {
+        Invoke-Native "node" @((Join-Path $SkillsRoot "stagehand-browser\tools\install.mjs"), "--home", $HomeDirectory)
+    }
+}
+
+Invoke-Step "installed graph runtime" -FullOnly {
     if ($DryRun) {
         Write-Host "  [dry-run] verify installed graph runtime imports and CLI"
     }
@@ -488,20 +529,18 @@ function Test-FirecrawlResearch {
 
 Invoke-Step "firecrawl CLI and skills" -FullOnly {
     $researchSkill = Join-Path $SkillsRoot "firecrawl-research-index\SKILL.md"
+    if ($DryRun) {
+        Write-Host "  [dry-run] verify firecrawl research; install firecrawl-cli if missing or incompatible"
+        if (-not (Test-Path -LiteralPath $researchSkill)) {
+            Write-Host "  [dry-run] firecrawl setup research-index --global --yes"
+        }
+        return
+    }
     $needsCli = -not (Test-FirecrawlResearch)
     $needsSkills = -not (Test-Path -LiteralPath $researchSkill)
 
     if (-not $needsCli -and -not $needsSkills) {
         Write-Host "  firecrawl research command and skill already present, skipping"
-        return
-    }
-    if ($DryRun) {
-        if ($needsCli) {
-            Write-Host "  [dry-run] npm install -g firecrawl-cli"
-        }
-        if ($needsSkills) {
-            Write-Host "  [dry-run] firecrawl setup core --global --yes"
-        }
         return
     }
     if ($needsCli) {
@@ -511,7 +550,7 @@ Invoke-Step "firecrawl CLI and skills" -FullOnly {
         throw "installed firecrawl CLI does not expose the research command"
     }
     if ($needsSkills) {
-        Invoke-Native "firecrawl" @("setup", "core", "--global", "--yes")
+        Invoke-Native "firecrawl" @("setup", "research-index", "--global", "--yes")
     }
     if (-not (Test-Path -LiteralPath $researchSkill)) {
         throw "firecrawl research skill is missing after setup"
@@ -547,14 +586,40 @@ Invoke-Step "fan out every skill" -FullOnly {
 Invoke-Step "AGENTS.md" {
     $source = Join-Path $RepoDirectory "instructions\AGENTS.md"
     $shared = Join-Path $HomeDirectory ".agents\AGENTS.md"
+    $legacy = Join-Path $HomeDirectory ".claude\CLAUDE.md"
+    $retireLegacy = $false
+    if (Test-Path -LiteralPath $legacy -PathType Leaf) {
+        $legacyContent = [IO.File]::ReadAllText($legacy)
+        $retireLegacy = $legacyContent.Length -eq 0 -or $legacyContent -eq [IO.File]::ReadAllText($source)
+        if (Test-Path -LiteralPath $shared -PathType Leaf) {
+            $retireLegacy = $retireLegacy -or $legacyContent -eq [IO.File]::ReadAllText($shared)
+        }
+    }
     Install-ManagedFile -Source $source -Target $shared
     foreach ($alias in @(
-        (Join-Path $HomeDirectory ".claude\CLAUDE.md"),
-        (Join-Path $HomeDirectory ".codex\AGENTS.md")
+        (Join-Path $HomeDirectory ".claude\AGENTS.md"),
+        (Join-Path $HomeDirectory ".codex\AGENTS.md"),
+        (Join-Path $HomeDirectory ".omp\agent\AGENTS.md")
     )) {
         if (Test-Path -LiteralPath (Split-Path -Parent $alias)) {
             Install-ManagedFile -Source $shared -Target $alias
         }
+    }
+    if ($retireLegacy) {
+        if ($DryRun) {
+            Write-Host "  [dry-run] remove redundant $legacy"
+        }
+        else {
+            $claudeInstructions = Join-Path $HomeDirectory ".claude\AGENTS.md"
+            if ([IO.File]::ReadAllText($shared) -ne [IO.File]::ReadAllText($claudeInstructions)) {
+                throw "Claude AGENTS.md did not install; preserving $legacy"
+            }
+            Remove-Item -Force -LiteralPath $legacy
+            Write-Host "  removed redundant $legacy"
+        }
+    }
+    elseif (Test-Path -LiteralPath $legacy) {
+        Write-Host "  $legacy has user-owned instructions; preserved for explicit migration"
     }
 }
 
@@ -563,7 +628,7 @@ function Install-PluginsForHost {
         [Parameter(Mandatory = $true)][string]$HostName,
         [Parameter(Mandatory = $true)][string]$InstallVerb
     )
-    $listing = (& $HostName plugin list 2>$null | Out-String)
+    $listing = if ($DryRun) { "" } else { (& $HostName plugin list 2>$null | Out-String) }
     foreach ($entry in $InstallManifest.plugins) {
         $installed = if ($HostName -eq "claude") {
             $listing.Contains($entry.plugin)

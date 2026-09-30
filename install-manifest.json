@@ -19,9 +19,9 @@
   ],
   "community_skills": [
     {
-      "name": "refero-design",
-      "url": "https://github.com/referodesign/refero_skill",
-      "path": "skills/refero-design"
+      "name": "proxy-manager",
+      "url": "https://github.com/webshare-proxy/skills",
+      "path": "skills/proxy-manager"
     },
     {
       "name": "drawio-skill",
@@ -45,10 +45,7 @@
     }
   ],
   "core_install_skills": [
-    "spec",
-    "impl",
-    "agent-graph",
-    "writing",
+    "research",
     "frontend-visual-validation"
   ]
 }

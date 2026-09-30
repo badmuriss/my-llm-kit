@@ -1,0 +1,1801 @@
+{
+  "started_at": "2026-09-30T17:29:10.218321+00:00",
+  "authorization": "User asked to continue with the skills after the completed audit and portability correction.",
+  "status": "verified_with_declared_platform_limits",
+  "archive_root": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup",
+  "root_retirements": [
+    {
+      "name": "agents-sdk",
+      "action": "consolidar",
+      "path": "/home/badmuriss/.agents/skills/agents-sdk",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/agents-sdk",
+      "skill_sha256": "a05244d3cfb23330daff956ec28a990241f5dbbe489cd7fd6489c8f76bb60877",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/agents-sdk",
+      "archive_sha256": "a05244d3cfb23330daff956ec28a990241f5dbbe489cd7fd6489c8f76bb60877"
+    },
+    {
+      "name": "cloudflare-email-service",
+      "action": "consolidar",
+      "path": "/home/badmuriss/.agents/skills/cloudflare-email-service",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/cloudflare-email-service",
+      "skill_sha256": "a62531900a08f9f6c352061d42e8b10a35009f5e1c6f91bbf18752feedad5a79",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/cloudflare-email-service",
+      "archive_sha256": "a62531900a08f9f6c352061d42e8b10a35009f5e1c6f91bbf18752feedad5a79"
+    },
+    {
+      "name": "coding-guidelines",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/coding-guidelines",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/coding-guidelines",
+      "skill_sha256": "21d6c44bc9f174b7f11b8c43b997e5f0392db97e2341363e588f550f1fb6a168",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/coding-guidelines",
+      "archive_sha256": "21d6c44bc9f174b7f11b8c43b997e5f0392db97e2341363e588f550f1fb6a168"
+    },
+    {
+      "name": "durable-objects",
+      "action": "consolidar",
+      "path": "/home/badmuriss/.agents/skills/durable-objects",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/durable-objects",
+      "skill_sha256": "cd6797cb18f3ae8f721dfd2e5cb27b73a0aa8636683f1a38163dab2fd51a8dfb",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/durable-objects",
+      "archive_sha256": "cd6797cb18f3ae8f721dfd2e5cb27b73a0aa8636683f1a38163dab2fd51a8dfb"
+    },
+    {
+      "name": "embedded-captions",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/embedded-captions",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/embedded-captions",
+      "skill_sha256": "761d9cd5e03fc10cc7f09faf8a47c56aa3a67ab558123e6c59a06c52872664eb",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/embedded-captions",
+      "archive_sha256": "761d9cd5e03fc10cc7f09faf8a47c56aa3a67ab558123e6c59a06c52872664eb"
+    },
+    {
+      "name": "emil-design-eng",
+      "action": "consolidar",
+      "path": "/home/badmuriss/.agents/skills/emil-design-eng",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/emil-design-eng",
+      "skill_sha256": "433b5a239cda18e0576e4e558532e7e53512e21fafe5b85db4894c28ec399b72",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/emil-design-eng",
+      "archive_sha256": "433b5a239cda18e0576e4e558532e7e53512e21fafe5b85db4894c28ec399b72"
+    },
+    {
+      "name": "faceless-explainer",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/faceless-explainer",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/faceless-explainer",
+      "skill_sha256": "8745992c08b21e767e8f972d9c19f7457800c8481a5f70ba02a8fc575eb62e21",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/faceless-explainer",
+      "archive_sha256": "8745992c08b21e767e8f972d9c19f7457800c8481a5f70ba02a8fc575eb62e21"
+    },
+    {
+      "name": "find-animation-opportunities",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/find-animation-opportunities",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/find-animation-opportunities",
+      "skill_sha256": "3d6533767ebcf4fb73ee7a2d9544a88671d09d50c4bf36c9b824768bca1dd9fb",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/find-animation-opportunities",
+      "archive_sha256": "3d6533767ebcf4fb73ee7a2d9544a88671d09d50c4bf36c9b824768bca1dd9fb"
+    },
+    {
+      "name": "find-skills",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/find-skills",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/find-skills",
+      "skill_sha256": "1e85f6f9686e145aca4a124e3b704b9bbea9aa87e08515c1e352eee70f6e6e7a",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/find-skills",
+      "archive_sha256": "1e85f6f9686e145aca4a124e3b704b9bbea9aa87e08515c1e352eee70f6e6e7a"
+    },
+    {
+      "name": "firecrawl",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/firecrawl",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/firecrawl",
+      "skill_sha256": "d9e3c7fd90bc64ef6782f730c6775d96a84226404729c6ca9ed566f03e0479d1",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/firecrawl",
+      "archive_sha256": "d9e3c7fd90bc64ef6782f730c6775d96a84226404729c6ca9ed566f03e0479d1"
+    },
+    {
+      "name": "firecrawl-instruct",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/firecrawl-instruct",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/firecrawl-instruct",
+      "skill_sha256": "452edd918d848812c66bd9dbf41868a8ef9ae622341dd22f12448297980e5530",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/firecrawl-instruct",
+      "archive_sha256": "452edd918d848812c66bd9dbf41868a8ef9ae622341dd22f12448297980e5530"
+    },
+    {
+      "name": "firecrawl-scrape",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/firecrawl-scrape",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/firecrawl-scrape",
+      "skill_sha256": "46ba76f60d9371e0bd91b8873c5570e9b689883cd4cc709893bf16dc62783ea7",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/firecrawl-scrape",
+      "archive_sha256": "46ba76f60d9371e0bd91b8873c5570e9b689883cd4cc709893bf16dc62783ea7"
+    },
+    {
+      "name": "firecrawl-search",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/firecrawl-search",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/firecrawl-search",
+      "skill_sha256": "2d782f5da2f905178f7773c9d3b18b15331b0892d6d1cb678d166dc672ac41f5",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/firecrawl-search",
+      "archive_sha256": "2d782f5da2f905178f7773c9d3b18b15331b0892d6d1cb678d166dc672ac41f5"
+    },
+    {
+      "name": "general-video",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/general-video",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/general-video",
+      "skill_sha256": "4d7c52972a800c1413c222a107891cbee9c43f3bed5fa3c09157d5442bf65efe",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/general-video",
+      "archive_sha256": "4d7c52972a800c1413c222a107891cbee9c43f3bed5fa3c09157d5442bf65efe"
+    },
+    {
+      "name": "gerar-criativos",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/gerar-criativos",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/gerar-criativos",
+      "skill_sha256": "e8e6f0adc2454f98fd7f136e5559bf80d620d8e0f8177b6256462084aff69b77",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/gerar-criativos",
+      "archive_sha256": "e8e6f0adc2454f98fd7f136e5559bf80d620d8e0f8177b6256462084aff69b77"
+    },
+    {
+      "name": "grill-me",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/grill-me",
+      "present": true,
+      "symlink": "/home/badmuriss/Documents/my-llm-kit/skills/grill-me",
+      "canonical": "/home/badmuriss/Documents/my-llm-kit/skills/grill-me",
+      "skill_sha256": "5f114ce3787c3a509d9d11f5b385105958a16b4da944f4da28bc036077e85c6b",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/grill-me",
+      "archive_sha256": "5f114ce3787c3a509d9d11f5b385105958a16b4da944f4da28bc036077e85c6b"
+    },
+    {
+      "name": "grill-with-docs",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/grill-with-docs",
+      "present": true,
+      "symlink": "/home/badmuriss/Documents/my-llm-kit/skills/grill-with-docs",
+      "canonical": "/home/badmuriss/Documents/my-llm-kit/skills/grill-with-docs",
+      "skill_sha256": "a9b75b510cce48ef14e6589fdebcc43298e79959e9ebf09f9843a7ae814c6c5b",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/grill-with-docs",
+      "archive_sha256": "a9b75b510cce48ef14e6589fdebcc43298e79959e9ebf09f9843a7ae814c6c5b"
+    },
+    {
+      "name": "hyperframes",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/hyperframes",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/hyperframes",
+      "skill_sha256": "ce542b8e03b4b9268bcda0f95790b1cf869b4ff9b3faf803c2abf816fd51c54c",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/hyperframes",
+      "archive_sha256": "ce542b8e03b4b9268bcda0f95790b1cf869b4ff9b3faf803c2abf816fd51c54c"
+    },
+    {
+      "name": "hyperframes-animation",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/hyperframes-animation",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/hyperframes-animation",
+      "skill_sha256": "c16fed4153a9ec22b3de51a40bf1b3d756dde1835b32534291565259a413d4ad",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/hyperframes-animation",
+      "archive_sha256": "c16fed4153a9ec22b3de51a40bf1b3d756dde1835b32534291565259a413d4ad"
+    },
+    {
+      "name": "hyperframes-audio",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/hyperframes-audio",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/hyperframes-audio",
+      "skill_sha256": "70fedc7b32e6fe1dd1076c932d8853775271d9a29d03b97340c695a4d391c397",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/hyperframes-audio",
+      "archive_sha256": "70fedc7b32e6fe1dd1076c932d8853775271d9a29d03b97340c695a4d391c397"
+    },
+    {
+      "name": "hyperframes-cli",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/hyperframes-cli",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/hyperframes-cli",
+      "skill_sha256": "f94a4c7f11fae1d2af70330e83ceb9f13e1d0ff5cec3ee113184fb089038356f",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/hyperframes-cli",
+      "archive_sha256": "f94a4c7f11fae1d2af70330e83ceb9f13e1d0ff5cec3ee113184fb089038356f"
+    },
+    {
+      "name": "hyperframes-core",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/hyperframes-core",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/hyperframes-core",
+      "skill_sha256": "c232a83c0cae2c7fc789fb25b85c3bf9f59f5be402bca3fd63a1ad18c6ed62c9",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/hyperframes-core",
+      "archive_sha256": "c232a83c0cae2c7fc789fb25b85c3bf9f59f5be402bca3fd63a1ad18c6ed62c9"
+    },
+    {
+      "name": "hyperframes-creative",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/hyperframes-creative",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/hyperframes-creative",
+      "skill_sha256": "3ea9a6108ad547ba52742520281ad61e15edd7b969f3829072e3eb70e1c06cec",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/hyperframes-creative",
+      "archive_sha256": "3ea9a6108ad547ba52742520281ad61e15edd7b969f3829072e3eb70e1c06cec"
+    },
+    {
+      "name": "hyperframes-keyframes",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/hyperframes-keyframes",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/hyperframes-keyframes",
+      "skill_sha256": "6356d2f77036c19e8773bf940dccb917d05f00c2dabda1cbf08894eecf54625a",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/hyperframes-keyframes",
+      "archive_sha256": "6356d2f77036c19e8773bf940dccb917d05f00c2dabda1cbf08894eecf54625a"
+    },
+    {
+      "name": "hyperframes-registry",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/hyperframes-registry",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/hyperframes-registry",
+      "skill_sha256": "5c0fa72f016897b78d1bb7589179eb44eed5572813fd044df94fa09ec52ad4ee",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/hyperframes-registry",
+      "archive_sha256": "5c0fa72f016897b78d1bb7589179eb44eed5572813fd044df94fa09ec52ad4ee"
+    },
+    {
+      "name": "hyperframes-studio",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/hyperframes-studio",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/hyperframes-studio",
+      "skill_sha256": "948c745b0ad9640f0feb3dd46ac589533276e051f545cf1b039c0907d467bc0c",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/hyperframes-studio",
+      "archive_sha256": "948c745b0ad9640f0feb3dd46ac589533276e051f545cf1b039c0907d467bc0c"
+    },
+    {
+      "name": "image-gen",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/image-gen",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/image-gen",
+      "skill_sha256": "1e28b125a7bc34cf1cdea8cbc5ff6abd45c0898d269c039283b7fe70e014273a",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/image-gen",
+      "archive_sha256": "1e28b125a7bc34cf1cdea8cbc5ff6abd45c0898d269c039283b7fe70e014273a"
+    },
+    {
+      "name": "impl",
+      "action": "consolidar",
+      "path": "/home/badmuriss/.agents/skills/impl",
+      "present": true,
+      "symlink": "/home/badmuriss/Documents/my-llm-kit/skills/impl",
+      "canonical": "/home/badmuriss/Documents/my-llm-kit/skills/impl",
+      "skill_sha256": "8968e60fa15d7c05fa5d283f4153da92863b6af1c121162eb6478e7bdc703349",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/impl",
+      "archive_sha256": "8968e60fa15d7c05fa5d283f4153da92863b6af1c121162eb6478e7bdc703349"
+    },
+    {
+      "name": "improve",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/improve",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/improve",
+      "skill_sha256": "1599aa29e9b16424cb767779efac53fa56e3f38be92dff4ac587393a1ad5070a",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/improve",
+      "archive_sha256": "1599aa29e9b16424cb767779efac53fa56e3f38be92dff4ac587393a1ad5070a"
+    },
+    {
+      "name": "improve-animations",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/improve-animations",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/improve-animations",
+      "skill_sha256": "68f17bbc4671593d2f43dba26a679243e2153ba5f26965fb7d59df52842534ff",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/improve-animations",
+      "archive_sha256": "68f17bbc4671593d2f43dba26a679243e2153ba5f26965fb7d59df52842534ff"
+    },
+    {
+      "name": "ingest",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/ingest",
+      "present": true,
+      "symlink": "/home/badmuriss/Documents/my-llm-kit/skills/ingest",
+      "canonical": "/home/badmuriss/Documents/my-llm-kit/skills/ingest",
+      "skill_sha256": "85af33aa453d32ea4f2c811e39f2ac47a458a7d00ed014aac637625fe702c96d",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/ingest",
+      "archive_sha256": "85af33aa453d32ea4f2c811e39f2ac47a458a7d00ed014aac637625fe702c96d"
+    },
+    {
+      "name": "law-irac",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/law-irac",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/law-irac",
+      "skill_sha256": "5b9fdd3c3e2f77394077294a5620276d575d3943dd25c32aef883639d6cb5b0a",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/law-irac",
+      "archive_sha256": "5b9fdd3c3e2f77394077294a5620276d575d3943dd25c32aef883639d6cb5b0a"
+    },
+    {
+      "name": "lgpd-brasil",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/lgpd-brasil",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/lgpd-brasil",
+      "skill_sha256": "2f9911c3b9f8f6f90544b2562743cdeb859d4f1859a228ca9169acd51cba85a7",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/lgpd-brasil",
+      "archive_sha256": "2f9911c3b9f8f6f90544b2562743cdeb859d4f1859a228ca9169acd51cba85a7"
+    },
+    {
+      "name": "media-use",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/media-use",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/media-use",
+      "skill_sha256": "6baf869f1e33bbe8d15ad1e7fc5db182899bdf5ccf42a05fb452c42b61e32d52",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/media-use",
+      "archive_sha256": "6baf869f1e33bbe8d15ad1e7fc5db182899bdf5ccf42a05fb452c42b61e32d52"
+    },
+    {
+      "name": "motion-graphics",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/motion-graphics",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/motion-graphics",
+      "skill_sha256": "d2139f2b6e56e94ee320546c8353aa3ceae84b20c335f6c2096474e89d5241e2",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/motion-graphics",
+      "archive_sha256": "d2139f2b6e56e94ee320546c8353aa3ceae84b20c335f6c2096474e89d5241e2"
+    },
+    {
+      "name": "music-to-video",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/music-to-video",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/music-to-video",
+      "skill_sha256": "4a5ac7feeb6e0298e2a2ab3d9714cd27520ccc67f15d036c13cc85326dbf915a",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/music-to-video",
+      "archive_sha256": "4a5ac7feeb6e0298e2a2ab3d9714cd27520ccc67f15d036c13cc85326dbf915a"
+    },
+    {
+      "name": "on-page-seo-auditor",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/on-page-seo-auditor",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/on-page-seo-auditor",
+      "skill_sha256": "09425ce0230c05cc06df259947d957457b8cc19f4de22a1d883d3df32ff3094c",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/on-page-seo-auditor",
+      "archive_sha256": "09425ce0230c05cc06df259947d957457b8cc19f4de22a1d883d3df32ff3094c"
+    },
+    {
+      "name": "pr-to-video",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/pr-to-video",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/pr-to-video",
+      "skill_sha256": "e6d814eaf6bd3ca5a09baccdc9d596fb219ddec3af6024975363d07478043977",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/pr-to-video",
+      "archive_sha256": "e6d814eaf6bd3ca5a09baccdc9d596fb219ddec3af6024975363d07478043977"
+    },
+    {
+      "name": "product-launch-video",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/product-launch-video",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/product-launch-video",
+      "skill_sha256": "5ef06256aa75ca544fdd9fccc4b16b92e45a945ee7438b2aa28b18e27a647448",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/product-launch-video",
+      "archive_sha256": "5ef06256aa75ca544fdd9fccc4b16b92e45a945ee7438b2aa28b18e27a647448"
+    },
+    {
+      "name": "react",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/react",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/react",
+      "skill_sha256": "b16fe29148f39b9980b7396934c8f68e50c5ff9639452c458092dde63b94cb03",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/react",
+      "archive_sha256": "b16fe29148f39b9980b7396934c8f68e50c5ff9639452c458092dde63b94cb03"
+    },
+    {
+      "name": "readme-pass",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/readme-pass",
+      "present": true,
+      "symlink": "/home/badmuriss/Documents/my-llm-kit/skills/readme-pass",
+      "canonical": "/home/badmuriss/Documents/my-llm-kit/skills/readme-pass",
+      "skill_sha256": "3a4e4ac6a596675c1179b87d4c7ed7a42b5fd5a372eb7b7320f1ed7c4fc25706",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/readme-pass",
+      "archive_sha256": "3a4e4ac6a596675c1179b87d4c7ed7a42b5fd5a372eb7b7320f1ed7c4fc25706"
+    },
+    {
+      "name": "refero-design",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/refero-design",
+      "present": false,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/refero-design",
+      "skill_sha256": null,
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30/agents/refero-design",
+      "prior_followup": "refero-removal.json"
+    },
+    {
+      "name": "remotion-best-practices",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/remotion-best-practices",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/remotion-best-practices",
+      "skill_sha256": "378fe3ab188a2b2398107a1a55b3ec06862f72c2530bd7af753aab148d22acaf",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/remotion-best-practices",
+      "archive_sha256": "378fe3ab188a2b2398107a1a55b3ec06862f72c2530bd7af753aab148d22acaf"
+    },
+    {
+      "name": "remotion-to-hyperframes",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/remotion-to-hyperframes",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/remotion-to-hyperframes",
+      "skill_sha256": "dadbc7d7775b80e3e5be407dbd08b81f77e1e6b67476633ca7348f256fe8b251",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/remotion-to-hyperframes",
+      "archive_sha256": "dadbc7d7775b80e3e5be407dbd08b81f77e1e6b67476633ca7348f256fe8b251"
+    },
+    {
+      "name": "review-animations",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/review-animations",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/review-animations",
+      "skill_sha256": "27c1ec78634a08bcb588229497f4fbc3bcb9db8f8032dcdd275eb844f30fc004",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/review-animations",
+      "archive_sha256": "27c1ec78634a08bcb588229497f4fbc3bcb9db8f8032dcdd275eb844f30fc004"
+    },
+    {
+      "name": "review-changes",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/review-changes",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/review-changes",
+      "skill_sha256": "4484f02b9af8d6f43a81536e45d0a4021bf39f03a02497f33d363c1135dba653",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/review-changes",
+      "archive_sha256": "4484f02b9af8d6f43a81536e45d0a4021bf39f03a02497f33d363c1135dba653"
+    },
+    {
+      "name": "slideshow",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/slideshow",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/slideshow",
+      "skill_sha256": "ca93daf7a53781b4c5fc4a881a262e3dc5b2bc62612e77406304e5256222b755",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/slideshow",
+      "archive_sha256": "ca93daf7a53781b4c5fc4a881a262e3dc5b2bc62612e77406304e5256222b755"
+    },
+    {
+      "name": "software-engineering",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/software-engineering",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/software-engineering",
+      "skill_sha256": "be9fded85f474ca55d4a26d8ed69bc88de61f24c57817a3cf17a57ffa0a73a12",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/software-engineering",
+      "archive_sha256": "be9fded85f474ca55d4a26d8ed69bc88de61f24c57817a3cf17a57ffa0a73a12"
+    },
+    {
+      "name": "spec",
+      "action": "consolidar",
+      "path": "/home/badmuriss/.agents/skills/spec",
+      "present": true,
+      "symlink": "/home/badmuriss/Documents/my-llm-kit/skills/spec",
+      "canonical": "/home/badmuriss/Documents/my-llm-kit/skills/spec",
+      "skill_sha256": "5c219f47d409eb635f946e41bf75dc754f0f0e86ea373fb09fcff6c8b480801b",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/spec",
+      "archive_sha256": "5c219f47d409eb635f946e41bf75dc754f0f0e86ea373fb09fcff6c8b480801b"
+    },
+    {
+      "name": "talking-head-recut",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/talking-head-recut",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/talking-head-recut",
+      "skill_sha256": "a3b6084b4be1e23be6bc04e8b98bb96d073badf335a3c02befd91fa808e644a4",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/talking-head-recut",
+      "archive_sha256": "a3b6084b4be1e23be6bc04e8b98bb96d073badf335a3c02befd91fa808e644a4"
+    },
+    {
+      "name": "thermo-nuclear-code-quality-review",
+      "action": "consolidar",
+      "path": "/home/badmuriss/.agents/skills/thermo-nuclear-code-quality-review",
+      "present": true,
+      "symlink": "/home/badmuriss/Documents/my-llm-kit/skills/thermo-nuclear-code-quality-review",
+      "canonical": "/home/badmuriss/Documents/my-llm-kit/skills/thermo-nuclear-code-quality-review",
+      "skill_sha256": "945db257ae17757db26ff5b8e4f74270f4550d4ddc6e8fee5df92203f2cdb6ca",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/thermo-nuclear-code-quality-review",
+      "archive_sha256": "945db257ae17757db26ff5b8e4f74270f4550d4ddc6e8fee5df92203f2cdb6ca"
+    },
+    {
+      "name": "trim-code-comments",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/trim-code-comments",
+      "present": true,
+      "symlink": "/home/badmuriss/Documents/my-llm-kit/skills/trim-code-comments",
+      "canonical": "/home/badmuriss/Documents/my-llm-kit/skills/trim-code-comments",
+      "skill_sha256": "7eb8d0be5489b8e094476a8fdfa252dd6dc0ebff0bbc27152ea4aefbaf5894ae",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/trim-code-comments",
+      "archive_sha256": "7eb8d0be5489b8e094476a8fdfa252dd6dc0ebff0bbc27152ea4aefbaf5894ae"
+    },
+    {
+      "name": "typescript",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/typescript",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/typescript",
+      "skill_sha256": "91f9c5db954c7401665fbae082ae85d67cf7533c17bac6fcd3e029421d5dcb1b",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/typescript",
+      "archive_sha256": "91f9c5db954c7401665fbae082ae85d67cf7533c17bac6fcd3e029421d5dcb1b"
+    },
+    {
+      "name": "web-perf",
+      "action": "consolidar",
+      "path": "/home/badmuriss/.agents/skills/web-perf",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/web-perf",
+      "skill_sha256": "94c5cb37766676a8321a82861d2ac1072d3dd0ef612f0c946792014ad48fb0c2",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/web-perf",
+      "archive_sha256": "94c5cb37766676a8321a82861d2ac1072d3dd0ef612f0c946792014ad48fb0c2"
+    },
+    {
+      "name": "workers-best-practices",
+      "action": "consolidar",
+      "path": "/home/badmuriss/.agents/skills/workers-best-practices",
+      "present": true,
+      "symlink": null,
+      "canonical": "/home/badmuriss/.agents/skills/workers-best-practices",
+      "skill_sha256": "099432ff265ff6080327ef0b392c118b835d2a5bda98a7de07e1afd115ed6458",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/workers-best-practices",
+      "archive_sha256": "099432ff265ff6080327ef0b392c118b835d2a5bda98a7de07e1afd115ed6458"
+    },
+    {
+      "name": "writing",
+      "action": "remover",
+      "path": "/home/badmuriss/.agents/skills/writing",
+      "present": true,
+      "symlink": "/home/badmuriss/Documents/my-llm-kit/skills/writing",
+      "canonical": "/home/badmuriss/Documents/my-llm-kit/skills/writing",
+      "skill_sha256": "605129229c74df2d5f2eaef29c4987c3e50745f46cd56ac0c4554c54b6a921ca",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/writing",
+      "archive_sha256": "605129229c74df2d5f2eaef29c4987c3e50745f46cd56ac0c4554c54b6a921ca"
+    }
+  ],
+  "kit_retirements": [
+    {
+      "name": "grill-me",
+      "action": "remover",
+      "path": "/home/badmuriss/Documents/my-llm-kit/skills/grill-me",
+      "skill_sha256": "5f114ce3787c3a509d9d11f5b385105958a16b4da944f4da28bc036077e85c6b",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/kit/grill-me",
+      "resources_retained": false
+    },
+    {
+      "name": "grill-with-docs",
+      "action": "remover",
+      "path": "/home/badmuriss/Documents/my-llm-kit/skills/grill-with-docs",
+      "skill_sha256": "a9b75b510cce48ef14e6589fdebcc43298e79959e9ebf09f9843a7ae814c6c5b",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/kit/grill-with-docs",
+      "resources_retained": false
+    },
+    {
+      "name": "impl",
+      "action": "consolidar",
+      "path": "/home/badmuriss/Documents/my-llm-kit/skills/impl",
+      "skill_sha256": "8968e60fa15d7c05fa5d283f4153da92863b6af1c121162eb6478e7bdc703349",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/kit/impl",
+      "resources_retained": true
+    },
+    {
+      "name": "ingest",
+      "action": "remover",
+      "path": "/home/badmuriss/Documents/my-llm-kit/skills/ingest",
+      "skill_sha256": "85af33aa453d32ea4f2c811e39f2ac47a458a7d00ed014aac637625fe702c96d",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/kit/ingest",
+      "resources_retained": false
+    },
+    {
+      "name": "readme-pass",
+      "action": "remover",
+      "path": "/home/badmuriss/Documents/my-llm-kit/skills/readme-pass",
+      "skill_sha256": "3a4e4ac6a596675c1179b87d4c7ed7a42b5fd5a372eb7b7320f1ed7c4fc25706",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/kit/readme-pass",
+      "resources_retained": false
+    },
+    {
+      "name": "spec",
+      "action": "consolidar",
+      "path": "/home/badmuriss/Documents/my-llm-kit/skills/spec",
+      "skill_sha256": "5c219f47d409eb635f946e41bf75dc754f0f0e86ea373fb09fcff6c8b480801b",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/kit/spec",
+      "resources_retained": true
+    },
+    {
+      "name": "thermo-nuclear-code-quality-review",
+      "action": "consolidar",
+      "path": "/home/badmuriss/Documents/my-llm-kit/skills/thermo-nuclear-code-quality-review",
+      "skill_sha256": "945db257ae17757db26ff5b8e4f74270f4550d4ddc6e8fee5df92203f2cdb6ca",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/kit/thermo-nuclear-code-quality-review",
+      "resources_retained": false
+    },
+    {
+      "name": "trim-code-comments",
+      "action": "remover",
+      "path": "/home/badmuriss/Documents/my-llm-kit/skills/trim-code-comments",
+      "skill_sha256": "7eb8d0be5489b8e094476a8fdfa252dd6dc0ebff0bbc27152ea4aefbaf5894ae",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/kit/trim-code-comments",
+      "resources_retained": false
+    },
+    {
+      "name": "writing",
+      "action": "remover",
+      "path": "/home/badmuriss/Documents/my-llm-kit/skills/writing",
+      "skill_sha256": "605129229c74df2d5f2eaef29c4987c3e50745f46cd56ac0c4554c54b6a921ca",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/kit/writing",
+      "resources_retained": false
+    }
+  ],
+  "host_aliases": [
+    {
+      "path": "/home/badmuriss/.codex/skills/firecrawl-search",
+      "target": "/home/badmuriss/.agents/skills/firecrawl-search",
+      "canonical": "/home/badmuriss/.agents/skills/firecrawl-search",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/firecrawl-search"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/trim-code-comments",
+      "target": "/home/badmuriss/.agents/skills/trim-code-comments",
+      "canonical": "/home/badmuriss/Documents/my-llm-kit/skills/trim-code-comments",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/trim-code-comments"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/image-gen",
+      "target": "/home/badmuriss/.agents/skills/image-gen",
+      "canonical": "/home/badmuriss/.agents/skills/image-gen",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/image-gen"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/grill-with-docs",
+      "target": "/home/badmuriss/.agents/skills/grill-with-docs",
+      "canonical": "/home/badmuriss/Documents/my-llm-kit/skills/grill-with-docs",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/grill-with-docs"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/slideshow",
+      "target": "../../.claude/skills/slideshow",
+      "canonical": "/home/badmuriss/.agents/skills/slideshow",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/slideshow"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/readme-pass",
+      "target": "/home/badmuriss/.agents/skills/readme-pass",
+      "canonical": "/home/badmuriss/Documents/my-llm-kit/skills/readme-pass",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/readme-pass"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/faceless-explainer",
+      "target": "../../.claude/skills/faceless-explainer",
+      "canonical": "/home/badmuriss/.agents/skills/faceless-explainer",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/faceless-explainer"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/grill-me",
+      "target": "/home/badmuriss/.agents/skills/grill-me",
+      "canonical": "/home/badmuriss/Documents/my-llm-kit/skills/grill-me",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/grill-me"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/review-animations",
+      "target": "/home/badmuriss/.agents/skills/review-animations",
+      "canonical": "/home/badmuriss/.agents/skills/review-animations",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/review-animations"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/emil-design-eng",
+      "target": "/home/badmuriss/.agents/skills/emil-design-eng",
+      "canonical": "/home/badmuriss/.agents/skills/emil-design-eng",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/emil-design-eng"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/firecrawl-scrape",
+      "target": "/home/badmuriss/.agents/skills/firecrawl-scrape",
+      "canonical": "/home/badmuriss/.agents/skills/firecrawl-scrape",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/firecrawl-scrape"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/pr-to-video",
+      "target": "../../.claude/skills/pr-to-video",
+      "canonical": "/home/badmuriss/.agents/skills/pr-to-video",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/pr-to-video"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/firecrawl",
+      "target": "/home/badmuriss/.agents/skills/firecrawl",
+      "canonical": "/home/badmuriss/.agents/skills/firecrawl",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/firecrawl"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/law-irac",
+      "target": "/home/badmuriss/.agents/skills/law-irac",
+      "canonical": "/home/badmuriss/.agents/skills/law-irac",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/law-irac"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/thermo-nuclear-code-quality-review",
+      "target": "/home/badmuriss/.agents/skills/thermo-nuclear-code-quality-review",
+      "canonical": "/home/badmuriss/Documents/my-llm-kit/skills/thermo-nuclear-code-quality-review",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/thermo-nuclear-code-quality-review"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/writing",
+      "target": "/home/badmuriss/.agents/skills/writing",
+      "canonical": "/home/badmuriss/Documents/my-llm-kit/skills/writing",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/writing"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/media-use",
+      "target": "../../.claude/skills/media-use",
+      "canonical": "/home/badmuriss/.agents/skills/media-use",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/media-use"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/find-skills",
+      "target": "/home/badmuriss/.agents/skills/find-skills",
+      "canonical": "/home/badmuriss/.agents/skills/find-skills",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/find-skills"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/improve",
+      "target": "/home/badmuriss/.agents/skills/improve",
+      "canonical": "/home/badmuriss/.agents/skills/improve",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/improve"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/motion-graphics",
+      "target": "../../.claude/skills/motion-graphics",
+      "canonical": "/home/badmuriss/.agents/skills/motion-graphics",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/motion-graphics"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/review-changes",
+      "target": "/home/badmuriss/.agents/skills/review-changes",
+      "canonical": "/home/badmuriss/.agents/skills/review-changes",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/review-changes"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/hyperframes-animation",
+      "target": "../../.claude/skills/hyperframes-animation",
+      "canonical": "/home/badmuriss/.agents/skills/hyperframes-animation",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/hyperframes-animation"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/remotion-best-practices",
+      "target": "/home/badmuriss/.agents/skills/remotion-best-practices",
+      "canonical": "/home/badmuriss/.agents/skills/remotion-best-practices",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/remotion-best-practices"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/music-to-video",
+      "target": "../../.claude/skills/music-to-video",
+      "canonical": "/home/badmuriss/.agents/skills/music-to-video",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/music-to-video"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/find-animation-opportunities",
+      "target": "/home/badmuriss/.agents/skills/find-animation-opportunities",
+      "canonical": "/home/badmuriss/.agents/skills/find-animation-opportunities",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/find-animation-opportunities"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/talking-head-recut",
+      "target": "../../.claude/skills/talking-head-recut",
+      "canonical": "/home/badmuriss/.agents/skills/talking-head-recut",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/talking-head-recut"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/embedded-captions",
+      "target": "../../.claude/skills/embedded-captions",
+      "canonical": "/home/badmuriss/.agents/skills/embedded-captions",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/embedded-captions"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/software-engineering",
+      "target": "/home/badmuriss/.agents/skills/software-engineering",
+      "canonical": "/home/badmuriss/.agents/skills/software-engineering",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/software-engineering"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/on-page-seo-auditor",
+      "target": "/home/badmuriss/.agents/skills/on-page-seo-auditor",
+      "canonical": "/home/badmuriss/.agents/skills/on-page-seo-auditor",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/on-page-seo-auditor"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/spec",
+      "target": "/home/badmuriss/.agents/skills/spec",
+      "canonical": "/home/badmuriss/Documents/my-llm-kit/skills/spec",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/spec"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/firecrawl-instruct",
+      "target": "/home/badmuriss/.agents/skills/firecrawl-instruct",
+      "canonical": "/home/badmuriss/.agents/skills/firecrawl-instruct",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/firecrawl-instruct"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/hyperframes-core",
+      "target": "../../.claude/skills/hyperframes-core",
+      "canonical": "/home/badmuriss/.agents/skills/hyperframes-core",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/hyperframes-core"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/ingest",
+      "target": "/home/badmuriss/.agents/skills/ingest",
+      "canonical": "/home/badmuriss/Documents/my-llm-kit/skills/ingest",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/ingest"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/react",
+      "target": "/home/badmuriss/.agents/skills/react",
+      "canonical": "/home/badmuriss/.agents/skills/react",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/react"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/hyperframes",
+      "target": "../../.claude/skills/hyperframes",
+      "canonical": "/home/badmuriss/.agents/skills/hyperframes",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/hyperframes"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/remotion-to-hyperframes",
+      "target": "../../.claude/skills/remotion-to-hyperframes",
+      "canonical": "/home/badmuriss/.agents/skills/remotion-to-hyperframes",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/remotion-to-hyperframes"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/lgpd-brasil",
+      "target": "/home/badmuriss/.agents/skills/lgpd-brasil",
+      "canonical": "/home/badmuriss/.agents/skills/lgpd-brasil",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/lgpd-brasil"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/coding-guidelines",
+      "target": "/home/badmuriss/.agents/skills/coding-guidelines",
+      "canonical": "/home/badmuriss/.agents/skills/coding-guidelines",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/coding-guidelines"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/product-launch-video",
+      "target": "../../.claude/skills/product-launch-video",
+      "canonical": "/home/badmuriss/.agents/skills/product-launch-video",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/product-launch-video"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/hyperframes-creative",
+      "target": "../../.claude/skills/hyperframes-creative",
+      "canonical": "/home/badmuriss/.agents/skills/hyperframes-creative",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/hyperframes-creative"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/general-video",
+      "target": "../../.claude/skills/general-video",
+      "canonical": "/home/badmuriss/.agents/skills/general-video",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/general-video"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/improve-animations",
+      "target": "/home/badmuriss/.agents/skills/improve-animations",
+      "canonical": "/home/badmuriss/.agents/skills/improve-animations",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/improve-animations"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/hyperframes-cli",
+      "target": "../../.claude/skills/hyperframes-cli",
+      "canonical": "/home/badmuriss/.agents/skills/hyperframes-cli",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/hyperframes-cli"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/typescript",
+      "target": "/home/badmuriss/.agents/skills/typescript",
+      "canonical": "/home/badmuriss/.agents/skills/typescript",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/typescript"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/hyperframes-registry",
+      "target": "../../.claude/skills/hyperframes-registry",
+      "canonical": "/home/badmuriss/.agents/skills/hyperframes-registry",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/hyperframes-registry"
+    },
+    {
+      "path": "/home/badmuriss/.codex/skills/impl",
+      "target": "/home/badmuriss/.agents/skills/impl",
+      "canonical": "/home/badmuriss/Documents/my-llm-kit/skills/impl",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/0/impl"
+    },
+    {
+      "path": "/home/badmuriss/.config/orca/codex-accounts/18675fc4-4c89-40af-9d56-a16bd1f65f81/home/skills/slideshow",
+      "target": "../../../../../../.claude/skills/slideshow",
+      "canonical": "/home/badmuriss/.agents/skills/slideshow",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/1/slideshow"
+    },
+    {
+      "path": "/home/badmuriss/.config/orca/codex-accounts/18675fc4-4c89-40af-9d56-a16bd1f65f81/home/skills/hyperframes-studio",
+      "target": "../../../../../../.claude/skills/hyperframes-studio",
+      "canonical": "/home/badmuriss/.agents/skills/hyperframes-studio",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/1/hyperframes-studio"
+    },
+    {
+      "path": "/home/badmuriss/.config/orca/codex-accounts/18675fc4-4c89-40af-9d56-a16bd1f65f81/home/skills/readme-pass",
+      "target": "/home/badmuriss/.agents/skills/readme-pass",
+      "canonical": "/home/badmuriss/Documents/my-llm-kit/skills/readme-pass",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/1/readme-pass"
+    },
+    {
+      "path": "/home/badmuriss/.config/orca/codex-accounts/18675fc4-4c89-40af-9d56-a16bd1f65f81/home/skills/faceless-explainer",
+      "target": "../../../../../../.claude/skills/faceless-explainer",
+      "canonical": "/home/badmuriss/.agents/skills/faceless-explainer",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/1/faceless-explainer"
+    },
+    {
+      "path": "/home/badmuriss/.config/orca/codex-accounts/18675fc4-4c89-40af-9d56-a16bd1f65f81/home/skills/pr-to-video",
+      "target": "../../../../../../.claude/skills/pr-to-video",
+      "canonical": "/home/badmuriss/.agents/skills/pr-to-video",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/1/pr-to-video"
+    },
+    {
+      "path": "/home/badmuriss/.config/orca/codex-accounts/18675fc4-4c89-40af-9d56-a16bd1f65f81/home/skills/hyperframes-keyframes",
+      "target": "../../../../../../.claude/skills/hyperframes-keyframes",
+      "canonical": "/home/badmuriss/.agents/skills/hyperframes-keyframes",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/1/hyperframes-keyframes"
+    },
+    {
+      "path": "/home/badmuriss/.config/orca/codex-accounts/18675fc4-4c89-40af-9d56-a16bd1f65f81/home/skills/media-use",
+      "target": "../../../../../../.claude/skills/media-use",
+      "canonical": "/home/badmuriss/.agents/skills/media-use",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/1/media-use"
+    },
+    {
+      "path": "/home/badmuriss/.config/orca/codex-accounts/18675fc4-4c89-40af-9d56-a16bd1f65f81/home/skills/motion-graphics",
+      "target": "../../../../../../.claude/skills/motion-graphics",
+      "canonical": "/home/badmuriss/.agents/skills/motion-graphics",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/1/motion-graphics"
+    },
+    {
+      "path": "/home/badmuriss/.config/orca/codex-accounts/18675fc4-4c89-40af-9d56-a16bd1f65f81/home/skills/hyperframes-animation",
+      "target": "../../../../../../.claude/skills/hyperframes-animation",
+      "canonical": "/home/badmuriss/.agents/skills/hyperframes-animation",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/1/hyperframes-animation"
+    },
+    {
+      "path": "/home/badmuriss/.config/orca/codex-accounts/18675fc4-4c89-40af-9d56-a16bd1f65f81/home/skills/music-to-video",
+      "target": "../../../../../../.claude/skills/music-to-video",
+      "canonical": "/home/badmuriss/.agents/skills/music-to-video",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/1/music-to-video"
+    },
+    {
+      "path": "/home/badmuriss/.config/orca/codex-accounts/18675fc4-4c89-40af-9d56-a16bd1f65f81/home/skills/talking-head-recut",
+      "target": "../../../../../../.claude/skills/talking-head-recut",
+      "canonical": "/home/badmuriss/.agents/skills/talking-head-recut",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/1/talking-head-recut"
+    },
+    {
+      "path": "/home/badmuriss/.config/orca/codex-accounts/18675fc4-4c89-40af-9d56-a16bd1f65f81/home/skills/hyperframes-audio",
+      "target": "../../../../../../.claude/skills/hyperframes-audio",
+      "canonical": "/home/badmuriss/.agents/skills/hyperframes-audio",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/1/hyperframes-audio"
+    },
+    {
+      "path": "/home/badmuriss/.config/orca/codex-accounts/18675fc4-4c89-40af-9d56-a16bd1f65f81/home/skills/embedded-captions",
+      "target": "../../../../../../.claude/skills/embedded-captions",
+      "canonical": "/home/badmuriss/.agents/skills/embedded-captions",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/1/embedded-captions"
+    },
+    {
+      "path": "/home/badmuriss/.config/orca/codex-accounts/18675fc4-4c89-40af-9d56-a16bd1f65f81/home/skills/spec",
+      "target": "/home/badmuriss/.agents/skills/spec",
+      "canonical": "/home/badmuriss/Documents/my-llm-kit/skills/spec",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/1/spec"
+    },
+    {
+      "path": "/home/badmuriss/.config/orca/codex-accounts/18675fc4-4c89-40af-9d56-a16bd1f65f81/home/skills/hyperframes-core",
+      "target": "../../../../../../.claude/skills/hyperframes-core",
+      "canonical": "/home/badmuriss/.agents/skills/hyperframes-core",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/1/hyperframes-core"
+    },
+    {
+      "path": "/home/badmuriss/.config/orca/codex-accounts/18675fc4-4c89-40af-9d56-a16bd1f65f81/home/skills/hyperframes",
+      "target": "../../../../../../.claude/skills/hyperframes",
+      "canonical": "/home/badmuriss/.agents/skills/hyperframes",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/1/hyperframes"
+    },
+    {
+      "path": "/home/badmuriss/.config/orca/codex-accounts/18675fc4-4c89-40af-9d56-a16bd1f65f81/home/skills/remotion-to-hyperframes",
+      "target": "../../../../../../.claude/skills/remotion-to-hyperframes",
+      "canonical": "/home/badmuriss/.agents/skills/remotion-to-hyperframes",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/1/remotion-to-hyperframes"
+    },
+    {
+      "path": "/home/badmuriss/.config/orca/codex-accounts/18675fc4-4c89-40af-9d56-a16bd1f65f81/home/skills/product-launch-video",
+      "target": "../../../../../../.claude/skills/product-launch-video",
+      "canonical": "/home/badmuriss/.agents/skills/product-launch-video",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/1/product-launch-video"
+    },
+    {
+      "path": "/home/badmuriss/.config/orca/codex-accounts/18675fc4-4c89-40af-9d56-a16bd1f65f81/home/skills/hyperframes-creative",
+      "target": "../../../../../../.claude/skills/hyperframes-creative",
+      "canonical": "/home/badmuriss/.agents/skills/hyperframes-creative",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/1/hyperframes-creative"
+    },
+    {
+      "path": "/home/badmuriss/.config/orca/codex-accounts/18675fc4-4c89-40af-9d56-a16bd1f65f81/home/skills/general-video",
+      "target": "../../../../../../.claude/skills/general-video",
+      "canonical": "/home/badmuriss/.agents/skills/general-video",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/1/general-video"
+    },
+    {
+      "path": "/home/badmuriss/.config/orca/codex-accounts/18675fc4-4c89-40af-9d56-a16bd1f65f81/home/skills/hyperframes-cli",
+      "target": "../../../../../../.claude/skills/hyperframes-cli",
+      "canonical": "/home/badmuriss/.agents/skills/hyperframes-cli",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/1/hyperframes-cli"
+    },
+    {
+      "path": "/home/badmuriss/.config/orca/codex-accounts/18675fc4-4c89-40af-9d56-a16bd1f65f81/home/skills/hyperframes-registry",
+      "target": "../../../../../../.claude/skills/hyperframes-registry",
+      "canonical": "/home/badmuriss/.agents/skills/hyperframes-registry",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/1/hyperframes-registry"
+    },
+    {
+      "path": "/home/badmuriss/.config/orca/codex-accounts/18675fc4-4c89-40af-9d56-a16bd1f65f81/home/skills/impl",
+      "target": "/home/badmuriss/.agents/skills/impl",
+      "canonical": "/home/badmuriss/Documents/my-llm-kit/skills/impl",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/hosts/1/impl"
+    }
+  ],
+  "before_edit": [
+    {
+      "path": "/home/badmuriss/Documents/my-llm-kit/instructions/AGENTS.md",
+      "sha256": "eb9481458b17a71d566f7b954f96faaad1b5014403a343f2a51db8657836bbcd",
+      "backup": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/before-edit/0/AGENTS.md",
+      "sha256_after": "4c8b796918afb31e42f2c2017bb0c63e21506653f5f8e5d02e194f84eab942c5"
+    },
+    {
+      "path": "/home/badmuriss/Documents/my-llm-kit/install-manifest.json",
+      "sha256": "fde4a3893cafcb44a027ceede32c8a9ca93727e97f5524e43d40c82d1c091da3",
+      "backup": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/before-edit/1/install-manifest.json",
+      "sha256_after": "82b639e64009c15c42721e3f14be17f33034c02774948c3c3a4a770a7cd74c6f"
+    },
+    {
+      "path": "/home/badmuriss/Documents/my-llm-kit/setup.sh",
+      "sha256": "33026d15cbd009318b7ad294edd73120fceb383123deaca0e391caff90c16b4c",
+      "backup": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/before-edit/2/setup.sh",
+      "sha256_after": "ae26387bd4362391b4acb505cea812182189169bce85f7c993aaa79f7a505dd8"
+    },
+    {
+      "path": "/home/badmuriss/Documents/my-llm-kit/setup.ps1",
+      "sha256": "5c6cfb88a79942f2833419a8b1e6e9b333193b473c7052d7dd6f5485ff3e9246",
+      "backup": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/before-edit/3/setup.ps1",
+      "sha256_after": "e5c92cf2a22f6fc95df7f2ce7411b626e8368f72a3e686cfbb76da37016b4f44"
+    },
+    {
+      "path": "/home/badmuriss/Documents/my-llm-kit/install.sh",
+      "sha256": "3ec9e0dc7fae87ac230dde031580979f89230c8452256f6c1ac65727682b0265",
+      "backup": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/before-edit/4/install.sh",
+      "sha256_after": "9e0e9a4d723a0c8c748b13d921e4ff113d676928c437a4c979cd68a02cb0b744"
+    },
+    {
+      "path": "/home/badmuriss/Documents/my-llm-kit/README.md",
+      "sha256": "a0d891a9e8f712fa8ed7f262bbc4e822662a5e2c5199a1ef28437470f36196be",
+      "backup": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/before-edit/5/README.md",
+      "sha256_after": "19a17f3a3d6d6f5b5802af666048345219cf12bab4c022bc9d1cffa5174c9da8"
+    },
+    {
+      "path": "/home/badmuriss/Documents/my-llm-kit/scripts/tests/test_installers.py",
+      "sha256": "f409fe9ad2c88b714c72739176c5a1f8f5d2db6f3e307a3d35612b1dd78472c4",
+      "backup": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/before-edit/6/test_installers.py",
+      "sha256_after": "348a07f33fe4a6e29e4b6b1a5ae56a583ca8cc395eaf5a85e100422262039fc7"
+    },
+    {
+      "path": "/home/badmuriss/Documents/my-llm-kit/skills/agent-graph/SKILL.md",
+      "sha256": "0a3421c81f9fa3a8b9dce310dd31c43de06318f0bd871ff2ddc272260d2aa5f8",
+      "backup": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/before-edit/7/SKILL.md",
+      "sha256_after": "263036e7d015557bd50113d55d013c18013e4c99b2fc74ca4ed436c8cc16d8b9"
+    },
+    {
+      "path": "/home/badmuriss/Documents/my-llm-kit/skills/computer-use/SKILL.md",
+      "sha256": "1c89dee52e09ccf921edd8eef85447203533089816bf8dff04feeb559f95fa5d",
+      "backup": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/before-edit/8/SKILL.md",
+      "sha256_after": "b8ee35e6d4f282207f807dcdb0d5d1794dc0b5194931b9001351543515b6a6fc"
+    },
+    {
+      "path": "/home/badmuriss/.agents/skills/cloudflare/SKILL.md",
+      "sha256": "99be50a67ea1dbae086af3f2bac668c38dd57f71b25ed11f754827a7f206a89d",
+      "backup": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/before-edit/9/SKILL.md",
+      "sha256_after": "79be581eb174a090c60748def21b8fee2095694477957116fa65247c81cbfd3e"
+    },
+    {
+      "path": "/home/badmuriss/.agents/skills/skill-creator/SKILL.md",
+      "sha256": "dcd4803e61e913e6fc27294184cd3a71f09f5e924ff20c8a9a20173e7b3c2bcf",
+      "backup": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/before-edit/10/SKILL.md",
+      "sha256_after": "88e8477f8beb5378b28130a9f556aec3b596f8619f677bda9ff9719585f59aa3"
+    },
+    {
+      "path": "/home/badmuriss/Documents/incredibly-pretty-websites/SKILL.md",
+      "sha256": "e729b25d1dc5cabeb7c995398750fd43c6ef0f88999012c163edbc110ebc87c6",
+      "backup": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/before-edit/11/SKILL.md",
+      "sha256_after": "9b582223d1658fc586a617897ab70e825e99fb992d398979d00abb479eed2421"
+    },
+    {
+      "path": "/home/badmuriss/Documents/incredibly-pretty-websites/reference/media-pipeline.md",
+      "sha256": "4f88e8a7c9394a4d80d8c045edcc923658b28dc6689f958bdcec2a43813590d5",
+      "backup": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/before-edit/12/media-pipeline.md",
+      "sha256_after": "ff3e80981741c00cebad7c12c6c3a9a8895d547eb5b8286bd97c859d521abb90"
+    },
+    {
+      "path": "/home/badmuriss/Documents/site-audit/SKILL.md",
+      "sha256": "693b380106e6e3ebba2de960488926f04531cc22f173db86ed5d1863f3b2459c",
+      "backup": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/before-edit/13/SKILL.md",
+      "sha256_after": "fd1bbc2e4a68a2d0eff0182f717fb465f36ade95cf31e750a205b2a5d24eaac0"
+    },
+    {
+      "path": "/home/badmuriss/.agents/.skill-lock.json",
+      "sha256": "e8070ebdabc76dabc802072dd2b173972e9ed071a81765c1f30b477e3778f6af",
+      "backup": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/before-edit/14/.skill-lock.json",
+      "sha256_after": "9eb836399295fc724f05b15377fab04ed2d6d9b81c767393dd0e7d9d087fa571"
+    },
+    {
+      "path": "/home/badmuriss/Documents/my-llm-kit/skills/agent-graph/scripts/drivers/host.py",
+      "sha256": "d0b16a5e9defc86bb00f8f9806153c5db8353103aca90fe539c03f8ccdc3beb0",
+      "backup": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/before-edit/15/host.py",
+      "sha256_after": "6010f4719d3412172eef5c25f140f39889fe63c9490ca8acef773b4414acb807"
+    },
+    {
+      "path": "/home/badmuriss/Documents/my-llm-kit/skills/agent-graph/tests/test_host_driver.py",
+      "sha256": "69fa6752067c65390bdf357bd1b8813950a507faa0270d3bd7377295cf4010fe",
+      "backup": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/before-edit/16/test_host_driver.py",
+      "sha256_after": "8503a7a742af5070196bbed1ccb339da64ae8db79a0389c1f475429bb35d6939"
+    },
+    {
+      "path": "/home/badmuriss/Documents/my-llm-kit/skills/impl/references/graph-execution.md",
+      "sha256": "6360339be361d1bd06f71154eeb74feeb1441c32765af6bc99ac20bebde2354b",
+      "backup": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/before-edit/17/graph-execution.md",
+      "sha256_after": "43a096fd7e8781c8aa3488cb03f7d4dec7fda105231f6f91af55a129bdac5341"
+    },
+    {
+      "path": "/home/badmuriss/Documents/incredibly-pretty-websites/README.md",
+      "sha256": "54f4ba650529584b418cc448464a46ea82dad15e3f25c48927ef3ccd160fb300",
+      "backup": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/before-edit/18/README.md",
+      "sha256_after": "4f145344f6d788c1058a858fda730d00261b7562f07b9a1ab5b965d4233ac5ee"
+    },
+    {
+      "path": "/home/badmuriss/.agents/skills/firecrawl-interact/SKILL.md",
+      "sha256": "548d891f416070c22d8dfb2347b1a5baf92b3fc3b2ee676e6fd09295b8344a57",
+      "backup": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/before-edit/19/SKILL.md",
+      "sha256_after": "b874061dbe22cb45ffd92b5b0fd70b375944b3697c1cb2b38482ab879432b9fc"
+    },
+    {
+      "path": "/home/badmuriss/.agents/skills/firecrawl-download/SKILL.md",
+      "sha256": "1127c7d3977794bcb8618e218d0d07a1cfda59da5ab4d9f52a731c45292807f4",
+      "backup": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/before-edit/20/SKILL.md",
+      "sha256_after": "b84dbf9d3e117d42ab9b3d1013420b1b61d47b5132655047650c93e92c79a482"
+    },
+    {
+      "path": "/home/badmuriss/.agents/skills/firecrawl-crawl/SKILL.md",
+      "sha256": "f4f2b262564c1532fa210b29fe783213fd41c5a1169b0a7b43c3dfb5dbdd706c",
+      "backup": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/before-edit/21/SKILL.md",
+      "sha256_after": "48450dd8cbe7422afb943a3ada1c3808bc5157f169bde87e645dc7e05ac69ace"
+    },
+    {
+      "path": "/home/badmuriss/.agents/skills/firecrawl-monitor/SKILL.md",
+      "sha256": "78547a04d0481497d0ad5ed7e8006b66a0f9168367f70ead75838240c470ffa1",
+      "backup": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/before-edit/22/SKILL.md",
+      "sha256_after": "8162db1efc903f6a96962c9350a1f0f25b7880a5c238338db474e8cf83c957cd"
+    },
+    {
+      "path": "/home/badmuriss/.agents/skills/firecrawl-parse/SKILL.md",
+      "sha256": "bb6a1aba463de0b11314e3a63067f8c414a85019248f3de3f753de07e1fad700",
+      "backup": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/before-edit/23/SKILL.md",
+      "sha256_after": "5c2e9f590491dad17514bb82501b4faec3540e9d32782a22a6800681ac56bbfe"
+    },
+    {
+      "path": "/home/badmuriss/.agents/skills/firecrawl-agent/SKILL.md",
+      "sha256": "06a98afae501172e0fc68d279ad9d157dd092672c54cfc667020fc184e540e51",
+      "backup": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/before-edit/24/SKILL.md",
+      "sha256_after": "e3af573f7b92ad03b3b6e439bb66c6ed975f00bb247357db9bd04ebe65d2e31d"
+    },
+    {
+      "path": "/home/badmuriss/.agents/skills/firecrawl-map/SKILL.md",
+      "sha256": "0697e27b5cafa11987235415c556b625e04dd562a295468041d792ea42af06b8",
+      "backup": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/before-edit/25/SKILL.md",
+      "sha256_after": "0c9ed7b66f6bf2eabbf038034915d694d506c512c3eec6ff27c3076b06a368c6"
+    },
+    {
+      "path": "/home/badmuriss/Documents/spec-council/SKILL.md",
+      "sha256": "e87610beab238988c0acb11450f0198401d8e6c278a6855569b9a8112eecbff1",
+      "backup": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/before-edit/26/SKILL.md",
+      "sha256_after": "4b7976e010e4760b4e2d843e5f1d4630c46ec1923cfbf88dfb3fffa9916d0324"
+    }
+  ],
+  "consolidations": [
+    {
+      "skill": "agents-sdk",
+      "owner": "cloudflare",
+      "path": "/home/badmuriss/.agents/skills/cloudflare/references/specialists/agents-sdk/overview.md"
+    },
+    {
+      "skill": "cloudflare-email-service",
+      "owner": "cloudflare",
+      "path": "/home/badmuriss/.agents/skills/cloudflare/references/specialists/cloudflare-email-service/overview.md"
+    },
+    {
+      "skill": "durable-objects",
+      "owner": "cloudflare",
+      "path": "/home/badmuriss/.agents/skills/cloudflare/references/specialists/durable-objects/overview.md"
+    },
+    {
+      "skill": "workers-best-practices",
+      "owner": "cloudflare",
+      "path": "/home/badmuriss/.agents/skills/cloudflare/references/specialists/workers-best-practices/overview.md"
+    },
+    {
+      "skill": "emil-design-eng",
+      "owner": "incredibly-pretty-websites",
+      "path": "/home/badmuriss/Documents/incredibly-pretty-websites/reference/design-engineering.md"
+    },
+    {
+      "skill": "web-perf",
+      "owner": "site-audit",
+      "path": "/home/badmuriss/Documents/site-audit/references/performance-traces.md"
+    },
+    {
+      "skill": "spec",
+      "owner": "agent-graph",
+      "path": "/home/badmuriss/Documents/my-llm-kit/skills/spec/workflow.md",
+      "preserved_runtime_paths": true
+    },
+    {
+      "skill": "impl",
+      "owner": "agent-graph",
+      "path": "/home/badmuriss/Documents/my-llm-kit/skills/impl/workflow.md",
+      "preserved_runtime_paths": true
+    },
+    {
+      "skill": "thermo-nuclear-code-quality-review",
+      "owner": "shared AGENTS.md",
+      "path": "/home/badmuriss/Documents/my-llm-kit/instructions/AGENTS.md",
+      "license": "/home/badmuriss/Documents/my-llm-kit/instructions/LICENSE.cursor-team-kit"
+    }
+  ],
+  "removed_lock_entries": {
+    "emil-design-eng": {
+      "source": "emilkowalski/skill",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/emilkowalski/skill.git",
+      "skillPath": "skills/emil-design-eng/SKILL.md",
+      "skillFolderHash": "0e6f8d7223a0abe73f81e890b3ec76257029a834",
+      "installedAt": "2026-04-01T04:56:10.911Z",
+      "updatedAt": "2026-04-01T04:57:01.625Z"
+    },
+    "find-skills": {
+      "source": "vercel-labs/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vercel-labs/skills.git",
+      "skillPath": "skills/find-skills/SKILL.md",
+      "skillFolderHash": "3013fdeb8a11b10b1eb795ec3ae8bfca38f7c26d",
+      "installedAt": "2026-04-01T04:56:33.716Z",
+      "updatedAt": "2026-04-01T05:09:18.888Z"
+    },
+    "firecrawl": {
+      "source": "firecrawl/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/firecrawl/skills.git",
+      "skillPath": "skills/core/firecrawl/SKILL.md",
+      "skillFolderHash": "9d8b4d326324851f1d145d3ca6ae2193c18f2a3f",
+      "pluginName": "firecrawl",
+      "installedAt": "2026-04-06T18:42:15.699Z",
+      "updatedAt": "2026-09-04T19:11:19.623Z"
+    },
+    "firecrawl-instruct": {
+      "source": "firecrawl/cli",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/firecrawl/cli.git",
+      "skillPath": "skills/firecrawl-instruct/SKILL.md",
+      "skillFolderHash": "06fd83e98352b4aa43358189cf5643640621826e",
+      "installedAt": "2026-04-06T18:42:16.695Z",
+      "updatedAt": "2026-04-06T18:42:16.695Z"
+    },
+    "firecrawl-scrape": {
+      "source": "firecrawl/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/firecrawl/skills.git",
+      "skillPath": "skills/core/firecrawl-scrape/SKILL.md",
+      "skillFolderHash": "68e769da585a2332cd92ec51ddabe6950cff161c",
+      "pluginName": "firecrawl",
+      "installedAt": "2026-04-06T18:42:17.352Z",
+      "updatedAt": "2026-09-04T19:11:19.631Z"
+    },
+    "firecrawl-search": {
+      "source": "firecrawl/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/firecrawl/skills.git",
+      "skillPath": "skills/core/firecrawl-search/SKILL.md",
+      "skillFolderHash": "e21e4d457ba9030262978d0ef8f27345535e0453",
+      "pluginName": "firecrawl",
+      "installedAt": "2026-04-06T18:42:17.741Z",
+      "updatedAt": "2026-09-04T19:11:19.632Z"
+    },
+    "lgpd-brasil": {
+      "source": "ericbsantana/llm-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/ericbsantana/llm-skills.git",
+      "skillPath": "skills/lgpd-brasil/SKILL.md",
+      "skillFolderHash": "87b3fb59dd3dbd5bf261bac70bcee2e8c6940ef9",
+      "installedAt": "2026-04-28T19:23:15.584Z",
+      "updatedAt": "2026-04-28T19:23:15.584Z"
+    },
+    "law-irac": {
+      "source": "asgard-ai-platform/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/asgard-ai-platform/skills.git",
+      "skillPath": "law-irac/SKILL.md",
+      "skillFolderHash": "593047b7ae7d0503e50de90387e31619247b4a3e",
+      "installedAt": "2026-04-28T19:23:18.517Z",
+      "updatedAt": "2026-04-28T19:23:18.517Z"
+    },
+    "on-page-seo-auditor": {
+      "source": "aaron-he-zhu/seo-geo-claude-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/aaron-he-zhu/seo-geo-claude-skills.git",
+      "skillPath": "optimize/on-page-seo-auditor/SKILL.md",
+      "skillFolderHash": "e3d83c372528dd4844adc021dbe118cf9340f758",
+      "pluginName": "aaron-seo-geo",
+      "installedAt": "2026-06-12T14:02:48.879Z",
+      "updatedAt": "2026-06-12T14:02:48.879Z"
+    },
+    "grill-with-docs": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/mattpocock/skills.git",
+      "skillPath": "skills/engineering/grill-with-docs/SKILL.md",
+      "skillFolderHash": "2c3a4e48571bfe42203ed7b49cae85f31ef4b6f2",
+      "pluginName": "mattpocock-skills",
+      "installedAt": "2026-06-12T20:50:07.132Z",
+      "updatedAt": "2026-06-12T20:50:07.132Z"
+    },
+    "improve": {
+      "source": "shadcn/improve",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/shadcn/improve.git",
+      "skillPath": "skills/improve/SKILL.md",
+      "skillFolderHash": "7d77d76815e6deb704427f17f6e393f55e3cb6da",
+      "installedAt": "2026-06-24T12:34:40.984Z",
+      "updatedAt": "2026-06-24T12:34:40.984Z"
+    },
+    "remotion-best-practices": {
+      "source": "remotion-dev/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/remotion-dev/skills.git",
+      "skillPath": "skills/remotion/SKILL.md",
+      "skillFolderHash": "6ba691f85c4691e9ba931cf328626b35bba88603",
+      "installedAt": "2026-06-25T20:48:32.883Z",
+      "updatedAt": "2026-06-25T20:48:32.883Z"
+    },
+    "embedded-captions": {
+      "source": "heygen-com/hyperframes",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/heygen-com/hyperframes.git",
+      "skillPath": "skills/embedded-captions/SKILL.md",
+      "skillFolderHash": "07f0da8864efd5928f73defd436020ef7f0a7e14",
+      "installedAt": "2026-06-27T02:19:16.498Z",
+      "updatedAt": "2026-09-29T01:37:15.656Z"
+    },
+    "faceless-explainer": {
+      "source": "heygen-com/hyperframes",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/heygen-com/hyperframes.git",
+      "skillPath": "skills/faceless-explainer/SKILL.md",
+      "skillFolderHash": "02c833f57d05fcce66032549ef16cf9f5fde848e",
+      "installedAt": "2026-06-27T02:19:16.500Z",
+      "updatedAt": "2026-09-29T01:37:15.658Z"
+    },
+    "general-video": {
+      "source": "heygen-com/hyperframes",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/heygen-com/hyperframes.git",
+      "skillPath": "skills/general-video/SKILL.md",
+      "skillFolderHash": "a0b6c89761bbf3499a1ee940ee8b761a868c51fb",
+      "installedAt": "2026-06-27T02:19:16.500Z",
+      "updatedAt": "2026-09-29T01:37:15.659Z"
+    },
+    "hyperframes": {
+      "source": "heygen-com/hyperframes",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/heygen-com/hyperframes.git",
+      "skillPath": "skills/hyperframes/SKILL.md",
+      "skillFolderHash": "3ebc041a8b2c419c819e9401644bb108868085f0",
+      "pluginName": "core-skills",
+      "installedAt": "2026-06-27T02:19:16.500Z",
+      "updatedAt": "2026-09-29T01:37:15.660Z"
+    },
+    "hyperframes-animation": {
+      "source": "heygen-com/hyperframes",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/heygen-com/hyperframes.git",
+      "skillPath": "skills/hyperframes-animation/SKILL.md",
+      "skillFolderHash": "76c21b7261ad1edafc474831d8862e179b908ada",
+      "pluginName": "core-skills",
+      "installedAt": "2026-06-27T02:19:16.501Z",
+      "updatedAt": "2026-09-29T01:37:15.660Z"
+    },
+    "hyperframes-cli": {
+      "source": "heygen-com/hyperframes",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/heygen-com/hyperframes.git",
+      "skillPath": "skills/hyperframes-cli/SKILL.md",
+      "skillFolderHash": "a829339380dcde41f2d327f9a4975f43db99a559",
+      "pluginName": "core-skills",
+      "installedAt": "2026-06-27T02:19:16.501Z",
+      "updatedAt": "2026-09-29T01:37:15.662Z"
+    },
+    "hyperframes-core": {
+      "source": "heygen-com/hyperframes",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/heygen-com/hyperframes.git",
+      "skillPath": "skills/hyperframes-core/SKILL.md",
+      "skillFolderHash": "b0d3447f2972a8ececf185ea7bfae26f10a01312",
+      "pluginName": "core-skills",
+      "installedAt": "2026-06-27T02:19:16.502Z",
+      "updatedAt": "2026-09-29T01:37:15.662Z"
+    },
+    "hyperframes-creative": {
+      "source": "heygen-com/hyperframes",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/heygen-com/hyperframes.git",
+      "skillPath": "skills/hyperframes-creative/SKILL.md",
+      "skillFolderHash": "61f3a5ed7681f5b44384068d6f0521471cd1a52f",
+      "pluginName": "core-skills",
+      "installedAt": "2026-06-27T02:19:16.502Z",
+      "updatedAt": "2026-09-29T01:37:15.662Z"
+    },
+    "hyperframes-registry": {
+      "source": "heygen-com/hyperframes",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/heygen-com/hyperframes.git",
+      "skillPath": "skills/hyperframes-registry/SKILL.md",
+      "skillFolderHash": "9dda0af0da4e740c8d622ccff5bfccc096062a3d",
+      "pluginName": "core-skills",
+      "installedAt": "2026-06-27T02:19:16.503Z",
+      "updatedAt": "2026-09-29T01:37:15.663Z"
+    },
+    "media-use": {
+      "source": "heygen-com/hyperframes",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/heygen-com/hyperframes.git",
+      "skillPath": "skills/media-use/SKILL.md",
+      "skillFolderHash": "cd1c65c65122a7266f1fb8b2a9b8adc36a3fc349",
+      "pluginName": "core-skills",
+      "installedAt": "2026-06-27T02:19:16.505Z",
+      "updatedAt": "2026-09-29T01:37:15.664Z"
+    },
+    "motion-graphics": {
+      "source": "heygen-com/hyperframes",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/heygen-com/hyperframes.git",
+      "skillPath": "skills/motion-graphics/SKILL.md",
+      "skillFolderHash": "a7f691153319c593aaef38890f76bff1f1296d95",
+      "installedAt": "2026-06-27T02:19:16.507Z",
+      "updatedAt": "2026-09-29T01:37:15.665Z"
+    },
+    "music-to-video": {
+      "source": "heygen-com/hyperframes",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/heygen-com/hyperframes.git",
+      "skillPath": "skills/music-to-video/SKILL.md",
+      "skillFolderHash": "d0418d39f22facf6b643acbb0f16fded8b9fd37c",
+      "installedAt": "2026-06-27T02:19:16.508Z",
+      "updatedAt": "2026-09-29T01:37:15.665Z"
+    },
+    "pr-to-video": {
+      "source": "heygen-com/hyperframes",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/heygen-com/hyperframes.git",
+      "skillPath": "skills/pr-to-video/SKILL.md",
+      "skillFolderHash": "23a076f44a8f9c7735a2daaeec1ff8f6856bf0f4",
+      "installedAt": "2026-06-27T02:19:16.508Z",
+      "updatedAt": "2026-09-29T01:37:15.666Z"
+    },
+    "product-launch-video": {
+      "source": "heygen-com/hyperframes",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/heygen-com/hyperframes.git",
+      "skillPath": "skills/product-launch-video/SKILL.md",
+      "skillFolderHash": "5f8a3c3f0d68fd4222329171e23d82141bb5a3c9",
+      "installedAt": "2026-06-27T02:19:16.508Z",
+      "updatedAt": "2026-09-29T01:37:15.666Z"
+    },
+    "remotion-to-hyperframes": {
+      "source": "heygen-com/hyperframes",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/heygen-com/hyperframes.git",
+      "skillPath": "skills/remotion-to-hyperframes/SKILL.md",
+      "skillFolderHash": "5ea918017f3aeb996d93f2b258cb9ee8b17b7376",
+      "installedAt": "2026-06-27T02:19:16.508Z",
+      "updatedAt": "2026-09-29T01:37:15.667Z"
+    },
+    "slideshow": {
+      "source": "heygen-com/hyperframes",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/heygen-com/hyperframes.git",
+      "skillPath": "skills/slideshow/SKILL.md",
+      "skillFolderHash": "9a1e06f5311ae50a92a0529be66b1bae6ddcf03c",
+      "installedAt": "2026-06-27T02:19:16.509Z",
+      "updatedAt": "2026-09-29T01:37:15.668Z"
+    },
+    "talking-head-recut": {
+      "source": "heygen-com/hyperframes",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/heygen-com/hyperframes.git",
+      "skillPath": "skills/talking-head-recut/SKILL.md",
+      "skillFolderHash": "97d51884acfdfc7d53f8b336e4e83163e1ab57f0",
+      "installedAt": "2026-06-27T02:19:16.509Z",
+      "updatedAt": "2026-09-29T01:37:15.668Z"
+    },
+    "hyperframes-keyframes": {
+      "source": "heygen-com/hyperframes",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/heygen-com/hyperframes.git",
+      "skillPath": "skills/hyperframes-keyframes/SKILL.md",
+      "skillFolderHash": "ce6d298a5b84cfab8a592e2fc4322b8db265a508",
+      "pluginName": "core-skills",
+      "installedAt": "2026-08-11T04:02:45.981Z",
+      "updatedAt": "2026-09-29T01:37:15.663Z"
+    },
+    "hyperframes-audio": {
+      "source": "heygen-com/hyperframes",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/heygen-com/hyperframes.git",
+      "skillPath": "skills/hyperframes-audio/SKILL.md",
+      "skillFolderHash": "0d911a341357e597885ccfd770be3fc3f9957248",
+      "pluginName": "core-skills",
+      "installedAt": "2026-08-20T16:58:58.045Z",
+      "updatedAt": "2026-09-29T01:37:15.661Z"
+    },
+    "hyperframes-studio": {
+      "source": "heygen-com/hyperframes",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/heygen-com/hyperframes.git",
+      "skillPath": "skills/hyperframes-studio/SKILL.md",
+      "skillFolderHash": "57fed7535061ddad7f1f0d68384cb9b7c29a0145",
+      "pluginName": "core-skills",
+      "installedAt": "2026-09-29T01:37:15.664Z",
+      "updatedAt": "2026-09-29T01:37:15.664Z"
+    }
+  },
+  "optional_entry_added": {
+    "name": "agent-graph",
+    "path": "/home/badmuriss/.agents/skills/agent-graph",
+    "reason": "Owns preserved graph/PDF resources after spec/impl retirement; outside the default install profile."
+  },
+  "computer_use_reconciliation": {
+    "path": "/home/badmuriss/.agents/skills/computer-use",
+    "source": "/home/badmuriss/Documents/my-llm-kit/skills/computer-use",
+    "previous_source_archive": "/home/badmuriss/.agents/skills-disabled/2026-09-30-cleanup/agents/computer-use-before-consolidation",
+    "previous_skill_sha256": "2839933fd35216845461466403e6061488005f6df57126d0cd0f769ea45753f3",
+    "reason": "One portable owner with conditional Stagehand, Orca and Jev backends; the old Orca guide remains archived."
+  },
+  "checks": {
+    "installer_unittest": {
+      "module": "scripts.tests.test_installers",
+      "tests": 10,
+      "seconds": 3.187,
+      "result": "passed",
+      "real_machine_installer": false
+    },
+    "host_driver_unittest": {
+      "module": "skills/agent-graph/tests/test_host_driver.py",
+      "tests": 13,
+      "result": "passed"
+    },
+    "runtime_pin_unittest": {
+      "module": "skills/agent-graph/tests/test_runtime_pin.py",
+      "tests": 6,
+      "result": "passed"
+    },
+    "ruff": "passed (0.16.5)",
+    "bash_syntax": "passed",
+    "skill_validators": [
+      "agent-graph",
+      "cloudflare",
+      "computer-use",
+      "firecrawl-agent",
+      "firecrawl-crawl",
+      "firecrawl-download",
+      "firecrawl-interact",
+      "firecrawl-map",
+      "firecrawl-monitor",
+      "firecrawl-parse",
+      "frontend-visual-validation",
+      "incredibly-pretty-websites",
+      "research",
+      "site-audit",
+      "skill-creator",
+      "spec-council",
+      "stagehand-browser"
+    ],
+    "archive_content_hash_checks": 91,
+    "retired_root_entries_checked": 56,
+    "retired_host_aliases_checked": 69,
+    "lock_entries_preserved": 27,
+    "native_config_hashes_checked": 4,
+    "omp_scan": {
+      "count": 40,
+      "warnings": []
+    },
+    "details": "cleanup-checks.json",
+    "preservation": "cleanup-preservation.json",
+    "platforms_unverified": [
+      "Windows/PowerShell",
+      "macOS"
+    ],
+    "full_profile_actual_install": "unobserved; preview only, without credentials or paid probes",
+    "generative_workflow_or_quality_benchmark": "unobserved",
+    "resource_links": {
+      "files": 81,
+      "local_links": 195,
+      "broken": [],
+      "excludes": "Fenced and inline code examples"
+    },
+    "report_links": {
+      "files": 1,
+      "local_links": 176,
+      "broken": [],
+      "excludes": "Fenced and inline code examples"
+    },
+    "task_processes": "All exec sessions and temporary subprocesses finished; no task server or browser retained."
+  },
+  "entrypoint_words": {
+    "cloudflare": {
+      "before": 1156,
+      "after": 232
+    },
+    "incredibly-pretty-websites": {
+      "before": 14708,
+      "after": 331
+    },
+    "skill-creator": {
+      "before": 5205,
+      "after": 271
+    }
+  },
+  "active_catalog_after": {
+    "shared_root": 40,
+    "kit": 8,
+    "core_install_skills": [
+      "research",
+      "frontend-visual-validation"
+    ],
+    "kit_skills": [
+      "agent-graph",
+      "computer-use",
+      "frontend-visual-validation",
+      "remove-ai-marks",
+      "research",
+      "rule-curator",
+      "scrapingdog",
+      "stagehand-browser"
+    ]
+  },
+  "checked_at": "2026-09-30T18:04:40.770476+00:00",
+  "errors": [],
+  "related_skill_repairs": [
+    "/home/badmuriss/.agents/skills/firecrawl-interact/SKILL.md",
+    "/home/badmuriss/.agents/skills/firecrawl-download/SKILL.md",
+    "/home/badmuriss/.agents/skills/firecrawl-crawl/SKILL.md",
+    "/home/badmuriss/.agents/skills/firecrawl-monitor/SKILL.md",
+    "/home/badmuriss/.agents/skills/firecrawl-parse/SKILL.md",
+    "/home/badmuriss/.agents/skills/firecrawl-agent/SKILL.md",
+    "/home/badmuriss/.agents/skills/firecrawl-map/SKILL.md",
+    "/home/badmuriss/.agents/skills/spec-council/SKILL.md"
+  ],
+  "related_skill_validators": [
+    {
+      "skill": "firecrawl-interact",
+      "exit_code": 0,
+      "output": "Skill is valid!"
+    },
+    {
+      "skill": "firecrawl-download",
+      "exit_code": 0,
+      "output": "Skill is valid!"
+    },
+    {
+      "skill": "firecrawl-crawl",
+      "exit_code": 0,
+      "output": "Skill is valid!"
+    },
+    {
+      "skill": "firecrawl-monitor",
+      "exit_code": 0,
+      "output": "Skill is valid!"
+    },
+    {
+      "skill": "firecrawl-parse",
+      "exit_code": 0,
+      "output": "Skill is valid!"
+    },
+    {
+      "skill": "firecrawl-agent",
+      "exit_code": 0,
+      "output": "Skill is valid!"
+    },
+    {
+      "skill": "firecrawl-map",
+      "exit_code": 0,
+      "output": "Skill is valid!"
+    },
+    {
+      "skill": "spec-council",
+      "exit_code": 0,
+      "output": "Skill is valid!"
+    }
+  ]
+}

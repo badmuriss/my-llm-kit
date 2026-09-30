@@ -1,0 +1,467 @@
+{
+  "schema_version": 1,
+  "observed_at": "2026-09-29T04:07:27.765Z",
+  "consumer": "research",
+  "activation": {
+    "state": "local_installed_runtime_active_against_live_api",
+    "api": "https://scrapinho.dev",
+    "skill_target": "/home/badmuriss/Documents/my-llm-kit/skills/research",
+    "policy_target": "/home/badmuriss/Documents/my-llm-kit/instructions/AGENTS.md",
+    "credential_source": "existing private clients.json, research.api_key only; key not copied",
+    "remote_deploy": false,
+    "commit_or_push": false,
+    "global_installer_run": false
+  },
+  "rollback": {
+    "research_snapshot": "/tmp/my-llm-kit-research-before-20260929",
+    "policy_snapshot": "/tmp/my-llm-kit-instructions-before-20260929.md",
+    "instruction": "Revert only owned deltas against snapshots, preserving subsequent user changes."
+  },
+  "code_sha256": {
+    "instructions/AGENTS.md": "a8c1ebb750a769673a99a9c8b1e69c776b4e6e6eeeb372e418ddbbe72613f756",
+    "skills/research/SKILL.md": "61aeed0238e6b6f2dabf95d736b085431bef1aac76c587cb996b36c696ad5afa",
+    "skills/research/references/reporting.md": "b793b42883cc2a4c540eca61b57c4ed3123a0b80943cb9db91e04b8f101bec41",
+    "skills/research/scripts/collect_sources.py": "ba04c0112a9cd205f8499724606033ae346b87372f0518bcfd0b2ca791cb7e15",
+    "skills/research/scripts/scrapinho.py": "aab55650982fb32483fa7f0b49fd07afabff35f6f76b2486987c31a1786994e8",
+    "scripts/tests/test_research_collector.py": "a0b97ad4c8c0b2c0e744c4cd83a9d1ace2c1519b9e83dd270e6269f52689f310"
+  },
+  "checks": {
+    "unittest": {
+      "command": "python3 -m unittest scripts.tests.test_research_collector",
+      "passed": 12
+    },
+    "ruff": {
+      "command": "uvx --from ruff==0.16.5 ruff check .",
+      "passed": true
+    },
+    "node_preflight_tests": {
+      "command": "node --test scripts/tests/preflight_scrapinho.test.mjs",
+      "passed": 7
+    },
+    "authenticated_preflight": {
+      "scope": "fetch.page",
+      "authenticated": true,
+      "modes": [
+        "static",
+        "browser"
+      ],
+      "requestDefaults": {
+        "schema_version": 1,
+        "operation": "fetch.page",
+        "execution": "static",
+        "locale": {
+          "language": "pt-BR",
+          "country": "BR"
+        },
+        "limits": {
+          "timeout_ms": 120000,
+          "attempts": 3,
+          "response_bytes": 2097152,
+          "browser_bytes": 10485760,
+          "browser_ms": 45000
+        },
+        "cache": {
+          "mode": "default",
+          "max_age_s": 900
+        }
+      },
+      "acquisitions": 0
+    }
+  },
+  "smoke": {
+    "cli": "python3 ~/.agents/skills/research/scripts/collect_sources.py",
+    "private_config_loaded_by_installed_cli": true,
+    "acquisition_jobs": 7,
+    "successes": 4,
+    "failures": 3,
+    "attempts_per_job": 1,
+    "concurrency": 1,
+    "acquisition_cli_wall_seconds": 223.7,
+    "exit_codes": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "scope_usage": {
+      "schema_version": 1,
+      "consumer": "research",
+      "project_scope": "research-cutover-20260929",
+      "observed_at": "2026-09-29T04:07:27.765Z",
+      "cycle_start": "2026-09-01T00:00:00.000Z",
+      "cycle_end": "2026-10-01T00:00:00.000Z",
+      "used": {
+        "attempts": 7,
+        "bytes": 4683543,
+        "browser_ms": 0
+      },
+      "reserved": {
+        "attempts": 0,
+        "bytes": 0,
+        "browser_ms": 0
+      },
+      "limit": {
+        "attempts": 15000,
+        "bytes": 12500000000,
+        "browser_ms": 1800000
+      },
+      "usage_basis": "settled_usage_and_active_reservations",
+      "admission_subject_to_shared_limits": true
+    },
+    "limits": {
+      "jobs": 10,
+      "proxy_bytes": 33554432,
+      "acquisition_seconds": 900
+    },
+    "artifacts_directory": "/tmp/research-scrapinho-smoke-20260929",
+    "rfc_eof": {
+      "read_pages": 28,
+      "characters": 454437,
+      "last_cursor_null": true,
+      "offline_text_matches": true,
+      "raw_sha_verified": true
+    },
+    "search": {
+      "effective_engines": [
+        "duckduckgo",
+        "duckduckgo"
+      ],
+      "pages": [
+        0,
+        1
+      ],
+      "positions": [
+        [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      ],
+      "cross_page_duplicate_urls": []
+    },
+    "cache_hit_observed": false,
+    "records": [
+      {
+        "record": {
+          "slug": "missing-second",
+          "schema_version": 1,
+          "run_id": "11c3aadc-9a2a-42be-80dd-adba6e4adce5",
+          "provider": "scrapinho",
+          "url": "https://www.rfc-editor.org/rfc/research-cutover-absent-second-20260929.html",
+          "query": null,
+          "project_scope": "research-cutover-20260929",
+          "job_id": "d4f3b862-8a06-4c0b-b3e5-577380321119",
+          "source_id": null,
+          "accessed_at": null,
+          "sha256": null,
+          "http_status": null,
+          "status": "failed",
+          "error": "target_http_error",
+          "proxy_bytes": null,
+          "cost_usd": null,
+          "usage": {
+            "attempts": 1,
+            "bytes": 7167,
+            "browser_ms": 0
+          },
+          "usage_basis": "proxy_transport_or_reserved_envelope",
+          "acquisition_status": "failed",
+          "errors": [
+            {
+              "code": "target_http_error"
+            }
+          ],
+          "cancellation_unconfirmed": false,
+          "cache_hit": false,
+          "max_age_s": 900
+        },
+        "artifacts": {
+          "record.json": {
+            "bytes": 803,
+            "sha256": "d6845200ae6cea8f4075af59995feebccd4012e042d1808024c0eab1bf8fa122"
+          }
+        }
+      },
+      {
+        "record": {
+          "slug": "missing-source",
+          "schema_version": 1,
+          "run_id": "86f04ffe-5284-4cbf-a622-5dda79b1e7b6",
+          "provider": "scrapinho",
+          "url": "https://www.rfc-editor.org/rfc/research-cutover-nonexistent-20260929.html",
+          "query": null,
+          "project_scope": "research-cutover-20260929",
+          "job_id": "1ecd063a-166c-4199-aa87-75308327a9a8",
+          "source_id": null,
+          "accessed_at": null,
+          "sha256": null,
+          "http_status": null,
+          "status": "failed",
+          "error": "target_http_error",
+          "proxy_bytes": null,
+          "cost_usd": null,
+          "usage": {
+            "attempts": 1,
+            "bytes": 7164,
+            "browser_ms": 0
+          },
+          "usage_basis": "proxy_transport_or_reserved_envelope",
+          "acquisition_status": "failed",
+          "errors": [
+            {
+              "code": "target_http_error"
+            }
+          ],
+          "cancellation_unconfirmed": false,
+          "cache_hit": false,
+          "max_age_s": 900
+        },
+        "artifacts": {
+          "record.json": {
+            "bytes": 801,
+            "sha256": "eb1927eeb36ce287dc2f458523bad05effa69f932bc2d1fd7e9d0f1987653a41"
+          }
+        }
+      },
+      {
+        "record": {
+          "slug": "rfc-cache",
+          "schema_version": 1,
+          "run_id": "11c3aadc-9a2a-42be-80dd-adba6e4adce5",
+          "provider": "scrapinho",
+          "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+          "query": null,
+          "project_scope": "research-cutover-20260929",
+          "job_id": "bcaf2519-a060-4bc1-bdf0-37d02700c378",
+          "source_id": "bcaf2519-a060-4bc1-bdf0-37d02700c378",
+          "accessed_at": "2026-09-29T04:05:26.285Z",
+          "sha256": "d431760660ea44e130f6e919dab216df2d0b3a490567a98089267523368fe1e5",
+          "http_status": 200,
+          "status": "succeeded",
+          "error": null,
+          "proxy_bytes": null,
+          "cost_usd": null,
+          "usage": {
+            "attempts": 1,
+            "bytes": 1198089,
+            "browser_ms": 0
+          },
+          "usage_basis": "proxy_transport_or_reserved_envelope",
+          "acquisition_status": "succeeded",
+          "errors": [],
+          "cancellation_unconfirmed": false,
+          "cache_hit": false,
+          "max_age_s": 900
+        },
+        "artifacts": {
+          "page.html": {
+            "bytes": 1187554,
+            "sha256": "d431760660ea44e130f6e919dab216df2d0b3a490567a98089267523368fe1e5"
+          },
+          "page.md": {
+            "bytes": 457094,
+            "sha256": "0ec7285ede51a75ce339556106731c6edf5b1ba479e32b24491bded76020a2ad"
+          },
+          "record.json": {
+            "bytes": 833,
+            "sha256": "58541377ff619eeb9399cd1b87b7eeaf039d571d34f293fd8b80b390c4d77e13"
+          }
+        }
+      },
+      {
+        "record": {
+          "slug": "rfc-info",
+          "schema_version": 1,
+          "run_id": "86f04ffe-5284-4cbf-a622-5dda79b1e7b6",
+          "provider": "scrapinho",
+          "url": "https://www.rfc-editor.org/info/rfc9110/",
+          "query": null,
+          "project_scope": "research-cutover-20260929",
+          "job_id": "10f7f978-b1a6-401c-9bfd-2e134c78fd80",
+          "source_id": "10f7f978-b1a6-401c-9bfd-2e134c78fd80",
+          "accessed_at": null,
+          "sha256": null,
+          "http_status": null,
+          "status": "failed",
+          "error": "body_limit",
+          "proxy_bytes": null,
+          "cost_usd": null,
+          "usage": {
+            "attempts": 1,
+            "bytes": 2185456,
+            "browser_ms": 0
+          },
+          "usage_basis": "proxy_transport_or_reserved_envelope",
+          "acquisition_status": "partial",
+          "errors": [
+            {
+              "code": "body_limit"
+            }
+          ],
+          "cancellation_unconfirmed": false,
+          "cache_hit": false,
+          "max_age_s": 900
+        },
+        "artifacts": {
+          "record.json": {
+            "bytes": 792,
+            "sha256": "bd36e1932c8f08a661d87da86989c1da6d3f7a90dca6591d9e1b77a43cd1da87"
+          }
+        }
+      },
+      {
+        "record": {
+          "slug": "rfc-source",
+          "schema_version": 1,
+          "run_id": "49698998-4be6-42bc-b365-742ac0f62d9b",
+          "provider": "scrapinho",
+          "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+          "query": null,
+          "project_scope": "research-cutover-20260929",
+          "job_id": "2112ea44-66b3-4ab1-9711-807624e77d98",
+          "source_id": "2112ea44-66b3-4ab1-9711-807624e77d98",
+          "accessed_at": "2026-09-29T04:02:01.867Z",
+          "sha256": "d431760660ea44e130f6e919dab216df2d0b3a490567a98089267523368fe1e5",
+          "http_status": 200,
+          "status": "succeeded",
+          "error": null,
+          "proxy_bytes": null,
+          "cost_usd": null,
+          "usage": {
+            "attempts": 1,
+            "bytes": 1198105,
+            "browser_ms": 0
+          },
+          "usage_basis": "proxy_transport_or_reserved_envelope",
+          "cache_hit": false,
+          "max_age_s": 900
+        },
+        "artifacts": {
+          "page.html": {
+            "bytes": 1187554,
+            "sha256": "d431760660ea44e130f6e919dab216df2d0b3a490567a98089267523368fe1e5"
+          },
+          "page.md": {
+            "bytes": 457094,
+            "sha256": "0ec7285ede51a75ce339556106731c6edf5b1ba479e32b24491bded76020a2ad"
+          },
+          "record.json": {
+            "bytes": 743,
+            "sha256": "a49ab800fc7a2bce6efe0855a73eae893d60d8f0b781976c96b14bd2a1b353bf"
+          }
+        }
+      },
+      {
+        "record": {
+          "slug": "search-rfc",
+          "schema_version": 1,
+          "run_id": "d179aa50-2f4c-4924-a38e-4f619f0c1c1e",
+          "provider": "scrapinho",
+          "url": null,
+          "query": "site:rfc-editor.org RFC 9110 HTTP semantics",
+          "project_scope": "research-cutover-20260929",
+          "job_id": "3e137ab6-78e1-4d1c-a442-974d7df395f1",
+          "source_id": "3e137ab6-78e1-4d1c-a442-974d7df395f1",
+          "accessed_at": "2026-09-29T04:00:46.744Z",
+          "sha256": "95c7eb49e83b53e1aa1ff372783410e260665a53606f412051f411db34473d39",
+          "http_status": null,
+          "status": "succeeded",
+          "error": null,
+          "proxy_bytes": null,
+          "cost_usd": null,
+          "usage": {
+            "attempts": 1,
+            "bytes": 43720,
+            "browser_ms": 0
+          },
+          "usage_basis": "proxy_transport_or_reserved_envelope",
+          "cache_hit": false,
+          "max_age_s": 900,
+          "engine": "duckduckgo"
+        },
+        "artifacts": {
+          "page.html": {
+            "bytes": 2095,
+            "sha256": "95c7eb49e83b53e1aa1ff372783410e260665a53606f412051f411db34473d39"
+          },
+          "page.md": {
+            "bytes": 2146,
+            "sha256": "72242eddb6646bd8ee666af05e19f8ac1d554dd99c1ce3453e2cb0bcb9c66668"
+          },
+          "record.json": {
+            "bytes": 768,
+            "sha256": "3ba960603aa69d778e870ff8180f23f8ec14262b6c17b383e85c278fab902650"
+          },
+          "search.json": {
+            "bytes": 2721,
+            "sha256": "7a99bfc1f32c19cf94b0cbc90a6f1a06d9936763b8317a69ec9bac0d62908c52"
+          }
+        }
+      },
+      {
+        "record": {
+          "slug": "search-rfc-page-one",
+          "schema_version": 1,
+          "run_id": "49698998-4be6-42bc-b365-742ac0f62d9b",
+          "provider": "scrapinho",
+          "url": null,
+          "query": "site:rfc-editor.org RFC 9110 HTTP semantics",
+          "project_scope": "research-cutover-20260929",
+          "job_id": "5d4a2952-73b6-4b90-a5c0-c3501d730fd2",
+          "source_id": "5d4a2952-73b6-4b90-a5c0-c3501d730fd2",
+          "accessed_at": "2026-09-29T04:02:09.742Z",
+          "sha256": "ba6504e86cedf4487019b7480170c9c566c4ad6d672a2ddea87375a9bc60127a",
+          "http_status": null,
+          "status": "succeeded",
+          "error": null,
+          "proxy_bytes": null,
+          "cost_usd": null,
+          "usage": {
+            "attempts": 1,
+            "bytes": 43842,
+            "browser_ms": 0
+          },
+          "usage_basis": "proxy_transport_or_reserved_envelope",
+          "cache_hit": false,
+          "max_age_s": 900,
+          "engine": "duckduckgo"
+        },
+        "artifacts": {
+          "page.html": {
+            "bytes": 2250,
+            "sha256": "ba6504e86cedf4487019b7480170c9c566c4ad6d672a2ddea87375a9bc60127a"
+          },
+          "page.md": {
+            "bytes": 2301,
+            "sha256": "24897d3c0fbf2c52b7722ecca0a8153325779c086773c745f5812b3484133c80"
+          },
+          "record.json": {
+            "bytes": 768,
+            "sha256": "62cde3be88f1c3683869c9b38f5c380813d2add87a02c487155df62833a36aa5"
+          },
+          "search.json": {
+            "bytes": 2876,
+            "sha256": "4a251b117c08558cd4f8e36ed81748485680a7d6a7472786b01c66bc4890d4c1"
+          }
+        }
+      }
+    ]
+  },
+  "limits_and_failures": [
+    "RFC information page failed body_limit; failure retained, no retry or partial promotion.",
+    "Two deliberately nonexistent pages returned target_http_error; final mixed batch retained the successful RFC and exited 1.",
+    "Usage is settled service accounting, not a provider invoice. Unknown-cost fields stay null.",
+    "No Windows/PowerShell, browser acquisition or specialized-provider live tests.",
+    "No 2.5-second SLO, mixed-capacity gate or full production readiness claim.",
+    "Scientific, Maps, social, ads, YouTube and trends.interest routes were not replaced with generic search."
+  ]
+}

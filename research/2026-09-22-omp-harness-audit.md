@@ -2,12 +2,14 @@
 
 Data: 2026-09-22. Baseline do repositório: `471bbed` mais as alterações locais da migração. Escopo autorizado: auditar o kit e a configuração efetiva do harness, explicar as pendências e publicar somente as alterações desta migração. O usuário não autorizou uma refatoração geral de todas as features preexistentes.
 
+Atualizações após o commit `da51018`, em 2026-09-22/23: Supabase, Tally, Refero e Stock Images foram excluídos das configurações MCP, inclusive das fontes legadas encontradas, sem `disabledServers`. Scrapinho foi preservado. Webshare foi instalado, autenticado e exercitado por datacenter com fallback residencial autorizado pelo usuário. Evidências: [mcp-webshare-update.json](evidence/2026-09-22-omp/mcp-webshare-update.json).
+
 ## Resultado
 
 - Não foi identificado defeito bloqueador introduzido pelo reconhecimento de OMP no resource guard ou pelo alias de instruções.
 - Foram corrigidas afirmações imprecisas da documentação: recomendações de modelo não representam a configuração atual; OMP lê o diretório compartilhado nativamente; setup não reproduz os agentes/hooks/MCP/modelos locais; o hook do grafo não observa todas as escritas.
-- O default efetivo `openai-codex/gpt-6-astra:max` foi preservado. Nenhum modelo, segredo, conta ou assinatura foi removido.
-- **Webshare não está configurado.** Não foram encontrados endpoint, credencial ou variáveis de proxy nos locais verificados. Nenhum tráfego foi redirecionado.
+- O default efetivo `openai-codex/gpt-6-astra:max` foi preservado. As exclusões de MCP não alteraram modelos, contas ou assinaturas.
+- **Webshare autenticado e testado no Linux.** CLI oficial v0.2.0, skill `proxy-manager` e comando `webshare-fetch` disponíveis. Conta e planos validados; tráfego real pelos dois planos respondeu HTTP 200. O helper usa datacenter primeiro e no máximo um fallback residencial. Nenhum proxy global foi configurado.
 - Não houve segredo real confirmado nos arquivos publicáveis inspecionados. Configurações privadas do OMP não serão incluídas no commit.
 - Existem defeitos preexistentes, listados abaixo. Auditoria concluída não significa que o repositório inteiro ficou livre de defeitos.
 
@@ -19,18 +21,16 @@ O [registro da migração](2026-09-22-omp-gpt6-routing.md) conserva a cronologia
 |---|---|---|
 | MCP Higgsfield | HTTP 401 na última inicialização observada | OAuth/autenticação válida e `/mcp test higgsfield` |
 | MCP PostHog | HTTP 401, token ausente | Token apropriado ou fluxo de autenticação suportado; testar servidor |
-| MCP Supabase | HTTP 401 | Autorizar a sessão OMP e testar |
-| MCP Tally | HTTP 401 | Autorizar a sessão OMP e testar |
 | MCP Magnific | HTTP 401 | Autorizar a sessão OMP e testar |
 | MCP LupaLeads | HTTP 401, token ausente/inválido | Autenticação válida e teste |
-| Webshare | Não configurado | Se o usuário quiser usá-lo, obter endpoint/credencial e definir se o proxy é só para coleta web ou também para outras requisições; não redirecionar OAuth silenciosamente |
+| Webshare | Concluído no Linux: autenticação, descoberta, comando instalado e fallback exercitado | Sem pendência local de autenticação; wrapper Windows não executado neste ambiente |
 | Reprodução da instalação OMP em outra máquina | Configuração funcional local, não provisionada pelo setup | Versionar fontes sem segredos e criar instalação preservadora, caso essa portabilidade seja solicitada |
 | Modelo/esforço efetivamente servido | Regras do resolver confirmadas por leitura; probes anteriores responderam | Inspecionar recibos do runtime/servidor, sem confundir resposta OK com prova de ausência de fallback |
 | Contexto longo Sol/Luna pela assinatura | Não exercitado | Confirmar capacidade do endpoint e corrigir o limite local conforme a evidência antes de depender dele |
 | Comparação comunitária dos modelos | URLs encontradas, conteúdo bloqueado | Ler fontes acessíveis se esse apoio comunitário ainda for necessário; não afirmar consenso |
 | Falhas preexistentes abaixo | Auditadas, algumas reproduzidas com fixtures | Correções próprias e regressões por problema; não foram misturadas à migração |
 
-A primeira coluna de seis MCPs não implica seis contas novas: são autorizações pendentes no host OMP. Não houve nova tentativa de login ou exposição de tokens. `reauth` só se aplica quando o servidor suporta esse fluxo; token de API não pode ser inventado.
+Restam quatro MCPs com autenticação pendente. Supabase e Tally deixaram de ser pendências porque foram removidos a pedido, junto de Refero e Stock Images. A descoberta real do OMP foi exercitada no kit e no Central: nenhum dos quatro reapareceu; Scrapinho permaneceu presente e sua configuração foi preservada. Sessões já abertas precisam de `/mcp reload` ou reinicialização para atualizar as ferramentas carregadas.
 
 ## Cobertura
 
@@ -98,13 +98,29 @@ O diretório `criativos-outis-codex` movido na migração contém `.tmp`, não u
 
 Metadados observados: diretório `~/.omp/agent` 0700, `config.yml` e `mcp.json` 0600; `models.yml` 0664 fica protegido pelo diretório ancestral 0700. Remotos MCP usam HTTPS, sem usuário/senha ou query nas URLs inspecionadas. Valores de credenciais ficaram fora da saída e do repositório.
 
-O escopo de usuário dos MCPs é intencional e está documentado. Não se demonstrou encaminhamento indevido por esse escopo. As seis respostas 401 continuam pendências; ferramentas carregadas nos outros seis servidores não certificam todos os seus endpoints.
+O escopo de usuário dos MCPs é intencional e está documentado. Não se demonstrou encaminhamento indevido por esse escopo. A rodada original observou seis respostas 401; após a remoção solicitada de Supabase e Tally, restam quatro pendências. Ferramentas carregadas não certificam todos os endpoints de um servidor.
 
 ### Webshare
 
-Não apareceu nas variáveis de ambiente do processo; configs OMP/Codex/Claude/OpenCode; perfis de shell; `.env` do projeto; arquivos de ambiente globais previstos pelo OMP; MCP; ou diretórios locais usuais do produto.
+Na auditoria inicial, Webshare não apareceu nas variáveis de ambiente do processo; configs OMP/Codex/Claude/OpenCode; perfis de shell; `.env` do projeto; arquivos de ambiente globais previstos pelo OMP; MCP; ou diretórios locais usuais do produto.
 
 OMP documenta `PI_PROXY_<PROVIDER>`, `PI_PROXY`, `HTTPS_PROXY`/`HTTP_PROXY` e `ALL_PROXY`. O proxy global pode atingir login, refresh e outros fetches, enquanto o específico do provider tem escopo menor. Por isso não se improvisou um proxy global só para marcar a integração como concluída. Referência local: `omp://environment-variables.md`, seção Outbound proxy routing, OMP 18.2.9.
+
+A pesquisa posterior encontrou a integração oficial por [CLI](https://github.com/webshare-proxy/webshare-cli) e [skill `proxy-manager`](https://github.com/webshare-proxy/skills/tree/main/skills/proxy-manager), confirmada também no [guia do próprio Webshare](https://www.webshare.io/blog/proxies-for-ai-agents-setup-guide-why-you-need-one). Fontes consultadas em 2026-09-22. Não foi instalado MCP de terceiros.
+
+O binário Linux amd64 v0.2.0 foi instalado em `~/.local/bin/webshare` após conferir o SHA-256 do arquivo contra o digest publicado no release oficial. `--version` e `--help` passaram. A skill foi instalada em `~/.agents/skills/proxy-manager` e descoberta pelo provider `agents` do OMP. O manifesto do kit passou a instalar essa skill em vez de `refero-design`; o CLI continua sendo um pré-requisito separado do setup, explicitado no README.
+
+Em 2026-09-23, a chave fornecida pelo usuário no `.bashrc` foi carregada em memória sem ser impressa. `webshare whoami --json` e `webshare plans list --json` passaram. Havia dois planos ativos, datacenter e residencial; o usuário escolheu datacenter como padrão com fallback residencial. Nenhum plano foi comprado ou alterado e nenhuma allowlist foi modificada.
+
+A chave foi persistida somente no ambiente privado `~/.omp/agent/.env`, com permissão 0600, para o OMP não depender de um shell interativo. O `.bashrc` não foi alterado. Uma inicialização limpa do runtime, sem a chave herdada, confirmou leitura do `.env` e exportação para processos filhos. Os IDs dos planos ficam em `~/.omp/agent/webshare.json`, também 0600; os valores não entram no repositório.
+
+O helper `scripts/webshare_fetch.py`, instalado como `webshare-fetch`, faz GET por proxy explícito, sem cookies e sem `.curlrc`. Uma falha de conexão/timeout, HTTP 403/407/408/429 ou 5xx permite uma tentativa residencial. HTTP 400/401/404 e erros locais não consomem esse fallback. O corpo só é publicado após sucesso; chaves e URLs de proxy não entram nos argumentos ou logs. A integração não muda as prioridades Scrapinho/ScrapingDog nem as chamadas de modelos/OAuth.
+
+Verificação observada: quatro testes do helper e seis dos instaladores passaram; Ruff e sintaxe Bash passaram; instalação Unix sem escrita em dry-run, repetível e preservadora de executável do usuário. Requisições reais por datacenter e residencial retornaram HTTP 200 e IPs de saída diferentes da conexão direta. O comando instalado passou tanto pelo datacenter quanto por uma falha de datacenter induzida seguida de sucesso residencial real. Também se confirmou que curl limpa uma resposta anterior ao receber HTTP 204. O wrapper Windows foi revisado, mas sua execução nativa não foi observada.
+
+OAuth não está implementado no [CLI oficial v0.2.0](https://github.com/webshare-proxy/webshare-cli/blob/v0.2.0/internal/cmd/root.go); ele lê `WEBSHARE_API_KEY`. A [API oficial](https://apidocs.webshare.io/) documenta `Authorization: Token`. Fontes conferidas em 2026-09-23. Não foi criado fluxo OAuth fictício.
+
+Os executores desta implementação reportaram `openai-codex/gpt-5.6-sol` e `openai-codex/gpt-5.6-luna`; o host não forneceu recibo independente de modelo/esforço no servidor. Esses relatos não são apresentados como execução comprovada dos modelos GPT-6 recomendados. A configuração de roles do usuário não foi alterada.
 
 ## Achados considerados e rejeitados
 

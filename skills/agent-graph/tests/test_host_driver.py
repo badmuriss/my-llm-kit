@@ -303,7 +303,7 @@ class HostDriverBehavior(unittest.TestCase):
 
         self.assertEqual(
             host_driver.coordinator_capsule_invocation(path),
-            f"$impl --coordinator-capsule {path}",
+            f"$agent-graph --coordinator-capsule {path}",
         )
         receipt = self.driver.coordinator_handoff(
             path,

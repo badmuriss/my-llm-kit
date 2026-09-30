@@ -7,3 +7,4 @@ __pycache__/
 openspec/runs/
 openspec/impl-learning/
 research/sources/
+node_modules/

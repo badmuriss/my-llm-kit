@@ -1,0 +1,160 @@
+{
+  "checked_at": "2026-09-30T18:04:40.770476+00:00",
+  "initial_audit_verification": {
+    "checked_at": "2026-09-30T04:53:26.991603+00:00",
+    "omp_version": "18.4.4",
+    "recommendation_occurrences": 128,
+    "unique_entrypoint_paths": 113,
+    "root_scan_count": 95,
+    "root_scan_warnings": [],
+    "root_table_rows": 95,
+    "other_table_rows": {
+      "17 skills do kit": 17,
+      "14 cópias sincronizadas": 14
+    },
+    "local_report_links_checked": 169,
+    "root_recommendations": {
+      "sob_demanda": 34,
+      "consolidar": 10,
+      "manter": 5,
+      "remover": 46
+    },
+    "entrypoint_hash_occurrences_checked": 128,
+    "preservation": {
+      "kit": {
+        "status_entries": 26,
+        "content_and_link_checks": 25,
+        "content_drift": []
+      },
+      "shared": {
+        "status_entries": 745,
+        "content_and_link_checks": 466,
+        "content_drift": []
+      }
+    },
+    "errors": [],
+    "workflows_executed": false,
+    "skills_uninstalled": false,
+    "report_sha256": "225abd49a8bbe0411ba0ef111f824c63082b90eebcdc635af03058493df48780",
+    "recommendations_sha256": "dfc5c5aca2cce7e169ffc214a9fa6a1d04272badb687fadb51743df0f9a8886b",
+    "report_trailing_whitespace_lines": [],
+    "plan_pending_checkboxes": 0
+  },
+  "recommendation_occurrences": 128,
+  "root_table_rows": 95,
+  "other_table_rows": {
+    "17 skills do kit": 17,
+    "14 cópias sincronizadas": 14
+  },
+  "root_recommendations": {
+    "sob_demanda": 34,
+    "consolidar": 9,
+    "manter": 5,
+    "remover": 47
+  },
+  "local_report_links_checked": 176,
+  "canonical_source_hash_occurrences_checked": 128,
+  "intentional_source_changes": [
+    "/home/badmuriss/Documents/incredibly-pretty-websites/SKILL.md",
+    "/home/badmuriss/Documents/my-llm-kit/skills/frontend-visual-validation/SKILL.md",
+    "/home/badmuriss/Documents/my-llm-kit/skills/stagehand-browser/SKILL.md"
+  ],
+  "followup_record": "refero-removal.json",
+  "root_scan_after_refero_count": 94,
+  "root_scan_after_refero_warnings": [],
+  "skills_deactivated": [
+    "refero-design"
+  ],
+  "remaining_cleanup_applied": true,
+  "errors": [],
+  "report_sha256": "84fd3dee028a812be909f21b62a498d08b19cfd0b9fe9cc351324f5c41f58523",
+  "recommendations_sha256": "d5d6af678022b940d2788dbc801d3ee192334bd2fed5d087ada6ba545c686e86",
+  "report_trailing_whitespace_lines": [],
+  "plan_pending_checkboxes": 0,
+  "harness_portability_record": "harness-portability.json",
+  "root_scan_after_portability_count": 94,
+  "root_scan_after_portability_warnings": [],
+  "cleanup_followup": "skills-cleanup.json",
+  "cleanup_checks": {
+    "installer_unittest": {
+      "module": "scripts.tests.test_installers",
+      "tests": 10,
+      "seconds": 3.187,
+      "result": "passed",
+      "real_machine_installer": false
+    },
+    "host_driver_unittest": {
+      "module": "skills/agent-graph/tests/test_host_driver.py",
+      "tests": 13,
+      "result": "passed"
+    },
+    "runtime_pin_unittest": {
+      "module": "skills/agent-graph/tests/test_runtime_pin.py",
+      "tests": 6,
+      "result": "passed"
+    },
+    "ruff": "passed (0.16.5)",
+    "bash_syntax": "passed",
+    "skill_validators": [
+      "agent-graph",
+      "cloudflare",
+      "computer-use",
+      "firecrawl-agent",
+      "firecrawl-crawl",
+      "firecrawl-download",
+      "firecrawl-interact",
+      "firecrawl-map",
+      "firecrawl-monitor",
+      "firecrawl-parse",
+      "frontend-visual-validation",
+      "incredibly-pretty-websites",
+      "research",
+      "site-audit",
+      "skill-creator",
+      "spec-council",
+      "stagehand-browser"
+    ],
+    "archive_content_hash_checks": 91,
+    "retired_root_entries_checked": 56,
+    "retired_host_aliases_checked": 69,
+    "lock_entries_preserved": 27,
+    "native_config_hashes_checked": 4,
+    "omp_scan": {
+      "count": 40,
+      "warnings": []
+    },
+    "details": "cleanup-checks.json",
+    "preservation": "cleanup-preservation.json",
+    "platforms_unverified": [
+      "Windows/PowerShell",
+      "macOS"
+    ],
+    "full_profile_actual_install": "unobserved; preview only, without credentials or paid probes",
+    "generative_workflow_or_quality_benchmark": "unobserved",
+    "resource_links": {
+      "files": 81,
+      "local_links": 195,
+      "broken": [],
+      "excludes": "Fenced and inline code examples"
+    },
+    "report_links": {
+      "files": 1,
+      "local_links": 176,
+      "broken": [],
+      "excludes": "Fenced and inline code examples"
+    },
+    "task_processes": "All exec sessions and temporary subprocesses finished; no task server or browser retained."
+  },
+  "cleanup_preservation": {
+    "kit": {
+      "content_and_link_checks": 25,
+      "unexplained_drift": []
+    },
+    "shared": {
+      "content_and_link_checks": 466,
+      "unexplained_drift": []
+    }
+  },
+  "root_scan_after_cleanup_count": 40,
+  "root_scan_after_cleanup_warnings": []
+}

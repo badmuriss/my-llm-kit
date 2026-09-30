@@ -1,0 +1,8 @@
+{
+  "name": "my-llm-kit-stagehand-browser",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22.18.0" },
+  "dependencies": { "@browserbasehq/stagehand": "4.1.0" },
+  "scripts": { "smoke": "node smoke.mjs" }
+}

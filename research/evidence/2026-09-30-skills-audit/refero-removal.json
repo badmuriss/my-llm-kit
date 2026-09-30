@@ -1,0 +1,80 @@
+{
+  "started_at": "2026-09-30T12:52:21.595882+00:00",
+  "authorization": "User requested Refero removal because the subscription ended.",
+  "scope": "Refero only; the rest of the audit remains a recommendation.",
+  "status": "verified",
+  "links": [
+    {
+      "host": "agents",
+      "path": "/home/badmuriss/.agents/skills/refero-design",
+      "target": "/home/badmuriss/.agents/community-skills/refero-design/skills/refero-design",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30/agents/refero-design",
+      "archive_target": "/home/badmuriss/.agents/community-skills/refero-design/skills/refero-design"
+    },
+    {
+      "host": "codex",
+      "path": "/home/badmuriss/.codex/skills/refero-design",
+      "target": "/home/badmuriss/.agents/skills/refero-design",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30/codex/refero-design",
+      "archive_target": "/home/badmuriss/.agents/community-skills/refero-design/skills/refero-design"
+    },
+    {
+      "host": "claude",
+      "path": "/home/badmuriss/.claude/skills/refero-design",
+      "target": "/home/badmuriss/.agents/community-skills/refero-design/skills/refero-design",
+      "archive_path": "/home/badmuriss/.agents/skills-disabled/2026-09-30/agents/refero-design",
+      "archive_target": "/home/badmuriss/.agents/community-skills/refero-design/skills/refero-design",
+      "shared_with": "agents"
+    }
+  ],
+  "source": {
+    "path": "/home/badmuriss/.agents/community-skills/refero-design/skills/refero-design/SKILL.md",
+    "sha256_before": "4a4a7a0b72a2fa0a454903debe6e872ada79a724cb452fe2113d266c2f0c6978",
+    "sha256_after": "4a4a7a0b72a2fa0a454903debe6e872ada79a724cb452fe2113d266c2f0c6978"
+  },
+  "lock": {
+    "path": "/home/badmuriss/.agents/.skill-lock.json",
+    "sha256_before": "25eb601599514a0fb011f21538cd37e5d46f7a917faef48d7b8b30deab6e0502",
+    "removed_entry": {
+      "source": "referodesign/refero_skill",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/referodesign/refero_skill.git",
+      "skillPath": "skills/refero-design/SKILL.md",
+      "skillFolderHash": "4c2d358faf71cae46b3d084c4915f2ae0ebad379",
+      "installedAt": "2026-08-13T02:10:56.674Z",
+      "updatedAt": "2026-08-13T02:10:56.674Z"
+    },
+    "sha256_after": "e8070ebdabc76dabc802072dd2b173972e9ed071a81765c1f30b477e3778f6af",
+    "other_records_preserved": true
+  },
+  "website_files": [
+    {
+      "path": "/home/badmuriss/Documents/incredibly-pretty-websites/SKILL.md",
+      "sha256_before": "d827717007c8d0f72daf2a1a090239395c296e1ba0806dbe6c8db71f11d2bb6d",
+      "sha256_after": "e729b25d1dc5cabeb7c995398750fd43c6ef0f88999012c163edbc110ebc87c6"
+    },
+    {
+      "path": "/home/badmuriss/Documents/incredibly-pretty-websites/README.md",
+      "sha256_before": "ed546e1862eebcb036fa6bdcbc5ee7e8080065cbd249cfe9e8a4ae35bef64186",
+      "sha256_after": "54f4ba650529584b418cc448464a46ea82dad15e3f25c48927ef3ccd160fb300"
+    },
+    {
+      "path": "/home/badmuriss/Documents/incredibly-pretty-websites/reference/design-references.md",
+      "sha256_before": "08bf8b5fce4d4266136b5628fab8d5c77c10f7696c21d736b57fa432e91a2011",
+      "sha256_after": "415d8cfbbf441891e656a4bd7fbabe1215668dea15d1101f9e45e8a34cec7d9a"
+    }
+  ],
+  "omp_scan_after": {
+    "count": 94,
+    "warnings": [],
+    "removed": [
+      "refero-design"
+    ],
+    "added": []
+  },
+  "website_skill_validator": "passed",
+  "website_local_links_checked": 63,
+  "diff_whitespace_check": "passed",
+  "checked_at": "2026-09-30T12:56:39.006700+00:00",
+  "errors": []
+}

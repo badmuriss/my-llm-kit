@@ -1,10 +1,11 @@
 # Graph execution
 
-Use only for an approved graph-mode change. Read the [completion gates](../SKILL.md).
+Use only for an approved graph-mode change. Shared AGENTS.md supplies the common
+completion gates; [agent-graph](../../agent-graph/SKILL.md) owns this optional protocol.
 
 ## Bootstrap
 
-A graph-mode `$impl <slug>` is a bounded bootstrap:
+A graph-mode request through `agent-graph` is a bounded bootstrap:
 
 ```text
 python3 "<agent-graph-dir>/scripts/agent_graph.py" validate --repo "<project>" --change <slug> --json
@@ -50,7 +51,7 @@ may stay in the shared worktree. Follow an explicit user placement instruction.
 Run `claim-coordinator`, then `resume`. Never bootstrap from a claimed coordinator. Every mutating command presents the current generation.
 
 1. Query `ready`. Choose the smallest useful non-conflicting wave.
-2. Classify ready work into only the roles it needs: research, documentation, implementation, review, verification, or integration. The coordinator filters review by cohesive package and material risk, rather than auditing every microtask. Before routing Codex workers, read [the model-routing policy](model-routing.md); select only Luna, Sol or Astra, never GPT-5.5 or GPT-5.6 Terra, and verify the resolved model and effort; use [fast-worker](fast-worker.md) for bounded mechanical work and [deep-reasoner](deep-reasoner.md) for hard judgment. Resolve each attempt through the runtime catalog with the cheapest sufficient model and effort. Persist requested/resolved values independently with fallback, rationale, role, risk, and cost rank. Do not escalate model or effort automatically. Apply the `minimal-by-default-v1` artifact budget from `agent-graph`: no speculative tests or Markdown.
+2. Classify ready work into only the roles it needs: research, documentation, implementation, review, verification, or integration. Filter review by cohesive package and material risk. Read the active harness's native catalog and dispatch interface, and verify the resolved model and effort. Codex-specific [routing](model-routing.md), [fast-worker](fast-worker.md) and [deep-reasoner](deep-reasoner.md) notes apply only when that host is selected and its current account exposes those options. Resolve each attempt through the runtime catalog with the cheapest sufficient model and effort. Persist requested/resolved values independently with fallback, rationale, role, risk, and cost rank. Do not escalate model or effort automatically. Apply the `minimal-by-default-v1` artifact budget from `agent-graph`: no speculative tests or Markdown.
 3. Run `dispatch --task <id> --generation <n>`. Give a worker only the generated capsule, which is bounded and transcript-free. Use host-native workers when available or `--local` for one localized task.
 4. Use `sync` for provider lifecycle, `reply` for questions, and `record-result` for a structured result. Driver degradation and auto-selection stay visible in receipts. Dynamic children inherit or narrow paths and context; they cannot grade parents, recursively delegate, or mutate the journal.
 5. Run `run-check --task <id> --generation <n>`. It executes directly and rejects shell operators. A process exit or provider completion is never a grade.
@@ -60,7 +61,8 @@ Run `claim-coordinator`, then `resume`. Never bootstrap from a claimed coordinat
    `cleanup-register` before capsule delivery or other side effects. Finish them
    with `cleanup-finish` only after the target or receipt proves cleanup.
 
-When semantic supervision is requested and `OPENROUTER_API_KEY` is available,
+When semantic supervision is requested, paid inference through that provider is
+explicitly authorized and `OPENROUTER_API_KEY` is available,
 call the pinned runtime's `assess --attempt <id> --generation <n>` after `sync`
 returns fresh worker output, with the usual `--repo`, `--change` and `--run-id`.
 Read [the evaluator contract](../../agent-graph/references/jev-integration.md).

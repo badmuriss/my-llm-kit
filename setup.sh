@@ -36,6 +36,30 @@ fi
 
 RESULTS=()
 HAD_FAILURE=0
+install_webshare_fetch() {
+  [ "$FULL" -eq 1 ] || return 0
+  local target="$HOME/.local/bin/webshare-fetch"
+  local source="$REPO_DIR/scripts/webshare_fetch.py"
+  if [ ! -f "$source" ]; then
+    echo "  Webshare helper is missing: $source" >&2
+    return 1
+  fi
+  if [ -e "$target" ] || [ -L "$target" ]; then
+    if [ -L "$target" ] && [ "$(readlink -f "$target" 2>/dev/null || true)" = "$(readlink -f "$source")" ]; then
+      echo "  webshare-fetch already linked at $target"
+      return 0
+    fi
+    echo "  refusing to replace existing non-kit executable: $target" >&2
+    return 1
+  fi
+  if [ "$DRY" -eq 1 ]; then
+    echo "  [dry-run] link $target -> $source"
+    return 0
+  fi
+  mkdir -p "$(dirname "$target")" &&
+    chmod +x "$source" &&
+    ln -s "$source" "$target"
+}
 manifest_rows() {
   python3 "$REPO_DIR/scripts/read_install_manifest.py" "$1" --manifest "$INSTALL_MANIFEST"
 }
@@ -128,6 +152,7 @@ check_bins() {
   return $missing
 }
 run_step "check binaries" check_bins
+run_step "webshare-fetch helper" install_webshare_fetch
 
 install_runtime_dependency() {
   python3 -c 'from jsonschema import Draft202012Validator' 2>/dev/null && return 0
@@ -137,7 +162,7 @@ install_runtime_dependency() {
   fi
   python3 -m pip install --user --break-system-packages -r "$REPO_DIR/skills/agent-graph/requirements.txt"
 }
-run_step "graph runtime dependency" install_runtime_dependency
+[ "$FULL" -eq 0 ] || run_step "graph runtime dependency" install_runtime_dependency
 
 # 2. pip install
 install_python_pkgs() {
@@ -166,10 +191,10 @@ configure_opencode_mcp() {
 # different file and format, so this branches per host instead of writing one path.
 register_mcp() {
   if command -v claude >/dev/null 2>&1; then
-    if claude mcp list 2>/dev/null | grep -q "^paper-search"; then
-      echo "  claude: paper-search already registered, skipping"
-    elif [ "$DRY" -eq 1 ]; then
+    if [ "$DRY" -eq 1 ]; then
       echo "  [dry-run] claude mcp add --scope user paper-search -- paper-search-mcp"
+    elif claude mcp list 2>/dev/null | grep -q "^paper-search"; then
+      echo "  claude: paper-search already registered, skipping"
     else
       claude mcp add --scope user paper-search -- paper-search-mcp
     fi
@@ -177,7 +202,8 @@ register_mcp() {
 
   if command -v codex >/dev/null 2>&1; then
     local details
-    details="$(codex mcp get paper-search 2>/dev/null || true)"
+    details=""
+    [ "$DRY" -eq 1 ] || details="$(codex mcp get paper-search 2>/dev/null || true)"
     if grep -Fq "command: paper-search-mcp" <<<"$details" &&
        grep -Fq "enabled: true" <<<"$details"; then
       echo "  codex: paper-search already registered and enabled, skipping"
@@ -210,10 +236,15 @@ install_scrapingdog_mcp() {
 # secret into an agent config file.
 register_scrapingdog_mcp() {
   local entrypoint details
-  entrypoint="$(npm root --global)/scrapingdog-mcp/dist/index.js"
+  if [ "$DRY" -eq 1 ]; then
+    entrypoint="<npm-global>/scrapingdog-mcp/dist/index.js"
+  else
+    entrypoint="$(npm root --global)/scrapingdog-mcp/dist/index.js"
+  fi
 
   if command -v claude >/dev/null 2>&1; then
-    details="$(claude mcp get scrapingdog 2>/dev/null || true)"
+    details=""
+    [ "$DRY" -eq 1 ] || details="$(claude mcp get scrapingdog 2>/dev/null || true)"
     if grep -Fq "$entrypoint" <<<"$details"; then
       echo "  claude: scrapingdog already points to the pinned build, skipping"
     elif [ "$DRY" -eq 1 ]; then
@@ -226,7 +257,8 @@ register_scrapingdog_mcp() {
   fi
 
   if command -v codex >/dev/null 2>&1; then
-    details="$(codex mcp get scrapingdog 2>/dev/null || true)"
+    details=""
+    [ "$DRY" -eq 1 ] || details="$(codex mcp get scrapingdog 2>/dev/null || true)"
     if grep -Fq "$entrypoint" <<<"$details" &&
        grep -Fq "enabled: true" <<<"$details"; then
       echo "  codex: scrapingdog already points to the pinned build and is enabled, skipping"
@@ -251,11 +283,11 @@ register_scrapingdog_mcp() {
 
 preflight_scrapingdog_mcp() {
   local entrypoint
-  entrypoint="$(npm root --global)/scrapingdog-mcp/dist/index.js"
   if [ "$DRY" -eq 1 ]; then
-    echo "  [dry-run] node scripts/preflight_scrapingdog_mcp.mjs $entrypoint"
+    echo "  [dry-run] node scripts/preflight_scrapingdog_mcp.mjs <npm-global>/scrapingdog-mcp/dist/index.js"
     return 0
   fi
+  entrypoint="$(npm root --global)/scrapingdog-mcp/dist/index.js"
   node "$REPO_DIR/scripts/preflight_scrapingdog_mcp.mjs" "$entrypoint"
 }
 [ "$FULL" -eq 0 ] || run_step "preflight MCP scrapingdog" preflight_scrapingdog_mcp
@@ -342,6 +374,15 @@ link_vendored_skills() {
 
 run_step "vendored skills" link_vendored_skills
 
+install_stagehand() {
+  if [ "$DRY" -eq 1 ]; then
+    echo "  [dry-run] install pinned Stagehand SDK; OMP extension only for an existing host (Node >=22.18, existing Chrome)"
+    return 0
+  fi
+  node "$SKILLS_ROOT/stagehand-browser/tools/install.mjs" --home "$HOME"
+}
+[ "$FULL" -eq 0 ] || run_step "Stagehand browser" install_stagehand
+
 verify_runtime() {
   if [ "$DRY" -eq 1 ]; then
     echo "  [dry-run] verify installed graph runtime imports and CLI"
@@ -349,7 +390,7 @@ verify_runtime() {
   fi
   python3 "$SKILLS_ROOT/agent-graph/scripts/agent_graph.py" --help >/dev/null
 }
-run_step "installed graph runtime" verify_runtime
+[ "$FULL" -eq 0 ] || run_step "installed graph runtime" verify_runtime
 
 # 4b. own skill repos: clone if missing, then link
 setup_own_repos() {
@@ -394,7 +435,7 @@ install_community_skills() {
 }
 [ "$FULL" -eq 0 ] || run_step "community skills" install_community_skills
 
-# 4d. Firecrawl CLI + core skills. The Research Index works without login, while
+# 4d. Firecrawl CLI + Research Index skill. The index works without login, while
 # the other endpoints still need a key or stored credentials.
 firecrawl_has_research() {
   command -v firecrawl >/dev/null 2>&1 &&
@@ -405,6 +446,11 @@ install_firecrawl() {
   local research_skill="$SKILLS_ROOT/firecrawl-research-index/SKILL.md"
   local needs_cli=0 needs_skills=0
 
+  if [ "$DRY" -eq 1 ]; then
+    echo "  [dry-run] verify firecrawl research; install firecrawl-cli if missing or incompatible"
+    [ -f "$research_skill" ] || echo "  [dry-run] firecrawl setup research-index --global --yes"
+    return 0
+  fi
   firecrawl_has_research || needs_cli=1
   [ -f "$research_skill" ] || needs_skills=1
 
@@ -412,12 +458,6 @@ install_firecrawl() {
     echo "  firecrawl research command and skill already present, skipping"
     return 0
   fi
-  if [ "$DRY" -eq 1 ]; then
-    [ "$needs_cli" -eq 0 ] || echo "  [dry-run] npm install -g firecrawl-cli"
-    [ "$needs_skills" -eq 0 ] || echo "  [dry-run] firecrawl setup core --global --yes"
-    return 0
-  fi
-
   if [ "$needs_cli" -eq 1 ]; then
     npm install -g firecrawl-cli || return 1
     hash -r
@@ -427,7 +467,7 @@ install_firecrawl() {
     return 1
   fi
   if [ "$needs_skills" -eq 1 ]; then
-    firecrawl setup core --global --yes || return 1
+    firecrawl setup research-index --global --yes || return 1
   fi
   if [ ! -f "$research_skill" ]; then
     echo "  firecrawl research skill is missing after setup"
@@ -462,16 +502,6 @@ preflight_firecrawl_research() {
   echo "  firecrawl Research Index query returned CodePlan"
 }
 [ "$FULL" -eq 0 ] || run_step "preflight Firecrawl research" preflight_firecrawl_research
-
-# 4e. the ingest skill shells out to `npx -y @firecrawl/anydoc`, no binary to install here,
-# just a preflight check so a missing npx is a warning instead of a silent failure later.
-check_anydoc_npx() {
-  if ! command -v npx >/dev/null 2>&1; then
-    echo "  warning: npx not found, the ingest skill needs npx for document conversion"
-  fi
-  return 0
-}
-[ "$FULL" -eq 0 ] || run_step "ingest skill preflight (anydoc)" check_anydoc_npx
 
 # 4f. every host dir gets a link for every skill in the canonical root, whatever put it there:
 # this repo, a community clone, the firecrawl CLI, or a plain `npx skills add --global`.
@@ -513,7 +543,7 @@ fan_out_all_skills() {
 }
 [ "$FULL" -eq 0 ] || run_step "fan out every skill to each host" fan_out_all_skills
 
-# 5. AGENTS.md: one file, read by every host through its own expected filename
+# 5. AGENTS.md: one shared policy, with aliases for installed hosts
 link_agents_md() {
   local src="$REPO_DIR/instructions/AGENTS.md"
   local shared="$HOME/.agents/AGENTS.md"
@@ -523,13 +553,18 @@ link_agents_md() {
     return 0
   fi
 
-  # every host path that should end up pointing at the shared file
-  local -a aliases=("$HOME/.claude/CLAUDE.md" "$HOME/.codex/AGENTS.md" "$HOME/.omp/agent/AGENTS.md")
+  local legacy="$HOME/.claude/CLAUDE.md" retire_legacy=0
+  if { [ -L "$legacy" ] && [ "$(readlink "$legacy")" = "$shared" ]; } ||
+     { [ -f "$legacy" ] && { [ ! -s "$legacy" ] || cmp -s "$legacy" "$shared" || cmp -s "$legacy" "$src"; }; }; then
+    retire_legacy=1
+  fi
+  local -a aliases=("$HOME/.claude/AGENTS.md" "$HOME/.codex/AGENTS.md" "$HOME/.omp/agent/AGENTS.md")
 
   if [ "$DRY" -eq 1 ]; then
     echo "  [dry-run] symlink $shared -> $src (with backup if needed)"
     local a
     for a in "${aliases[@]}"; do echo "  [dry-run] symlink $a -> $shared"; done
+    [ "$retire_legacy" -eq 0 ] || echo "  [dry-run] remove redundant $legacy"
     return 0
   fi
 
@@ -551,6 +586,15 @@ link_agents_md() {
     fi
     ln -sfn "$shared" "$alias_path"
   done
+
+  if [ "$retire_legacy" -eq 1 ]; then
+    cmp -s "$shared" "$HOME/.claude/AGENTS.md" || return 1
+    rm -f "$legacy"
+    echo "  removed redundant $legacy"
+  elif [ -e "$legacy" ] || [ -L "$legacy" ]; then
+    echo "  $legacy has user-owned instructions; preserved for explicit migration"
+  fi
+  return 0
 }
 run_step "AGENTS.md" link_agents_md
 
@@ -577,7 +621,8 @@ plugin_installed() {
 install_plugins_for() {
   local host="$1" verb="$2"
   local installed market plugin marketplace_name add_output
-  installed="$("$host" plugin list 2>/dev/null)"
+  installed=""
+  [ "$DRY" -eq 1 ] || installed="$("$host" plugin list 2>/dev/null)"
   while IFS='|' read -r market plugin; do
     [ -n "$market" ] || continue
     if plugin_installed "$host" "$plugin" "$installed"; then

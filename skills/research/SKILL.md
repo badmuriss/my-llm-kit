@@ -20,20 +20,51 @@ local check does not require web research. Verify volatile external values at
 the source; record when they were accessed. Treat snippets and agent summaries
 as leads, not as sources already read.
 
-For known public URLs, use Scrapinho when configured: check
-`scraper_capabilities`, submit `fetch.page`, poll the returned job, then read the
-source through EOF. Use static acquisition unless rendering is needed; partial
-sources do not prove complete content. For durable snapshots, use the collector
-described in [reporting.md](references/reporting.md). After a bounded failure or
-missing Scrapinho access, record why and use Firecrawl, then host tools.
+For generic web discovery and public-page reading, use Scrapinho: `search.web`
+with explicit `input.engine: "duckduckgo"`, and `fetch.page`. Require a project
+scope and a stable request/idempotency key per acquisition; never share scope
+between unrelated projects. Use the installed `scripts/collect_sources.py` for
+durable evidence, including search results, as described in
+[reporting.md](references/reporting.md). Its dry-run does not load credentials
+or access the network. A missing key or capability is a blocker for this route,
+not permission to silently restore the removed generic scraper.
 
-Search and specialized methods without verified Scrapinho parity still use the
-installed `scrapingdog` skill when keyed, then Firecrawl and host search after a
-bounded failure or missing key. Do not infer search, transcript or social coverage
-from `fetch.page`. For a known official document, direct reading is sufficient. For papers,
-start with the free Firecrawl Research Index when available; use paper-search to
-cross-check metadata when needed. Missing optional providers do not block local
-work that already has adequate evidence.
+For MCP acquisition, run the installed `scripts/preflight_scrapinho_mcp.mjs`
+first for page defaults, and inspect `scraper_capabilities` for the requested
+discovery operation. Reuse schema defaults for omitted fields, but set one
+attempt and bounded limits. Do not infer geography from language or domains:
+web search currently has fixed pt-BR/BR locale. An unsupported geographic
+override must fail rather than silently change. Stop on auth, quota, CAPTCHA,
+403 or 429; do not retry acquisition or switch proxies to bypass refusal.
+
+Poll the admitted job and read sources through `next_cursor=null`; verify raw
+SHA-256 when exporting. Partial sources are not complete evidence. Web search
+supports pages 0 and 1; request page 1 explicitly only when page 0 reports it.
+Keep the effective engine across pages. Preserve each query/page's original
+positions and provenance; deduplicate URLs only when selecting pages to open,
+not by rewriting the ranked snapshots. Snippets and missing publication dates
+must not become verified claims or invented dates.
+
+Scrapinho also exposes `news.search`, `search.suggestions`, `trends.now` and
+`trends.suggestions` when capabilities report them available. Read their JSON
+through EOF before parsing. News links may be aggregators: open the primary
+article before citing it. These operations do not substitute for Maps, social,
+ads, YouTube, `trends.interest`, or scientific indexes. Preserve the installed
+`scrapingdog` route for specialized methods without verified parity, then
+Firecrawl and host tools after a disclosed bounded failure or missing key.
+For papers, start with the free Firecrawl Research Index when available; use
+paper-search to cross-check metadata when needed.
+Missing optional specialized providers do not block adequately sourced local work.
+
+When a collection explicitly requests Webshare, use the installed
+`webshare-fetch URL [--config PATH] [--timeout SECONDS]` helper rather than
+building a proxy request in the skill. Keep the existing priority intact:
+Scrapinho remains the first choice for generic discovery and public URLs;
+ScrapingDog remains only for specialized methods without verified parity.
+Webshare requires explicit selection for a separate collection, never an
+automatic fallback from Scrapinho or a bypass after refusal. Never proxy
+cookies or OAuth traffic. Keep `WEBSHARE_API_KEY` in the environment
+and its private config outside the repository.
 
 Convert documents only when needed to extract their content. Verify reading
 order and tables. Do not package a whole repository to inspect a known file.

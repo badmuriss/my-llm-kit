@@ -12,16 +12,17 @@ Treat browser automation and vision as separate mandatory layers. Browser checks
 1. Inventory every changed route or component and every affected state. Include loading, empty, error, populated, disabled, expanded, modal and post-interaction states when the change can render them.
 2. Read [platform-matrix.md](references/platform-matrix.md). Decide the supported platforms separately for each surface and state from product requirements, existing routes, distribution targets and adjacent tests. Use every profile for general responsive UI. Do not test nonexistent targets.
 3. Record each decision as `Visual-Scope:` with a concrete reason. Never label a surface platform-specific merely because the other layouts are currently broken.
-4. Reuse the project's Playwright setup when present and read [playwright.md](references/playwright.md). Reuse Storybook for isolated component states when present. Do not add a hosted visual-testing dependency by default.
+4. Use an available capture backend that supports the required states and engines. Preserve a project's existing Playwright setup and read [playwright.md](references/playwright.md) when its fixtures, pixel comparisons or WebKit/Firefox coverage are required. For new Chromium captures, the installed `stagehand-browser` scripts are an option in any harness; its OMP extension is optional. Stagehand is not a test runner or an engine-equivalent replacement. Reuse Storybook for isolated component states when present. Do not add a hosted visual-testing dependency by default.
 5. Stabilize data, time, animations and network responses. Reach the declared state through real behavior or an existing deterministic fixture. Do not edit the DOM into the expected appearance.
-6. Capture one PNG per expectation under `.visual-evidence/<change>/`. With Playwright, use CSS-pixel screenshot scale so the PNG width matches the declared viewport.
-7. Inspect every PNG individually with `view_image` or `computer-use`. Check all edges and the main content for clipping, overlap, overflow, unreadable text, broken hierarchy, incorrect state, unusable controls and touch-target problems.
+6. Capture one PNG per expectation under `.visual-evidence/<change>/`. Use CSS-pixel screenshot scale with either Stagehand or Playwright so the PNG width matches the declared viewport.
+7. Inspect every PNG individually with the current host's image/vision tool or an available `computer-use` tool. Check all edges and the main content for clipping, overlap, overflow, unreadable text, broken hierarchy, incorrect state, unusable controls and touch-target problems.
 8. Fix every observed defect, recapture the affected scope and inspect it again. A pixel diff can detect change, but it cannot replace vision review.
 9. Record the exact screenshot hash and a concrete observation in the task manifest. In graph mode, pass it to `agent_graph.py grade` as `file:` evidence. Outside graph, keep the same evidence locally without starting a run.
 
 ## Existing suites
 
 - Prefer Playwright projects and `toHaveScreenshot()` when the application already uses Playwright.
+- Stagehand supports Chromium only. Do not label a Chromium mobile viewport as WebKit evidence or drop an existing engine requirement to complete a migration.
 - Prefer Storybook stories for exhaustive component states when Storybook already exists.
 - Keep Chromatic, Percy, Argos and similar hosted baseline services optional. They add regression history, not semantic visual judgment.
 - Keep the visual evidence manifest as the completion gate even when another visual suite passes. Agent Graph submission is required only in graph mode.

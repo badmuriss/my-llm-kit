@@ -1,0 +1,233 @@
+{
+  "checkedAt": "2026-09-23T03:16:54.592Z",
+  "removedMcpServers": [
+    "supabase",
+    "tally",
+    "refero",
+    "stock-images-mcp"
+  ],
+  "nativeConfig": {
+    "disabledServersFieldPresent": false,
+    "scrapinhoPreserved": true,
+    "mode": "0600"
+  },
+  "discovery": {
+    "exitCode": 0,
+    "results": [
+      {
+        "cwd": "/home/badmuriss/Documents/my-llm-kit",
+        "removedAbsent": true,
+        "scrapinhoPresent": true,
+        "serverNames": [
+          "scrapingdog",
+          "higgsfield",
+          "posthog",
+          "paper-search",
+          "shadcn",
+          "magnific",
+          "lupaleads",
+          "code-review-graph",
+          "scrapinho"
+        ]
+      },
+      {
+        "cwd": "/home/badmuriss/Documents/outis/projetos-outis/outis-central",
+        "removedAbsent": true,
+        "scrapinhoPresent": true,
+        "serverNames": [
+          "scrapingdog",
+          "higgsfield",
+          "posthog",
+          "paper-search",
+          "shadcn",
+          "magnific",
+          "lupaleads",
+          "code-review-graph",
+          "scrapinho"
+        ]
+      }
+    ]
+  },
+  "skillDiscovery": {
+    "exitCode": 0,
+    "result": {
+      "name": "proxy-manager",
+      "path": "/home/badmuriss/.agents/skills/proxy-manager/SKILL.md",
+      "source": {
+        "provider": "agents",
+        "providerName": "Agent Dirs (.agent/.agents)",
+        "path": "/home/badmuriss/.agents/skills/proxy-manager/SKILL.md",
+        "level": "user"
+      }
+    }
+  },
+  "webshareCli": {
+    "version": "v0.2.0",
+    "installedPath": "/home/badmuriss/.local/bin/webshare",
+    "source": "https://github.com/webshare-proxy/webshare-cli/releases/tag/v0.2.0",
+    "archiveSha256": "075e71d0961ae88dd91e117213d46188fab510b008872262ab828af4d04a1262",
+    "archiveBytes": 3938033,
+    "versionAndHelpExitCode": 0,
+    "whoamiExitCode": 0,
+    "proxyConnectionTested": true,
+    "globalProxyChanged": false
+  },
+  "kit": {
+    "manifestSkill": "proxy-manager",
+    "source": "https://github.com/webshare-proxy/skills",
+    "path": "skills/proxy-manager",
+    "referoProvisioningRemoved": true,
+    "scrapinhoInstallerChangesPreserved": true
+  },
+  "sources": [
+    "https://www.webshare.io/blog/proxies-for-ai-agents-setup-guide-why-you-need-one",
+    "https://github.com/webshare-proxy/skills",
+    "https://github.com/webshare-proxy/webshare-cli",
+    "https://apidocs.webshare.io/",
+    "https://github.com/webshare-proxy/webshare-cli/blob/v0.2.0/internal/cmd/root.go"
+  ],
+  "authentication": {
+    "method": "API key",
+    "source": "bashrc",
+    "persistedIn": "~/.omp/agent/.env",
+    "permissions": "0600",
+    "keyPrinted": false,
+    "nativeStartup": {
+      "loadedFromNativeEnv": true,
+      "exportedToChildEnvironment": true
+    },
+    "oauthSupportedByInstalledCli": false
+  },
+  "policy": {
+    "primary": "datacenter",
+    "fallback": "residential",
+    "fallbackAttempts": 1,
+    "approvedByUser": true,
+    "configuration": "~/.omp/agent/webshare.json",
+    "permissions": "0600",
+    "fallbackHttpStatuses": [
+      403,
+      407,
+      408,
+      429,
+      "5xx"
+    ],
+    "fallbackOnConnectionFailure": true,
+    "globalProxyChanged": false
+  },
+  "realTraffic": {
+    "datacenter": {
+      "exitCode": 0,
+      "httpStatus": 200,
+      "validIp": true,
+      "egressDiffersFromDirect": true
+    },
+    "residential": {
+      "exitCode": 0,
+      "httpStatus": 200,
+      "validIp": true,
+      "egressDiffersFromDirect": true
+    }
+  },
+  "helper": {
+    "path": "~/.local/bin/webshare-fetch",
+    "datacenter": {
+      "exitCode": 0,
+      "bodyIsIp": true,
+      "egressDiffersFromDirect": true,
+      "stderr": "webshare-fetch: datacenter succeeded (HTTP 200)\n",
+      "forcedDatacenterFailure": false
+    },
+    "forcedDatacenterFailureToRealResidential": {
+      "exitCode": 0,
+      "bodyIsIp": true,
+      "egressDiffersFromDirect": true,
+      "stderr": "webshare-fetch: datacenter failed (transport failed (curl code 5)); falling back to residential\nwebshare-fetch: residential succeeded (HTTP 200)\n",
+      "forcedDatacenterFailure": true
+    },
+    "tests": [
+      {
+        "name": "fallback tests",
+        "command": [
+          "python3",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "scripts/tests",
+          "-p",
+          "test_webshare_fetch.py",
+          "-v"
+        ],
+        "exitCode": 0,
+        "stdout": "",
+        "stderr": "test_both_plans_fail_once_without_leaking_partial_bodies_or_credentials (test_webshare_fetch.WebshareFetchBehavior.test_both_plans_fail_once_without_leaking_partial_bodies_or_credentials) ... ok\ntest_datacenter_success_does_not_resolve_residential_proxy (test_webshare_fetch.WebshareFetchBehavior.test_datacenter_success_does_not_resolve_residential_proxy) ... ok\ntest_eligible_datacenter_failures_return_only_residential_body (test_webshare_fetch.WebshareFetchBehavior.test_eligible_datacenter_failures_return_only_residential_body) ... ok\ntest_not_found_does_not_consume_residential_proxy (test_webshare_fetch.WebshareFetchBehavior.test_not_found_does_not_consume_residential_proxy) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.951s\n\nOK\n"
+      },
+      {
+        "name": "installer tests",
+        "command": [
+          "python3",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "scripts/tests",
+          "-p",
+          "test_installers.py",
+          "-v"
+        ],
+        "exitCode": 0,
+        "stdout": "",
+        "stderr": "test_runs_the_installed_runtime_in_an_unrelated_project_after_repeat_install (test_installers.CoreInstallBehavior.test_runs_the_installed_runtime_in_an_unrelated_project_after_repeat_install) ... ok\ntest_keeps_checkout_from_ref_protected (test_installers.DcgConfigurationBehavior.test_keeps_checkout_from_ref_protected) ... ok\ntest_keeps_the_api_key_out_of_host_configuration (test_installers.ScrapingDogMcpBehavior.test_keeps_the_api_key_out_of_host_configuration) ... ok\ntest_documents_every_shipped_and_community_skill (test_installers.SharedManifestBehavior.test_documents_every_shipped_and_community_skill) ... ok\ntest_emits_core_install_skills_as_shell_rows (test_installers.SharedManifestBehavior.test_emits_core_install_skills_as_shell_rows) ... ok\ntest_emits_every_community_skill_as_a_shell_row (test_installers.SharedManifestBehavior.test_emits_every_community_skill_as_a_shell_row) ... ok\n\n----------------------------------------------------------------------\nRan 6 tests in 12.768s\n\nOK\n"
+      },
+      {
+        "name": "shell syntax",
+        "command": [
+          "bash",
+          "-n",
+          "setup.sh",
+          "install.sh"
+        ],
+        "exitCode": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    ],
+    "ruff": {
+      "command": "uvx --from ruff==0.16.5 ruff check scripts/webshare_fetch.py scripts/tests/test_webshare_fetch.py",
+      "exitCode": 0
+    },
+    "installer": {
+      "dryRunWritesNothing": true,
+      "repeatInstallExitCode": 0,
+      "protectsUserExecutable": true,
+      "localInstallExitCode": 0,
+      "windowsExecutionObserved": false
+    },
+    "emptyResponseProbe": {
+      "httpStatus": 204,
+      "exitCode": 0,
+      "bytesAfter": 0
+    },
+    "hostShell": {
+      "beforeReload": {
+        "exitCode": 1,
+        "keyNotInheritedByExistingShell": true
+      },
+      "afterBashrcSource": {
+        "exit_code": 0,
+        "datacenter_succeeded": true,
+        "residential_used": false,
+        "response_received": true
+      }
+    }
+  },
+  "workers": {
+    "reportedModels": [
+      "openai-codex/gpt-5.6-sol",
+      "openai-codex/gpt-5.6-luna"
+    ],
+    "independentServerReceiptAvailable": false,
+    "userModelRolesChanged": false
+  }
+}

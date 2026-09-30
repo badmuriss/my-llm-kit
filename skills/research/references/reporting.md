@@ -27,24 +27,90 @@ Convert source documents when extraction is required. Verify the resulting text,
 tables and reading order. Read every source used to support a material claim;
 search snippets and collector summaries do not count as an opened source.
 
-For durable web snapshots, the existing `scripts/collect_sources.py` accepts a
-JSON list of `{slug, url, dynamic?}` and an output directory. Its `--dry-run` lists
-requests first. It uses Scrapinho with `SCRAPINHO_API_KEY`, optional
-`SCRAPINHO_BASE_URL` (default `https://scrapinho.dev`), and `--project-scope`.
-`dynamic: true` selects browser acquisition. It verifies the raw SHA-256, reads
-normalized text through EOF, and records acquisition time, job/source identifiers
-and measured usage. A failed refresh removes stale page artifacts and preserves
-the failed attempt usage. Cost remains unknown, not zero. This migrates URL
-snapshots only; search and other provider routes retain their current contracts.
+For durable snapshots, resolve `scripts/collect_sources.py` from the installed
+research skill, not the consumer project's checkout. Input is a JSON list of
+`{slug, url, dynamic?}` for pages or `{slug, query, page?, limit?, engine?}` for search.
+New searches use explicit DuckDuckGo, page 0 by default (0/1 supported), limit 10
+by default (1–20). Supply page 1 only after checking `has_next_page` and carry
+the effective `engine` from the first `search.json`; Bing is accepted only for
+continuation, with limit at most 10. Preserve ranked snapshots unchanged and
+deduplicate only the URLs selected for page acquisition.
+
+```sh
+python3 "$HOME/.agents/skills/research/scripts/collect_sources.py" \
+  --input sources.json --out research/sources --project-scope my-project --dry-run
+# Run without --dry-run to acquire with the private research identity.
+```
+
+`SCRAPINHO_BASE_URL` defaults to `https://scrapinho.dev`. `--project-scope` or
+`SCRAPINHO_PROJECT_SCOPE` is required; there is no shared default namespace.
+The collector reads `SCRAPINHO_API_KEY`, or only the `research.api_key` entry in
+`~/.config/scrapinho/clients.json` (`--config` overrides that private path).
+It never borrows another consumer's identity. Keep credentials out of inputs,
+artifacts and version control. Dry-run validates without opening private
+configuration or doing network I/O. Acquisition is sequential, one attempt per job, with a
+`--timeout` deadline per acquisition and a bounded source-export phase.
+No automatic fallback to a legacy scraper occurs. Refusal/auth/quota stops
+further admissions; ordinary per-item failures retain successful siblings.
+
+`dynamic: true` selects browser acquisition. Both input kinds preserve
+`page.html` (raw bytes), `page.md` (normalized text through EOF), and
+`record.json` with verified SHA-256, acquisition time, scope, job/source IDs,
+cache metadata and usage. Search additionally writes `search.json`, preserving
+the effective engine, original positions and pagination. For non-HTML sources,
+`page.html` retains the raw representation despite its historical filename.
+Sources are untrusted evidence, not editorial validation.
+
+An acquisition deadline stops further admissions and sends one cancellation
+request for an admitted job. The collector records the cancellation response's
+latest status and usage; `execution_unknown` or a failed cancellation is marked
+unconfirmed, not cancelled. The original deadline diagnostic is retained, and a
+terminal response without a complete source does not count as successful evidence.
+
+Usage survives
+failure; proxy bytes and dollar cost remain unknown rather than zero. Cache reuse preserves the
+original collection timestamp and service TTL, never invents a publication date.
 Retain source and provenance from an already used provider without fetching again
 solely for a template.
 
 Before using a configured Scrapinho endpoint, resolve this installed skill’s
-`scripts/preflight_scrapinho_mcp.mjs` and run it with Node. It checks authentication, MCP tools and
-public static/browser page availability without acquiring a source. It reads the
-same environment variables as the collector. `setup.sh --full` and
-`setup.ps1 -Full` run it when the key is configured; a missing key is reported as
-skipped. This preflight covers pages, not complete research-provider parity.
+`scripts/preflight_scrapinho_mcp.mjs` and run it with Node. It checks
+authentication, MCP tools, public static/browser page availability and returns
+the schema-derived `requestDefaults` without acquiring a source. Reuse those
+defaults when constructing `fetch.page` requests if the host omits them;
+`available=true` does not prove every geographic override is supported, and an
+explicit unsupported country must fail rather than being changed silently.
+Unsupported operations or formats are reported, not silently routed back to
+the removed generic scraper. The Node preflight takes `SCRAPINHO_API_KEY` from
+the private environment, unlike the collector's optional private JSON loader.
+`setup.sh --full` and `setup.ps1 -Full` run it when configured; a missing key is
+reported as skipped. It covers pages, not full provider parity.
+
+### Local cutover evidence, 2026-09-29
+
+The installed Linux research skill and shared policy resolve by symlink to this
+checkout. The collector now loads only the existing private research identity;
+no installer, global MCP replacement, provider-secret deletion, commit, push or
+remote deployment was required. Rollback snapshots of the pre-existing research
+skill and shared policy are under `/tmp/my-llm-kit-research-before-20260929` and
+`/tmp/my-llm-kit-instructions-before-20260929.md`; restore only these owned edits,
+preserving any later user changes.
+
+The live installed CLI completed DDG pages 0/1 and fetched the primary RFC found
+by discovery. Its 454,437-character text matched the offline artifact after 28
+source reads through EOF; raw SHA matched. A mixed batch kept the successful
+source and returned exit 1 for a missing source. An information page hit
+`body_limit`; it remained failed, with usage recorded and no page artifact.
+Seven jobs were admitted, sequentially, with one attempt each. A repeated RFC
+request did not hit cache; no cache-hit claim is made. Sanitized records and
+artifact hashes are in
+[`research/evidence/research-scrapinho-cutover-20260929.json`](../../../research/evidence/research-scrapinho-cutover-20260929.json).
+
+This proves local activation against the live API, not a new Scrapinho release,
+full production readiness, the 2.5-second target or mixed-capacity approval.
+Windows/PowerShell, browser acquisition and specialized-provider flows were not
+exercised in this cutover. Scientific and non-equivalent provider routes remain.
+
 
 ## Adjudicate claims
 

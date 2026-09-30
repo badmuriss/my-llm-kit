@@ -1,0 +1,172 @@
+{
+  "started_at": "2026-09-30T14:14:44.037741+00:00",
+  "objective": "Make shared instructions, kit workflows and audit harness-agnostic; retire redundant global CLAUDE.md aliases without losing custom instructions.",
+  "status": "verified_with_declared_platform_limits",
+  "before": [
+    {
+      "path": "/home/badmuriss/Documents/my-llm-kit/instructions/AGENTS.md",
+      "exists": true,
+      "symlink": null,
+      "sha256": "a8c1ebb750a769673a99a9c8b1e69c776b4e6e6eeeb372e418ddbbe72613f756",
+      "sha256_after": "eb9481458b17a71d566f7b954f96faaad1b5014403a343f2a51db8657836bbcd"
+    },
+    {
+      "path": "/home/badmuriss/Documents/my-llm-kit/setup.sh",
+      "exists": true,
+      "symlink": null,
+      "sha256": "d780329a2f22fe1b6056fb29f6d22c5f8e2c50f26f64245354ea899f6d14ad14",
+      "sha256_after": "33026d15cbd009318b7ad294edd73120fceb383123deaca0e391caff90c16b4c"
+    },
+    {
+      "path": "/home/badmuriss/Documents/my-llm-kit/setup.ps1",
+      "exists": true,
+      "symlink": null,
+      "sha256": "176a63adeff18e2b93f15b0d87aaf71f86416351c708a0fd618d7af3f17a6bd4",
+      "sha256_after": "5c6cfb88a79942f2833419a8b1e6e9b333193b473c7052d7dd6f5485ff3e9246"
+    },
+    {
+      "path": "/home/badmuriss/Documents/my-llm-kit/README.md",
+      "exists": true,
+      "symlink": null,
+      "sha256": "4ed587356d7337ccb6d88adeeacbe4f5664c973093b223a1b5ac9190e7c9031c",
+      "sha256_after": "a0d891a9e8f712fa8ed7f262bbc4e822662a5e2c5199a1ef28437470f36196be"
+    },
+    {
+      "path": "/home/badmuriss/Documents/my-llm-kit/scripts/tests/test_installers.py",
+      "exists": true,
+      "symlink": null,
+      "sha256": "1b8fba33a2c4d2e372fa75c95339e8cee136559052cafb4bfac330b8cb6fed60",
+      "sha256_after": "f409fe9ad2c88b714c72739176c5a1f8f5d2db6f3e307a3d35612b1dd78472c4"
+    },
+    {
+      "path": "/home/badmuriss/Documents/my-llm-kit/skills/frontend-visual-validation/SKILL.md",
+      "exists": true,
+      "symlink": null,
+      "sha256": "f5dd5fb56ed10d3faa7c9ce3890ffd31070eccae00de236ecf0a7bbb4541a1ac",
+      "sha256_after": "4be0271a8436dab300095503f7844ee8c826e576eb80e812c8685dfcbde77a2c"
+    },
+    {
+      "path": "/home/badmuriss/Documents/my-llm-kit/skills/stagehand-browser/SKILL.md",
+      "exists": true,
+      "symlink": null,
+      "sha256": "592d47ef20a6e27fbab20281360d41deeaae2b09241e452b58e74f975fc3b881",
+      "sha256_after": "dbb7493c359d51f3a3b5df4a5ae85c60f2b81efb7837c40e9f2d333c069c0696"
+    },
+    {
+      "path": "/home/badmuriss/Documents/my-llm-kit/skills/stagehand-browser/tools/install.mjs",
+      "exists": true,
+      "symlink": null,
+      "sha256": "5155d398a73d9292b88ca952a569ca0cad601267657b8cc5956d8ecd6b91e311",
+      "sha256_after": "c94219d5e86a7655fff2b4baa33d480f1ccec41c84368256295341bb30b9e2ff"
+    },
+    {
+      "path": "/home/badmuriss/Documents/my-llm-kit/research/2026-09-30-skills-audit.md",
+      "exists": true,
+      "symlink": null,
+      "sha256": "79a35b57dff774c9cfd78669b32dfcf0b81618602cd2be79ce0e0b85f287f723",
+      "sha256_after": "5de0895c5319f7529c53d54134be1bec3eaada76f65f6eae82c9b9039f846671"
+    }
+  ],
+  "local_instructions_before": [
+    {
+      "path": "/home/badmuriss/CLAUDE.md",
+      "exists": true,
+      "symlink": null,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/badmuriss/.claude/CLAUDE.md",
+      "exists": true,
+      "symlink": "/home/badmuriss/.agents/AGENTS.md",
+      "sha256": "a8c1ebb750a769673a99a9c8b1e69c776b4e6e6eeeb372e418ddbbe72613f756"
+    },
+    {
+      "path": "/home/badmuriss/.claude/AGENTS.md",
+      "exists": false,
+      "symlink": null,
+      "sha256": null
+    },
+    {
+      "path": "/home/badmuriss/.codex/AGENTS.md",
+      "exists": true,
+      "symlink": "/home/badmuriss/.agents/AGENTS.md",
+      "sha256": "a8c1ebb750a769673a99a9c8b1e69c776b4e6e6eeeb372e418ddbbe72613f756"
+    },
+    {
+      "path": "/home/badmuriss/.omp/agent/AGENTS.md",
+      "exists": true,
+      "symlink": "/home/badmuriss/.agents/AGENTS.md",
+      "sha256": "a8c1ebb750a769673a99a9c8b1e69c776b4e6e6eeeb372e418ddbbe72613f756"
+    }
+  ],
+  "native_config_before": [
+    {
+      "path": "/home/badmuriss/.omp/agent/models.yml",
+      "exists": true,
+      "symlink": null,
+      "sha256": "71f126fdb588ade22462e2adde427ff4e7533d2fe672b7ca97aba8ab7863eabd",
+      "sha256_after": "71f126fdb588ade22462e2adde427ff4e7533d2fe672b7ca97aba8ab7863eabd"
+    },
+    {
+      "path": "/home/badmuriss/.omp/agent/mcp.json",
+      "exists": true,
+      "symlink": null,
+      "sha256": "c8fa14ae9244414024fcaf0a8f0835f099c4d1c58a9e8e1d03ee789efbf2176d",
+      "sha256_after": "c8fa14ae9244414024fcaf0a8f0835f099c4d1c58a9e8e1d03ee789efbf2176d"
+    },
+    {
+      "path": "/home/badmuriss/.omp/agent/config.yml",
+      "exists": true,
+      "symlink": null,
+      "sha256": "528253ebf1f5e8ea0c3b24431bef0af2a2aa261e320f53f7de3b2914e9b2ca20",
+      "sha256_after": "528253ebf1f5e8ea0c3b24431bef0af2a2aa261e320f53f7de3b2914e9b2ca20"
+    },
+    {
+      "path": "/home/badmuriss/.omp/agent/webshare.json",
+      "exists": true,
+      "symlink": null,
+      "sha256": "0d4b2b5ba16c33896e15a96f3126a20328a9c6c2048f5715c850282c1dcc4320",
+      "sha256_after": "0d4b2b5ba16c33896e15a96f3126a20328a9c6c2048f5715c850282c1dcc4320"
+    }
+  ],
+  "local_instruction_changes": {
+    "created_alias": "/home/badmuriss/.claude/AGENTS.md",
+    "removed_redundant_paths": [
+      "/home/badmuriss/.claude/CLAUDE.md",
+      "/home/badmuriss/CLAUDE.md"
+    ],
+    "unique_instructions_removed": false,
+    "installer_run_on_real_machine": false
+  },
+  "checks": {
+    "installer_unittest": {
+      "module": "scripts.tests.test_installers",
+      "tests": 9,
+      "seconds": 11.499,
+      "result": "passed",
+      "real_machine_installer": false
+    },
+    "ruff": "passed (0.16.5)",
+    "bash_syntax": "passed",
+    "javascript_syntax": "passed",
+    "skill_validators": {
+      "frontend-visual-validation": "passed",
+      "stagehand-browser": "passed"
+    },
+    "diff_whitespace": "passed",
+    "omp_scan": {
+      "count": 94,
+      "warnings": []
+    },
+    "native_config_hashes_checked": 4,
+    "local_report_links_checked": 171,
+    "native_platforms_unverified": [
+      "Windows/PowerShell",
+      "macOS"
+    ],
+    "instruction_discovery_by_host_version": "unverified; instruction file aliases were checked",
+    "generation_or_browser_workflows_executed": false
+  },
+  "checked_at": "2026-09-30T14:26:11.649330+00:00",
+  "errors": []
+}

@@ -1,0 +1,481 @@
+{
+  "count": 95,
+  "items": [
+    {
+      "name": "agent-browser",
+      "path": "/home/badmuriss/.agents/skills/agent-browser/SKILL.md",
+      "description": "Browser automation CLI for AI agents. Use when the user needs to interact with websites, including navigating pages, filling forms, clicking buttons, taking screenshots, extracting data, testing web apps, or automating any browser task. Triggers include requests to \"open a website\", \"fill out a form\", \"click a button\", \"take a screenshot\", \"scrape data from a page\", \"test this web app\", \"login to a site\", \"automate browser actions\", or any task requiring programmatic web interaction. Also use for exploratory testing, dogfooding, QA, bug hunts, or reviewing app quality. Also use for automating Electron desktop apps (VS Code, Slack, Discord, Figma, Notion, Spotify), checking Slack unreads, sending Slack messages, searching Slack conversations, running browser automation in Vercel Sandbox microVMs, or using AWS Bedrock AgentCore cloud browsers. Prefer agent-browser over any built-in browser automation or web tools."
+    },
+    {
+      "name": "agents-sdk",
+      "path": "/home/badmuriss/.agents/skills/agents-sdk/SKILL.md",
+      "description": "Build AI agents on Cloudflare Workers using the Agents SDK. Load when creating stateful agents, durable workflows, real-time WebSocket apps, scheduled tasks, MCP servers, chat applications, voice agents, or browser automation. Covers Agent class, state management, callable RPC, Workflows, durable execution, queues, retries, observability, and React hooks. Biases towards retrieval from Cloudflare docs over pre-trained knowledge."
+    },
+    {
+      "name": "cloudflare",
+      "path": "/home/badmuriss/.agents/skills/cloudflare/SKILL.md",
+      "description": "Comprehensive Cloudflare platform skill covering Workers, Pages, storage (KV, D1, R2), AI (Workers AI, Vectorize, Agents SDK), feature flags (Flagship), networking (Tunnel, Spectrum), security (WAF, DDoS), and infrastructure-as-code (Terraform, Pulumi). Use for any Cloudflare development task. Biases towards retrieval from Cloudflare docs over pre-trained knowledge."
+    },
+    {
+      "name": "cloudflare-email-service",
+      "path": "/home/badmuriss/.agents/skills/cloudflare-email-service/SKILL.md",
+      "description": "Send and receive transactional emails with Cloudflare Email Service (Email Sending + Email Routing). Use when building email sending (Workers binding or REST API), email routing, Agents SDK email handling, or integrating email into any app — Workers, Node.js, Python, Go, etc. Also use for email deliverability, SPF/DKIM/DMARC, wrangler email setup, MCP email tools, or when a coding agent needs to send emails. Even for simple requests like \"add email to my Worker\" — this skill has critical config details."
+    },
+    {
+      "name": "coding-guidelines",
+      "path": "/home/badmuriss/.agents/skills/coding-guidelines/SKILL.md",
+      "description": "Comprehensive coding standards for TypeScript/JavaScript projects with React. Use when writing new code, refactoring, or setting up project structure. Focuses on e2e type-safety, readability, and maintainability. Apply to any code creation, file structuring, or technical decision-making tasks."
+    },
+    {
+      "name": "computer-use",
+      "path": "/home/badmuriss/.agents/skills/computer-use/SKILL.md",
+      "description": "Drives the GUI of a visible local app window through `orca computer`: accessibility tree, clicks, typing, menus, dialogs, and screenshots in native apps and external browser windows (Chrome, Edge, Safari) or webviews. Prefer a programmatic path (shell, filesystem, git, HTTP, existing CLIs) whenever it can complete the task. Use only when a visible window needs GUI control those cannot reach. Do not use for Orca's embedded browser (`orca-cli`)."
+    },
+    {
+      "name": "content-strategy",
+      "path": "/home/badmuriss/.agents/skills/content-strategy/SKILL.md",
+      "description": "When the user wants to plan a content strategy, decide what content to create, or figure out what topics to cover. Also use when the user mentions \"content strategy,\" \"what should I write about,\" \"content ideas,\" \"blog strategy,\" \"topic clusters,\" \"content planning,\" \"editorial calendar,\" \"content marketing,\" \"content roadmap,\" \"what content should I create,\" \"blog topics,\" \"content pillars,\" or \"I don't know what to write.\" Use this whenever someone needs help deciding what content to produce, not just writing it. For writing individual pieces, see copywriting. For SEO-specific audits, see seo-audit. For social media content specifically, see social-content."
+    },
+    {
+      "name": "docx",
+      "path": "/home/badmuriss/.agents/skills/docx/SKILL.md",
+      "description": "Use this skill whenever the user wants to create, read, edit, or manipulate Word documents (.docx files). Triggers include: any mention of 'Word doc', 'word document', '.docx', or requests to produce professional documents with formatting like tables of contents, headings, page numbers, or letterheads. Also use when extracting or reorganizing content from .docx files, inserting or replacing images in documents, performing find-and-replace in Word files, working with tracked changes or comments, or converting content into a polished Word document. If the user asks for a 'report', 'memo', 'letter', 'template', or similar deliverable as a Word or .docx file, use this skill. Do NOT use for PDFs, spreadsheets, Google Docs, or general coding tasks unrelated to document generation."
+    },
+    {
+      "name": "drawio-skill",
+      "path": "/home/badmuriss/.agents/skills/drawio-skill/SKILL.md",
+      "description": "Use when the user requests diagrams, flowcharts, architecture diagrams, ER diagrams, UML / sequence / class diagrams, SysML / MBSE diagrams (block definition, internal block, requirement, parametric), BPMN business process diagrams, swimlane / cross-functional flowcharts, network topology, cloud architecture from Terraform or Kubernetes manifests, ML/DL model figures (Transformer/CNN/LSTM), mind maps, or any visualization. Also use proactively when explaining systems with 3+ components, complex data flows, or relationships that benefit from visual representation. Best suited when the diagram needs custom styling, rich shape vocabulary, swimlanes, or exportable images (PNG/SVG/PDF/JPG). Generates .drawio XML and exports locally via the native draw.io desktop CLI."
+    },
+    {
+      "name": "durable-objects",
+      "path": "/home/badmuriss/.agents/skills/durable-objects/SKILL.md",
+      "description": "Create and review Cloudflare Durable Objects. Use when building stateful coordination (chat rooms, multiplayer games, booking systems), implementing RPC methods, SQLite storage, alarms, WebSockets, or reviewing DO code for best practices. Covers Workers integration, wrangler config, and testing with Vitest. Biases towards retrieval from Cloudflare docs over pre-trained knowledge."
+    },
+    {
+      "name": "embedded-captions",
+      "path": "/home/badmuriss/.agents/skills/embedded-captions/SKILL.md",
+      "description": "Add captions or subtitles to an existing single-subject talking-head video without editing the footage. Use for plain verbatim captions, cinematic captions embedded behind the subject, VFX captions, “炸/特效/酷炫字幕,” or a named identity from the 35-style catalog. Route by visual identity, not by backend engine. The quiet `anchor` rail is the default; embed every word only when the user explicitly wants a fully cinematic treatment. The workflow runs locally end to end, including transcription and subject matting; split multi-shot footage before applying it.\n"
+    },
+    {
+      "name": "emil-design-eng",
+      "path": "/home/badmuriss/.agents/skills/emil-design-eng/SKILL.md",
+      "description": "This skill encodes Emil Kowalski's philosophy on UI polish, component design, animation decisions, and the invisible details that make software feel great."
+    },
+    {
+      "name": "faceless-explainer",
+      "path": "/home/badmuriss/.agents/skills/faceless-explainer/SKILL.md",
+      "description": "Turn arbitrary text — an article, notes, a topic, a brief — into a faceless explainer video: there is no site or footage to capture, so the visuals are invented per scene (typography, abstract graphics, diagrams, data-viz). Use for topic explainers, concept breakdowns, how-tos, listicles. Not a video built from a website (/product-launch-video — promo or tour). Unclear → /hyperframes."
+    },
+    {
+      "name": "find-animation-opportunities",
+      "path": "/home/badmuriss/.agents/skills/find-animation-opportunities/SKILL.md",
+      "description": "Search a codebase or UI for places that don't animate but should, and reject everything that shouldn't. Read-only; it proposes motion with exact values, it does not implement it. Use when the user asks \"what could be animated here?\" or wants to \"make this feel more alive\". For fixing existing animations, use improve-animations or review-animations instead."
+    },
+    {
+      "name": "find-skills",
+      "path": "/home/badmuriss/.agents/skills/find-skills/SKILL.md",
+      "description": "Helps users discover and install agent skills when they ask questions like \"how do I do X\", \"find a skill for X\", \"is there a skill that can...\", or express interest in extending capabilities. This skill should be used when the user is looking for functionality that might exist as an installable skill."
+    },
+    {
+      "name": "firecrawl",
+      "path": "/home/badmuriss/.agents/skills/firecrawl/SKILL.md",
+      "description": "Any live-web task via the Firecrawl CLI — including ordinary web research: searching the web, reading or extracting pages, gathering sources, discovering site URLs, bulk extraction, downloading a site, change alerts, or pages needing clicks/login — web only; local files route to firecrawl-parse. For papers use firecrawl-research-index; for library, API, error, or bug questions use firecrawl-developer-index.\n"
+    },
+    {
+      "name": "firecrawl-agent",
+      "path": "/home/badmuriss/.agents/skills/firecrawl-agent/SKILL.md",
+      "description": "Autonomous multi-page extraction into structured JSON. Use when the user wants website data matching a schema — pricing tiers, product listings — beyond a single-page scrape.\n"
+    },
+    {
+      "name": "firecrawl-crawl",
+      "path": "/home/badmuriss/.agents/skills/firecrawl-crawl/SKILL.md",
+      "description": "Bulk-extract many pages from one site or section. Use for \"crawl\", \"everything under /docs\", or content spanning linked pages.\n"
+    },
+    {
+      "name": "firecrawl-developer-index",
+      "path": "/home/badmuriss/.agents/skills/firecrawl-developer-index/SKILL.md",
+      "description": "Search issues, merged pull requests, READMEs, and documentation. Use when the question is how a library or API behaves, what an error means, or whether a bug was fixed; prefer this over a general web page."
+    },
+    {
+      "name": "firecrawl-download",
+      "path": "/home/badmuriss/.agents/skills/firecrawl-download/SKILL.md",
+      "description": "Save a site or section as local files (markdown, screenshots). Use for \"download the site\", offline docs, or a local copy for reference.\n"
+    },
+    {
+      "name": "firecrawl-instruct",
+      "path": "/home/badmuriss/.agents/skills/firecrawl-instruct/SKILL.md",
+      "description": "Control and interact with a live browser session on any scraped page — click buttons, fill forms, navigate flows, and extract data using natural language prompts or code. Replaces the old firecrawl-browser command. Use when the user needs to interact with a webpage beyond simple scraping: logging into a site, submitting forms, clicking through pagination, handling infinite scroll, navigating multi-step checkout or wizard flows, or when a regular scrape failed because content is behind JavaScript interaction. Also useful for authenticated scraping via profiles. Triggers on \"browser\", \"instruct\", \"click\", \"fill out the form\", \"log in to\", \"sign in\", \"submit\", \"paginated\", \"next page\", \"infinite scroll\", \"interact with the page\", \"navigate to\", \"open a session\", or \"scrape failed\".\n"
+    },
+    {
+      "name": "firecrawl-interact",
+      "path": "/home/badmuriss/.agents/skills/firecrawl-interact/SKILL.md",
+      "description": "Drive a live browser on a scraped page: click, fill forms, log in, paginate, infinite-scroll. Use when content requires interaction or a scrape failed or returned incomplete content.\n"
+    },
+    {
+      "name": "firecrawl-map",
+      "path": "/home/badmuriss/.agents/skills/firecrawl-map/SKILL.md",
+      "description": "Discover and list a site's URLs, with search filtering. Use for \"map the site\" or \"find the URL for\" requests — when the user knows the site but not the exact page, or wants site structure.\n"
+    },
+    {
+      "name": "firecrawl-monitor",
+      "path": "/home/badmuriss/.agents/skills/firecrawl-monitor/SKILL.md",
+      "description": "Alert by webhook/email on web changes — use for \"monitor/watch/track/alert me when\": recurring checks on known URLs (prefer over repeated one-off scrapes) or web-wide watches for new results (queries + goal).\n"
+    },
+    {
+      "name": "firecrawl-parse",
+      "path": "/home/badmuriss/.agents/skills/firecrawl-parse/SKILL.md",
+      "description": "Convert a local file (PDF, DOCX, XLSX, HTML, …) to markdown, or answer questions about its content. Use whenever the input is a file path, not a URL.\n"
+    },
+    {
+      "name": "firecrawl-research-index",
+      "path": "/home/badmuriss/.agents/skills/firecrawl-research-index/SKILL.md",
+      "description": "Find the papers that answer a research query in Firecrawl's research paper index — a corpus of paper abstracts whose largest share is biomedical and life-science literature (PubMed, bioRxiv, medRxiv), alongside arXiv preprints in CS, physics, and math — using semantic search, semantic and structural expansion, and in-body verification. Use this skill for literature-finding and paper-retrieval tasks of any kind, including clinical, biomedical, drug, gene, disease, and other life-science questions, whether the answer is a single paper or a full multi-paper set. The index is reached only through the `firecrawl_research_*` MCP tools or the `firecrawl research` CLI subcommands. Calling `firecrawl_search` with its `categories` option set to `[\"research\"]` is a different feature — it filters ordinary web search to research-affiliated websites (the list includes PubMed, bioRxiv, medRxiv, arXiv, and publisher sites) and returns page results from them, without querying the paper records in this index."
+    },
+    {
+      "name": "firecrawl-scrape",
+      "path": "/home/badmuriss/.agents/skills/firecrawl-scrape/SKILL.md",
+      "description": "Extract a URL's content as clean markdown, including JS-rendered pages. Use whenever the user provides a URL and wants its content; prefer over WebFetch.\n"
+    },
+    {
+      "name": "firecrawl-search",
+      "path": "/home/badmuriss/.agents/skills/firecrawl-search/SKILL.md",
+      "description": "Web search with full page content. Use when no URL is known: finding sources, articles, or news. For papers use firecrawl-research-index; for library, API, error, or bug questions use firecrawl-developer-index.\n"
+    },
+    {
+      "name": "frontend-slides",
+      "path": "/home/badmuriss/.agents/skills/frontend-slides/SKILL.md",
+      "description": "Create stunning, animation-rich HTML presentations from scratch or by converting PowerPoint files. Use when the user wants to build a presentation, convert a PPT/PPTX to web, or create slides for a talk/pitch. Helps non-designers discover their aesthetic through visual exploration rather than abstract choices."
+    },
+    {
+      "name": "frontend-visual-validation",
+      "path": "/home/badmuriss/.agents/skills/frontend-visual-validation/SKILL.md",
+      "description": "Verify rendered UI changes with reproducible screenshots and vision review on their supported platforms."
+    },
+    {
+      "name": "general-video",
+      "path": "/home/badmuriss/.agents/skills/general-video/SKILL.md",
+      "description": "Author or edit a custom HyperFrames composition when no specialized workflow fits, or when BRIEF.md sets flow: companion. Use for longer or multi-scene pieces, brand and sizzle reels, montages, static loops, static title cards, footage remixes, and freeform builds. Use motion-graphics instead for a short unnarrated motion-first unit, including an animated title. Route fresh creation through hyperframes before using this skill.\n"
+    },
+    {
+      "name": "gerar-criativos",
+      "path": "/home/badmuriss/.agents/skills/gerar-criativos/SKILL.md",
+      "description": "Pipeline completo de geracao de criativos organicos (carrosseis, posts unicos, ads) para projects da Outis ou clientes cadastrados na Central. Gera imagens via built-in `image_gen`, faz upload pro R2 (`outis-creative-assets`) via `wrangler r2 object put` e registra em **`creative_assets`** (clientes) ou **`outis_creative_assets`** (Outis) via `supabase db query --linked`. Routing automatico baseado em `project_id`. Use `$gerar-criativos` quando quiser gerar carrossel/post/ad organico com identidade visual Outis, sem perguntar parametros redundantes ao operador."
+    },
+    {
+      "name": "grill-me",
+      "path": "/home/badmuriss/.agents/skills/grill-me/SKILL.md",
+      "description": "Adversarial interview about a plan until you reach shared understanding. use_when: \"grill me\", stress-test a plan or design. do_not_use_when: the plan must be checked against project docs, use grill-with-docs."
+    },
+    {
+      "name": "grill-with-docs",
+      "path": "/home/badmuriss/.agents/skills/grill-with-docs/SKILL.md",
+      "description": "Grill a plan against the documented domain model, updating CONTEXT.md and ADRs inline. use_when: stress-test a plan against the project's own language and recorded decisions. do_not_use_when: there is no domain documentation, use grill-me."
+    },
+    {
+      "name": "hyperframes",
+      "path": "/home/badmuriss/.agents/skills/hyperframes/SKILL.md",
+      "description": "Mandatory entry point: read this first for any request to make, create, edit, animate, or render a video, animation, or motion graphic, including a promo, explainer, captioned clip, title card, overlay, slideshow or interactive deck, Remotion port, or any HyperFrames HTML composition. Also use it to inspect, diagnose, validate, preview, publish, or batch-render an existing HyperFrames project. Inputs may be a website URL, GitHub PR, Figma design or URL, text or brief, existing footage, or music. It resumes project state, captures intent when applicable, selects and installs the owning workflow, and routes domain capabilities. HyperFrames is the default output framework unless the user explicitly chooses another framework for the deliverable or asks only to record a browser session.\n"
+    },
+    {
+      "name": "hyperframes-animation",
+      "path": "/home/badmuriss/.agents/skills/hyperframes-animation/SKILL.md",
+      "description": "All animation knowledge for HyperFrames — atomic motion rules, multi-phase scene blueprints, scene transitions, broader motion-design techniques, AND the seven runtime adapters (GSAP default, plus Lottie, Three.js, Anime.js, CSS keyframes, Web Animations API, TypeGPU). Use for any motion or animation task: pick 2-4 rules and compose, or load a blueprint, or look up runtime-specific API (e.g. GSAP eases / Lottie player / Three.js mixer). Also covers auditing an existing composition's choreography (animation map) and 24 named text-animation effects. HyperFrames-native: single paused timeline, seek-safe, deterministic."
+    },
+    {
+      "name": "hyperframes-audio",
+      "path": "/home/badmuriss/.agents/skills/hyperframes-audio/SKILL.md",
+      "description": "Use when audio already placed in a HyperFrames composition needs to be mixed: fade-in/fade-out, crossfade, track gain or volume, volume automation, ducking, a music bed that fights a voiceover (voiceover carve), effects on a track (EQ, compressor, limiter, gate, saturation, delay, reverb, chorus, phaser, bitcrush), automation envelopes drawn on a track's volume or any effect parameter, or one submix bus carrying a chain, a fader and an automation clock for several tracks at once (`<hf-audio-group>`). Don't use for sourcing or generating audio — finding BGM, SFX, or making a voiceover is `/media-use`. Don't use for clip timing or track layout, which is `/hyperframes-core`.\n"
+    },
+    {
+      "name": "hyperframes-cli",
+      "path": "/home/badmuriss/.agents/skills/hyperframes-cli/SKILL.md",
+      "description": "Use the HyperFrames CLI development loop: init, add, catalog, capture, lint, check, snapshot, compare, grade-compare, preview, play, present, beats, keyframes, single or batch render, publish, cloud, cloudrun, feedback, lambda, doctor, browser, info, upgrade, skills, compositions, timeline, history, clean, docs, benchmark, telemetry, transcribe, auth, tts, and remove-background. Also use when diagnosing build or render failures. validate, inspect, and layout are deprecated aliases; use check. Covers local, HeyGen-hosted cloud, AWS Lambda, and Google Cloud Run rendering.\n"
+    },
+    {
+      "name": "hyperframes-core",
+      "path": "/home/badmuriss/.agents/skills/hyperframes-core/SKILL.md",
+      "description": "The HyperFrames composition contract — build one renderable project. Use for composition structure, the `data-*` timing attributes, `class=\"clip\"`, tracks, sub-compositions, variables, framework-owned media playback, deterministic-render rules, and validation. Read before writing composition HTML."
+    },
+    {
+      "name": "hyperframes-creative",
+      "path": "/home/badmuriss/.agents/skills/hyperframes-creative/SKILL.md",
+      "description": "Non-animation creative direction for HyperFrames videos. Use for design spec (frame.md / design.md) handling, palettes, typography, narration, beat planning, audio-reactive visuals, composition patterns, and brand / style decisions. For atomic motion patterns and scene blueprints, use `hyperframes-animation`."
+    },
+    {
+      "name": "hyperframes-keyframes",
+      "path": "/home/badmuriss/.agents/skills/hyperframes-keyframes/SKILL.md",
+      "description": "Use when a HyperFrames composition needs a punch-in, punch-out, zoom, reframe, Ken Burns treatment, camera move, visual match/whip handoff, or other seek-safe 2D/3D keyframes; also for GSAP, CSS keyframes, Anime.js, WAAPI, FLIP, paths, masks, SVG morph/draw, text trails, 3D depth, or `hyperframes keyframes` diagnostics. Don't use for broad scene strategy, brand design, media sourcing, captions, or general video planning.\n"
+    },
+    {
+      "name": "hyperframes-registry",
+      "path": "/home/badmuriss/.agents/skills/hyperframes-registry/SKILL.md",
+      "description": "Search, install, and wire registry blocks and components into HyperFrames compositions. Use BEFORE hand-building any named visual — whenever a brief, a user, or a storyboard names a look, effect, treatment, or transition such as CRT scanlines, glitch, chromatic aberration, film grain, a shimmer sweep, a chart, a code or terminal window, a map, or a confetti burst — because roughly 400 hosted items already cover many of them and the search ranks all of them with nothing installed, no project, and no account. Also use when running hyperframes add or hyperframes catalog, installing one item or every block matching a tag, wiring an installed item into index.html, or working with hyperframes.json. Covers discovery, install locations, block sub-composition wiring, component snippet merging, and authoring a new block or component to contribute upstream (idea → scaffold → validate → PR)."
+    },
+    {
+      "name": "hyperframes-studio",
+      "path": "/home/badmuriss/.agents/skills/hyperframes-studio/SKILL.md",
+      "description": "Use when working with a person on a HyperFrames project in Studio: first, whether their message asks for a change at all (questions, loose ideas and \"don't change anything\" get an answer and a plan, not an edit); for a new film, the plan, storyboard and build order that the HyperFrames launch films follow; and how the timeline should be laid out so it reads well (one caption track, one element kind per track, every scene a sub-composition) and where captions and key content may sit (safe zones). Don't use for how to perform an individual edit (split, trim, retime, volume, copy, swap): that is `creator-editing-recipes.md` in `/hyperframes-core`.\n"
+    },
+    {
+      "name": "image-gen",
+      "path": "/home/badmuriss/.agents/skills/image-gen/SKILL.md",
+      "description": "Generate real images (product photos, hero/lookbook shots, graphics, mockups, illustrations, textures, icons, backgrounds) by driving the Codex CLI as a subprocess. Use this skill WHENEVER the user wants to create, generate, make, or render an image, photo, graphic, mockup, print, logo concept, catalog shot, hero image, or any visual asset — even if they don't say \"Codex\". Also use when a build/site/doc needs placeholder or final imagery and none is available. Covers single shots, batches, background runs, prompt art-direction, and ImageMagick post-processing."
+    },
+    {
+      "name": "impl",
+      "path": "/home/badmuriss/.agents/skills/impl/SKILL.md",
+      "description": "Implement a requested change or approved plan, verify its outcomes, and report concrete blockers. Use graph execution only for independent work that needs durable coordination."
+    },
+    {
+      "name": "improve",
+      "path": "/home/badmuriss/.agents/skills/improve/SKILL.md",
+      "description": "Survey any codebase as a senior advisor and produce prioritized, self-contained implementation plans for OTHER models/agents to execute. Strictly read-only on source code — never implements, fixes, or refactors anything itself. Use when asked to audit a codebase, find improvement opportunities (bugs, security, performance, test coverage, tech debt, migrations, DX), suggest features or where to take the project next (roadmap, product direction), or generate handoff plans for another agent to implement."
+    },
+    {
+      "name": "improve-animations",
+      "path": "/home/badmuriss/.agents/skills/improve-animations/SKILL.md",
+      "description": "Survey a codebase's animation and motion code as a senior motion advisor, then produce a prioritized audit and self-contained implementation plans for other agents (or cheaper models) to execute. Read-only on source code — it plans improvements, it does not apply them. Use when the user asks to \"improve the animations\", \"audit the motion\", \"make this app feel better\", or wants a roadmap of animation fixes rather than a review of a single diff."
+    },
+    {
+      "name": "incredibly-pretty-websites",
+      "path": "/home/badmuriss/.agents/skills/incredibly-pretty-websites/SKILL.md",
+      "description": "Build genuinely beautiful, non-AI-slop websites, React-first and research-first. Diagnose live landing-page delivery and conversion before redesign or copy changes. use_when: designing, rebuilding or auditing the visual/conversion direction of a site or landing page; choosing type, color, layout or motion; fixing AI-looking UI. do_not_use_when: backend, data or standalone copy work unrelated to a rendered site."
+    },
+    {
+      "name": "ingest",
+      "path": "/home/badmuriss/.agents/skills/ingest/SKILL.md",
+      "description": "Extract content from documents when their format or layout prevents reliable direct reading. Verify reading order and tables before analysis."
+    },
+    {
+      "name": "job-application-automation",
+      "path": "/home/badmuriss/.agents/skills/job-application-automation/SKILL.md",
+      "description": "Automate job search and applications using browser-use, LinkedIn or other job boards, and per-job resume tailoring. Use this skill whenever the user asks to apply to jobs, procurar vagas, aplicar automaticamente, usar browser-use para LinkedIn, customizar curriculo por vaga, gerar CV por vaga, candidatar em massa, Easy Apply, or wants an agent to find roles, rank them, generate tailored resumes/cover letters, and submit or prepare applications. This skill is intentionally pushy: use it for job-hunting automation even if the user writes casually in Portuguese, mixes English, or only says faz a automacao de vagas.\n"
+    },
+    {
+      "name": "law-irac",
+      "path": "/home/badmuriss/.agents/skills/law-irac/SKILL.md",
+      "description": "Apply IRAC (Issue, Rule, Application, Conclusion) method for structured legal analysis. Use this skill when the user needs to analyze a legal question systematically, write a legal memo, evaluate whether a law applies to a situation, or structure a legal argument — even if they say 'does this law apply', 'analyze this legal issue', or 'write a legal analysis'."
+    },
+    {
+      "name": "lgpd-brasil",
+      "path": "/home/badmuriss/.agents/skills/lgpd-brasil/SKILL.md",
+      "description": "Orienta sobre a Lei Geral de Proteção de Dados (LGPD – Lei 13.709/2018) do Brasil. Use quando o usuário mencionar LGPD, proteção de dados no Brasil, privacidade de dados, bases legais, direitos do titular, ANPD, dados sensíveis, consentimento ou conformidade com a lei brasileira de dados."
+    },
+    {
+      "name": "media-use",
+      "path": "/home/badmuriss/.agents/skills/media-use/SKILL.md",
+      "description": "Agent Media OS, the single skill for every media need in a HyperFrames project. Resolve BGM, SFX, image, icon, brand logo, voice, color grade, or LUT into a frozen local file or paste-ready block + ledger record (one verb, `resolve`); generate via TTS / music / image models when the catalog misses; produce voiceover, transcription, captions, and background removal through one shared audio engine; operate on media (cut / reframe / transform); and reuse assets across projects. Also use for vague feedback that real footage looks dark, flat, boring, should feel retro/camcorder/print/ASCII, needs privacy, or needs a media reveal."
+    },
+    {
+      "name": "motion-graphics",
+      "path": "/home/badmuriss/.agents/skills/motion-graphics/SKILL.md",
+      "description": "A short, design-led motion graphic where motion is the message — kinetic typography, stat count-up, chart/data-viz hit, logo sting / brand lockup, lower-third / callout / social overlay, animated map (highlight regions, connect places, zoom to a location), animated tweet / news-article / headline, webpage / UI animation (scroll, cursor, callouts), or fusing a real image's geometry into a chart. Usually under 10s (up to ~30s), no narration or live-action subject; renders to MP4 or transparent overlay. Longer / narrated / multi-scene → /general-video. Unclear → /hyperframes.\n"
+    },
+    {
+      "name": "music-to-video",
+      "path": "/home/badmuriss/.agents/skills/music-to-video/SKILL.md",
+      "description": "Turn a music track (an audio file, a video to pull audio from, or a track generated from a mood brief) into a beat-synced video — lyric video, slideshow, or kinetic promo. The music drives all pacing; any user-supplied images/videos are cut onto the same beat grid, and a complete video needs zero assets. Narrated pieces → the input-matched workflow (see /hyperframes). Unclear → /hyperframes."
+    },
+    {
+      "name": "notebooklm",
+      "path": "/home/badmuriss/.agents/skills/notebooklm/SKILL.md",
+      "description": "Use this skill to query your Google NotebookLM notebooks directly from Claude Code for source-grounded, citation-backed answers from Gemini. Browser automation, library management, persistent auth. Drastically reduced hallucinations through document-only responses."
+    },
+    {
+      "name": "on-page-seo-auditor",
+      "path": "/home/badmuriss/.agents/skills/on-page-seo-auditor/SKILL.md",
+      "description": "Use when the user asks to \"audit on-page SEO\" or \"diagnose why a single page dropped\"; scores titles, meta, header structure, keyword placement, links, and images with prioritized fixes. For E-E-A-T / publish-readiness scoring use content-quality-auditor; for crawl / CWV / indexing use technical-seo-checker. 页面SEO审计/排名诊断"
+    },
+    {
+      "name": "orca-cli",
+      "path": "/home/badmuriss/.agents/skills/orca-cli/SKILL.md",
+      "description": "Use the public `orca` CLI to operate Orca-managed worktrees, folder contexts, terminals, repos, automations, artifacts, skill sharing, worktree comments, and the browser embedded inside the Orca app. Use when the user says \"$orca-cli\", \"use orca cli\", \"Orca worktree\", \"child worktree\", \"cardStatus\", \"spawn codex/claude in a worktree\", \"read/wait/send Orca terminal\", \"terminal send\", \"full handoff\", \"handover\", \"give this to another agent\", \"another worktree\", \"Orca browser\", \"orca artifacts\", \"share HTML/Markdown\", \"public artifact link\", \"share skills\", or \"control the browser inside Orca\". Prefer this over raw `git worktree`, ad hoc PTYs, Playwright, or Computer Use when the task touches Orca-managed state. Use Computer Use for browser windows, webviews, or desktop UI outside Orca's embedded browser."
+    },
+    {
+      "name": "orchestration",
+      "path": "/home/badmuriss/.agents/skills/orchestration/SKILL.md",
+      "description": "Coordinate supervised Orca workers: threaded messages, blocking ask/reply, task dispatch, worker_done/escalation waits, task DAGs, decision gates, coordinator loops, and decomposing work across agents. Use `orca-cli` for full ownership handoffs — \"hand off\", \"handoff\", \"handover\", \"give this to another agent\", \"another worktree\" — unless asked to supervise, monitor, or coordinate a DAG, and for terminal control, lightweight terminal prompts, shell commands, Orca worktree management, and reading or waiting on terminals."
+    },
+    {
+      "name": "pptx",
+      "path": "/home/badmuriss/.agents/skills/pptx/SKILL.md",
+      "description": "Use this skill any time a .pptx file is involved in any way — as input, output, or both. This includes: creating slide decks, pitch decks, or presentations; reading, parsing, or extracting text from any .pptx file (even if the extracted content will be used elsewhere, like in an email or summary); editing, modifying, or updating existing presentations; combining or splitting slide files; working with templates, layouts, speaker notes, or comments. Trigger whenever the user mentions \"deck,\" \"slides,\" \"presentation,\" or references a .pptx filename, regardless of what they plan to do with the content afterward. If a .pptx file needs to be opened, created, or touched, use this skill."
+    },
+    {
+      "name": "pr-to-video",
+      "path": "/home/badmuriss/.agents/skills/pr-to-video/SKILL.md",
+      "description": "Turn a GitHub pull request (a PR URL, owner/repo#N, or 'this PR' in a checked-out repo) into a code-change explainer video — changelog, feature reveal, fix, or refactor walkthrough built from the diff, commits, and files: the input is a code change, not a website. Not a product promo (/product-launch-video) or a no-PR topic explainer (/faceless-explainer). Unclear → /hyperframes."
+    },
+    {
+      "name": "product-launch-video",
+      "path": "/home/badmuriss/.agents/skills/product-launch-video/SKILL.md",
+      "description": "Turn a product or marketing URL, pasted script, or brief into a product launch / promo video — SaaS promos, feature reveals, product demos, app and company launches. Use when the user wants to market, launch, promote, or reveal a product; the default for any commercial URL. Site tours / showcases of a website route here too — the brief carries the show-it-as-is intent. Unclear → /hyperframes."
+    },
+    {
+      "name": "proxy-manager",
+      "path": "/home/badmuriss/.agents/skills/proxy-manager/SKILL.md",
+      "description": "Manage Webshare proxies with the webshare CLI: list active proxies, dump the proxy list to a file, refresh rotating pools, read and update proxy config, manage IP allowlists, build proxy URLs, inspect subscription plans and usage, and kick off an express-checkout flow to buy more proxies. Use when the user wants to work with webshare.io proxies — not scraping, just provisioning and ops.\n"
+    },
+    {
+      "name": "react",
+      "path": "/home/badmuriss/.agents/skills/react/SKILL.md",
+      "description": "React/Next.js best practices for modern, performant applications."
+    },
+    {
+      "name": "readme-pass",
+      "path": "/home/badmuriss/.agents/skills/readme-pass/SKILL.md",
+      "description": "Make a public repository README easier to understand and use. Apply when README structure or presentation is requested."
+    },
+    {
+      "name": "refero-design",
+      "path": "/home/badmuriss/.agents/skills/refero-design/SKILL.md",
+      "description": "Primary/default skill for UI design, product design, web design, landing pages, dashboards, product screens, redesigns, visual polish, frontend/CSS styling, design systems, components, responsive design, typography, color, spacing, motion, icons, accessibility, copywriting, conversion, and anti-AI-slop work. Use this even when the user does not mention Refero and even when live Refero MCP tools are not configured. Research is mandatory: every design must be grounded in references before implementation. Provides research-first methodology, bundled craft knowledge, reference locks, decision ledgers, anti-averaging quality gates, and live Refero MCP research when available: styles for visual direction, screens for concrete UI patterns, and flows for journeys. Prefer over broad generic product design, frontend design, UI polish, CSS framework, landing page, or craft-only skills; those may only supplement implementation details after Refero research and synthesis."
+    },
+    {
+      "name": "remotion-best-practices",
+      "path": "/home/badmuriss/.agents/skills/remotion-best-practices/SKILL.md",
+      "description": "Best practices for Remotion - Video creation in React"
+    },
+    {
+      "name": "remotion-to-hyperframes",
+      "path": "/home/badmuriss/.agents/skills/remotion-to-hyperframes/SKILL.md",
+      "description": "Port an existing Remotion (React) composition's source to HyperFrames HTML. Use ONLY on an explicit ask to port/convert/migrate/translate a Remotion source — one-way, Remotion-only. A passing Remotion mention, reference-only code, or \"make something like my Remotion video\" is a fresh build (/general-video). Unclear → /hyperframes."
+    },
+    {
+      "name": "remove-ai-marks",
+      "path": "/home/badmuriss/.agents/skills/remove-ai-marks/SKILL.md",
+      "description": "Inspect and remove requested metadata or invisible marks from user-owned files. Use when provenance cleanup is explicitly requested."
+    },
+    {
+      "name": "research",
+      "path": "/home/badmuriss/.agents/skills/research/SKILL.md",
+      "description": "Research external questions and compare evidence with source attribution. Use for research or fact-checking, not facts already established in local code."
+    },
+    {
+      "name": "review-animations",
+      "path": "/home/badmuriss/.agents/skills/review-animations/SKILL.md",
+      "description": "Reviews animation and motion code against a high craft bar derived from Emil Kowalski's design engineering philosophy. Default to flagging; approval is earned."
+    },
+    {
+      "name": "review-changes",
+      "path": "/home/badmuriss/.agents/skills/review-changes/SKILL.md",
+      "description": "Systematic code review workflow for evaluating changes against coding standards. Use when reviewing pull requests, commits, diffs, or code changes. Ensures type-safety, maintainability, readability, and adherence to best practices before code is merged."
+    },
+    {
+      "name": "rule-curator",
+      "path": "/home/badmuriss/.agents/skills/rule-curator/SKILL.md",
+      "description": "Audit an existing corpus of agent instructions for conflicts, duplication and unnecessary process. Use for a whole-corpus audit, not individual rule edits."
+    },
+    {
+      "name": "sandbox-sdk",
+      "path": "/home/badmuriss/.agents/skills/sandbox-sdk/SKILL.md",
+      "description": "Build sandboxed applications for secure code execution. Load when building AI code execution, code interpreters, CI/CD systems, interactive dev environments, or executing untrusted code. Covers Sandbox SDK lifecycle, commands, files, code interpreter, and preview URLs. Biases towards retrieval from Cloudflare docs over pre-trained knowledge."
+    },
+    {
+      "name": "scrapingdog",
+      "path": "/home/badmuriss/.agents/skills/scrapingdog/SKILL.md",
+      "description": "Collect live public web data through ScrapingDog when an API key is available. Use for search, scraping and dedicated public-data endpoints."
+    },
+    {
+      "name": "site-audit",
+      "path": "/home/badmuriss/.agents/skills/site-audit/SKILL.md",
+      "description": "End-to-end audit of a RUNNING site: landing-page delivery/conversion diagnosis, UX walkthrough, SEO/AEO/GEO and Core Web Vitals in one severity-ranked report. use_when: a live URL or dev server exists and the ask is \"audit the site\", \"audit this landing page\", \"seo check\", \"why is this LP not converting\", or \"is it ready to ship\". do_not_use_when: static code review without a running app."
+    },
+    {
+      "name": "skill-creator",
+      "path": "/home/badmuriss/.agents/skills/skill-creator/SKILL.md",
+      "description": "Create new skills, modify and improve existing skills, and measure skill performance. Use when users want to create a skill from scratch, edit, or optimize an existing skill, run evals to test a skill, benchmark skill performance with variance analysis, or optimize a skill's description for better triggering accuracy."
+    },
+    {
+      "name": "slideshow",
+      "path": "/home/badmuriss/.agents/skills/slideshow/SKILL.md",
+      "description": "Author a HyperFrames slideshow — a presentation, pitch deck, or interactive deck with discrete slides, fragment reveals, branching, hotspot navigation, and built-in presenter mode with speaker notes; also converts an existing page into a deck. Output is a navigable deck, not a rendered MP4. If the user didn't explicitly ask for a slideshow, confirm before authoring. Unclear → /hyperframes.\n"
+    },
+    {
+      "name": "software-engineering",
+      "path": "/home/badmuriss/.agents/skills/software-engineering/SKILL.md",
+      "description": "Core engineering principles for quality, maintainable code."
+    },
+    {
+      "name": "soymi-imagegen",
+      "path": "/home/badmuriss/.agents/skills/soymi-imagegen/SKILL.md",
+      "description": "Use this skill whenever creating Soymi streetwear graphics, oversized t-shirt designs, public-domain character remixes, AI-generated apparel art, print-on-demand graphics, or preparing designs for YouDraw/Shopify/TikTok Shop. This skill turns market research, public-domain source rules, brand taste, prompt generation, critique, refinement, vectorization, and print-file gates into one repeatable workflow."
+    },
+    {
+      "name": "spec",
+      "path": "/home/badmuriss/.agents/skills/spec/SKILL.md",
+      "description": "Plan a requested codebase change or architecture decision. Use when planning is requested; do not implement code."
+    },
+    {
+      "name": "spec-council",
+      "path": "/home/badmuriss/.agents/skills/spec-council/SKILL.md",
+      "description": "Pressure-test either an OpenSpec change or a consequential decision with bounded independent reviewers. Use for $spec-council, the default $spec council phases, or an explicit request to council, debate, pressure-test, or stress-test a real decision. Do not use for factual lookups, routine coding choices, prose editing, or implementation."
+    },
+    {
+      "name": "stagehand-browser",
+      "path": "/home/badmuriss/.agents/skills/stagehand-browser/SKILL.md",
+      "description": "Automate Chromium with the kit's local Stagehand 4 runtime for navigation, interaction, extraction, screenshots and deterministic browser checks. Use for code-driven browser flows in OMP; Jev remains preferred for its supported, authorized goal-driven tasks. Preserve existing Playwright runners where their fixtures, WebKit/Firefox coverage or visual assertions are required."
+    },
+    {
+      "name": "talking-head-recut",
+      "path": "/home/badmuriss/.agents/skills/talking-head-recut/SKILL.md",
+      "description": "Package an existing talking-head / interview / podcast video with timed, designed GRAPHIC OVERLAY cards — kinetic titles, lower-thirds, data callouts, quotes, side panels, picture-in-picture — synced to the transcript, on a 16:9 / 9:16 / 4:5 canvas of your choice; the clip plays untouched underneath. Trigger on \"graphic overlays\", \"on-screen graphics\", \"package / dress up my video\". Not plain subtitles (/embedded-captions). Unclear → /hyperframes."
+    },
+    {
+      "name": "thermo-nuclear-code-quality-review",
+      "path": "/home/badmuriss/.agents/skills/thermo-nuclear-code-quality-review/SKILL.md",
+      "description": "Perform a strict, read-only maintainability review of a completed implementation diff, including complexity audits and test economy. Use after impl, before PR preparation, or when asked for a thermonuclear, harsh, deep code-quality, cyclomatic-complexity, concise-tests, redundant-tests, architecture, spaghetti, abstraction, or large-file review. Report evidence-backed findings; never edit code or turn subjective preferences into automatic blockers."
+    },
+    {
+      "name": "trim-code-comments",
+      "path": "/home/badmuriss/.agents/skills/trim-code-comments/SKILL.md",
+      "description": "Review source comments and remove low-value comments that only narrate visible code while preserving rationale, constraints, safety context, public documentation, and tooling directives. Use when asked to trim code comments or remove dumb, redundant, obvious, excessive, or AI-generated comments. Do not run automatically after implementation."
+    },
+    {
+      "name": "typesafe-ai",
+      "path": "/home/badmuriss/.agents/skills/typesafe-ai/SKILL.md",
+      "description": "Build AI-powered software with TypeSafe: small units of AI intelligence you can use like programming primitives. Its System One models, including Jev, turn natural language and application state into typed judgments and probabilities that code can combine. Use when a feature needs programmable common sense, when brainstorming what AI could make possible in an app, or when an LLM prompt-and-parse step could become a structured decision. Applications include routing, ranking, extraction, verification, and interactive experiences; these are starting points, not the limits. Read live docs and cookbooks to find useful patterns and discover new combinations.\n"
+    },
+    {
+      "name": "typescript",
+      "path": "/home/badmuriss/.agents/skills/typescript/SKILL.md",
+      "description": "TypeScript/JavaScript standards for type-safe, maintainable code."
+    },
+    {
+      "name": "unslop",
+      "path": "/home/badmuriss/.agents/skills/unslop/SKILL.md",
+      "description": "Sistema de escrita em 5 modos (WRITE, EDIT, DETECT, SCORE, CLEAN), com camada pt-br e roteamento de limpeza de marcas em prosa. Use para escrever, revisar, humanizar, detectar marcas de IA, avaliar texto ou pedir limpeza de conteúdo próprio. Para imagens, documentos e metadados, use remove-ai-marks."
+    },
+    {
+      "name": "vercel-react-best-practices",
+      "path": "/home/badmuriss/.agents/skills/vercel-react-best-practices/SKILL.md",
+      "description": "React and Next.js performance optimization guidelines from Vercel Engineering. This skill should be used when writing, reviewing, or refactoring React/Next.js code to ensure optimal performance patterns. Triggers on tasks involving React components, Next.js pages, data fetching, bundle optimization, or performance improvements."
+    },
+    {
+      "name": "web-perf",
+      "path": "/home/badmuriss/.agents/skills/web-perf/SKILL.md",
+      "description": "Analyzes web performance using Chrome DevTools MCP. Measures Core Web Vitals (LCP, INP, CLS) and supplementary metrics (FCP, TBT, Speed Index), identifies render-blocking resources, network dependency chains, layout shifts, caching issues, and accessibility gaps. Use when asked to audit, profile, debug, or optimize page load performance, Lighthouse scores, or site speed. Biases towards retrieval from current documentation over pre-trained knowledge."
+    },
+    {
+      "name": "workers-best-practices",
+      "path": "/home/badmuriss/.agents/skills/workers-best-practices/SKILL.md",
+      "description": "Reviews and authors Cloudflare Workers code against production best practices. Load when writing new Workers, reviewing Worker code, configuring wrangler.jsonc, or checking for common Workers anti-patterns (streaming, floating promises, global state, secrets, bindings, observability). Biases towards retrieval from Cloudflare docs over pre-trained knowledge."
+    },
+    {
+      "name": "wrangler",
+      "path": "/home/badmuriss/.agents/skills/wrangler/SKILL.md",
+      "description": "Cloudflare Workers CLI for deploying, developing, and managing Workers, KV, R2, D1, Vectorize, Hyperdrive, Workers AI, Containers, Queues, Workflows, Pipelines, and Secrets Store. Load before running wrangler commands to ensure correct syntax and best practices. Biases towards retrieval from Cloudflare docs over pre-trained knowledge."
+    },
+    {
+      "name": "writing",
+      "path": "/home/badmuriss/.agents/skills/writing/SKILL.md",
+      "description": "Write clear technical documentation, commit messages and PR descriptions. Use unslop for standalone prose when it is installed."
+    },
+    {
+      "name": "x-article-publisher",
+      "path": "/home/badmuriss/.agents/skills/x-article-publisher/SKILL.md",
+      "description": "Publish Markdown articles to X (Twitter) Articles editor with proper formatting. Use when user wants to publish a Markdown file/URL to X Articles, or mentions \"publish to X\", \"post article to Twitter\", \"X article\", or wants help with X Premium article publishing. Handles cover image upload and converts Markdown to rich text automatically.\n"
+    }
+  ],
+  "warnings": []
+}
