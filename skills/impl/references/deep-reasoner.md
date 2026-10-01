@@ -1,8 +1,6 @@
 # Deep reasoner dispatch
 
-Use for architecture, complex debugging, algorithms, risky migrations, and trade-off analysis. Choose the least costly permitted model sufficient for the task, with a clean context.
-
-On Codex, follow [model-routing.md](model-routing.md) and pass model plus effort explicitly. Use Sol low/medium when everyday implementation needs more judgment than Luna, but Astra's cost is not justified. Prefer Astra low for bounded difficult work and medium for architecture, ambiguity, security, cross-cutting debugging or final arbitration. Move former Sol high/xhigh work to Astra low/medium. Astra high and above require a concrete task-specific justification; xhigh/max remain exceptional. Never select GPT-5.5 or GPT-5.6 Terra as a fallback.
+Use for architecture, complex debugging, algorithms, risky migrations, and trade-off analysis. Select a worker through the active host's native configuration and catalog; use this role when the task warrants deeper independent reasoning, not as a model or host prescription.
 
 Instruct the worker to:
 

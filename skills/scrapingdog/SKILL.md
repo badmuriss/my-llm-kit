@@ -1,6 +1,6 @@
 ---
 name: scrapingdog
-description: Collect live public web data through ScrapingDog when an API key is available. Use for search, scraping and dedicated public-data endpoints.
+description: Collect specialized public data through ScrapingDog when its configured route is selected. Use for Maps, social, commerce, jobs and other dedicated endpoints; generic web discovery and public-page acquisition belong to research.
 ---
 
 # ScrapingDog
@@ -10,16 +10,24 @@ The checker reports whether the key is available in the current or interactive
 shell without printing it. Never expose a key, raw account response or
 credential-bearing request URL.
 
+Use `research` and its configured Scrapinho MCP for generic web discovery and
+public-page acquisition. This package owns specialized endpoints without
+verified parity, not an automatic fallback from a refused request.
 Inspect the available MCP tools and select the dedicated endpoint for the task.
-Use an existing HTTP helper when the endpoint is not exposed by MCP. Read only
-the relevant endpoint family below. Generic scraping is for pages that have no
-more appropriate dedicated endpoint; send the rendering mode explicitly.
+Use an existing HTTP helper when that specialized endpoint is not exposed by MCP.
+Read only the relevant endpoint family below; send rendering mode explicitly.
 
 For paid batches, use `scripts/account_summary.sh` before and after collection.
-Respect an explicit budget. Bound retries and concurrency, cache useful results,
-and record failures. After a missing key or bounded provider failure, disclose
-the reason before using Firecrawl or host search. Do not submit private or
+Respect the user's selected scope and budget; a low price is not authorization.
+Bound retries and concurrency, cache useful results, and record failures.
+After a missing key or non-refusal provider failure, disclose the reason before
+using an available specialized alternative. Stop on CAPTCHA, 403 or 429; do not
+change tools, providers or proxies to bypass refusal. Do not submit private or
 session-authenticated content to a public scraping provider.
+
+Prompt-based `/chatgpt` and other external inference modes are not substitutes
+for the configured subscription. Invoke them only when the user explicitly
+authorizes that service and its costs; a configured key does not grant permission.
 
 - [endpoint-index.md](references/endpoint-index.md): choose an endpoint when the
   family is unclear; historical costs are not current price evidence.

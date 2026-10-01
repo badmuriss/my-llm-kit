@@ -60,8 +60,9 @@ Show a short summary (suspicious codepoints; C2PA/AI flags).
 Optional: when `REVERSE_SYNTHID_DIR` is set, `inspect_image.py` and
 `clean_image.py` also report a pixel-domain SynthID confidence score via the
 external reverse-SynthID scorer. That is **detection only**, not removal.
-Bootstrap the external checkout with `scripts/setup_synthid.sh`, or build a
-local image with `make docker-synthid-build`.
+Only if the user selects this optional scorer, bootstrap the external checkout
+with `bash "$SCRIPTS/setup_synthid.sh"`. It downloads a separate non-commercial
+research dependency; do not install it for ordinary metadata cleanup.
 
 ### 3. Deterministic clean (always for matching inputs)
 
@@ -93,19 +94,23 @@ Multi-pass recipe:
 4. Layer A again on the result
 5. Report residual risk honestly
 
-**Model hygiene:** Prefer a rewrite model **≠ suspected origin** (Claude text → not Claude; Gemini → not Gemini; etc.). Prefer local Ollama when available.
+Use the current agent and its configured subscription to apply the requested
+rewrite prompts. A different model is not proof that statistical marks are gone.
+Do not select a model or add an inference service just for watermark removal.
 
-**Optional rewrite hook** (when env configured):
+**Optional rewrite hook** (only when its backend is explicitly authorized):
+`print-prompt` makes no inference call. Ollama and OpenAI-compatible backends
+are separate services, not the harness subscription; environment credentials
+do not authorize sending the user's text to them.
 
 ```bash
 # dry-run / CI: print prompt only
 python3 "$SCRIPTS/rewrite_text.py" draft.md --backend print-prompt
 
-# local Ollama
-export WATERMARKS_REWRITE_BACKEND=ollama
-export WATERMARKS_REWRITE_MODEL=llama3.2
-export WATERMARKS_REWRITE_BASE_URL=http://127.0.0.1:11434
-python3 "$SCRIPTS/rewrite_text.py" draft.md -o draft.rewritten.md --strength paraphrase
+# For a separately authorized local service only:
+python3 "$SCRIPTS/rewrite_text.py" draft.md --backend ollama \
+  --model "<authorized-local-model>" --base-url http://127.0.0.1:11434 \
+  -o draft.rewritten.md --strength paraphrase
 ```
 
 If the hook is not configured, run the prompts below yourself (agent-orchestrated).
@@ -156,7 +161,7 @@ Always state:
 - What Layer A / container clean **verifiably** removed (counts, actions).
 - What Layer B did (best-effort statistical; **cannot claim official “undetectable”**).
 - Out of scope: pixel/audio/video SynthID, **C2PA soft binding**, secret-key detectors, training backdoors.
-- Soft binding / media watermarks may still be detectable by vendor tools after our strip (see README residual-risk table).
+- Soft binding / media watermarks may still be detectable by vendor tools after stripping hard-bound metadata; see `references/removal-matrix.md`.
 - Prefer writing `*.cleaned.*` unless user asked in-place.
 - Ethics one-liner: own content / no compliance theater.
 
@@ -174,17 +179,20 @@ Always state:
 
 ```bash
 # Unified
-python3 scripts/inspect_file.py notes.md
-python3 scripts/clean_file.py notes.md -o notes.cleaned.md
-python3 scripts/clean_file.py shot.png -o shot.cleaned.png
-python3 scripts/clean_file.py deck.docx -o deck.cleaned.docx
+python3 "$SCRIPTS/inspect_file.py" notes.md
+python3 "$SCRIPTS/clean_file.py" notes.md -o notes.cleaned.md
+python3 "$SCRIPTS/clean_file.py" shot.png -o shot.cleaned.png
+python3 "$SCRIPTS/clean_file.py" deck.docx -o deck.cleaned.docx
 
 # Text Layer A / B
-python3 scripts/inspect_text.py notes.md
-python3 scripts/clean_text.py notes.md -o notes.cleaned.md --stats
-python3 scripts/rewrite_text.py notes.md --backend print-prompt --strength paraphrase
+python3 "$SCRIPTS/inspect_text.py" notes.md
+python3 "$SCRIPTS/clean_text.py" notes.md -o notes.cleaned.md --stats
+python3 "$SCRIPTS/rewrite_text.py" notes.md --backend print-prompt --strength paraphrase
 
 # Images only
-python3 scripts/inspect_image.py shot.png
-python3 scripts/clean_image.py shot.png -o shot.cleaned.png
+python3 "$SCRIPTS/inspect_image.py" shot.png
+python3 "$SCRIPTS/clean_image.py" shot.png -o shot.cleaned.png
 ```
+
+Adapted from [watermarks-remover](https://github.com/guillaumemeyer/watermarks-remover).
+The upstream [MIT License](LICENSE) and attribution are preserved.

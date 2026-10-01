@@ -16,7 +16,7 @@ from urllib.parse import urlsplit
 
 
 DEFAULT_CONFIG = Path("~/.omp/agent/webshare.json")
-FALLBACK_HTTP_STATUSES = {403, 407, 408, 429}
+FALLBACK_HTTP_STATUSES = {408}
 TRANSPORT_FAILURES = {5, 6, 7, 18, 28, 35, 52, 55, 56, 92}
 
 

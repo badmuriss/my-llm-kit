@@ -103,37 +103,17 @@ provider does not prevent external scripts from making network calls. Model
 availability follows the authenticated account, not manually registered names.
 Use the lowest sufficient effort; raise model cost only for a concrete task need.
 
-## Cloudflare CLI - cf - v20260928
+## Cloudflare and video preferences
 
-`cf` is Cloudflare's current CLI and covers the whole Cloudflare platform. Prefer it over Wrangler: create projects with `cf init`, develop with `cf dev`, deploy with `cf deploy`, and manage account resources with `cf <product> …` (for example `cf d1 list`).
+For Cloudflare work, prefer `cf` for new projects and keep Wrangler in projects
+that already use it unless migration is requested. Check the selected CLI's
+current help rather than translating commands by guesswork. Preserve the
+framework, deployment path and bindings; follow the relevant Cloudflare skill
+for runtime, build and migration details.
 
-Wrangler is only for projects that already use it – a `wrangler.jsonc`, `wrangler.json` or `wrangler.toml` file – or when the user asks for it. Keep using Wrangler in those projects unless asked to migrate, and use `cf migrate` in this case.
-
-`cf` commands differ from Wrangler's; check `cf --help` or `cf cli search <what you want to do>` instead of guessing. If a `cf` command fails in a project that doesn't use Wrangler, don't fall back to Wrangler (including `npx wrangler`) without offering to report it.
-
-### Workers development stack
-
-The user's usual stack is Cloudflare Workers with React, TanStack or Next.js.
-For new JavaScript/TypeScript Workers, including backend APIs, prefer `cf` with
-the official Cloudflare Vite Plugin for development and builds. Use compatible
-Vite and framework versions, HMR and local bindings in the Workers runtime;
-prefer Cloudflare's Vitest integration when testing Worker runtime behavior.
-
-Check the framework's current Cloudflare deployment path before changing an
-existing app. Next.js/OpenNext and vinext require separate compatibility checks;
-do not replace the framework or its adapter as an incidental CLI update.
-Having a Vite frontend does not mean the Worker already uses the Cloudflare
-Vite Plugin. `cf migrate` can retain Wrangler as its bundler, so distinguish
-CLI/configuration migration from adopting Vite for the Worker.
-
-Evaluate existing projects with `cf migrate --dry-run` first. Preserve build
-hooks, prerendered pages and SEO, bindings, migrations, queues, scheduled
-handlers and deployment behavior. Recommend migration when there is a concrete
-benefit and a supported path; verify development, builds and affected behavior
-before replacing the working deployment flow.
-
-Sources checked 2026-09-29: [Cloudflare Vite Plugin](https://developers.cloudflare.com/workers/vite-plugin/),
-[Next.js on Workers](https://developers.cloudflare.com/workers/framework-guides/web-apps/nextjs/).
+For the user's video workflow, use plain Playwright. Do not introduce Refero,
+HyperFrames, Remotion or creative-generation skills unless the user changes
+that choice. This does not exclude document, diagram or frontend-design skills.
 
 ## Writing and Git
 

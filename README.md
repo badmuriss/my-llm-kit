@@ -64,8 +64,9 @@ and integrations in place.
    environment and package tools. Core research calls the configured MCP directly;
    it requires no Python collector or Node preflight. Optional local validators
    and other selected integrations retain their own runtime requirements. API
-   keys, model selection, roles, effort, hooks and MCP servers stay in private
-   environment variables or the active harness's native configuration. Preserve
+   keys stay in private environment variables or native credential storage.
+   Roles, model selection, effort, hooks and MCP servers stay in the active
+   harness's native configuration. The kit does not pin model identities. Preserve
    existing guards and provider choices. Add `.visual-evidence/` to the user's
    existing global Git excludes file if needed, preserving its entries and path.
 5. Verify from a separate temporary consumer project using the resolved installed
@@ -110,6 +111,17 @@ with one attempt; both sources were read through EOF, and structured search
 results retained their original positions. See the
 [direct-MCP smoke evidence](research/evidence/research-mcp-direct-20260930.json).
 Raw export and browser page acquisition were not exercised.
+
+Additional Linux smoke checks, 2026-09-30: temporary user and consumer directories
+preserved package licenses and resolved the neutral routing seed against a
+supplied host catalog, including explicit unavailable-model and unjustified
+escalation blocks. The installed graph CLI and deterministic text cleanup ran
+from the separate consumer; prompt-only rewriting required no inference. The
+installed X parser also preserved title, rich text and divider position from a
+temporary consumer without opening an editor or clipboard. Real curl requests
+through a loopback proxy stopped on 403/407/429, retained the 408/5xx fallback
+signal and delivered a 200 response body. No paid inference, live publication,
+account authentication or Cloudflare deployment was exercised.
 
 Native Windows and macOS installation and host discovery remain unverified here.
 An installing agent must report the platform and host it actually checked.
@@ -172,6 +184,10 @@ python3 "<installed-agent-graph>/scripts/agent_graph.py" intake --repo "<project
 
 Use `py -3` on Windows. Do not copy the kit into a consumer project merely to
 make a relative command work. Use the returned pinned entrypoint after bootstrap.
+
+The routing seed contains role requirements, not a model catalog. Resolve concrete
+models and effort from the active harness's native configuration and authenticated
+catalog. Preserve the selected runtime snapshot and provenance when dispatching.
 
 ## What's included
 
@@ -253,11 +269,12 @@ python3 "<kit-checkout>/scripts/webshare_fetch.py" https://example.com --config 
 ```
 
 The helper obtains one rotating datacenter proxy and performs one request. It
-uses the single residential fallback only for connection/timeout failures or
-HTTP 403, 407, 408, 429, or 5xx responses. It never retries, falls back for
-400/401/404 or local configuration errors, uses cookies or a global proxy, or
-prints proxy credentials. Successful response bodies go to stdout; safe
-plan/status and fallback information goes to stderr.
+uses the single residential fallback only for connection/timeout failures,
+HTTP 408 or 5xx responses. A refusal (403, 407 or 429) stops collection; changing
+proxies must not bypass it. It never retries, falls back for 400/401/404 or local
+configuration errors, uses cookies or a global proxy, or prints proxy credentials.
+Successful response bodies go to stdout; safe plan/status and fallback information
+goes to stderr.
 The helper's existing default remains `~/.omp/agent/webshare.json` for the local
 installation that already uses it. An explicit `--config` works in any harness.
 
@@ -285,8 +302,11 @@ No Browserbase account or extra inference API key is needed. An explicitly autho
 dedicated profile can preserve login state. Borrowed-browser CDP attachment is disabled:
 the pinned SDK closes the host browser on `browser.close()`, and the reconnection probe
 timed out. The kit must not terminate a user's browser to claim successful cleanup.
-Jev remains preferred for its supported, authorized goals; a Stagehand-owned isolated
-Chrome can be shared with Browser Harness for Jev actions and deterministic verification.
+Use only browser capabilities available and authorized in the active environment.
+A Stagehand-owned isolated Chrome can be shared with Browser Harness when that
+integration is already available; it does not authorize a separate inference service.
+For video, use plain Playwright. Refero, HyperFrames, Remotion and creative-generation
+skills are not part of the user's selected workflow.
 
 Verify the requested browser actions through observed DOM state or durable results.
 Capture and inspect PNG evidence for rendered changes using
@@ -318,13 +338,12 @@ adapts discovery to its active host; each optional capability needs its own chec
 | Stagehand | Portable local SDK/scripts, with an OMP extension if selected | Real Chrome and actual tool discovery |
 | Resource guard | Optional Linux enhancement | Admission and cleanup in the actual environment |
 
-The current local installation uses ChatGPT/Codex subscription models.
+The current local installation uses subscription-backed inference.
 Its effective roles, models, agents, hooks and MCP configuration live under
 `~/.omp/agent/`. Keep these machine-local choices in the active harness's native
-configuration. Credentials stay outside this repository.
-See the [migration record](research/2026-09-22-omp-gpt6-routing.md) and
-[repository/harness audit](research/2026-09-22-omp-harness-audit.md) for verified
-behavior and remaining gaps.
+configuration. Credentials stay outside this repository. A different harness
+resolves the same requirements using its own available capabilities; no OMP model
+catalog or configuration is copied into shared skills.
 
 ## Optional integrations
 
@@ -366,7 +385,8 @@ instructions, skill packages and runtime helpers.
 
 ## Credits
 
-- `research` is adapted from [research-stack](https://github.com/nett0eth/research-stack) by Netto, under MIT; the retired `ingest` source remains in the cleanup archive.
+- `research` is adapted from [research-stack](https://github.com/nett0eth/research-stack) by Netto, under [MIT](skills/research/LICENSE); the retired `ingest` source remains in the cleanup archive.
+- `remove-ai-marks` is adapted from [watermarks-remover](https://github.com/guillaumemeyer/watermarks-remover), with its [MIT notice preserved](skills/remove-ai-marks/LICENSE).
 - `last30days` comes from [mvanhorn/last30days-skill](https://github.com/mvanhorn/last30days-skill), under MIT.
 - `unslop` is original work under CC BY-SA.
 - Maintainability guidance consolidated from `thermo-nuclear-code-quality-review` comes from [Cursor Team Kit](https://github.com/cursor/plugins/tree/main/cursor-team-kit/skills/thermo-nuclear-code-quality-review), with its [MIT license preserved](instructions/LICENSE.cursor-team-kit).

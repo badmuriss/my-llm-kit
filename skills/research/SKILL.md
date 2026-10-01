@@ -80,4 +80,5 @@ before accepting claims. Collection alone does not require an Agent Graph.
 Report what is established, what is inference and what remains unverified. A
 small or uncontrolled sample does not establish a general productivity claim.
 
-Adapted from [research-stack](https://github.com/nett0eth/research-stack), MIT.
+Adapted from [research-stack](https://github.com/nett0eth/research-stack),
+[MIT License](LICENSE).

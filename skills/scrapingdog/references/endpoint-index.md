@@ -3,6 +3,11 @@
 Consult only when choosing a public-data endpoint. Values are historical hints;
 verify current documentation before quoting prices or planning a paid batch.
 
+Generic discovery and public-page acquisition use `research`'s configured route.
+The generic rows below describe provider capabilities, not permission to change
+that route. Prompt-based AI endpoints require explicit authorization for external
+inference and costs; credentials or a low quoted price do not authorize a call.
+
 ## Routing Table
 
 Credits per successful request, taken from the official docs. `?` means the doc page does not state it; run `scripts/account_summary.sh` before a batch.
@@ -60,7 +65,7 @@ Credits per successful request, taken from the official docs. `?` means the doc 
 | Walmart, eBay, Flipkart, Myntra, Apple | see `references/commerce-travel.md` | 5 |
 | Credits and concurrency left | `scripts/account_summary.sh` (wraps `/account`) | 0 |
 
-Two entries deserve a second look before you fire them: `/profile?type=person` at up to 100 credits, and `/chatgpt` at 30. Everything else is cheap enough to use freely.
+Check scope, current price and budget before any paid collection. High-cost profile calls deserve particular care. `/chatgpt` is external inference and is unavailable under subscription-only constraints unless the user explicitly authorizes an exception.
 
 Instagram and Facebook doc pages are stubs that only publish the endpoint, no parameters. Smoke test them before wiring into production.
 
